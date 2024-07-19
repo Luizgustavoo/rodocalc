@@ -13,7 +13,7 @@ class CreateVehicleModal extends GetView<VehiclesController> {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Form(
-          key: controller.vehicleFormKey,
+          key: controller.formKeyVehicle,
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             padding: const EdgeInsets.all(12.0),
