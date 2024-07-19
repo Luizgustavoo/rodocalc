@@ -1,26 +1,25 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:rodocalc/app/data/base_url.dart';
-import 'package:rodocalc/app/data/models/vehicle_model.dart';
+import 'package:rodocalc/app/data/models/expense_model.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 
-class VehicleApiClient {
+class ExpenseApiClient {
   final http.Client httpClient = http.Client();
 
   gettAll() async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
-      Uri vehicleUrl;
+      Uri companyUrl;
       String url =
-          '$baseUrl/v1/vehicle/my/${ServiceStorage.getUserId().toString()}';
-      vehicleUrl = Uri.parse(url);
+          '$baseUrl/v1/expense/my/${ServiceStorage.getUserId().toString()}';
+      companyUrl = Uri.parse(url);
       var response = await httpClient.get(
-        vehicleUrl,
+        companyUrl,
         headers: {
           "Accept": "application/json",
           "Authorization": token,
@@ -46,32 +45,29 @@ class VehicleApiClient {
     return null;
   }
 
-  insert(Vehicle vehicle, File imageFile) async {
+  insert(Expense expense) async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
-      var vehicleUrl = Uri.parse('$baseUrl/v1/vehicle/create');
+      var expenseUrl = Uri.parse('$baseUrl/v1/expense/create');
 
-      var request = http.MultipartRequest('POST', vehicleUrl);
+      var request = http.MultipartRequest('POST', expenseUrl);
 
       request.fields.addAll({
-        "pessoa_id": vehicle.pessoaId.toString(),
-        "marca": vehicle.marca.toString(),
-        "ano": vehicle.ano.toString(),
-        "modelo": vehicle.modelo.toString(),
-        "placa": vehicle.placa.toString(),
-        "fipe": vehicle.fipe.toString(),
-        "reboque": vehicle.reboque.toString(),
-        "foto": vehicle.foto.toString(),
-        "status": "1"
+        "descricao": expense.descricao.toString(),
+        "categoriadespesa_id": expense.categoriadespesaId.toString(),
+        "tipoespecificodespesa_id": expense.tipoespecificodespesaId.toString(),
+        "valor": expense.valor.toString(),
+        "empresa": expense.empresa.toString(),
+        "cidade": expense.cidade.toString(),
+        "uf": expense.uf.toString(),
+        "ddd": expense.ddd.toString(),
+        "telefone": expense.telefone.toString(),
+        "observacoes": expense.observacoes.toString(),
+        "status": expense.status.toString(),
+        "pessoa_id": expense.pessoaId.toString(),
+        "veiculo_id": expense.veiculoId.toString()
       });
-
-      if (imageFile.path.isNotEmpty) {
-        request.files.add(await http.MultipartFile.fromPath(
-          'foto',
-          imageFile.path,
-        ));
-      }
 
       request.headers.addAll({
         'Accept': 'application/json',
@@ -90,33 +86,29 @@ class VehicleApiClient {
     return null;
   }
 
-  update(Vehicle vehicle, File imageFile) async {
+  update(Expense expense) async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
-      var vehicleUrl = Uri.parse('$baseUrl/v1/vehicle/update/${vehicle.id}');
+      var expenseUrl = Uri.parse('$baseUrl/v1/expense/update/${expense.id}');
 
-      var request = http.MultipartRequest('POST', vehicleUrl);
+      var request = http.MultipartRequest('POST', expenseUrl);
 
       request.fields.addAll({
-        "pessoa_id": vehicle.pessoaId.toString(),
-        "marca": vehicle.marca.toString(),
-        "ano": vehicle.ano.toString(),
-        "modelo": vehicle.modelo.toString(),
-        "placa": vehicle.placa.toString(),
-        "fipe": vehicle.fipe.toString(),
-        "reboque": vehicle.reboque.toString(),
-        "foto": vehicle.foto.toString(),
-        "user_id": ServiceStorage.getUserId().toString(),
-        "status": "1"
+        "descricao": expense.descricao.toString(),
+        "categoriadespesa_id": expense.categoriadespesaId.toString(),
+        "tipoespecificodespesa_id": expense.tipoespecificodespesaId.toString(),
+        "valor": expense.valor.toString(),
+        "empresa": expense.empresa.toString(),
+        "cidade": expense.cidade.toString(),
+        "uf": expense.uf.toString(),
+        "ddd": expense.ddd.toString(),
+        "telefone": expense.telefone.toString(),
+        "observacoes": expense.observacoes.toString(),
+        "status": expense.status.toString(),
+        "pessoa_id": expense.pessoaId.toString(),
+        "veiculo_id": expense.veiculoId.toString()
       });
-
-      if (imageFile.path.isNotEmpty) {
-        request.files.add(await http.MultipartFile.fromPath(
-          'foto',
-          imageFile.path,
-        ));
-      }
 
       request.headers.addAll({
         'Accept': 'application/json',
@@ -135,13 +127,13 @@ class VehicleApiClient {
     return null;
   }
 
-  delete(Vehicle vehicle) async {
+  delete(Expense expense) async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
-      var vehicleUrl = Uri.parse('$baseUrl/v1/vehicle/delete/${vehicle.id}');
+      var expenseUrl = Uri.parse('$baseUrl/v1/expense/delete/${expense.id}');
 
-      var request = http.MultipartRequest('POST', vehicleUrl);
+      var request = http.MultipartRequest('POST', expenseUrl);
 
       request.headers.addAll({
         'Accept': 'application/json',

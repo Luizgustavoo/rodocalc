@@ -14,12 +14,12 @@ class ExpenseCategoryApiClient {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
-      Uri companyUrl;
+      Uri expenseCategoryUrl;
       String url =
           '$baseUrl/v1/expensecategory/my/${ServiceStorage.getUserId().toString()}';
-      companyUrl = Uri.parse(url);
+      expenseCategoryUrl = Uri.parse(url);
       var response = await httpClient.get(
-        companyUrl,
+        expenseCategoryUrl,
         headers: {
           "Accept": "application/json",
           "Authorization": token,

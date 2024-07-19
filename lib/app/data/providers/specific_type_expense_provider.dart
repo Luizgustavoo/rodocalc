@@ -49,9 +49,10 @@ class SpecificTypeExpenseApiClient {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
-      var vehicleUrl = Uri.parse('$baseUrl/v1/specifictypeexpense/create');
+      var specificTypeExpenseUrl =
+          Uri.parse('$baseUrl/v1/specifictypeexpense/create');
 
-      var request = http.MultipartRequest('POST', vehicleUrl);
+      var request = http.MultipartRequest('POST', specificTypeExpenseUrl);
 
       request.fields.addAll({
         "descricao": specificTypeExpense.descricao.toString(),
@@ -80,10 +81,10 @@ class SpecificTypeExpenseApiClient {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
-      var vehicleUrl = Uri.parse(
+      var specificTypeExpenseUrl = Uri.parse(
           '$baseUrl/v1/specifictypeexpense/update/${specificTypeExpense.id}');
 
-      var request = http.MultipartRequest('POST', vehicleUrl);
+      var request = http.MultipartRequest('POST', specificTypeExpenseUrl);
 
       request.fields.addAll({
         "descricao": specificTypeExpense.descricao.toString(),
@@ -112,10 +113,10 @@ class SpecificTypeExpenseApiClient {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
-      var vehicleUrl = Uri.parse(
+      var specificTypeExpenseUrl = Uri.parse(
           '$baseUrl/v1/specifictypeexpense/delete/${specificTypeExpense.id}');
 
-      var request = http.MultipartRequest('POST', vehicleUrl);
+      var request = http.MultipartRequest('POST', specificTypeExpenseUrl);
 
       request.headers.addAll({
         'Accept': 'application/json',
