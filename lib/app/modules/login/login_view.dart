@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/login_controller.dart';
-import 'package:rodocalc/app/routes/app_routes.dart';
 
 class LoginView extends GetView<LoginController> {
   const LoginView({super.key});
@@ -47,86 +46,100 @@ class LoginView extends GetView<LoginController> {
                     elevation: 5,
                     child: Padding(
                       padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const SizedBox(height: 10),
-                          TextFormField(
-                            controller: controller.emailController,
-                            decoration: const InputDecoration(
-                              prefixIcon: Icon(Icons.email_outlined),
-                              labelText: 'E-MAIL',
+                      child: Form(
+                        key: controller.loginKey,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const SizedBox(height: 10),
+                            TextFormField(
+                              controller: controller.emailController,
+                              decoration: const InputDecoration(
+                                prefixIcon: Icon(Icons.email_outlined),
+                                labelText: 'E-MAIL',
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 10),
-                          Obx(() {
-                            return TextFormField(
-                              controller: controller.passwordController,
-                              obscureText: controller.isPasswordHidden.value,
-                              decoration: InputDecoration(
-                                prefixIcon: const Icon(Icons.key_outlined),
-                                labelText: 'SENHA',
-                                suffixIcon: IconButton(
-                                  icon: Icon(
-                                    controller.isPasswordHidden.value
-                                        ? Icons.visibility
-                                        : Icons.visibility_off,
+                            const SizedBox(height: 10),
+                            Obx(() {
+                              return TextFormField(
+                                controller: controller.passwordController,
+                                obscureText: controller.isPasswordHidden.value,
+                                decoration: InputDecoration(
+                                  prefixIcon: const Icon(Icons.key_outlined),
+                                  labelText: 'SENHA',
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      controller.isPasswordHidden.value
+                                          ? Icons.visibility
+                                          : Icons.visibility_off,
+                                    ),
+                                    onPressed: () {
+                                      controller.isPasswordHidden.value =
+                                          !controller.isPasswordHidden.value;
+                                    },
                                   ),
-                                  onPressed: () {
-                                    controller.isPasswordHidden.value =
-                                        !controller.isPasswordHidden.value;
-                                  },
+                                ),
+                              );
+                            }),
+                            const SizedBox(height: 10),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: TextButton(
+                                onPressed: () {},
+                                child: const Text(
+                                  'ESQUECEU A SENHA?',
+                                  style: TextStyle(color: Colors.black),
                                 ),
                               ),
-                            );
-                          }),
-                          const SizedBox(height: 10),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: TextButton(
-                              onPressed: () {},
-                              child: const Text(
-                                'ESQUECEU A SENHA?',
-                                style: TextStyle(color: Colors.black),
-                              ),
                             ),
-                          ),
-                          const SizedBox(height: 5),
-                          Obx(() => ElevatedButton(
-                                onPressed: () {
-                                  Get.toNamed(Routes.home);
-                                },
-                                style: ElevatedButton.styleFrom(
+                            const SizedBox(height: 5),
+                            Obx(
+                              () => Visibility(
+                                visible: !controller.loading.value,
+                                child: Container(
                                   padding: const EdgeInsets.symmetric(
-                                    horizontal: 100,
-                                    vertical: 15,
-                                  ),
-                                  backgroundColor: Colors.orange,
-                                ),
-                                child: controller.isLoading.value
-                                    ? const CircularProgressIndicator(
-                                        color: Colors.white,
-                                      )
-                                    : const Text(
-                                        'ENTRAR',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 18,
-                                            fontFamily: 'Inter-Bold'),
+                                      horizontal: 20.0),
+                                  height: 70,
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      controller.login();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 100,
+                                        vertical: 15,
                                       ),
-                              )),
-                          TextButton(
-                            onPressed: () {
-                              Get.toNamed('/signup');
-                            },
-                            child: const Text(
-                              'CRIAR UMA CONTA',
-                              style: TextStyle(
-                                  color: Color(0xFFFF6B00),
-                                  fontFamily: 'Inter-Bold'),
+                                      backgroundColor: Colors.orange,
+                                    ),
+                                    child: controller.isLoading.value
+                                        ? const CircularProgressIndicator(
+                                            color: Colors.white,
+                                          )
+                                        : const Text(
+                                            'ENTRAR',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18,
+                                                fontFamily: 'Inter-Bold'),
+                                          ),
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                        ],
+                            TextButton(
+                              onPressed: () {
+                                Get.toNamed('/signup');
+                              },
+                              child: const Text(
+                                'CRIAR UMA CONTA',
+                                style: TextStyle(
+                                    color: Color(0xFFFF6B00),
+                                    fontFamily: 'Inter-Bold'),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/home_controller.dart';
+import 'package:rodocalc/app/data/controllers/login_controller.dart';
 import 'package:rodocalc/app/modules/home/widgets/custom_chart.dart';
 import 'package:rodocalc/app/modules/home/widgets/custom_home_card.dart';
 import 'package:rodocalc/app/modules/home/widgets/custom_stack_card.dart';
@@ -57,7 +58,49 @@ class HomeView extends GetView<HomeController> {
           ),
         ),
       ),
-      drawer: const Drawer(),
+      drawer: Drawer(
+        child: Column(
+          children: [
+            DrawerHeader(
+              decoration: const BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Image.network(
+                'https://via.placeholder.com/150', // Substitua pela URL da sua imagem
+                fit: BoxFit.cover,
+              ),
+            ),
+            Expanded(
+              child: ListView(
+                children: [
+                  // Adicione outros itens do drawer aqui
+                  ListTile(
+                    title: const Text('Item 1'),
+                    onTap: () {
+                      // Ação do Item 1
+                    },
+                  ),
+                  ListTile(
+                    title: const Text('Item 2'),
+                    onTap: () {
+                      // Ação do Item 2
+                    },
+                  ),
+                ],
+              ),
+            ),
+            ListTile(
+              title: const Text('Sair'),
+              leading: const Icon(Icons.exit_to_app),
+              onTap: () {
+                final loginController = Get.put(LoginController());
+                loginController.logout();
+                // Fecha o drawer
+              },
+            ),
+          ],
+        ),
+      ),
       body: Stack(
         children: [
           SizedBox(

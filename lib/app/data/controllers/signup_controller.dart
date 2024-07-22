@@ -2,10 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:rodocalc/app/data/repositories/auth_repository.dart';
 
 class SignUpController extends GetxController {
   var selectedImagePath = ''.obs;
   var selectedState = ''.obs;
+
+  final TextEditingController txtNomeController = TextEditingController();
+  final TextEditingController txtTelefoneController = TextEditingController();
+  final TextEditingController txtCidadeController = TextEditingController();
+  final TextEditingController txtUfController = TextEditingController();
+  final TextEditingController txtCpfController = TextEditingController();
+  final TextEditingController txtApelidoController = TextEditingController();
+  final TextEditingController txtEmailController = TextEditingController();
+  final TextEditingController txtSenhaController = TextEditingController();
+  final TextEditingController txtConfirmaSenhaController =
+      TextEditingController();
+
+  final formSignupKey = GlobalKey<FormState>();
+  RxBool loading = false.obs;
+
+  final repository = Get.put(AuthRepository());
 
   List<String> get states => [
         'AC',
