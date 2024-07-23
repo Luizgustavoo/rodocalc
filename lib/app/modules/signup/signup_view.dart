@@ -1,9 +1,12 @@
 import 'dart:io';
+import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/controllers/signup_controller.dart';
+import 'package:rodocalc/app/utils/services.dart';
 
 class SignUpView extends GetView<SignUpController> {
   const SignUpView({super.key});
@@ -59,6 +62,7 @@ class SignUpView extends GetView<SignUpController> {
             padding: const EdgeInsets.all(16.0),
             child: Form(
               key: controller.formSignupKey,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -100,6 +104,16 @@ class SignUpView extends GetView<SignUpController> {
                               prefixIcon: Icon(Icons.person),
                               labelText: 'NOME COMPLETO',
                             ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Digite o nome completo";
+                              }
+                              List<String> nameParts = value.split(' ');
+                              if (nameParts.length < 2) {
+                                return "Digite o nome completo (nome e sobrenome)";
+                              }
+                              return null;  // Return null if the input is valid
+                            },
                           ),
                           const SizedBox(height: 10),
                           TextFormField(
@@ -108,45 +122,63 @@ class SignUpView extends GetView<SignUpController> {
                               prefixIcon: Icon(Icons.phone),
                               labelText: 'TELEFONE',
                             ),
+                            validator: (value){
+                              if(value == null || value.isEmpty){
+                                return "Digite o telefone";
+                              }
+                            },
                           ),
                           const SizedBox(height: 10),
-                          Row(
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Expanded(
-                                flex: 3,
-                                child: TextFormField(
-                                  controller: controller.txtCidadeController,
-                                  decoration: const InputDecoration(
-                                    prefixIcon: Icon(Icons.location_city),
-                                    labelText: 'CIDADE',
-                                  ),
+                              TextFormField(
+                                controller: controller.txtCidadeController,
+                                decoration: const InputDecoration(
+                                  prefixIcon: Icon(Icons.location_city),
+                                  labelText: 'CIDADE',
                                 ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Digite a sua cidade natal";
+                                  }
+                                  return null;
+                                },
                               ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                flex: 1,
-                                child: Obx(() {
-                                  return DropdownButtonFormField<String>(
-                                    value: controller.selectedState.value == ''
-                                        ? null
-                                        : controller.selectedState.value,
-                                    decoration: const InputDecoration(
-                                      labelText: 'UF',
+                              const SizedBox(height: 10),
+                              Obx(() {
+                                return DropdownButtonFormField<String>(
+                                  value: controller.selectedState.value == '' ? null : controller.selectedState.value,
+                                  decoration: const InputDecoration(
+                                    prefixIcon: Icon(Icons.map),
+                                    labelText: 'UF',
+                                  ),
+                                  items: [
+                                    const DropdownMenuItem<String>(
+                                      value: null,
+                                      child: Text(
+                                        'SELECIONE',
+                                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+                                      ),
                                     ),
-                                    items:
-                                        controller.states.map((String state) {
+                                    ...controller.states.map((String state) {
                                       return DropdownMenuItem<String>(
                                         value: state,
                                         child: Text(state),
                                       );
                                     }).toList(),
-                                    onChanged: (newValue) {
-                                      controller.selectedState.value =
-                                          newValue!;
-                                    },
-                                  );
-                                }),
-                              ),
+                                  ],
+                                  onChanged: (newValue) {
+                                    controller.selectedState.value = newValue!;
+                                  },
+                                  validator: (value) {
+                                    if (value == null) {
+                                      return "Selecione uma UF";
+                                    }
+                                    return null;
+                                  },
+                                );
+                              }),
                             ],
                           ),
                           const SizedBox(height: 10),
@@ -156,6 +188,14 @@ class SignUpView extends GetView<SignUpController> {
                               prefixIcon: Icon(Icons.credit_card),
                               labelText: 'CPF',
                             ),
+                            validator: (value){
+                              if(value == null || value.isEmpty){
+                                return "Digite seu cpf";
+                              }
+                              if(!Services.validCPF(value)){
+                                return "Digite um cpf válido";
+                              }
+                            },
                           ),
                           const SizedBox(height: 10),
                           TextFormField(
@@ -193,7 +233,9 @@ class SignUpView extends GetView<SignUpController> {
                           ),
                           const SizedBox(height: 20),
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              controller.insert();
+                            },
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 100,

@@ -62,11 +62,7 @@ class AuthApiClient {
       var request = http.MultipartRequest('POST', companyUrl);
 
       request.fields.addAll({
-        "nome": nome,
-        "cnpj": cnpj,
-        "responsavel": responsavel,
-        "telefone": telefone,
-        "nome_pessoa": nomePessoa,
+
         "user_id": ServiceStorage.getUserId().toString(),
         "status": "1"
       });
