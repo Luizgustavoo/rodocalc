@@ -3,7 +3,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:rodocalc/app/routes/app_routes.dart';
 
 class InitialController extends GetxController {
-  final box = GetStorage('projeto');
+  final box = GetStorage('rodocalc');
   dynamic auth;
 
   @override

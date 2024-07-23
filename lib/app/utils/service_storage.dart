@@ -1,7 +1,7 @@
 import 'package:get_storage/get_storage.dart';
 
 class ServiceStorage {
-  static final _box = GetStorage('projeto');
+  static final _box = GetStorage('rodocalc');
 
   static bool existUser() {
     if (_box.read('auth') != null) {
@@ -20,7 +20,7 @@ class ServiceStorage {
   static void clearBox() {
     if (existUser()) {
       _box.remove('auth');
-      _box.remove('projeto');
+      _box.remove('rodocalc');
       _box.erase();
     }
   }
@@ -34,7 +34,7 @@ class ServiceStorage {
 
   static String getUserName() {
     if (existUser()) {
-      return _box.read('auth')['user']['nome'];
+      return _box.read('auth')['pessoa']['nome'];
     }
     return "";
   }
