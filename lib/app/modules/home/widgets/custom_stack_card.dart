@@ -32,7 +32,10 @@ class CustomStackCard extends StatelessWidget {
               Text(
                 'SCANIA - P360 BITRUCK - CARROCERIA 9MTS',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white, fontSize: 14),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    overflow: TextOverflow.ellipsis),
               ),
             ],
           ),

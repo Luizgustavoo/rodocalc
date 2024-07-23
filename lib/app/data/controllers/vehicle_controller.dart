@@ -73,8 +73,6 @@ class VehiclesController extends GetxController {
   };
   dynamic mensagem;
 
-  var photoUrlPath = ''.obs;
-
   Future<void> getAll() async {
     isLoading.value = true;
     try {
@@ -98,7 +96,7 @@ class VehiclesController extends GetxController {
             reboque: trailerController.text,
             status: 1,
           ),
-          File(photoUrlPath.value));
+          File(selectedImagePath.value));
       retorno = {
         'success': mensagem['success'],
         'message': mensagem['message']
@@ -146,7 +144,7 @@ class VehiclesController extends GetxController {
             reboque: trailerController.text,
             status: 1,
           ),
-          File(photoUrlPath.value));
+          File(selectedImagePath.value));
       retorno = {
         'success': mensagem['success'],
         'message': mensagem['message']

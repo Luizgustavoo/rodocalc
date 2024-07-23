@@ -134,7 +134,9 @@ class HomeView extends GetView<HomeController> {
                               CustomHomeCard(
                                 icon: Icons.attach_money,
                                 label: 'Financeiro',
-                                onTap: () {},
+                                onTap: () {
+                                  Get.toNamed(Routes.financial);
+                                },
                               ),
                               CustomHomeCard(
                                 icon: Icons.local_shipping,
