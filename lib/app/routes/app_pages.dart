@@ -1,10 +1,12 @@
 import 'package:get/get.dart';
+import 'package:rodocalc/app/data/bindings/financial_binding.dart';
 import 'package:rodocalc/app/data/bindings/freight_binding.dart';
 import 'package:rodocalc/app/data/bindings/home_binding.dart';
 import 'package:rodocalc/app/data/bindings/initial_binding.dart';
 import 'package:rodocalc/app/data/bindings/login_binding.dart';
 import 'package:rodocalc/app/data/bindings/signup_binding.dart';
 import 'package:rodocalc/app/data/bindings/vehicle_binding.dart';
+import 'package:rodocalc/app/modules/financial/financial_view.dart';
 import 'package:rodocalc/app/modules/freight/freight_view.dart';
 import 'package:rodocalc/app/modules/home/home_view.dart';
 import 'package:rodocalc/app/modules/initial/initial_view.dart';
@@ -39,6 +41,11 @@ class AppPages {
       name: Routes.vehicle,
       page: () => const VehiclesView(),
       binding: VehiclesBinding(),
+    ),
+    GetPage(
+      name: Routes.financial,
+      page: () => const FinancialView(),
+      binding: FinancialBinding(),
     ),
     GetPage(
       name: Routes.freight,
