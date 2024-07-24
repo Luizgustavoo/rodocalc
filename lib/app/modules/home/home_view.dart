@@ -191,7 +191,9 @@ class HomeView extends GetView<HomeController> {
                               CustomHomeCard(
                                 icon: Icons.insert_drive_file,
                                 label: 'Documentos',
-                                onTap: () {},
+                                onTap: () {
+                                  Get.toNamed(Routes.document);
+                                },
                               ),
                             ],
                           ),
