@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 final ThemeData appThemeData = ThemeData(
+  listTileTheme: const ListTileThemeData(dense: true),
   fontFamily: 'Inter-Regular',
   scaffoldBackgroundColor: const Color(0xFF2C2C2C),
   cardTheme: const CardTheme(

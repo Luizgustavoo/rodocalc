@@ -1,0 +1,176 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:rodocalc/app/data/controllers/document_controller.dart';
+
+class CreateDocumentModal extends GetView<DocumentController> {
+  const CreateDocumentModal({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: MediaQuery.of(context).viewInsets,
+      child: Form(
+          key: controller.formKeyDocument,
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(top: 10, bottom: 5),
+                  child: Text(
+                    'CADASTRO DE DOCUMENTO',
+                    style: TextStyle(
+                        fontFamily: 'Inter-Bold',
+                        fontSize: 17,
+                        color: Color(0xFFFF6B00)),
+                  ),
+                ),
+                const Divider(
+                  endIndent: 20,
+                  indent: 20,
+                  height: 5,
+                  thickness: 2,
+                  color: Colors.black,
+                ),
+                const SizedBox(height: 10),
+                GestureDetector(
+                  onTap: () => _showPicker(context),
+                  child: Obx(() => CircleAvatar(
+                        radius: 50,
+                        backgroundColor: Colors.grey,
+                        backgroundImage:
+                            controller.selectedImagePath.value != ''
+                                ? FileImage(
+                                    File(controller.selectedImagePath.value))
+                                : null,
+                        child: controller.selectedImagePath.value == ''
+                            ? const Icon(
+                                Icons.camera_alt,
+                                size: 50,
+                                color: Colors.white,
+                              )
+                            : null,
+                      )),
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: controller.descriptionController,
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(
+                      Icons.message_outlined,
+                      size: 25,
+                    ),
+                    labelText: 'DESCRIÇÃO',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira a placa';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 15),
+                DropdownButtonFormField<String>(
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.description),
+                    labelText: 'TIPO DE DOCUMENTO',
+                  ),
+                  items: controller.tiposDocumento.map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (newValue) {
+                    controller.setTipoDocumento(newValue!);
+                  },
+                  validator: (value) =>
+                      value == null ? 'Selecione um tipo de documento' : null,
+                ),
+                const SizedBox(height: 15),
+                DropdownButtonFormField<String>(
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.local_shipping),
+                    labelText: 'VEÍCULO',
+                  ),
+                  items: controller.veiculos.map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (newValue) {
+                    controller.setVeiculo(newValue!);
+                  },
+                  validator: (value) =>
+                      value == null ? 'Selecione um veículo' : null,
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    ElevatedButton(
+                      onPressed: () async {},
+                      child: const Text(
+                        'CADASTRAR',
+                        style: TextStyle(
+                            fontFamily: 'Inter-Bold', color: Colors.white),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    SizedBox(
+                      width: 120,
+                      child: TextButton(
+                          onPressed: () {
+                            Get.back();
+                          },
+                          child: const Text(
+                            'CANCELAR',
+                            style: TextStyle(
+                                fontFamily: 'Inter-Bold',
+                                color: Color(0xFFFF6B00)),
+                          )),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          )),
+    );
+  }
+
+  void _showPicker(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Wrap(
+            children: <Widget>[
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Galeria'),
+                onTap: () {
+                  controller.pickImage(ImageSource.gallery);
+                  Navigator.of(context).pop();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_camera),
+                title: const Text('Câmera'),
+                onTap: () {
+                  controller.pickImage(ImageSource.camera);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}

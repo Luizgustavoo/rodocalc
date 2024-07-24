@@ -6,4 +6,5 @@ abstract class Routes {
   static const vehicle = '/vehicle';
   static const financial = '/financial';
   static const freight = '/freight';
+  static const document = '/document';
 }
