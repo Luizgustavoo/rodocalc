@@ -45,6 +45,43 @@ class Services {
     return numbers[9] == digit1 && numbers[10] == digit2;
   }
 
+  static bool validCNPJ(String cnpj) {
+    if (cnpj == null || cnpj.isEmpty) {
+      return false;
+    }
+
+    // Remover caracteres não numéricos
+    cnpj = cnpj.replaceAll(RegExp(r'\D'), '');
+
+    // Verificar se o CNPJ tem 14 dígitos
+    if (cnpj.length != 14) {
+      return false;
+    }
+
+    // Verificar se todos os dígitos são iguais
+    if (RegExp(r'^(\d)\1*$').hasMatch(cnpj)) {
+      return false;
+    }
+
+    // Validar dígitos verificadores
+    List<int> numbers = cnpj.split('').map((d) => int.parse(d)).toList();
+    List<int> weight1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+    List<int> weight2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+
+    int sum1 = 0, sum2 = 0;
+
+    for (int i = 0; i < 12; i++) {
+      sum1 += numbers[i] * weight1[i];
+      sum2 += numbers[i] * weight2[i];
+    }
+
+    int digit1 = sum1 % 11 < 2 ? 0 : 11 - (sum1 % 11);
+    sum2 += digit1 * weight2[12];
+    int digit2 = sum2 % 11 < 2 ? 0 : 11 - (sum2 % 11);
+
+    return numbers[12] == digit1 && numbers[13] == digit2;
+  }
+
   static bool validEmail(String email) {
     if (email == null || email.isEmpty) {
       return false;

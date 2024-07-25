@@ -17,7 +17,7 @@ class VehicleApiClient {
 
       Uri vehicleUrl;
       String url =
-          '$baseUrl/v1/vehicle/my/${ServiceStorage.getUserId().toString()}';
+          '$baseUrl/v1/veiculo/my/${ServiceStorage.getUserId().toString()}';
       vehicleUrl = Uri.parse(url);
       var response = await httpClient.get(
         vehicleUrl,
@@ -28,17 +28,8 @@ class VehicleApiClient {
       );
       if (response.statusCode == 201) {
         return json.decode(response.body);
-      } else if (response.statusCode == 401 &&
-          json.decode(response.body)['message'] == "Token has expired") {
-        var resposta = {
-          'success': false,
-          'data': null,
-          'message': ['Token expirado']
-        };
-        var box = GetStorage('projeto');
-        box.erase();
-        Get.offAllNamed('/login');
-        return json.decode(resposta as String);
+      } else {
+        return null;
       }
     } catch (e) {
       Exception(e);
@@ -46,14 +37,17 @@ class VehicleApiClient {
     return null;
   }
 
-  insert(Vehicle vehicle, File imageFile) async {
+  insert(Vehicle vehicle) async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
-      var vehicleUrl = Uri.parse('$baseUrl/v1/vehicle/create');
+      var vehicleUrl = Uri.parse('$baseUrl/v1/veiculo');
 
       var request = http.MultipartRequest('POST', vehicleUrl);
 
+      if (vehicle.foto!.isNotEmpty) {
+        request.files.add(await http.MultipartFile.fromPath('foto', vehicle.foto!));
+      }
       request.fields.addAll({
         "pessoa_id": vehicle.pessoaId.toString(),
         "marca": vehicle.marca.toString(),
@@ -62,16 +56,9 @@ class VehicleApiClient {
         "placa": vehicle.placa.toString(),
         "fipe": vehicle.fipe.toString(),
         "reboque": vehicle.reboque.toString(),
-        "foto": vehicle.foto.toString(),
         "status": "1"
       });
 
-      if (imageFile.path.isNotEmpty) {
-        request.files.add(await http.MultipartFile.fromPath(
-          'foto',
-          imageFile.path,
-        ));
-      }
 
       request.headers.addAll({
         'Accept': 'application/json',
@@ -83,20 +70,29 @@ class VehicleApiClient {
       var responseStream = await response.stream.bytesToString();
       var httpResponse = http.Response(responseStream, response.statusCode);
 
-      return json.decode(httpResponse.body);
+      if(httpResponse.statusCode == 201){
+        return json.decode(httpResponse.body);
+      }else{
+        return null;
+      }
+
     } catch (err) {
       Exception(err);
     }
     return null;
   }
 
-  update(Vehicle vehicle, File imageFile) async {
+  update(Vehicle vehicle) async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
-      var vehicleUrl = Uri.parse('$baseUrl/v1/vehicle/update/${vehicle.id}');
+      var vehicleUrl = Uri.parse('$baseUrl/v1/veiculo/${vehicle.id}');
 
       var request = http.MultipartRequest('POST', vehicleUrl);
+
+      if (vehicle.foto!.isNotEmpty) {
+        request.files.add(await http.MultipartFile.fromPath('foto', vehicle.foto!));
+      }
 
       request.fields.addAll({
         "pessoa_id": vehicle.pessoaId.toString(),
@@ -110,13 +106,6 @@ class VehicleApiClient {
         "user_id": ServiceStorage.getUserId().toString(),
         "status": "1"
       });
-
-      if (imageFile.path.isNotEmpty) {
-        request.files.add(await http.MultipartFile.fromPath(
-          'foto',
-          imageFile.path,
-        ));
-      }
 
       request.headers.addAll({
         'Accept': 'application/json',
@@ -156,6 +145,29 @@ class VehicleApiClient {
       return json.decode(httpResponse.body);
     } catch (err) {
       Exception(err);
+    }
+    return null;
+  }
+
+  searchPlate(String plate) async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+
+      Uri vehicleUrl;
+      String url =
+          '$buscarPlacaUrl/${plate}';
+      vehicleUrl = Uri.parse(url);
+      var response = await httpClient.get(
+        vehicleUrl,
+        headers: {
+          "Accept": "application/json",
+        },
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      }
+    } catch (e) {
+      Exception(e);
     }
     return null;
   }

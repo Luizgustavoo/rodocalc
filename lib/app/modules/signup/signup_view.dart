@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/controllers/signup_controller.dart';
+import 'package:rodocalc/app/utils/formatter.dart';
+import 'package:rodocalc/app/utils/phone_mask.dart';
 import 'package:rodocalc/app/utils/services.dart';
 
 class SignUpView extends GetView<SignUpController> {
@@ -119,6 +121,10 @@ class SignUpView extends GetView<SignUpController> {
                               prefixIcon: Icon(Icons.phone),
                               labelText: 'TELEFONE',
                             ),
+                            keyboardType: TextInputType.phone,
+                            onChanged: (value){
+                              FormattedInputers.onContactChanged(value, controller.txtTelefoneController);
+                            },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return "Digite o telefone";
@@ -190,12 +196,15 @@ class SignUpView extends GetView<SignUpController> {
                               prefixIcon: Icon(Icons.credit_card),
                               labelText: 'CPF',
                             ),
+                            onChanged: (value){
+                              FormattedInputers.onCpfChanged(value, controller.txtCpfController);
+                            },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return "Digite seu cpf";
+                                return "Digite seu cpf ou cnpj";
                               }
-                              if (!Services.validCPF(value)) {
-                                return "Digite um cpf válido";
+                              if (!Services.validCPF(value) && !Services.validCNPJ(value)) {
+                                return "Digite um cpf ou cnpj válido";
                               }
                               return null;
                             },

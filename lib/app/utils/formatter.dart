@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 abstract class FormattedInputers {
   static String formatCpfCnpj(String value) {
     value = value.replaceAll(RegExp(r'\D'), '');
@@ -12,6 +14,14 @@ abstract class FormattedInputers {
     }
   }
 
+  static void onCpfChanged(String value, TextEditingController textEditingController) {
+    textEditingController.value = textEditingController.value.copyWith(
+      text: FormattedInputers.formatCpfCnpj(value),
+      selection: TextSelection.collapsed(
+          offset: FormattedInputers.formatCpfCnpj(value).length),
+    );
+  }
+
   static String formatContact(String value) {
     value = value.replaceAll(RegExp(r'\D'), '');
 
@@ -22,6 +32,14 @@ abstract class FormattedInputers {
       return value.replaceAllMapped(RegExp(r'(\d{2})(\d{5})(\d{4})'),
           (Match m) => "(${m[1]}) ${m[2]}-${m[3]}");
     }
+  }
+
+  static void onContactChanged(String value, TextEditingController textEditingController) {
+    textEditingController.value = textEditingController.value.copyWith(
+      text: formatContact(value),
+      selection: TextSelection.collapsed(
+          offset: formatContact(value).length),
+    );
   }
 
   static String formatDate(String value) {
@@ -60,5 +78,16 @@ abstract class FormattedInputers {
     }
 
     return buffer.toString();
+  }
+
+  static bool validatePlate(String value) {
+    if (value == null || value.isEmpty) {
+      return false;
+    }
+    final regex = RegExp(r'^[A-Z]{3}\d[A-Z\d]\d{2}$');
+    if (!regex.hasMatch(value.toUpperCase())) {
+      return false;
+    }
+    return true;
   }
 }

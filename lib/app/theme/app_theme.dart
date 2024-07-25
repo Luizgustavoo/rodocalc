@@ -4,7 +4,8 @@ final ThemeData appThemeData = ThemeData(
   listTileTheme: const ListTileThemeData(dense: true),
   fontFamily: 'Inter-Regular',
   scaffoldBackgroundColor: const Color(0xFF2C2C2C),
-  cardTheme: const CardTheme(
+  cardTheme: CardTheme(
+    color:  Colors.orange.shade50,
     surfaceTintColor: Colors.white,
     margin: EdgeInsets.zero,
   ),

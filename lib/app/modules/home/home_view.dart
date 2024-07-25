@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/home_controller.dart';
 import 'package:rodocalc/app/data/controllers/login_controller.dart';
+import 'package:rodocalc/app/data/controllers/vehicle_controller.dart';
 import 'package:rodocalc/app/modules/home/widgets/custom_chart.dart';
 import 'package:rodocalc/app/modules/home/widgets/custom_home_card.dart';
 import 'package:rodocalc/app/modules/home/widgets/custom_stack_card.dart';
 import 'package:rodocalc/app/routes/app_routes.dart';
 
 class HomeView extends GetView<HomeController> {
-  const HomeView({super.key});
+   HomeView({super.key});
+
+  final vehicleController = Get.put(VehiclesController());
 
   @override
   Widget build(BuildContext context) {
@@ -171,6 +174,8 @@ class HomeView extends GetView<HomeController> {
                                 icon: Icons.directions_car,
                                 label: 'Veículos',
                                 onTap: () {
+                                  vehicleController.isLoading.value = false;
+                                  vehicleController.getAll();
                                   Get.toNamed(Routes.vehicle);
                                 },
                               ),

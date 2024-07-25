@@ -58,14 +58,18 @@ class AuthApiClient {
 
       var request = http.MultipartRequest('POST', companyUrl);
 
+      if (people.foto!.isNotEmpty) {
+        request.files.add(await http.MultipartFile.fromPath('foto', people.foto!));
+      }
+
       request.fields.addAll({
         "nome": people.nome.toString(),
-        "foto": people.foto.toString(),
         "ddd": people.ddd.toString(),
         "telefone": people.telefone.toString(),
         "cpf": people.cpf.toString(),
         "apelido": people.apelido.toString(),
         "cidade": people.cidade.toString(),
+        "uf": people.uf.toString(),
         "status": people.status.toString(),
         "cupom_para_indicar": people.cupomParaIndicar.toString(),
         "email": user.email.toString(),

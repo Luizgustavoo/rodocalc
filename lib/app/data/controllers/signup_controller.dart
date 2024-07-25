@@ -6,6 +6,7 @@ import 'package:rodocalc/app/data/models/people_model.dart';
 import 'package:rodocalc/app/data/models/user_model.dart';
 import 'package:rodocalc/app/data/repositories/auth_repository.dart';
 import 'package:rodocalc/app/routes/app_routes.dart';
+import 'package:rodocalc/app/utils/formatter.dart';
 
 class SignUpController extends GetxController {
   var selectedImagePath = ''.obs;
@@ -22,12 +23,11 @@ class SignUpController extends GetxController {
   final TextEditingController txtSenhaController = TextEditingController();
   final TextEditingController txtConfirmaSenhaController =
       TextEditingController();
-
   final formSignupKey = GlobalKey<FormState>();
+
   RxBool loading = false.obs;
 
   final repository = Get.put(AuthRepository());
-
   Map<String, dynamic> retorno = {
     "success": false,
     "data": null,
@@ -107,7 +107,7 @@ class SignUpController extends GetxController {
     if (formSignupKey.currentState!.validate()) {
       People people = People(
         nome: txtNomeController.text,
-        foto: "",
+        foto: selectedImagePath.value,
         ddd: txtDDDController.text,
         telefone: txtTelefoneController.text,
         cpf: txtCpfController.text,
@@ -132,4 +132,5 @@ class SignUpController extends GetxController {
     }
     return retorno;
   }
+
 }

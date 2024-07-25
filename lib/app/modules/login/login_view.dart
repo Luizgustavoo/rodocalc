@@ -95,7 +95,8 @@ class LoginView extends GetView<LoginController> {
                             const SizedBox(height: 5),
                             Obx(
                               () => Visibility(
-                                visible: !controller.loading.value,
+                                //visible: !controller.loading.value,
+                                visible: true,
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 20.0),

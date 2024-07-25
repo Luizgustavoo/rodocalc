@@ -4,9 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/controllers/vehicle_controller.dart';
+import 'package:rodocalc/app/data/models/vehicle_model.dart';
+import 'package:rodocalc/app/utils/formatter.dart';
 
 class CreateVehicleModal extends GetView<VehiclesController> {
-  const CreateVehicleModal({super.key});
+  CreateVehicleModal({super.key, this.vehicle, required this.update});
+
+  final Vehicle? vehicle;
+  final bool update;
 
   @override
   Widget build(BuildContext context) {
@@ -14,6 +19,7 @@ class CreateVehicleModal extends GetView<VehiclesController> {
       padding: MediaQuery.of(context).viewInsets,
       child: Form(
           key: controller.formKeyVehicle,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             padding: const EdgeInsets.all(12.0),
@@ -21,10 +27,11 @@ class CreateVehicleModal extends GetView<VehiclesController> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Padding(
+                Padding(
                   padding: EdgeInsets.only(top: 10, bottom: 5),
                   child: Text(
-                    'CADASTRO DE VEÍCULO',
+                    vehicle == null ? 'CADASTRO DE VEÍCULO' :
+                        'ALTERAR VEÍCULO: ${vehicle!.marca!.toUpperCase()}',
                     style: TextStyle(
                         fontFamily: 'Inter-Bold',
                         fontSize: 17,
@@ -42,42 +49,70 @@ class CreateVehicleModal extends GetView<VehiclesController> {
                 GestureDetector(
                   onTap: () => _showPicker(context),
                   child: Obx(() => CircleAvatar(
-                        radius: 50,
-                        backgroundColor: Colors.grey,
-                        backgroundImage:
-                            controller.selectedImagePath.value != ''
-                                ? FileImage(
-                                    File(controller.selectedImagePath.value))
-                                : null,
-                        child: controller.selectedImagePath.value == ''
-                            ? const Icon(
-                                Icons.camera_alt,
-                                size: 50,
-                                color: Colors.white,
-                              )
-                            : null,
-                      )),
+                    radius: 50,
+                    backgroundColor: Colors.grey,
+                    backgroundImage:
+                    controller.selectedImagePath.value != ''
+                        ? FileImage(
+                        File(controller.selectedImagePath.value))
+                        : null,
+                    child: controller.selectedImagePath.value == ''
+                        ? const Icon(
+                      Icons.camera_alt,
+                      size: 50,
+                      color: Colors.white,
+                    )
+                        : null,
+                  )),
                 ),
                 const SizedBox(height: 10),
-                TextFormField(
-                  controller: controller.plateController,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(
+                Obx(() => TextFormField(
+                  controller: controller.txtPlateController,
+                  onChanged: (text) {
+                    controller.txtPlateController.value = TextEditingValue(
+                      text: text.toUpperCase(),
+                      selection: controller.txtPlateController.selection,
+                    );
+                  },
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(
                       Icons.abc_rounded,
                       size: 25,
                     ),
                     labelText: 'PLACA',
+                    suffixIcon: controller.isLoading.value
+                        ? Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: CircularProgressIndicator(),
+                    )
+                        : IconButton(
+                      onPressed: () {
+                        if (FormattedInputers.validatePlate(controller.txtPlateController.text)) {
+                          controller.isLoading.value = true;
+                          controller.searchPlates().then((_) {
+                            controller.isLoading.value = false;
+                          });
+                        } else {
+                          Get.snackbar('Atenção!', 'Por favor, insira uma placa válida',
+                              backgroundColor: Colors.orange,
+                              colorText: Colors.white,
+                              duration: const Duration(seconds: 2),
+                              snackPosition: SnackPosition.BOTTOM);
+                        }
+                      },
+                      icon: Icon(Icons.search),
+                    ),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, insira a placa';
+                    if (!FormattedInputers.validatePlate(value!)) {
+                      return 'Por favor, insira uma placa válida';
                     }
                     return null;
                   },
-                ),
+                )),
                 const SizedBox(height: 10),
                 TextFormField(
-                  controller: controller.brandController,
+                  controller: controller.txtBrandController,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
                       Icons.local_offer_outlined,
@@ -93,7 +128,7 @@ class CreateVehicleModal extends GetView<VehiclesController> {
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
-                  controller: controller.yearController,
+                  controller: controller.txtYearController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
@@ -110,7 +145,7 @@ class CreateVehicleModal extends GetView<VehiclesController> {
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
-                  controller: controller.modelController,
+                  controller: controller.txtModelController,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
                       Icons.directions_car_filled_outlined,
@@ -126,7 +161,7 @@ class CreateVehicleModal extends GetView<VehiclesController> {
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
-                  controller: controller.fipeController,
+                  controller: controller.txtFipeController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
@@ -145,14 +180,14 @@ class CreateVehicleModal extends GetView<VehiclesController> {
                 Row(
                   children: [
                     Obx(() => Switch(
-                          activeColor: Colors.orange.shade700,
-                          inactiveThumbColor: Colors.orange.shade500,
-                          inactiveTrackColor: Colors.orange.shade100,
-                          value: controller.trailerCheckboxValue.value,
-                          onChanged: (value) {
-                            controller.trailerCheckboxValue.value = value;
-                          },
-                        )),
+                      activeColor: Colors.orange.shade700,
+                      inactiveThumbColor: Colors.orange.shade500,
+                      inactiveTrackColor: Colors.orange.shade100,
+                      value: controller.trailerCheckboxValue.value,
+                      onChanged: (value) {
+                        controller.trailerCheckboxValue.value = value;
+                      },
+                    )),
                     const SizedBox(width: 10),
                     const Text(
                       'REBOQUE',
@@ -165,9 +200,37 @@ class CreateVehicleModal extends GetView<VehiclesController> {
                 Row(
                   children: [
                     ElevatedButton(
-                      onPressed: () async {},
-                      child: const Text(
-                        'CADASTRAR',
+                      onPressed: () async {
+
+                        if(controller.selectedImagePath.value.isEmpty){
+                          Get.snackbar('Atenção!', "Selecione uma imagem para o veículo!",
+                              backgroundColor: Colors.orange,
+                              colorText: Colors.white,
+                              duration: const Duration(seconds: 2),
+                              snackPosition: SnackPosition.BOTTOM);
+                        }else{
+                          Map<String, dynamic> retorno = update ?
+                          await controller.updateVehicle(vehicle!.id!) : await controller.insertVehicle();
+
+                          if (retorno['success'] == true) {
+                            Get.back();
+                            Get.snackbar('Sucesso!', retorno['message'].join('\n'),
+                                backgroundColor: Colors.green,
+                                colorText: Colors.white,
+                                duration: const Duration(seconds: 2),
+                                snackPosition: SnackPosition.BOTTOM);
+                          } else {
+                            Get.snackbar('Falha!', retorno['message'].join('\n'),
+                                backgroundColor: Colors.red,
+                                colorText: Colors.white,
+                                duration: const Duration(seconds: 2),
+                                snackPosition: SnackPosition.BOTTOM);
+                          }
+                        }
+
+                      },
+                      child: Text(
+                        vehicle == null ? 'CADASTRAR' : 'ALTERAR',
                         style: TextStyle(
                             fontFamily: 'Inter-Bold', color: Colors.white),
                       ),

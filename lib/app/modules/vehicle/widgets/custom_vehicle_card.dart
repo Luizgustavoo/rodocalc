@@ -1,10 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:rodocalc/app/data/base_url.dart';
 
 class CustomVehicleCard extends StatelessWidget {
   final String modelo;
   final String placa;
   final String ano;
   final String fipe;
+  final String foto;
 
   const CustomVehicleCard({
     super.key,
@@ -12,10 +15,12 @@ class CustomVehicleCard extends StatelessWidget {
     required this.placa,
     required this.ano,
     required this.fipe,
+    required this.foto,
   });
 
   @override
   Widget build(BuildContext context) {
+
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
@@ -25,16 +30,15 @@ class CustomVehicleCard extends StatelessWidget {
       child: ListTile(
         horizontalTitleGap: 10,
         dense: true,
-        contentPadding: const EdgeInsets.all(10),
+        contentPadding: const EdgeInsets.only(bottom: 5, top: 5, left: 10, right: 10),
         leading: Container(
-          width: 80,
-          height: 80,
+          width: 60,
+          height: 70,
           decoration: BoxDecoration(
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(10),
-            image: const DecorationImage(
-              image: NetworkImage(
-                  'https://www.scania.com/content/dam/www/market/master/products/trucks/20012-005.jpg.transform/Rend_1200X630/image.jpg'),
+            image:  DecorationImage(
+              image:  foto.isNotEmpty ? CachedNetworkImageProvider("${urlImagem}/storage/fotos/veiculos/${foto}") as ImageProvider : AssetImage('assets/images/logo.png'),
               fit: BoxFit.cover,
             ),
           ),
@@ -42,7 +46,7 @@ class CustomVehicleCard extends StatelessWidget {
         title: RichText(
           text: TextSpan(
             style: const TextStyle(
-              fontSize: 16,
+              fontSize: 12,
               color: Colors.black,
               fontFamily: 'Inter-Regular',
             ),
@@ -64,7 +68,7 @@ class CustomVehicleCard extends StatelessWidget {
             RichText(
               text: TextSpan(
                 style: const TextStyle(
-                  fontSize: 14,
+                  fontSize: 12,
                   color: Colors.black,
                   fontFamily: 'Inter-Regular',
                 ),
@@ -83,7 +87,7 @@ class CustomVehicleCard extends StatelessWidget {
             RichText(
               text: TextSpan(
                 style: const TextStyle(
-                  fontSize: 14,
+                  fontSize: 12,
                   color: Colors.black,
                   fontFamily: 'Inter-Regular',
                 ),
@@ -102,7 +106,7 @@ class CustomVehicleCard extends StatelessWidget {
             RichText(
               text: TextSpan(
                 style: const TextStyle(
-                  fontSize: 14,
+                  fontSize: 12,
                   color: Colors.black,
                   fontFamily: 'Inter-Regular',
                 ),
