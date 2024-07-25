@@ -58,4 +58,6 @@ class LoginController extends GetxController {
     repository.getLogout();
     loading.value = false;
   }
+
+
 }

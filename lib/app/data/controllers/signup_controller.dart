@@ -91,4 +91,13 @@ class SignUpController extends GetxController {
       Get.snackbar('Erro', 'Nenhuma imagem selecionada');
     }
   }
+
+  Future <void> insert() async{
+    print(formSignupKey.currentState!.validate());
+    if(formSignupKey.currentState!.validate()){
+
+    }else{
+      print("erros");
+    }
+  }
 }
