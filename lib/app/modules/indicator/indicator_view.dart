@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:rodocalc/app/data/controllers/document_controller.dart';
+import 'package:rodocalc/app/data/controllers/indicator_controller.dart';
 import 'package:rodocalc/app/global/custom_app_bar.dart';
-import 'package:rodocalc/app/modules/document/widgets/create_document_modal.dart';
-import 'package:rodocalc/app/modules/document/widgets/custom_document_card.dart';
+import 'package:rodocalc/app/modules/indicator/widgets/create_indicator_modal.dart';
+import 'package:rodocalc/app/modules/indicator/widgets/custom_indicator_card.dart';
 
-class DocumentView extends GetView<DocumentController> {
-  const DocumentView({super.key});
+class IndicatorView extends GetView<IndicatorController> {
+  const IndicatorView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'DOCUMENTOS'),
+      appBar: const CustomAppBar(title: 'INDICAÇÕES'),
       body: Stack(
         children: [
           SizedBox(
@@ -51,7 +51,7 @@ class DocumentView extends GetView<DocumentController> {
                               borderSide: BorderSide.none,
                             ),
                             suffixIcon: const Icon(Icons.search_rounded),
-                            labelText: 'PESQUISAR DOCUMENTO',
+                            labelText: 'PESQUISAR INDICAÇÃO',
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -60,11 +60,11 @@ class DocumentView extends GetView<DocumentController> {
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: 10,
                           itemBuilder: (context, index) {
-                            return const CustomDocumentCard(
-                                description: 'descricao',
-                                documentType: 'tipoDocumento',
-                                conductor: 'condutor',
-                                vehicle: 'veiculo');
+                            return const CustomIndicatorCard(
+                                name: 'Luiz Gustavo',
+                                phone: '(43)99999-9999',
+                                status: 'ATIVO',
+                                date: '20/09/2024');
                           },
                         ),
                       ],
@@ -84,7 +84,7 @@ class DocumentView extends GetView<DocumentController> {
             showModalBottomSheet(
               isScrollControlled: true,
               context: context,
-              builder: (context) => const CreateDocumentModal(),
+              builder: (context) => const CreateIndicatorModal(),
             );
           },
           child: const Icon(

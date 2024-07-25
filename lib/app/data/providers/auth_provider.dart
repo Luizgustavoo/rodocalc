@@ -19,7 +19,6 @@ class AuthApiClient {
         'email': email,
         'password': password
       });
-      print(json.decode(response.body));
       if (response.statusCode == 201) {
         return json.decode(response.body);
       } else if (response.statusCode == 401) {
@@ -36,15 +35,13 @@ class AuthApiClient {
   Future<Map<String, dynamic>?> getLogout() async {
     var loginUrl = Uri.parse('$baseUrl/v1/logout');
     try {
-      var response = await httpClient.post(
+      await httpClient.post(
         loginUrl,
         headers: {
           "Accept": "application/json",
           "Authorization": "Bearer ${ServiceStorage.getToken()}",
         },
       );
-      print(json.decode(response.body));
-
       ServiceStorage.clearBox();
       Get.offAllNamed('/login');
     } catch (e) {

@@ -7,4 +7,5 @@ abstract class Routes {
   static const financial = '/financial';
   static const freight = '/freight';
   static const document = '/document';
+  static const indicator = '/indicator';
 }

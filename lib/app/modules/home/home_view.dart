@@ -163,7 +163,7 @@ class HomeView extends GetView<HomeController> {
                           padding: const EdgeInsets.only(right: 15, left: 15),
                           child: GridView.count(
                             physics: const NeverScrollableScrollPhysics(),
-                            crossAxisCount: 2,
+                            crossAxisCount: 3,
                             mainAxisSpacing: 20,
                             crossAxisSpacing: 20,
                             children: [
@@ -193,6 +193,13 @@ class HomeView extends GetView<HomeController> {
                                 label: 'Documentos',
                                 onTap: () {
                                   Get.toNamed(Routes.document);
+                                },
+                              ),
+                              CustomHomeCard(
+                                icon: Icons.accessibility_new_rounded,
+                                label: 'Indicações',
+                                onTap: () {
+                                  Get.toNamed(Routes.indicator);
                                 },
                               ),
                             ],
