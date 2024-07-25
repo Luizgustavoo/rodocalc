@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-class CustomDocumentCard extends StatelessWidget {
-  final String description;
-  final String documentType;
-  final String conductor;
-  final String vehicle;
+class CustomIndicatorCard extends StatelessWidget {
+  final String name;
+  final String phone;
+  final String status;
+  final String date;
 
-  const CustomDocumentCard({
+  const CustomIndicatorCard({
     super.key,
-    required this.description,
-    required this.documentType,
-    required this.conductor,
-    required this.vehicle,
+    required this.name,
+    required this.phone,
+    required this.status,
+    required this.date,
   });
 
   @override
@@ -32,12 +32,12 @@ class CustomDocumentCard extends StatelessWidget {
             ),
             children: [
               const TextSpan(
-                text: 'DESCRIÇÃO: ',
+                text: 'NOME: ',
                 style: TextStyle(
                   fontFamily: 'Inter-Bold',
                 ),
               ),
-              TextSpan(text: description.toUpperCase()),
+              TextSpan(text: name.toUpperCase()),
             ],
           ),
         ),
@@ -54,12 +54,12 @@ class CustomDocumentCard extends StatelessWidget {
                 ),
                 children: [
                   const TextSpan(
-                    text: 'TIPO DE DOCUMENTO: ',
+                    text: 'TELEFONE: ',
                     style: TextStyle(
                       fontFamily: 'Inter-Bold',
                     ),
                   ),
-                  TextSpan(text: documentType.toUpperCase()),
+                  TextSpan(text: phone.toUpperCase()),
                 ],
               ),
             ),
@@ -73,12 +73,12 @@ class CustomDocumentCard extends StatelessWidget {
                 ),
                 children: [
                   const TextSpan(
-                    text: 'CONDUTOR: ',
+                    text: 'STATUS: ',
                     style: TextStyle(
                       fontFamily: 'Inter-Bold',
                     ),
                   ),
-                  TextSpan(text: conductor.toUpperCase()),
+                  TextSpan(text: status.toUpperCase()),
                 ],
               ),
             ),
@@ -92,12 +92,12 @@ class CustomDocumentCard extends StatelessWidget {
                 ),
                 children: [
                   const TextSpan(
-                    text: 'VEÍCULO: ',
+                    text: 'DATA: ',
                     style: TextStyle(
                       fontFamily: 'Inter-Bold',
                     ),
                   ),
-                  TextSpan(text: vehicle.toUpperCase()),
+                  TextSpan(text: date.toUpperCase()),
                 ],
               ),
             ),

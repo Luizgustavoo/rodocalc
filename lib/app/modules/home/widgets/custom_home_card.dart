@@ -17,12 +17,12 @@ class CustomHomeCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 50, color: Colors.black),
+            Icon(icon, size: 25, color: Colors.black),
             const SizedBox(height: 10),
             Text(label,
                 style: const TextStyle(
                     color: Colors.black,
-                    fontSize: 16,
+                    fontSize: 10,
                     fontFamily: 'Inter-Bold')),
           ],
         ),

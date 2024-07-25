@@ -220,12 +220,17 @@ class CreateExpenseModal extends GetView<FinancialController> {
                     flex: 3,
                     child: TextFormField(
                       controller: controller.phoneController,
+                      maxLength: 14,
                       decoration: const InputDecoration(
+                        counterText: '',
                         prefixIcon: Icon(
                           Icons.phone_rounded,
                         ),
                         labelText: 'TELEFONE',
                       ),
+                      onChanged: (value) {
+                        controller.onContactChanged(value);
+                      },
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Por favor, insira o telefone';

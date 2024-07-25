@@ -166,6 +166,14 @@ class FinancialController extends GetxController {
       Get.snackbar('Erro', 'Nenhuma imagem selecionada');
     }
   }
+
+  void onContactChanged(String value) {
+    phoneController.value = phoneController.value.copyWith(
+      text: FormattedInputers.formatContact(value),
+      selection: TextSelection.collapsed(
+          offset: FormattedInputers.formatContact(value).length),
+    );
+  }
 }
 
 class Transaction {

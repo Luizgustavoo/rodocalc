@@ -3,6 +3,7 @@ import 'package:rodocalc/app/data/bindings/document_binding.dart';
 import 'package:rodocalc/app/data/bindings/financial_binding.dart';
 import 'package:rodocalc/app/data/bindings/freight_binding.dart';
 import 'package:rodocalc/app/data/bindings/home_binding.dart';
+import 'package:rodocalc/app/data/bindings/indicator_binding.dart';
 import 'package:rodocalc/app/data/bindings/initial_binding.dart';
 import 'package:rodocalc/app/data/bindings/login_binding.dart';
 import 'package:rodocalc/app/data/bindings/signup_binding.dart';
@@ -11,6 +12,7 @@ import 'package:rodocalc/app/modules/document/document_view.dart';
 import 'package:rodocalc/app/modules/financial/financial_view.dart';
 import 'package:rodocalc/app/modules/freight/freight_view.dart';
 import 'package:rodocalc/app/modules/home/home_view.dart';
+import 'package:rodocalc/app/modules/indicator/indicator_view.dart';
 import 'package:rodocalc/app/modules/initial/initial_view.dart';
 import 'package:rodocalc/app/modules/login/login_view.dart';
 import 'package:rodocalc/app/modules/signup/signup_view.dart';
@@ -58,6 +60,11 @@ class AppPages {
       name: Routes.document,
       page: () => const DocumentView(),
       binding: DocumentBinding(),
+    ),
+    GetPage(
+      name: Routes.indicator,
+      page: () => const IndicatorView(),
+      binding: IndicatorBinding(),
     ),
   ];
 }
