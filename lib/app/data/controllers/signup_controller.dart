@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:rodocalc/app/data/models/people_model.dart';
+import 'package:rodocalc/app/data/models/user_model.dart';
 import 'package:rodocalc/app/data/repositories/auth_repository.dart';
+import 'package:rodocalc/app/routes/app_routes.dart';
 
 class SignUpController extends GetxController {
   var selectedImagePath = ''.obs;
@@ -10,6 +13,7 @@ class SignUpController extends GetxController {
 
   final TextEditingController txtNomeController = TextEditingController();
   final TextEditingController txtTelefoneController = TextEditingController();
+  final TextEditingController txtDDDController = TextEditingController();
   final TextEditingController txtCidadeController = TextEditingController();
   final TextEditingController txtUfController = TextEditingController();
   final TextEditingController txtCpfController = TextEditingController();
@@ -23,6 +27,13 @@ class SignUpController extends GetxController {
   RxBool loading = false.obs;
 
   final repository = Get.put(AuthRepository());
+
+  Map<String, dynamic> retorno = {
+    "success": false,
+    "data": null,
+    "message": ["Preencha todos os campos!"]
+  };
+  dynamic mensagem;
 
   List<String> get states => [
         'AC',
@@ -92,12 +103,33 @@ class SignUpController extends GetxController {
     }
   }
 
-  Future <void> insert() async{
-    print(formSignupKey.currentState!.validate());
-    if(formSignupKey.currentState!.validate()){
+  Future<Map<String, dynamic>> insertUser() async {
+    if (formSignupKey.currentState!.validate()) {
+      People people = People(
+        nome: txtNomeController.text,
+        foto: "",
+        ddd: txtDDDController.text,
+        telefone: txtTelefoneController.text,
+        cpf: txtCpfController.text,
+        apelido: txtApelidoController.text,
+        cidade: txtCidadeController.text,
+        uf: selectedState.value,
+        status: 1,
+        cupomParaIndicar: "",
+      );
 
-    }else{
-      print("erros");
+      User user = User(
+        email: txtEmailController.text,
+        password: txtSenhaController.text,
+        status: 1,
+      );
+
+      mensagem = await repository.insertUser(people, user);
+      retorno = {
+        'success': mensagem['success'],
+        'message': mensagem['message']
+      };
     }
+    return retorno;
   }
 }

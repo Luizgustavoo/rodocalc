@@ -53,30 +53,39 @@ class AuthApiClient {
     return null;
   }
 
-  insertCompany(People people, User user) async {
+  insertUser(People people, User user) async {
     try {
-      final token = "Bearer ${ServiceStorage.getToken()}";
+      //final token = "Bearer ${ServiceStorage.getToken()}";
 
-      var companyUrl = Uri.parse('$baseUrl/v1/company');
+      var companyUrl = Uri.parse('$baseUrl/register');
 
       var request = http.MultipartRequest('POST', companyUrl);
 
       request.fields.addAll({
-
-        "user_id": ServiceStorage.getUserId().toString(),
-        "status": "1"
+        "nome": people.nome.toString(),
+        "foto": people.foto.toString(),
+        "ddd": people.ddd.toString(),
+        "telefone": people.telefone.toString(),
+        "cpf": people.cpf.toString(),
+        "apelido": people.apelido.toString(),
+        "cidade": people.cidade.toString(),
+        "status": people.status.toString(),
+        "cupom_para_indicar": people.cupomParaIndicar.toString(),
+        "email": user.email.toString(),
+        "password": user.password.toString(),
+        "usertype_id": "2"
       });
 
       request.headers.addAll({
         'Accept': 'application/json',
-        'Authorization': token,
       });
 
       var response = await request.send();
 
       var responseStream = await response.stream.bytesToString();
       var httpResponse = http.Response(responseStream, response.statusCode);
-      // print(json.decode(httpResponse.body));
+
+      print(json.decode(httpResponse.body));
 
       return json.decode(httpResponse.body);
     } catch (err) {

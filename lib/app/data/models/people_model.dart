@@ -7,6 +7,7 @@ class People {
   String? cpf;
   String? apelido;
   String? cidade;
+  String? uf;
   int? status;
   String? createdAt;
   String? updatedAt;
@@ -21,6 +22,7 @@ class People {
     this.cpf,
     this.apelido,
     this.cidade,
+    this.uf,
     this.status,
     this.createdAt,
     this.updatedAt,
@@ -36,6 +38,7 @@ class People {
     cpf = json['cpf'];
     apelido = json['apelido'];
     cidade = json['cidade'];
+    uf = json['uf'];
     status = json['status'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
@@ -52,6 +55,7 @@ class People {
     data['cpf'] = cpf;
     data['apelido'] = apelido;
     data['cidade'] = cidade;
+    data['uf'] = uf;
     data['status'] = status;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;

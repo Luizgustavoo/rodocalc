@@ -112,7 +112,7 @@ class SignUpView extends GetView<SignUpController> {
                               if (nameParts.length < 2) {
                                 return "Digite o nome completo (nome e sobrenome)";
                               }
-                              return null;  // Return null if the input is valid
+                              return null; // Return null if the input is valid
                             },
                           ),
                           const SizedBox(height: 10),
@@ -122,10 +122,11 @@ class SignUpView extends GetView<SignUpController> {
                               prefixIcon: Icon(Icons.phone),
                               labelText: 'TELEFONE',
                             ),
-                            validator: (value){
-                              if(value == null || value.isEmpty){
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
                                 return "Digite o telefone";
                               }
+                              return null;
                             },
                           ),
                           const SizedBox(height: 10),
@@ -148,7 +149,9 @@ class SignUpView extends GetView<SignUpController> {
                               const SizedBox(height: 10),
                               Obx(() {
                                 return DropdownButtonFormField<String>(
-                                  value: controller.selectedState.value == '' ? null : controller.selectedState.value,
+                                  value: controller.selectedState.value == ''
+                                      ? null
+                                      : controller.selectedState.value,
                                   decoration: const InputDecoration(
                                     prefixIcon: Icon(Icons.map),
                                     labelText: 'UF',
@@ -158,7 +161,9 @@ class SignUpView extends GetView<SignUpController> {
                                       value: null,
                                       child: Text(
                                         'SELECIONE',
-                                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey),
                                       ),
                                     ),
                                     ...controller.states.map((String state) {
@@ -166,7 +171,7 @@ class SignUpView extends GetView<SignUpController> {
                                         value: state,
                                         child: Text(state),
                                       );
-                                    }).toList(),
+                                    }),
                                   ],
                                   onChanged: (newValue) {
                                     controller.selectedState.value = newValue!;
@@ -188,13 +193,14 @@ class SignUpView extends GetView<SignUpController> {
                               prefixIcon: Icon(Icons.credit_card),
                               labelText: 'CPF',
                             ),
-                            validator: (value){
-                              if(value == null || value.isEmpty){
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
                                 return "Digite seu cpf";
                               }
-                              if(!Services.validCPF(value)){
+                              if (!Services.validCPF(value)) {
                                 return "Digite um cpf válido";
                               }
+                              return null;
                             },
                           ),
                           const SizedBox(height: 10),
@@ -233,8 +239,26 @@ class SignUpView extends GetView<SignUpController> {
                           ),
                           const SizedBox(height: 20),
                           ElevatedButton(
-                            onPressed: () {
-                              controller.insert();
+                            onPressed: () async {
+                              Map<String, dynamic> retorno =
+                                  await controller.insertUser();
+
+                              if (retorno['success'] == true) {
+                                Get.back();
+                                Get.snackbar(
+                                    'Sucesso!', retorno['message'].join('\n'),
+                                    backgroundColor: Colors.green,
+                                    colorText: Colors.white,
+                                    duration: const Duration(seconds: 2),
+                                    snackPosition: SnackPosition.BOTTOM);
+                              } else {
+                                Get.snackbar(
+                                    'Falha!', retorno['message'].join('\n'),
+                                    backgroundColor: Colors.red,
+                                    colorText: Colors.white,
+                                    duration: const Duration(seconds: 2),
+                                    snackPosition: SnackPosition.BOTTOM);
+                              }
                             },
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(
