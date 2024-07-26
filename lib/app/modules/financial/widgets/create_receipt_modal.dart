@@ -41,21 +41,23 @@ class CreateReceiptModal extends GetView<FinancialController> {
                 const SizedBox(height: 10),
                 GestureDetector(
                   onTap: () => _showPicker(context),
-                  child: Obx(() => CircleAvatar(
-                        radius: 50,
-                        backgroundColor: Colors.grey,
-                        backgroundImage:
-                            controller.selectedImagePath.value != ''
-                                ? FileImage(
-                                    File(controller.selectedImagePath.value))
-                                : null,
-                        child: controller.selectedImagePath.value == ''
-                            ? const Icon(
-                                Icons.camera_alt,
-                                size: 50,
-                                color: Colors.white,
-                              )
-                            : null,
+                  child: Obx(() => ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Container(
+                          width: 100,
+                          height: 100,
+                          color: Colors.grey,
+                          child: controller.selectedImagePath.value != ''
+                              ? Image.file(
+                                  File(controller.selectedImagePath.value),
+                                  fit: BoxFit.cover,
+                                )
+                              : const Icon(
+                                  Icons.camera_alt,
+                                  size: 50,
+                                  color: Colors.white,
+                                ),
+                        ),
                       )),
                 ),
                 const SizedBox(height: 10),

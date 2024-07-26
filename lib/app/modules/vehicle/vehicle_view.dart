@@ -42,7 +42,7 @@ class VehiclesView extends GetView<VehiclesController> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     elevation: 5,
-                    margin: const EdgeInsets.all(16.0),
+                    margin: const EdgeInsets.all(12.0),
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
@@ -68,27 +68,29 @@ class VehiclesView extends GetView<VehiclesController> {
                                   CircularProgressIndicator(),
                                 ],
                               );
-                            } else if (!controller.isLoading.value && controller.listVehicles.isNotEmpty) {
+                            } else if (!controller.isLoading.value &&
+                                controller.listVehicles.isNotEmpty) {
                               return ListView.builder(
                                 shrinkWrap: true,
                                 physics: const AlwaysScrollableScrollPhysics(),
                                 itemCount: controller.listVehicles.length,
                                 itemBuilder: (context, index) {
-                                  final Vehicle vehicle = controller.listVehicles[index];
+                                  final Vehicle vehicle =
+                                      controller.listVehicles[index];
                                   return InkWell(
-                                    onTap: (){
+                                    onTap: () {
                                       controller.selectedVehicle = vehicle;
                                       controller.fillInFields();
                                       controller.isLoading.value = false;
                                       showModalBottomSheet(
                                         isScrollControlled: true,
                                         context: context,
-                                        builder: (context) => CreateVehicleModal(
+                                        builder: (context) =>
+                                            CreateVehicleModal(
                                           vehicle: vehicle,
                                           update: true,
                                         ),
                                       );
-
                                     },
                                     child: CustomVehicleCard(
                                       foto: vehicle.foto!,
@@ -122,12 +124,14 @@ class VehiclesView extends GetView<VehiclesController> {
           backgroundColor: const Color(0xFFFF6B00),
           onPressed: () {
             controller.isLoading.value = false;
-            controller.selectedImagePath.value = "";
+            // controller.selectedImagePath.value = "";
             controller.clearAllFields();
             showModalBottomSheet(
               isScrollControlled: true,
               context: context,
-              builder: (context) => CreateVehicleModal(update: false,),
+              builder: (context) => const CreateVehicleModal(
+                update: false,
+              ),
             );
           },
           child: const Icon(

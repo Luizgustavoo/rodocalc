@@ -20,7 +20,6 @@ class CustomVehicleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
@@ -30,15 +29,20 @@ class CustomVehicleCard extends StatelessWidget {
       child: ListTile(
         horizontalTitleGap: 10,
         dense: true,
-        contentPadding: const EdgeInsets.only(bottom: 5, top: 5, left: 10, right: 10),
+        contentPadding:
+            const EdgeInsets.only(bottom: 5, top: 5, left: 10, right: 10),
         leading: Container(
           width: 60,
           height: 70,
           decoration: BoxDecoration(
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(10),
-            image:  DecorationImage(
-              image:  foto.isNotEmpty ? CachedNetworkImageProvider("${urlImagem}/storage/fotos/veiculos/${foto}") as ImageProvider : AssetImage('assets/images/logo.png'),
+            image: DecorationImage(
+              image: foto.isNotEmpty
+                  ? CachedNetworkImageProvider(
+                          "$urlImagem/storage/fotos/veiculos/$foto")
+                      as ImageProvider
+                  : const AssetImage('assets/images/logo.png'),
               fit: BoxFit.cover,
             ),
           ),

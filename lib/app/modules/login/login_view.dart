@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/login_controller.dart';
+import 'package:rodocalc/app/routes/app_routes.dart';
 
 class LoginView extends GetView<LoginController> {
   const LoginView({super.key});
@@ -58,10 +59,29 @@ class LoginView extends GetView<LoginController> {
                                 prefixIcon: Icon(Icons.email_outlined),
                                 labelText: 'E-MAIL',
                               ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Por favor, insira seu email';
+                                }
+                                if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
+                                    .hasMatch(value)) {
+                                  return 'Por favor, insira um email válido';
+                                }
+                                return null;
+                              },
                             ),
                             const SizedBox(height: 10),
                             Obx(() {
                               return TextFormField(
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Por favor, insira sua senha';
+                                  }
+                                  if (value.length < 6) {
+                                    return 'A senha deve ter pelo menos 6 caracteres';
+                                  }
+                                  return null;
+                                },
                                 controller: controller.passwordController,
                                 obscureText: controller.isPasswordHidden.value,
                                 decoration: InputDecoration(
@@ -100,11 +120,12 @@ class LoginView extends GetView<LoginController> {
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 20.0),
-                                  height: 70,
+                                  height: 50,
                                   width: double.infinity,
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      controller.login();
+                                      // controller.login();
+                                      Get.offAllNamed(Routes.home);
                                     },
                                     style: ElevatedButton.styleFrom(
                                       padding: const EdgeInsets.symmetric(

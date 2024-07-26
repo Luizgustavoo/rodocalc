@@ -8,7 +8,7 @@ import 'package:rodocalc/app/data/models/vehicle_model.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 
 class CreateVehicleModal extends GetView<VehiclesController> {
-  CreateVehicleModal({super.key, this.vehicle, required this.update});
+  const CreateVehicleModal({super.key, this.vehicle, required this.update});
 
   final Vehicle? vehicle;
   final bool update;
@@ -28,11 +28,12 @@ class CreateVehicleModal extends GetView<VehiclesController> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
-                  padding: EdgeInsets.only(top: 10, bottom: 5),
+                  padding: const EdgeInsets.only(top: 10, bottom: 5),
                   child: Text(
-                    vehicle == null ? 'CADASTRO DE VEÍCULO' :
-                        'ALTERAR VEÍCULO: ${vehicle!.marca!.toUpperCase()}',
-                    style: TextStyle(
+                    vehicle == null
+                        ? 'CADASTRO DE VEÍCULO'
+                        : 'ALTERAR VEÍCULO: ${vehicle!.marca!.toUpperCase()}',
+                    style: const TextStyle(
                         fontFamily: 'Inter-Bold',
                         fontSize: 17,
                         color: Color(0xFFFF6B00)),
@@ -48,68 +49,73 @@ class CreateVehicleModal extends GetView<VehiclesController> {
                 const SizedBox(height: 10),
                 GestureDetector(
                   onTap: () => _showPicker(context),
-                  child: Obx(() => CircleAvatar(
-                    radius: 50,
-                    backgroundColor: Colors.grey,
-                    backgroundImage:
-                    controller.selectedImagePath.value != ''
-                        ? FileImage(
-                        File(controller.selectedImagePath.value))
-                        : null,
-                    child: controller.selectedImagePath.value == ''
-                        ? const Icon(
-                      Icons.camera_alt,
-                      size: 50,
-                      color: Colors.white,
-                    )
-                        : null,
-                  )),
+                  child: Obx(() => ClipRRect(
+                        borderRadius: BorderRadius.circular(
+                            10), // Ajuste o valor para bordas mais ou menos arredondadas
+                        child: Container(
+                          width: 100, // Ajuste a largura conforme necessário
+                          height: 100, // Ajuste a altura conforme necessário
+                          color: Colors.grey,
+                          child: controller.selectedImagePath.value != ''
+                              ? Image.file(
+                                  File(controller.selectedImagePath.value),
+                                  fit: BoxFit.cover,
+                                )
+                              : const Icon(
+                                  Icons.camera_alt,
+                                  size: 50,
+                                  color: Colors.white,
+                                ),
+                        ),
+                      )),
                 ),
                 const SizedBox(height: 10),
                 Obx(() => TextFormField(
-                  controller: controller.txtPlateController,
-                  onChanged: (text) {
-                    controller.txtPlateController.value = TextEditingValue(
-                      text: text.toUpperCase(),
-                      selection: controller.txtPlateController.selection,
-                    );
-                  },
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(
-                      Icons.abc_rounded,
-                      size: 25,
-                    ),
-                    labelText: 'PLACA',
-                    suffixIcon: controller.isLoading.value
-                        ? Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: CircularProgressIndicator(),
-                    )
-                        : IconButton(
-                      onPressed: () {
-                        if (FormattedInputers.validatePlate(controller.txtPlateController.text)) {
-                          controller.isLoading.value = true;
-                          controller.searchPlates().then((_) {
-                            controller.isLoading.value = false;
-                          });
-                        } else {
-                          Get.snackbar('Atenção!', 'Por favor, insira uma placa válida',
-                              backgroundColor: Colors.orange,
-                              colorText: Colors.white,
-                              duration: const Duration(seconds: 2),
-                              snackPosition: SnackPosition.BOTTOM);
-                        }
+                      controller: controller.txtPlateController,
+                      onChanged: (text) {
+                        controller.txtPlateController.value = TextEditingValue(
+                          text: text.toUpperCase(),
+                          selection: controller.txtPlateController.selection,
+                        );
                       },
-                      icon: Icon(Icons.search),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (!FormattedInputers.validatePlate(value!)) {
-                      return 'Por favor, insira uma placa válida';
-                    }
-                    return null;
-                  },
-                )),
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(
+                          Icons.abc_rounded,
+                          size: 25,
+                        ),
+                        labelText: 'PLACA',
+                        suffixIcon: controller.isLoading.value
+                            ? const Padding(
+                                padding: EdgeInsets.all(10.0),
+                                child: CircularProgressIndicator(),
+                              )
+                            : IconButton(
+                                onPressed: () {
+                                  if (FormattedInputers.validatePlate(
+                                      controller.txtPlateController.text)) {
+                                    controller.isLoading.value = true;
+                                    controller.searchPlates().then((_) {
+                                      controller.isLoading.value = false;
+                                    });
+                                  } else {
+                                    Get.snackbar('Atenção!',
+                                        'Por favor, insira uma placa válida',
+                                        backgroundColor: Colors.orange,
+                                        colorText: Colors.white,
+                                        duration: const Duration(seconds: 2),
+                                        snackPosition: SnackPosition.BOTTOM);
+                                  }
+                                },
+                                icon: const Icon(Icons.search),
+                              ),
+                      ),
+                      validator: (value) {
+                        if (!FormattedInputers.validatePlate(value!)) {
+                          return 'Por favor, insira uma placa válida';
+                        }
+                        return null;
+                      },
+                    )),
                 const SizedBox(height: 10),
                 TextFormField(
                   controller: controller.txtBrandController,
@@ -180,14 +186,14 @@ class CreateVehicleModal extends GetView<VehiclesController> {
                 Row(
                   children: [
                     Obx(() => Switch(
-                      activeColor: Colors.orange.shade700,
-                      inactiveThumbColor: Colors.orange.shade500,
-                      inactiveTrackColor: Colors.orange.shade100,
-                      value: controller.trailerCheckboxValue.value,
-                      onChanged: (value) {
-                        controller.trailerCheckboxValue.value = value;
-                      },
-                    )),
+                          activeColor: Colors.orange.shade700,
+                          inactiveThumbColor: Colors.orange.shade500,
+                          inactiveTrackColor: Colors.orange.shade100,
+                          value: controller.trailerCheckboxValue.value,
+                          onChanged: (value) {
+                            controller.trailerCheckboxValue.value = value;
+                          },
+                        )),
                     const SizedBox(width: 10),
                     const Text(
                       'REBOQUE',
@@ -201,37 +207,39 @@ class CreateVehicleModal extends GetView<VehiclesController> {
                   children: [
                     ElevatedButton(
                       onPressed: () async {
-
-                        if(controller.selectedImagePath.value.isEmpty){
-                          Get.snackbar('Atenção!', "Selecione uma imagem para o veículo!",
+                        if (controller.selectedImagePath.value.isEmpty) {
+                          Get.snackbar('Atenção!',
+                              "Selecione uma imagem para o veículo!",
                               backgroundColor: Colors.orange,
                               colorText: Colors.white,
                               duration: const Duration(seconds: 2),
                               snackPosition: SnackPosition.BOTTOM);
-                        }else{
-                          Map<String, dynamic> retorno = update ?
-                          await controller.updateVehicle(vehicle!.id!) : await controller.insertVehicle();
+                        } else {
+                          Map<String, dynamic> retorno = update
+                              ? await controller.updateVehicle(vehicle!.id!)
+                              : await controller.insertVehicle();
 
                           if (retorno['success'] == true) {
                             Get.back();
-                            Get.snackbar('Sucesso!', retorno['message'].join('\n'),
+                            Get.snackbar(
+                                'Sucesso!', retorno['message'].join('\n'),
                                 backgroundColor: Colors.green,
                                 colorText: Colors.white,
                                 duration: const Duration(seconds: 2),
                                 snackPosition: SnackPosition.BOTTOM);
                           } else {
-                            Get.snackbar('Falha!', retorno['message'].join('\n'),
+                            Get.snackbar(
+                                'Falha!', retorno['message'].join('\n'),
                                 backgroundColor: Colors.red,
                                 colorText: Colors.white,
                                 duration: const Duration(seconds: 2),
                                 snackPosition: SnackPosition.BOTTOM);
                           }
                         }
-
                       },
                       child: Text(
                         vehicle == null ? 'CADASTRAR' : 'ALTERAR',
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontFamily: 'Inter-Bold', color: Colors.white),
                       ),
                     ),

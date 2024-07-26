@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -11,6 +9,7 @@ import 'package:rodocalc/app/utils/service_storage.dart';
 
 class VehiclesController extends GetxController {
   var selectedImagePath = ''.obs;
+
   RxBool trailerCheckboxValue = false.obs;
 
   late Vehicle selectedVehicle;
@@ -89,46 +88,41 @@ class VehiclesController extends GetxController {
     isLoading.value = true;
     try {
       searchPlate = await repository.searchPlate(txtPlateController.text);
-      if(searchPlate != null){
-        txtBrandController.text = searchPlate.marca.toString();
-        txtYearController.text = searchPlate.anoModelo.toString();
-        txtModelController.text = searchPlate.modelo.toString();
-        txtFipeController.text = searchPlate.codigoFipe.toString();
-      }
+      txtBrandController.text = searchPlate.marca.toString();
+      txtYearController.text = searchPlate.anoModelo.toString();
+      txtModelController.text = searchPlate.modelo.toString();
+      txtFipeController.text = searchPlate.codigoFipe.toString();
     } catch (e) {
       Exception(e);
     }
     isLoading.value = false;
   }
 
-
   Future<Map<String, dynamic>> insertVehicle() async {
     if (formKeyVehicle.currentState!.validate()) {
-      mensagem = await repository.insert(
-          Vehicle(
-            pessoaId: ServiceStorage.getUserId(),
-            marca: txtBrandController.text,
-            ano: txtYearController.text,
-            modelo: txtModelController.text,
-            placa: txtPlateController.text,
-            fipe: txtFipeController.text,
-            reboque: trailerCheckboxValue.value ? 'sim' : 'nao',
-            foto: selectedImagePath.value,
-            status: 1,
-          ));
-      if(mensagem != null){
+      mensagem = await repository.insert(Vehicle(
+        pessoaId: ServiceStorage.getUserId(),
+        marca: txtBrandController.text,
+        ano: txtYearController.text,
+        modelo: txtModelController.text,
+        placa: txtPlateController.text,
+        fipe: txtFipeController.text,
+        reboque: trailerCheckboxValue.value ? 'sim' : 'nao',
+        foto: selectedImagePath.value,
+        status: 1,
+      ));
+      if (mensagem != null) {
         retorno = {
           'success': mensagem['success'],
           'message': mensagem['message']
         };
         getAll();
-      }else{
+      } else {
         retorno = {
           'success': false,
           'message': ['Falha ao realizar a operação!']
         };
       }
-
     }
     return retorno;
   }
@@ -159,26 +153,25 @@ class VehiclesController extends GetxController {
 
   Future<Map<String, dynamic>> updateVehicle(int id) async {
     if (formKeyVehicle.currentState!.validate()) {
-      mensagem = await repository.update(
-          Vehicle(
-            id: id,
-            pessoaId: ServiceStorage.getUserId(),
-            marca: txtBrandController.text,
-            ano: txtYearController.text,
-            modelo: txtModelController.text,
-            placa: txtPlateController.text,
-            fipe: txtFipeController.text,
-            reboque: trailerCheckboxValue.value ? 'sim' : 'nao',
-            foto: selectedImagePath.value,
-            status: 1,
-          ));
-      if(mensagem != null){
+      mensagem = await repository.update(Vehicle(
+        id: id,
+        pessoaId: ServiceStorage.getUserId(),
+        marca: txtBrandController.text,
+        ano: txtYearController.text,
+        modelo: txtModelController.text,
+        placa: txtPlateController.text,
+        fipe: txtFipeController.text,
+        reboque: trailerCheckboxValue.value ? 'sim' : 'nao',
+        foto: selectedImagePath.value,
+        status: 1,
+      ));
+      if (mensagem != null) {
         retorno = {
           'success': mensagem['success'],
           'message': mensagem['message']
         };
         getAll();
-      }else{
+      } else {
         retorno = {
           'success': false,
           'message': ['Falha ao realizar a operação!']

@@ -83,7 +83,7 @@ class FreightView extends GetView<FreightController> {
               borderRadius: BorderRadius.circular(10),
             ),
             elevation: 5,
-            margin: const EdgeInsets.all(16.0),
+            margin: const EdgeInsets.all(12.0),
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(mainAxisSize: MainAxisSize.min, children: [

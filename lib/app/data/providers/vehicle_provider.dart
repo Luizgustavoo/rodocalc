@@ -1,8 +1,5 @@
 import 'dart:convert';
-import 'dart:io';
 
-import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/models/vehicle_model.dart';
@@ -46,7 +43,8 @@ class VehicleApiClient {
       var request = http.MultipartRequest('POST', vehicleUrl);
 
       if (vehicle.foto!.isNotEmpty) {
-        request.files.add(await http.MultipartFile.fromPath('foto', vehicle.foto!));
+        request.files
+            .add(await http.MultipartFile.fromPath('foto', vehicle.foto!));
       }
       request.fields.addAll({
         "pessoa_id": vehicle.pessoaId.toString(),
@@ -59,7 +57,6 @@ class VehicleApiClient {
         "status": "1"
       });
 
-
       request.headers.addAll({
         'Accept': 'application/json',
         'Authorization': token,
@@ -70,12 +67,11 @@ class VehicleApiClient {
       var responseStream = await response.stream.bytesToString();
       var httpResponse = http.Response(responseStream, response.statusCode);
 
-      if(httpResponse.statusCode == 201){
+      if (httpResponse.statusCode == 201) {
         return json.decode(httpResponse.body);
-      }else{
+      } else {
         return null;
       }
-
     } catch (err) {
       Exception(err);
     }
@@ -91,7 +87,8 @@ class VehicleApiClient {
       var request = http.MultipartRequest('POST', vehicleUrl);
 
       if (vehicle.foto!.isNotEmpty) {
-        request.files.add(await http.MultipartFile.fromPath('foto', vehicle.foto!));
+        request.files
+            .add(await http.MultipartFile.fromPath('foto', vehicle.foto!));
       }
 
       request.fields.addAll({
@@ -154,8 +151,7 @@ class VehicleApiClient {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
       Uri vehicleUrl;
-      String url =
-          '$buscarPlacaUrl/${plate}';
+      String url = '$buscarPlacaUrl/$plate';
       vehicleUrl = Uri.parse(url);
       var response = await httpClient.get(
         vehicleUrl,

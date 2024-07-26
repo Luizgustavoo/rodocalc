@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/controllers/signup_controller.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
-import 'package:rodocalc/app/utils/phone_mask.dart';
 import 'package:rodocalc/app/utils/services.dart';
 
 class SignUpView extends GetView<SignUpController> {
@@ -20,7 +19,7 @@ class SignUpView extends GetView<SignUpController> {
           children: [
             Image.asset(
               'assets/images/logo.png',
-              height: 30,
+              height: 40,
             ),
             const Expanded(
               child: Center(
@@ -58,7 +57,7 @@ class SignUpView extends GetView<SignUpController> {
             ),
           ),
           SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(12.0),
             child: Form(
               key: controller.formSignupKey,
               autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -77,23 +76,25 @@ class SignUpView extends GetView<SignUpController> {
                         children: [
                           GestureDetector(
                             onTap: () => _showPicker(context),
-                            child: Obx(() => CircleAvatar(
-                                  radius: 50,
-                                  backgroundColor: Colors.grey,
-                                  backgroundImage: controller
-                                              .selectedImagePath.value !=
-                                          ''
-                                      ? FileImage(File(
-                                          controller.selectedImagePath.value))
-                                      : null,
-                                  child:
-                                      controller.selectedImagePath.value == ''
-                                          ? const Icon(
-                                              Icons.camera_alt,
-                                              size: 50,
-                                              color: Colors.white,
-                                            )
-                                          : null,
+                            child: Obx(() => ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Container(
+                                    width: 100,
+                                    height: 100,
+                                    color: Colors.grey,
+                                    child:
+                                        controller.selectedImagePath.value != ''
+                                            ? Image.file(
+                                                File(controller
+                                                    .selectedImagePath.value),
+                                                fit: BoxFit.cover,
+                                              )
+                                            : const Icon(
+                                                Icons.camera_alt,
+                                                size: 50,
+                                                color: Colors.white,
+                                              ),
+                                  ),
                                 )),
                           ),
                           const SizedBox(height: 20),
@@ -111,19 +112,21 @@ class SignUpView extends GetView<SignUpController> {
                               if (nameParts.length < 2) {
                                 return "Digite o nome completo (nome e sobrenome)";
                               }
-                              return null; // Return null if the input is valid
+                              return null;
                             },
                           ),
                           const SizedBox(height: 10),
                           TextFormField(
                             controller: controller.txtTelefoneController,
+                            maxLength: 14,
                             decoration: const InputDecoration(
-                              prefixIcon: Icon(Icons.phone),
-                              labelText: 'TELEFONE',
-                            ),
+                                prefixIcon: Icon(Icons.phone),
+                                labelText: 'TELEFONE',
+                                counterText: ''),
                             keyboardType: TextInputType.phone,
-                            onChanged: (value){
-                              FormattedInputers.onContactChanged(value, controller.txtTelefoneController);
+                            onChanged: (value) {
+                              FormattedInputers.onContactChanged(
+                                  value, controller.txtTelefoneController);
                             },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -196,14 +199,16 @@ class SignUpView extends GetView<SignUpController> {
                               prefixIcon: Icon(Icons.credit_card),
                               labelText: 'CPF',
                             ),
-                            onChanged: (value){
-                              FormattedInputers.onCpfChanged(value, controller.txtCpfController);
+                            onChanged: (value) {
+                              FormattedInputers.onCpfChanged(
+                                  value, controller.txtCpfController);
                             },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return "Digite seu cpf ou cnpj";
                               }
-                              if (!Services.validCPF(value) && !Services.validCNPJ(value)) {
+                              if (!Services.validCPF(value) &&
+                                  !Services.validCNPJ(value)) {
                                 return "Digite um cpf ou cnpj válido";
                               }
                               return null;

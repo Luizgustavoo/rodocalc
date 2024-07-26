@@ -83,7 +83,7 @@ class FinancialView extends GetView<FinancialController> {
                 borderRadius: BorderRadius.circular(10),
               ),
               elevation: 5,
-              margin: const EdgeInsets.all(16.0),
+              margin: const EdgeInsets.all(12.0),
               child: Column(
                 children: [
                   _buildHeader(),

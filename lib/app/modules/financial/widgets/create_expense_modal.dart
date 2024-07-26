@@ -41,22 +41,24 @@ class CreateExpenseModal extends GetView<FinancialController> {
               const SizedBox(height: 10),
               GestureDetector(
                 onTap: () => _showPicker(context),
-                child: Obx(
-                  () => CircleAvatar(
-                    radius: 50,
-                    backgroundColor: Colors.grey,
-                    backgroundImage: controller.selectedImagePath.value != ''
-                        ? FileImage(File(controller.selectedImagePath.value))
-                        : null,
-                    child: controller.selectedImagePath.value == ''
-                        ? const Icon(
-                            Icons.camera_alt,
-                            size: 50,
-                            color: Colors.white,
-                          )
-                        : null,
-                  ),
-                ),
+                child: Obx(() => ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Container(
+                        width: 100,
+                        height: 100,
+                        color: Colors.grey,
+                        child: controller.selectedImagePath.value != ''
+                            ? Image.file(
+                                File(controller.selectedImagePath.value),
+                                fit: BoxFit.cover,
+                              )
+                            : const Icon(
+                                Icons.camera_alt,
+                                size: 50,
+                                color: Colors.white,
+                              ),
+                      ),
+                    )),
               ),
               const SizedBox(height: 10),
               TextFormField(
@@ -329,8 +331,6 @@ class CreateExpenseModal extends GetView<FinancialController> {
   }
 
   void showSpecificTypeModal(BuildContext context) {
-    //TODO DEFINIR KEY E CONTROLLER PARA INPUTS
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -340,9 +340,7 @@ class CreateExpenseModal extends GetView<FinancialController> {
             style: TextStyle(fontFamily: 'Inter_bold', fontSize: 18),
           ),
           content: Form(
-            // key: innerFormKey,
             child: TextFormField(
-              // controller: descriptionController,
               decoration: const InputDecoration(
                 prefixIcon: Icon(Icons.message_outlined),
                 labelText: 'DESCRIÇÃO',
@@ -357,14 +355,7 @@ class CreateExpenseModal extends GetView<FinancialController> {
           ),
           actions: <Widget>[
             TextButton(
-              onPressed: () {
-                // if (innerFormKey.currentState!.validate()) {
-                //   // Salvar a descrição
-                //   // Faça algo com a descrição
-                //   print(descriptionController.text);
-                //   Navigator.of(context).pop();
-                // }
-              },
+              onPressed: () {},
               child: const Text('SALVAR'),
             ),
             TextButton(

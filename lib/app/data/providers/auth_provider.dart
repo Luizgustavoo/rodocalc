@@ -45,7 +45,7 @@ class AuthApiClient {
       ServiceStorage.clearBox();
       Get.offAllNamed('/login');
     } catch (e) {
-      print(e);
+      Exception(e);
     }
     return null;
   }
@@ -59,7 +59,8 @@ class AuthApiClient {
       var request = http.MultipartRequest('POST', companyUrl);
 
       if (people.foto!.isNotEmpty) {
-        request.files.add(await http.MultipartFile.fromPath('foto', people.foto!));
+        request.files
+            .add(await http.MultipartFile.fromPath('foto', people.foto!));
       }
 
       request.fields.addAll({
@@ -85,8 +86,6 @@ class AuthApiClient {
 
       var responseStream = await response.stream.bytesToString();
       var httpResponse = http.Response(responseStream, response.statusCode);
-
-      print(json.decode(httpResponse.body));
 
       return json.decode(httpResponse.body);
     } catch (err) {

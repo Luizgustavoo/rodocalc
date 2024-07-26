@@ -5,7 +5,7 @@ final ThemeData appThemeData = ThemeData(
   fontFamily: 'Inter-Regular',
   scaffoldBackgroundColor: const Color(0xFF2C2C2C),
   cardTheme: CardTheme(
-    color:  Colors.orange.shade50,
+    color: Colors.orange.shade50,
     surfaceTintColor: Colors.white,
     margin: EdgeInsets.zero,
   ),
@@ -35,7 +35,7 @@ final ThemeData appThemeData = ThemeData(
     labelStyle:
         const TextStyle(fontFamily: 'Inter-Bold', color: Colors.black54),
     border: OutlineInputBorder(
-        borderSide: BorderSide.none, borderRadius: BorderRadius.circular(50)),
+        borderSide: BorderSide.none, borderRadius: BorderRadius.circular(15)),
   ),
   useMaterial3: true,
   colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFFF6B00)),
