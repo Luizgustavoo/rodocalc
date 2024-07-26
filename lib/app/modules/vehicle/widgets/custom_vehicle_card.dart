@@ -20,6 +20,7 @@ class CustomVehicleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(

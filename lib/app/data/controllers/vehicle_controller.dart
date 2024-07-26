@@ -9,6 +9,7 @@ import 'package:rodocalc/app/utils/service_storage.dart';
 
 class VehiclesController extends GetxController {
   var selectedImagePath = ''.obs;
+  RxBool setImage = false.obs;
 
   RxBool trailerCheckboxValue = false.obs;
 
@@ -134,6 +135,11 @@ class VehiclesController extends GetxController {
     txtModelController.text = selectedVehicle.modelo.toString();
     txtFipeController.text = selectedVehicle.fipe.toString();
     txtTrailerController.text = selectedVehicle.reboque.toString();
+    if(selectedVehicle.foto!.isNotEmpty){
+      setImage(true);
+      selectedImagePath.value = selectedVehicle.foto!;
+    }
+
   }
 
   void clearAllFields() {
@@ -145,6 +151,9 @@ class VehiclesController extends GetxController {
       txtFipeController,
       txtTrailerController
     ];
+
+    selectedImagePath.value = "";
+    setImage.value = false;
 
     for (final controller in textControllers) {
       controller.clear();
@@ -182,14 +191,21 @@ class VehiclesController extends GetxController {
   }
 
   Future<Map<String, dynamic>> deleteVehicle(int id) async {
-    if (formKeyVehicle.currentState!.validate()) {
+    if(id > 0){
       mensagem = await repository.delete(Vehicle(id: id));
       retorno = {
         'success': mensagem['success'],
         'message': mensagem['message']
       };
       getAll();
+    }else{
+      retorno = {
+        'success': false,
+        'message': ['Falha ao realizar a operação!']
+      };
     }
+
+
     return retorno;
   }
 }

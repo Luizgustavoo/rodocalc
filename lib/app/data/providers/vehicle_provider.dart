@@ -67,7 +67,7 @@ class VehicleApiClient {
       var responseStream = await response.stream.bytesToString();
       var httpResponse = http.Response(responseStream, response.statusCode);
 
-      if (httpResponse.statusCode == 201) {
+      if (httpResponse.statusCode == 201 || httpResponse.statusCode == 422 || httpResponse.statusCode == 404) {
         return json.decode(httpResponse.body);
       } else {
         return null;
@@ -125,21 +125,17 @@ class VehicleApiClient {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
-      var vehicleUrl = Uri.parse('$baseUrl/v1/vehicle/delete/${vehicle.id}');
+      var vehicleUrl = Uri.parse('$baseUrl/v1/veiculo/${vehicle.id}');
 
-      var request = http.MultipartRequest('POST', vehicleUrl);
+      var response = await httpClient.delete(
+        vehicleUrl,
+        headers: {
+          "Accept": "application/json",
+          "Authorization": token,
+        },
+      );
 
-      request.headers.addAll({
-        'Accept': 'application/json',
-        'Authorization': token,
-      });
-
-      var response = await request.send();
-
-      var responseStream = await response.stream.bytesToString();
-      var httpResponse = http.Response(responseStream, response.statusCode);
-
-      return json.decode(httpResponse.body);
+      return json.decode(response.body);
     } catch (err) {
       Exception(err);
     }

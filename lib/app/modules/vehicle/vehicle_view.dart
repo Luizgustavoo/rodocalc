@@ -77,27 +77,67 @@ class VehiclesView extends GetView<VehiclesController> {
                                 itemBuilder: (context, index) {
                                   final Vehicle vehicle =
                                       controller.listVehicles[index];
-                                  return InkWell(
-                                    onTap: () {
-                                      controller.selectedVehicle = vehicle;
-                                      controller.fillInFields();
-                                      controller.isLoading.value = false;
-                                      showModalBottomSheet(
-                                        isScrollControlled: true,
-                                        context: context,
-                                        builder: (context) =>
-                                            CreateVehicleModal(
-                                          vehicle: vehicle,
-                                          update: true,
-                                        ),
-                                      );
+                                  return Dismissible(
+                                    key: UniqueKey(),
+                                    direction: DismissDirection.endToStart,
+                                    confirmDismiss: (DismissDirection direction) async {
+                                      if (direction == DismissDirection.endToStart) {
+                                        showDialog(context, vehicle, controller);
+                                      }
+                                      return false;
                                     },
-                                    child: CustomVehicleCard(
-                                      foto: vehicle.foto!,
-                                      modelo: vehicle.modelo!,
-                                      placa: vehicle.placa!,
-                                      ano: vehicle.ano!,
-                                      fipe: vehicle.fipe!,
+                                    background: Container(
+                                      margin: const EdgeInsets.all(5),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Colors.red,
+                                      ),
+                                      child: const Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Padding(
+                                            padding: EdgeInsets.all(10),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.end,
+                                              children: [
+                                                Icon(
+                                                  Icons.check_rounded,
+                                                  size: 25,
+                                                  color: Colors.white,
+                                                ),
+                                                SizedBox(width: 10),
+                                                Text(
+                                                  'EXCLUIR',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight: FontWeight.bold),
+                                                ),
+                                              ],
+                                            )),
+                                      ),
+                                    ),
+                                    child: InkWell(
+                                      onTap: () {
+                                        controller.selectedVehicle = vehicle;
+                                        controller.fillInFields();
+                                        controller.isLoading.value = false;
+                                        controller.setImage.value = true;
+                                        showModalBottomSheet(
+                                          isScrollControlled: true,
+                                          context: context,
+                                          builder: (context) =>
+                                              CreateVehicleModal(
+                                            vehicle: vehicle,
+                                            update: true,
+                                          ),
+                                        );
+                                      },
+                                      child: CustomVehicleCard(
+                                        foto: vehicle.foto!,
+                                        modelo: vehicle.modelo!,
+                                        placa: vehicle.placa!,
+                                        ano: vehicle.ano!,
+                                        fipe: vehicle.fipe!,
+                                      ),
                                     ),
                                   );
                                 },
@@ -142,4 +182,56 @@ class VehiclesView extends GetView<VehiclesController> {
       ),
     );
   }
+}
+
+void showDialog(context, Vehicle vehicle, VehiclesController controller) {
+  Get.defaultDialog(
+    titlePadding: const EdgeInsets.all(16),
+    contentPadding: const EdgeInsets.all(16),
+    title: "Confirmação",
+    content: Text(
+      textAlign: TextAlign.center,
+      "Tem certeza que deseja excluir o veículo ${vehicle.marca}?",
+      style: const TextStyle(
+        fontFamily: 'Poppins',
+        fontSize: 18,
+      ),
+    ),
+    actions: [
+      ElevatedButton(
+        onPressed: () async {
+          Map<String, dynamic> retorno =
+          await controller.deleteVehicle(vehicle.id!);
+
+          if (retorno['success'] == true) {
+            Get.back();
+            Get.snackbar('Sucesso!', retorno['message'].join('\n'),
+                backgroundColor: Colors.green,
+                colorText: Colors.white,
+                duration: const Duration(seconds: 2),
+                snackPosition: SnackPosition.BOTTOM);
+          } else {
+            Get.snackbar('Falha!', retorno['message'].join('\n'),
+                backgroundColor: Colors.red,
+                colorText: Colors.white,
+                duration: const Duration(seconds: 2),
+                snackPosition: SnackPosition.BOTTOM);
+          }
+        },
+        child: const Text(
+          "CONFIRMAR",
+          style: TextStyle(fontFamily: 'Poppinss', color: Colors.white),
+        ),
+      ),
+      TextButton(
+        onPressed: () {
+          Get.back();
+        },
+        child: const Text(
+          "CANCELAR",
+          style: TextStyle(fontFamily: 'Poppinss'),
+        ),
+      ),
+    ],
+  );
 }
