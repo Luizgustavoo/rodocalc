@@ -16,7 +16,6 @@ class CreateVehicleModal extends GetView<VehiclesController> {
 
   @override
   Widget build(BuildContext context) {
-
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Form(
@@ -52,23 +51,25 @@ class CreateVehicleModal extends GetView<VehiclesController> {
                 GestureDetector(
                   onTap: () => _showPicker(context),
                   child: Obx(() => ClipRRect(
-                        borderRadius: BorderRadius.circular(
-                            10), // Ajuste o valor para bordas mais ou menos arredondadas
+                        borderRadius: BorderRadius.circular(10),
+                        // Ajuste o valor para bordas mais ou menos arredondadas
                         child: Container(
                           width: 100, // Ajuste a largura conforme necessário
                           height: 100, // Ajuste a altura conforme necessário
                           color: Colors.grey,
-                          child: controller.setImage.value == true ? Image.network("$urlImagem/storage/fotos/veiculos/${controller.selectedImagePath.value}") :
-                          controller.selectedImagePath.value != ''
-                              ? Image.file(
-                                  File(controller.selectedImagePath.value),
-                                  fit: BoxFit.cover,
-                                )
-                              : const Icon(
-                                  Icons.camera_alt,
-                                  size: 50,
-                                  color: Colors.white,
-                                ),
+                          child: controller.setImage.value == true
+                              ? Image.network(
+                                  "$urlImagem/storage/fotos/veiculos/${controller.selectedImagePath.value}")
+                              : controller.selectedImagePath.value != ''
+                                  ? Image.file(
+                                      File(controller.selectedImagePath.value),
+                                      fit: BoxFit.cover,
+                                    )
+                                  : const Icon(
+                                      Icons.camera_alt,
+                                      size: 50,
+                                      color: Colors.white,
+                                    ),
                         ),
                       )),
                 ),
@@ -297,10 +298,4 @@ class CreateVehicleModal extends GetView<VehiclesController> {
       },
     );
   }
-
-
-
-
 }
-
-

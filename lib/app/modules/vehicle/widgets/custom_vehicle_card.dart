@@ -1,26 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:rodocalc/app/data/base_url.dart';
+import 'package:rodocalc/app/data/models/vehicle_model.dart';
+import 'package:rodocalc/app/utils/service_storage.dart';
 
 class CustomVehicleCard extends StatelessWidget {
-  final String modelo;
-  final String placa;
-  final String ano;
-  final String fipe;
-  final String foto;
+  final Vehicle vehicle;
   final VoidCallback editVehicle;
 
   const CustomVehicleCard(
-      {super.key,
-      required this.modelo,
-      required this.placa,
-      required this.ano,
-      required this.fipe,
-      required this.foto,
-      required this.editVehicle});
+      {super.key, required this.vehicle, required this.editVehicle});
 
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: ServiceStorage.idSelectedVehicle() == vehicle.id!
+          ? Colors.orange.shade300
+          : Colors.orange.shade50,
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5),
@@ -38,8 +33,9 @@ class CustomVehicleCard extends StatelessWidget {
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(10),
             image: DecorationImage(
-              image: foto.isNotEmpty
-                  ? NetworkImage("$urlImagem/storage/fotos/veiculos/$foto")
+              image: vehicle.foto!.isNotEmpty
+                  ? NetworkImage(
+                          "$urlImagem/storage/fotos/veiculos/${vehicle.foto}")
                       as ImageProvider
                   : const AssetImage('assets/images/logo.png'),
               fit: BoxFit.cover,
@@ -64,7 +60,7 @@ class CustomVehicleCard extends StatelessWidget {
                   fontFamily: 'Inter-Bold',
                 ),
               ),
-              TextSpan(text: modelo),
+              TextSpan(text: vehicle.modelo),
             ],
           ),
         ),
@@ -86,7 +82,7 @@ class CustomVehicleCard extends StatelessWidget {
                       fontFamily: 'Inter-Bold',
                     ),
                   ),
-                  TextSpan(text: placa),
+                  TextSpan(text: vehicle.placa),
                 ],
               ),
             ),
@@ -105,7 +101,7 @@ class CustomVehicleCard extends StatelessWidget {
                       fontFamily: 'Inter-Bold',
                     ),
                   ),
-                  TextSpan(text: ano),
+                  TextSpan(text: vehicle.ano),
                 ],
               ),
             ),
@@ -124,7 +120,7 @@ class CustomVehicleCard extends StatelessWidget {
                       fontFamily: 'Inter-Bold',
                     ),
                   ),
-                  TextSpan(text: fipe),
+                  TextSpan(text: vehicle.fipe),
                 ],
               ),
             ),

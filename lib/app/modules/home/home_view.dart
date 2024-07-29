@@ -183,6 +183,7 @@ class HomeView extends GetView<HomeController> {
                                   vehicleController.isLoading.value = false;
                                   vehicleController.getAll();
                                   Get.toNamed(Routes.vehicle);
+                                  print(ServiceStorage.idSelectedVehicle());
                                 },
                               ),
                               CustomHomeCard(
@@ -211,6 +212,13 @@ class HomeView extends GetView<HomeController> {
                                 label: 'Indicações',
                                 onTap: () {
                                   Get.toNamed(Routes.indicator);
+                                },
+                              ),
+                              CustomHomeCard(
+                                icon: Icons.credit_card,
+                                label: 'Planos',
+                                onTap: () {
+                                  Get.toNamed(Routes.plan);
                                 },
                               ),
                             ],

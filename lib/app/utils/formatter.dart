@@ -14,11 +14,20 @@ abstract class FormattedInputers {
     }
   }
 
-  static void onCpfChanged(String value, TextEditingController textEditingController) {
+  static void onCpfChanged(
+      String value, TextEditingController textEditingController) {
     textEditingController.value = textEditingController.value.copyWith(
       text: FormattedInputers.formatCpfCnpj(value),
       selection: TextSelection.collapsed(
           offset: FormattedInputers.formatCpfCnpj(value).length),
+    );
+  }
+
+  static void onDateChanged(
+      String value, TextEditingController textEditingController) {
+    textEditingController.value = textEditingController.value.copyWith(
+      text: formatDate(value),
+      selection: TextSelection.collapsed(offset: formatDate(value).length),
     );
   }
 
@@ -34,11 +43,11 @@ abstract class FormattedInputers {
     }
   }
 
-  static void onContactChanged(String value, TextEditingController textEditingController) {
+  static void onContactChanged(
+      String value, TextEditingController textEditingController) {
     textEditingController.value = textEditingController.value.copyWith(
       text: formatContact(value),
-      selection: TextSelection.collapsed(
-          offset: formatContact(value).length),
+      selection: TextSelection.collapsed(offset: formatContact(value).length),
     );
   }
 
@@ -89,5 +98,20 @@ abstract class FormattedInputers {
       return false;
     }
     return true;
+  }
+
+  static double convertToDouble(String valorString) {
+    try {
+      String valorSemMoeda = valorString.replaceAll("R\$ ", "");
+      valorSemMoeda = valorSemMoeda.replaceAll(".", "");
+      valorSemMoeda = valorSemMoeda.replaceAll(",", ".");
+      double valorDouble = double.parse(valorSemMoeda);
+
+      return valorDouble;
+    } catch (e) {
+      Exception("Erro ao converter o valor: $e");
+    }
+
+    return 0;
   }
 }

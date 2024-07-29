@@ -2,9 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:rodocalc/app/data/models/expense_category_model.dart';
+import 'package:rodocalc/app/data/models/expense_model.dart';
+import 'package:rodocalc/app/data/repositories/expense_repository.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
+import 'package:rodocalc/app/utils/service_storage.dart';
 
 class FinancialController extends GetxController {
+  var selectedImagePath = ''.obs;
+  RxBool setImage = false.obs;
+  RxBool isLoading = true.obs;
+
   //CONTROLLER E KEY DO RECEBIMENTO
   final formKeyReceipt = GlobalKey<FormState>();
   final descriptionController = TextEditingController();
@@ -15,21 +23,30 @@ class FinancialController extends GetxController {
 
   //CONTROLLER E KEY DESPESA
   final formKeyExpense = GlobalKey<FormState>();
-  final descriptionExpenseController = TextEditingController();
-  final cityController = TextEditingController();
-  final companyController = TextEditingController();
-  final dddController = TextEditingController();
-  final phoneController = TextEditingController();
-  final valueController = TextEditingController();
+  final formKeyExpenseCategory = GlobalKey<FormState>();
+  final txtDescriptionExpenseController = TextEditingController();
+  final txtDescriptionExpenseCategoryController = TextEditingController();
+  final txtCityController = TextEditingController();
+  final txtCompanyController = TextEditingController();
+  final txtDDDController = TextEditingController();
+  final txtPhoneController = TextEditingController();
+  final txtValueController = TextEditingController();
+  final txtDateController = TextEditingController();
 
   var balance = 10000.0.obs;
   var transactions = <Transaction>[].obs;
   var filteredTransactions = <Transaction>[].obs;
   var searchQuery = ''.obs;
-  var selectedImagePath = ''.obs;
 
   var cargoTypes = ['Tipo 1', 'Tipo 2', 'Tipo 3', 'Tipo 4'].obs;
   var selectedCargoType = 'Tipo 1'.obs;
+
+  Map<String, dynamic> retorno = {
+    "success": false,
+    "data": null,
+    "message": ["Preencha todos os campos!"]
+  };
+  dynamic mensagem;
 
   var specificTypes =
       ['Específico 1', 'Específico 2', 'Específico 3', 'Específico 4'].obs;
@@ -70,10 +87,24 @@ class FinancialController extends GetxController {
   ].obs;
   var selectedUf = 'AC'.obs;
 
+  RxList<Expense> listExpenses = RxList<Expense>([]);
+
+  final repository = Get.put(ExpenseRepository());
+
   @override
   void onInit() {
     super.onInit();
     loadTransactions();
+  }
+
+  Future<void> getAllExpense() async {
+    isLoading.value = true;
+    try {
+      listExpenses.value = await repository.getAll();
+    } catch (e) {
+      Exception(e);
+    }
+    isLoading.value = false;
   }
 
   void loadTransactions() {
@@ -106,7 +137,7 @@ class FinancialController extends GetxController {
         );
         break;
       case 'value':
-        valueController.value = valueController.value.copyWith(
+        txtValueController.value = txtValueController.value.copyWith(
           text: formattedValue,
           selection: TextSelection.collapsed(offset: formattedValue.length),
         );
@@ -168,11 +199,68 @@ class FinancialController extends GetxController {
   }
 
   void onContactChanged(String value) {
-    phoneController.value = phoneController.value.copyWith(
+    txtPhoneController.value = txtPhoneController.value.copyWith(
       text: FormattedInputers.formatContact(value),
       selection: TextSelection.collapsed(
           offset: FormattedInputers.formatContact(value).length),
     );
+  }
+
+  Future<Map<String, dynamic>> insertExpense() async {
+    if (formKeyExpense.currentState!.validate()) {
+      mensagem = await repository.insert(Expense(
+        descricao: txtDescriptionExpenseController.text,
+        categoriadespesaId: 1,
+        tipoespecificodespesaId: 1,
+        valor: FormattedInputers.convertToDouble(txtValueController.text),
+        empresa: txtCompanyController.text,
+        cidade: txtCityController.text,
+        uf: selectedUf.value,
+        ddd: txtDDDController.text,
+        telefone: txtPhoneController.text,
+        observacoes: "",
+        status: 1,
+        pessoaId: ServiceStorage.getUserId(),
+        veiculoId: ServiceStorage.idSelectedVehicle(),
+        expenseDate: txtDateController.text,
+      ));
+      if (mensagem != null) {
+        retorno = {
+          'success': mensagem['success'],
+          'message': mensagem['message']
+        };
+//        getAll();
+      } else {
+        retorno = {
+          'success': false,
+          'message': ['Falha ao realizar a operação!']
+        };
+      }
+    }
+    return retorno;
+  }
+
+  Future<Map<String, dynamic>> insertExpenseCategory() async {
+    if (formKeyExpenseCategory.currentState!.validate()) {
+      mensagem = await repository.insertCategory(ExpenseCategory(
+        descricao: txtDescriptionExpenseCategoryController.text,
+        status: 1,
+        userId: ServiceStorage.getUserId(),
+      ));
+      if (mensagem != null) {
+        retorno = {
+          'success': mensagem['success'],
+          'message': mensagem['message']
+        };
+//        getAll();
+      } else {
+        retorno = {
+          'success': false,
+          'message': ['Falha ao realizar a operação!']
+        };
+      }
+    }
+    return retorno;
   }
 }
 

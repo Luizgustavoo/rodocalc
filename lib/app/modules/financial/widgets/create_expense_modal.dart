@@ -1,8 +1,10 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/controllers/financial_controller.dart';
+import 'package:rodocalc/app/utils/formatter.dart';
 
 class CreateExpenseModal extends GetView<FinancialController> {
   const CreateExpenseModal({super.key});
@@ -12,6 +14,7 @@ class CreateExpenseModal extends GetView<FinancialController> {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Form(
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         key: controller.formKeyExpense,
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -62,7 +65,7 @@ class CreateExpenseModal extends GetView<FinancialController> {
               ),
               const SizedBox(height: 10),
               TextFormField(
-                controller: controller.descriptionExpenseController,
+                controller: controller.txtDescriptionExpenseController,
                 decoration: const InputDecoration(
                   prefixIcon: Icon(
                     Icons.message_outlined,
@@ -73,6 +76,48 @@ class CreateExpenseModal extends GetView<FinancialController> {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, insira a descrição';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 15),
+              TextFormField(
+                maxLength: 10,
+                controller: controller.txtDateController,
+                decoration: const InputDecoration(
+                  counterText: '',
+                  prefixIcon: Icon(
+                    Icons.calendar_month,
+                    size: 25,
+                  ),
+                  labelText: 'DATA DE INÍCIO',
+                ),
+                onChanged: (value) {
+                  FormattedInputers.onDateChanged(
+                      value, controller.txtDateController);
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, insira a data da despesa';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 15),
+              TextFormField(
+                controller: controller.txtValueController,
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(
+                    Icons.monetization_on_outlined,
+                  ),
+                  labelText: 'VALOR',
+                ),
+                onChanged: (value) {
+                  controller.onValueChanged(value, 'value');
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, insira o valor';
                   }
                   return null;
                 },
@@ -141,19 +186,13 @@ class CreateExpenseModal extends GetView<FinancialController> {
                   Expanded(
                     flex: 2,
                     child: TextFormField(
-                      controller: controller.cityController,
+                      controller: controller.txtCityController,
                       decoration: const InputDecoration(
                         prefixIcon: Icon(
                           Icons.location_city_outlined,
                         ),
                         labelText: 'CIDADE',
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Por favor, insira a cidade';
-                        }
-                        return null;
-                      },
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -185,19 +224,13 @@ class CreateExpenseModal extends GetView<FinancialController> {
               ),
               const SizedBox(height: 10),
               TextFormField(
-                controller: controller.companyController,
+                controller: controller.txtCompanyController,
                 decoration: const InputDecoration(
                   prefixIcon: Icon(
                     Icons.business_rounded,
                   ),
                   labelText: 'EMPRESA',
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, insira o nome da empresa';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 10),
               Row(
@@ -205,23 +238,17 @@ class CreateExpenseModal extends GetView<FinancialController> {
                   Expanded(
                     flex: 1,
                     child: TextFormField(
-                      controller: controller.dddController,
+                      controller: controller.txtDDDController,
                       decoration: const InputDecoration(
                         labelText: 'DDD',
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Por favor, insira o DDD';
-                        }
-                        return null;
-                      },
                     ),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
                     flex: 3,
                     child: TextFormField(
-                      controller: controller.phoneController,
+                      controller: controller.txtPhoneController,
                       maxLength: 14,
                       decoration: const InputDecoration(
                         counterText: '',
@@ -233,40 +260,33 @@ class CreateExpenseModal extends GetView<FinancialController> {
                       onChanged: (value) {
                         controller.onContactChanged(value);
                       },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Por favor, insira o telefone';
-                        }
-                        return null;
-                      },
                     ),
                   ),
                 ],
-              ),
-              const SizedBox(height: 10),
-              TextFormField(
-                controller: controller.valueController,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(
-                    Icons.monetization_on_outlined,
-                  ),
-                  labelText: 'VALOR',
-                ),
-                onChanged: (value) {
-                  controller.onValueChanged(value, 'value');
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, insira o valor';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 16),
               Row(
                 children: [
                   ElevatedButton(
-                    onPressed: () async {},
+                    onPressed: () async {
+                      Map<String, dynamic> retorno =
+                          await controller.insertExpense();
+
+                      if (retorno['success'] == true) {
+                        Get.back();
+                        Get.snackbar('Sucesso!', retorno['message'].join('\n'),
+                            backgroundColor: Colors.green,
+                            colorText: Colors.white,
+                            duration: const Duration(seconds: 2),
+                            snackPosition: SnackPosition.BOTTOM);
+                      } else {
+                        Get.snackbar('Falha!', retorno['message'].join('\n'),
+                            backgroundColor: Colors.red,
+                            colorText: Colors.white,
+                            duration: const Duration(seconds: 2),
+                            snackPosition: SnackPosition.BOTTOM);
+                      }
+                    },
                     child: const Text(
                       'CADASTRAR',
                       style: TextStyle(
@@ -340,7 +360,10 @@ class CreateExpenseModal extends GetView<FinancialController> {
             style: TextStyle(fontFamily: 'Inter_bold', fontSize: 18),
           ),
           content: Form(
+            key: controller.formKeyExpenseCategory,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
             child: TextFormField(
+              controller: controller.txtDescriptionExpenseCategoryController,
               decoration: const InputDecoration(
                 prefixIcon: Icon(Icons.message_outlined),
                 labelText: 'DESCRIÇÃO',
@@ -355,7 +378,25 @@ class CreateExpenseModal extends GetView<FinancialController> {
           ),
           actions: <Widget>[
             TextButton(
-              onPressed: () {},
+              onPressed: () async {
+                Map<String, dynamic> retorno =
+                    await controller.insertExpenseCategory();
+
+                if (retorno['success'] == true) {
+                  Get.back();
+                  Get.snackbar('Sucesso!', retorno['message'].join('\n'),
+                      backgroundColor: Colors.green,
+                      colorText: Colors.white,
+                      duration: const Duration(seconds: 2),
+                      snackPosition: SnackPosition.BOTTOM);
+                } else {
+                  Get.snackbar('Falha!', retorno['message'].join('\n'),
+                      backgroundColor: Colors.red,
+                      colorText: Colors.white,
+                      duration: const Duration(seconds: 2),
+                      snackPosition: SnackPosition.BOTTOM);
+                }
+              },
               child: const Text('SALVAR'),
             ),
             TextButton(

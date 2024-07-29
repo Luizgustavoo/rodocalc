@@ -18,6 +18,7 @@ class Expense {
   int? veiculoId;
   String? createdAt;
   String? updatedAt;
+  String? expenseDate;
   ExpenseCategory? expenseCategory;
   SpecificTypeExpense? specificTypeExpense;
 
@@ -38,6 +39,7 @@ class Expense {
     this.veiculoId,
     this.createdAt,
     this.updatedAt,
+    this.expenseDate,
     this.expenseCategory,
   });
 
@@ -58,6 +60,7 @@ class Expense {
     veiculoId = json['veiculo_id'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    expenseDate = json['data_despesa'];
     expenseCategory = json['categoriadespesa'] != null
         ? ExpenseCategory.fromJson(json['categoriadespesa'])
         : null;
@@ -84,6 +87,7 @@ class Expense {
     data['veiculo_id'] = veiculoId;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
+    data['data_despesa'] = expenseDate;
     return data;
   }
 }

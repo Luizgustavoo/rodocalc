@@ -126,6 +126,7 @@ class VehiclesView extends GetView<VehiclesController> {
                                       onTap: () {
                                         final box = GetStorage('rodocalc');
                                         box.write('vehicle', vehicle.toJson());
+
                                         Get.offAllNamed(Routes.home);
                                       },
                                       child: CustomVehicleCard(
@@ -144,11 +145,7 @@ class VehiclesView extends GetView<VehiclesController> {
                                             ),
                                           );
                                         },
-                                        foto: vehicle.foto!,
-                                        modelo: vehicle.modelo!,
-                                        placa: vehicle.placa!,
-                                        ano: vehicle.ano!,
-                                        fipe: vehicle.fipe!,
+                                        vehicle: vehicle,
                                       ),
                                     ),
                                   );

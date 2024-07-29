@@ -45,7 +45,7 @@ class Vehicle {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
-    data['id'] = pessoaId;
+    data['pessoa_id'] = pessoaId;
     data['marca'] = marca;
     data['ano'] = ano;
     data['modelo'] = modelo;

@@ -1,3 +1,4 @@
+import 'package:rodocalc/app/data/models/expense_category_model.dart';
 import 'package:rodocalc/app/data/models/expense_model.dart';
 import 'package:rodocalc/app/data/providers/expense_provider.dart';
 
@@ -21,6 +22,15 @@ class ExpenseRepository {
   insert(Expense expense) async {
     try {
       var response = await apiClient.insert(expense);
+      return response;
+    } catch (e) {
+      Exception(e);
+    }
+  }
+
+  insertCategory(ExpenseCategory category) async {
+    try {
+      var response = await apiClient.insertCategory(category);
       return response;
     } catch (e) {
       Exception(e);

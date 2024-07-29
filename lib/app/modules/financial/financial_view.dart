@@ -15,14 +15,14 @@ class FinancialView extends GetView<FinancialController> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Column(
+          title: Column(
             children: [
               Text('FINANCEIRO',
                   style: TextStyle(
                     fontFamily: 'Inter-Black',
                   )),
               Text(
-                'SCANIA - P360 BITRUCK - CARROCERIA 9MTS',
+                ServiceStorage.titleSelectedVehicle(),
                 style: TextStyle(fontFamily: 'Inter-Regular', fontSize: 14),
               )
             ],
@@ -83,6 +83,7 @@ class FinancialView extends GetView<FinancialController> {
               ),
             ),
             Card(
+              color: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
