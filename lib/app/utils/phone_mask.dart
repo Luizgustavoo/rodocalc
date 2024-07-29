@@ -15,16 +15,16 @@ class PhoneMask {
 
     String masked = '';
 
-    if (input.length > 0) {
+    if (input.isNotEmpty) {
       masked += '(';
     }
     if (input.length > 2) {
-      masked += input.substring(0, 2) + ') ';
-    } else if (input.length > 0) {
+      masked += '${input.substring(0, 2)}) ';
+    } else if (input.isNotEmpty) {
       masked += input.substring(0);
     }
     if (input.length > 7) {
-      masked += input.substring(2, 7) + '-' + input.substring(7);
+      masked += '${input.substring(2, 7)}-${input.substring(7)}';
     } else if (input.length > 2) {
       masked += input.substring(2);
     }

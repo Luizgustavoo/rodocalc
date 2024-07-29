@@ -9,7 +9,7 @@ import 'package:rodocalc/app/modules/home/widgets/custom_stack_card.dart';
 import 'package:rodocalc/app/routes/app_routes.dart';
 
 class HomeView extends GetView<HomeController> {
-   HomeView({super.key});
+  HomeView({super.key});
 
   final vehicleController = Get.put(VehiclesController());
 
@@ -205,6 +205,13 @@ class HomeView extends GetView<HomeController> {
                                 label: 'Indicações',
                                 onTap: () {
                                   Get.toNamed(Routes.indicator);
+                                },
+                              ),
+                              CustomHomeCard(
+                                icon: Icons.credit_card,
+                                label: 'Planos',
+                                onTap: () {
+                                  Get.toNamed(Routes.plan);
                                 },
                               ),
                             ],
