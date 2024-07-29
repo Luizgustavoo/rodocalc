@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/controllers/home_controller.dart';
 import 'package:rodocalc/app/data/controllers/login_controller.dart';
 import 'package:rodocalc/app/data/controllers/vehicle_controller.dart';
@@ -7,9 +8,10 @@ import 'package:rodocalc/app/modules/home/widgets/custom_chart.dart';
 import 'package:rodocalc/app/modules/home/widgets/custom_home_card.dart';
 import 'package:rodocalc/app/modules/home/widgets/custom_stack_card.dart';
 import 'package:rodocalc/app/routes/app_routes.dart';
+import 'package:rodocalc/app/utils/service_storage.dart';
 
 class HomeView extends GetView<HomeController> {
-   HomeView({super.key});
+  HomeView({super.key});
 
   final vehicleController = Get.put(VehiclesController());
 
@@ -36,10 +38,12 @@ class HomeView extends GetView<HomeController> {
                   Colors.black.withOpacity(0.6),
                   BlendMode.darken,
                 ),
-                child: Image.network(
-                  'https://portalgoverno.com.br/wp-content/uploads/2023/11/Caminhao-Carroceria-Plataforma-Mercedes-Benz-Atego-333054-Imagem-Ilustrativa-00-uai-634x634.jpg',
-                  fit: BoxFit.cover,
-                ),
+                child: !ServiceStorage.existsSelectedVehicle()
+                    ? Image.asset('assets/images/caminhao.jpg')
+                    : Image.network(
+                        "$urlImagem/storage/fotos/veiculos/${ServiceStorage.photoSelectedVehicle()!}",
+                        fit: BoxFit.cover,
+                      ),
               ),
             ),
             Column(
@@ -69,7 +73,8 @@ class HomeView extends GetView<HomeController> {
                 color: Colors.blue,
               ),
               child: Image.network(
-                'https://via.placeholder.com/150', // Substitua pela URL da sua imagem
+                'https://via.placeholder.com/150',
+                // Substitua pela URL da sua imagem
                 fit: BoxFit.cover,
               ),
             ),
@@ -124,6 +129,7 @@ class HomeView extends GetView<HomeController> {
             padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
             child: SingleChildScrollView(
               child: Card(
+                color: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),

@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:rodocalc/app/data/base_url.dart';
 
@@ -8,19 +7,19 @@ class CustomVehicleCard extends StatelessWidget {
   final String ano;
   final String fipe;
   final String foto;
+  final VoidCallback editVehicle;
 
-  const CustomVehicleCard({
-    super.key,
-    required this.modelo,
-    required this.placa,
-    required this.ano,
-    required this.fipe,
-    required this.foto,
-  });
+  const CustomVehicleCard(
+      {super.key,
+      required this.modelo,
+      required this.placa,
+      required this.ano,
+      required this.fipe,
+      required this.foto,
+      required this.editVehicle});
 
   @override
   Widget build(BuildContext context) {
-
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
@@ -40,13 +39,16 @@ class CustomVehicleCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
             image: DecorationImage(
               image: foto.isNotEmpty
-                  ? CachedNetworkImageProvider(
-                          "$urlImagem/storage/fotos/veiculos/$foto")
+                  ? NetworkImage("$urlImagem/storage/fotos/veiculos/$foto")
                       as ImageProvider
                   : const AssetImage('assets/images/logo.png'),
               fit: BoxFit.cover,
             ),
           ),
+        ),
+        trailing: IconButton(
+          onPressed: editVehicle,
+          icon: const Icon(Icons.edit),
         ),
         title: RichText(
           text: TextSpan(

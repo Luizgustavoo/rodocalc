@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:rodocalc/app/data/controllers/vehicle_controller.dart';
 import 'package:rodocalc/app/data/models/vehicle_model.dart';
 import 'package:rodocalc/app/global/custom_app_bar.dart';
 import 'package:rodocalc/app/modules/vehicle/widgets/create_vehicle_modal.dart';
 import 'package:rodocalc/app/modules/vehicle/widgets/custom_vehicle_card.dart';
+import 'package:rodocalc/app/routes/app_routes.dart';
 
 class VehiclesView extends GetView<VehiclesController> {
   const VehiclesView({super.key});
@@ -80,9 +82,12 @@ class VehiclesView extends GetView<VehiclesController> {
                                   return Dismissible(
                                     key: UniqueKey(),
                                     direction: DismissDirection.endToStart,
-                                    confirmDismiss: (DismissDirection direction) async {
-                                      if (direction == DismissDirection.endToStart) {
-                                        showDialog(context, vehicle, controller);
+                                    confirmDismiss:
+                                        (DismissDirection direction) async {
+                                      if (direction ==
+                                          DismissDirection.endToStart) {
+                                        showDialog(
+                                            context, vehicle, controller);
                                       }
                                       return false;
                                     },
@@ -97,7 +102,8 @@ class VehiclesView extends GetView<VehiclesController> {
                                         child: Padding(
                                             padding: EdgeInsets.all(10),
                                             child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.end,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
                                               children: [
                                                 Icon(
                                                   Icons.check_rounded,
@@ -109,7 +115,8 @@ class VehiclesView extends GetView<VehiclesController> {
                                                   'EXCLUIR',
                                                   style: TextStyle(
                                                       color: Colors.white,
-                                                      fontWeight: FontWeight.bold),
+                                                      fontWeight:
+                                                          FontWeight.bold),
                                                 ),
                                               ],
                                             )),
@@ -117,21 +124,26 @@ class VehiclesView extends GetView<VehiclesController> {
                                     ),
                                     child: InkWell(
                                       onTap: () {
-                                        controller.selectedVehicle = vehicle;
-                                        controller.fillInFields();
-                                        controller.isLoading.value = false;
-                                        controller.setImage.value = true;
-                                        showModalBottomSheet(
-                                          isScrollControlled: true,
-                                          context: context,
-                                          builder: (context) =>
-                                              CreateVehicleModal(
-                                            vehicle: vehicle,
-                                            update: true,
-                                          ),
-                                        );
+                                        final box = GetStorage('rodocalc');
+                                        box.write('vehicle', vehicle.toJson());
+                                        Get.offAllNamed(Routes.home);
                                       },
                                       child: CustomVehicleCard(
+                                        editVehicle: () {
+                                          controller.selectedVehicle = vehicle;
+                                          controller.fillInFields();
+                                          controller.isLoading.value = false;
+                                          controller.setImage.value = true;
+                                          showModalBottomSheet(
+                                            isScrollControlled: true,
+                                            context: context,
+                                            builder: (context) =>
+                                                CreateVehicleModal(
+                                              vehicle: vehicle,
+                                              update: true,
+                                            ),
+                                          );
+                                        },
                                         foto: vehicle.foto!,
                                         modelo: vehicle.modelo!,
                                         placa: vehicle.placa!,
@@ -201,7 +213,7 @@ void showDialog(context, Vehicle vehicle, VehiclesController controller) {
       ElevatedButton(
         onPressed: () async {
           Map<String, dynamic> retorno =
-          await controller.deleteVehicle(vehicle.id!);
+              await controller.deleteVehicle(vehicle.id!);
 
           if (retorno['success'] == true) {
             Get.back();

@@ -1,4 +1,5 @@
 import 'package:get_storage/get_storage.dart';
+import 'package:rodocalc/app/data/models/vehicle_model.dart';
 
 class ServiceStorage {
   static final _box = GetStorage('rodocalc');
@@ -37,5 +38,48 @@ class ServiceStorage {
       return _box.read('auth')['pessoa']['nome'];
     }
     return "";
+  }
+
+  static bool existsSelectedVehicle() {
+    if (_box.read('vehicle') != null) {
+      return true;
+    }
+    return false;
+  }
+
+  static Vehicle getVehicleStorage() {
+    Vehicle vehicle = Vehicle();
+    if (existsSelectedVehicle()) {
+      Map<String, dynamic> vehicleJson = _box.read('vehicle');
+      vehicle = Vehicle.fromJson(vehicleJson);
+    }
+    return vehicle;
+  }
+
+  static String titleSelectedVehicle() {
+    String title = "NENHUM VEÍCULO SELECIONADO!";
+    Vehicle v = getVehicleStorage();
+    if (!v.isEmpty()) {
+      title = "${v.marca!} - ${v.modelo!}";
+    }
+    return title;
+  }
+
+  static String photoSelectedVehicle() {
+    String photo = "";
+    Vehicle v = getVehicleStorage();
+    if (!v.isEmpty()) {
+      photo = v.foto!;
+    }
+    return photo;
+  }
+
+  static int idSelectedVehicle() {
+    int id = 0;
+    Vehicle v = getVehicleStorage();
+    if (!v.isEmpty()) {
+      id = v.id!;
+    }
+    return id;
   }
 }

@@ -58,4 +58,8 @@ class Vehicle {
     data['status'] = status;
     return data;
   }
+
+  bool isEmpty() {
+    return id == null && marca == null && modelo == null;
+  }
 }

@@ -67,7 +67,9 @@ class VehicleApiClient {
       var responseStream = await response.stream.bytesToString();
       var httpResponse = http.Response(responseStream, response.statusCode);
 
-      if (httpResponse.statusCode == 201 || httpResponse.statusCode == 422 || httpResponse.statusCode == 404) {
+      if (httpResponse.statusCode == 201 ||
+          httpResponse.statusCode == 422 ||
+          httpResponse.statusCode == 404) {
         return json.decode(httpResponse.body);
       } else {
         return null;

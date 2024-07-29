@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/home_controller.dart';
+import 'package:rodocalc/app/data/models/vehicle_model.dart';
+import 'package:rodocalc/app/utils/service_storage.dart';
 
 class CustomStackCard extends StatelessWidget {
   final HomeController controller = Get.find();
@@ -13,26 +15,26 @@ class CustomStackCard extends StatelessWidget {
       padding: const EdgeInsets.only(right: 32, left: 32, top: 5),
       child: Card(
         color: Colors.black.withOpacity(0.8),
-        child: const Padding(
-          padding: EdgeInsets.all(8.0),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
+              const Text(
                 'Bem vindo, Claudinei',
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.white, fontSize: 20),
               ),
-              SizedBox(height: 5),
-              Text(
+              const SizedBox(height: 5),
+              const Text(
                 'Veículo selecionado:',
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.white, fontSize: 14),
               ),
               Text(
-                'SCANIA - P360 BITRUCK - CARROCERIA 9MTS',
+                ServiceStorage.titleSelectedVehicle(),
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                     color: Colors.white,
                     fontSize: 14,
                     overflow: TextOverflow.ellipsis),

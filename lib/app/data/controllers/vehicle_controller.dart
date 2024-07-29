@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/models/search_plate.dart';
@@ -8,12 +9,16 @@ import 'package:rodocalc/app/data/repositories/vehicle_repository.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 
 class VehiclesController extends GetxController {
+  final box = GetStorage('rodocalc');
+
   var selectedImagePath = ''.obs;
   RxBool setImage = false.obs;
 
   RxBool trailerCheckboxValue = false.obs;
 
   late Vehicle selectedVehicle;
+  late Vehicle initialVehicle = Vehicle().obs as Vehicle;
+
   late SearchPlate searchPlate;
 
   final formKeyVehicle = GlobalKey<FormState>();
@@ -25,10 +30,21 @@ class VehiclesController extends GetxController {
   final txtTrailerController = TextEditingController();
 
   RxBool isLoading = true.obs;
+  RxBool isLoadingInitial = true.obs;
 
   RxList<Vehicle> listVehicles = RxList<Vehicle>([]);
 
   final repository = Get.put(VehicleRepository());
+
+  //PARA ADICIONAR O VEICULO SELECIONADO NA LISTAGEM DE VEÍCULOS
+  var selectedVehicleInAplication = Rx<Vehicle?>(null);
+
+  void setVehicle(Vehicle vehicle) {
+    selectedVehicleInAplication.value = vehicle;
+    box.write('vehicle', vehicle.toJson());
+  }
+
+  Vehicle? get getVehicle => selectedVehicleInAplication.value;
 
   void pickImage(ImageSource source) async {
     final pickedFile = await ImagePicker().pickImage(source: source);
@@ -135,11 +151,10 @@ class VehiclesController extends GetxController {
     txtModelController.text = selectedVehicle.modelo.toString();
     txtFipeController.text = selectedVehicle.fipe.toString();
     txtTrailerController.text = selectedVehicle.reboque.toString();
-    if(selectedVehicle.foto!.isNotEmpty){
+    if (selectedVehicle.foto!.isNotEmpty) {
       setImage(true);
       selectedImagePath.value = selectedVehicle.foto!;
     }
-
   }
 
   void clearAllFields() {
@@ -191,20 +206,19 @@ class VehiclesController extends GetxController {
   }
 
   Future<Map<String, dynamic>> deleteVehicle(int id) async {
-    if(id > 0){
+    if (id > 0) {
       mensagem = await repository.delete(Vehicle(id: id));
       retorno = {
         'success': mensagem['success'],
         'message': mensagem['message']
       };
       getAll();
-    }else{
+    } else {
       retorno = {
         'success': false,
         'message': ['Falha ao realizar a operação!']
       };
     }
-
 
     return retorno;
   }

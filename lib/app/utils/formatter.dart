@@ -81,7 +81,7 @@ abstract class FormattedInputers {
   }
 
   static bool validatePlate(String value) {
-    if (value == null || value.isEmpty) {
+    if (value.isEmpty) {
       return false;
     }
     final regex = RegExp(r'^[A-Z]{3}\d[A-Z\d]\d{2}$');
