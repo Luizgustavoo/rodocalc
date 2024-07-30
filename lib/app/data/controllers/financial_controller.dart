@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/get_rx.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:rodocalc/app/data/models/expense_category_model.dart';
 import 'package:rodocalc/app/data/models/expense_model.dart';
 import 'package:rodocalc/app/data/repositories/expense_repository.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
-import 'package:rodocalc/app/utils/service_storage.dart';
 
 class FinancialController extends GetxController {
   var selectedImagePath = ''.obs;
@@ -23,18 +20,6 @@ class FinancialController extends GetxController {
   final destinyController = TextEditingController();
   final amountController = TextEditingController();
   final tonController = TextEditingController();
-
-  //CONTROLLER E KEY DESPESA
-  final formKeyExpense = GlobalKey<FormState>();
-  final formKeyExpenseCategory = GlobalKey<FormState>();
-  final txtDescriptionExpenseController = TextEditingController();
-  final txtDescriptionExpenseCategoryController = TextEditingController();
-  final txtCityController = TextEditingController();
-  final txtCompanyController = TextEditingController();
-  final txtDDDController = TextEditingController();
-  final txtPhoneController = TextEditingController();
-  final txtValueController = TextEditingController();
-  final txtDateController = TextEditingController();
 
   var balance = 10000.0.obs;
   var transactions = <Transaction>[].obs;
@@ -139,12 +124,12 @@ class FinancialController extends GetxController {
           selection: TextSelection.collapsed(offset: formattedValue.length),
         );
         break;
-      case 'value':
-        txtValueController.value = txtValueController.value.copyWith(
-          text: formattedValue,
-          selection: TextSelection.collapsed(offset: formattedValue.length),
-        );
-        break;
+      // case 'value':
+      //   //txtValueController.value = txtValueController.value.copyWith(
+      //    // text: formattedValue,
+      //     //selection: TextSelection.collapsed(offset: formattedValue.length),
+      //   );
+      //   break;
       default:
         throw ArgumentError('Controller passado incorreto: $controllerType');
     }
@@ -200,71 +185,6 @@ class FinancialController extends GetxController {
     } else {
       Get.snackbar('Erro', 'Nenhuma imagem selecionada');
     }
-  }
-
-  void onContactChanged(String value) {
-    txtPhoneController.value = txtPhoneController.value.copyWith(
-      text: FormattedInputers.formatContact(value),
-      selection: TextSelection.collapsed(
-          offset: FormattedInputers.formatContact(value).length),
-    );
-  }
-
-  Future<Map<String, dynamic>> insertExpense() async {
-    if (formKeyExpense.currentState!.validate()) {
-      mensagem = await repository.insert(Expense(
-        descricao: txtDescriptionExpenseController.text,
-        categoriadespesaId: 1,
-        tipoespecificodespesaId: 1,
-        valor: FormattedInputers.convertToDouble(txtValueController.text),
-        empresa: txtCompanyController.text,
-        cidade: txtCityController.text,
-        uf: selectedUf.value,
-        ddd: txtDDDController.text,
-        telefone: txtPhoneController.text,
-        observacoes: "",
-        status: 1,
-        pessoaId: ServiceStorage.getUserId(),
-        veiculoId: ServiceStorage.idSelectedVehicle(),
-        expenseDate: txtDateController.text,
-      ));
-      if (mensagem != null) {
-        retorno = {
-          'success': mensagem['success'],
-          'message': mensagem['message']
-        };
-//        getAll();
-      } else {
-        retorno = {
-          'success': false,
-          'message': ['Falha ao realizar a operação!']
-        };
-      }
-    }
-    return retorno;
-  }
-
-  Future<Map<String, dynamic>> insertExpenseCategory() async {
-    if (formKeyExpenseCategory.currentState!.validate()) {
-      mensagem = await repository.insertCategory(ExpenseCategory(
-        descricao: txtDescriptionExpenseCategoryController.text,
-        status: 1,
-        userId: ServiceStorage.getUserId(),
-      ));
-      if (mensagem != null) {
-        retorno = {
-          'success': mensagem['success'],
-          'message': mensagem['message']
-        };
-//        getAll();
-      } else {
-        retorno = {
-          'success': false,
-          'message': ['Falha ao realizar a operação!']
-        };
-      }
-    }
-    return retorno;
   }
 }
 

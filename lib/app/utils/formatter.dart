@@ -67,6 +67,14 @@ abstract class FormattedInputers {
     return buffer.toString();
   }
 
+  static void onformatValueChanged(
+      String value, TextEditingController textEditingController) {
+    textEditingController.value = textEditingController.value.copyWith(
+      text: formatValue(value),
+      selection: TextSelection.collapsed(offset: formatValue(value).length),
+    );
+  }
+
   static String formatValue(String value) {
     var text = value.replaceAll(RegExp(r'[^0-9]'), '');
     var buffer = StringBuffer();

@@ -13,7 +13,6 @@ class VehiclesController extends GetxController {
 
   var selectedImagePath = ''.obs;
   RxBool setImage = false.obs;
-  var selectedImagesPaths = <String>[].obs;
 
   RxBool trailerCheckboxValue = false.obs;
 
@@ -48,81 +47,41 @@ class VehiclesController extends GetxController {
   Vehicle? get getVehicle => selectedVehicleInAplication.value;
 
   void pickImage(ImageSource source) async {
-    if (source == ImageSource.gallery) {
-      final List<XFile> pickedFiles = await ImagePicker().pickMultiImage();
-      for (var pickedFile in pickedFiles) {
-        final croppedFile = await ImageCropper().cropImage(
-          sourcePath: pickedFile.path,
-          uiSettings: [
-            AndroidUiSettings(
-              toolbarTitle: 'Recortar Imagem',
-              toolbarColor: Colors.deepOrange,
-              toolbarWidgetColor: Colors.white,
-              initAspectRatio: CropAspectRatioPreset.original,
-              lockAspectRatio: false,
-              aspectRatioPresets: [
-                CropAspectRatioPreset.square,
-                CropAspectRatioPreset.ratio3x2,
-                CropAspectRatioPreset.original,
-                CropAspectRatioPreset.ratio4x3,
-                CropAspectRatioPreset.ratio16x9
-              ],
-            ),
-            IOSUiSettings(
-              minimumAspectRatio: 1.0,
-              title: 'Recortar Imagem',
-              aspectRatioPresets: [
-                CropAspectRatioPreset.original,
-                CropAspectRatioPreset.square,
-              ],
-            ),
-          ],
-        );
-        if (croppedFile != null) {
-          selectedImagesPaths.add(croppedFile.path);
-        }
+    final pickedFile = await ImagePicker().pickImage(source: source);
+    if (pickedFile != null) {
+      final croppedFile = await ImageCropper().cropImage(
+        sourcePath: pickedFile.path,
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Recortar Imagem',
+            toolbarColor: Colors.deepOrange,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false,
+            aspectRatioPresets: [
+              CropAspectRatioPreset.square,
+              CropAspectRatioPreset.ratio3x2,
+              CropAspectRatioPreset.original,
+              CropAspectRatioPreset.ratio4x3,
+              CropAspectRatioPreset.ratio16x9
+            ],
+          ),
+          IOSUiSettings(
+            minimumAspectRatio: 1.0,
+            title: 'Recortar Imagem',
+            aspectRatioPresets: [
+              CropAspectRatioPreset.original,
+              CropAspectRatioPreset.square,
+            ],
+          ),
+        ],
+      );
+      if (croppedFile != null) {
+        selectedImagePath.value = croppedFile.path;
       }
     } else {
-      final pickedFile = await ImagePicker().pickImage(source: source);
-      if (pickedFile != null) {
-        final croppedFile = await ImageCropper().cropImage(
-          sourcePath: pickedFile.path,
-          uiSettings: [
-            AndroidUiSettings(
-              toolbarTitle: 'Recortar Imagem',
-              toolbarColor: Colors.deepOrange,
-              toolbarWidgetColor: Colors.white,
-              initAspectRatio: CropAspectRatioPreset.original,
-              lockAspectRatio: false,
-              aspectRatioPresets: [
-                CropAspectRatioPreset.square,
-                CropAspectRatioPreset.ratio3x2,
-                CropAspectRatioPreset.original,
-                CropAspectRatioPreset.ratio4x3,
-                CropAspectRatioPreset.ratio16x9
-              ],
-            ),
-            IOSUiSettings(
-              minimumAspectRatio: 1.0,
-              title: 'Recortar Imagem',
-              aspectRatioPresets: [
-                CropAspectRatioPreset.original,
-                CropAspectRatioPreset.square,
-              ],
-            ),
-          ],
-        );
-        if (croppedFile != null) {
-          selectedImagesPaths.add(croppedFile.path);
-        }
-      } else {
-        Get.snackbar('Erro', 'Nenhuma imagem selecionada');
-      }
+      Get.snackbar('Erro', 'Nenhuma imagem selecionada');
     }
-  }
-
-  void removeImage(String path) {
-    selectedImagesPaths.remove(path);
   }
 
   Map<String, dynamic> retorno = {

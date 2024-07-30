@@ -1,25 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:rodocalc/app/data/models/expense_category_model.dart';
 import 'package:rodocalc/app/data/models/expense_model.dart';
+import 'package:rodocalc/app/data/models/expense_photos_model.dart';
+import 'package:rodocalc/app/data/models/specific_type_expense_model.dart';
 import 'package:rodocalc/app/data/repositories/expense_repository.dart';
+import 'package:rodocalc/app/utils/formatter.dart';
+import 'package:rodocalc/app/utils/service_storage.dart';
 
 class ExpenseController extends GetxController {
   RxBool trailerCheckboxValue = false.obs;
 
+  var selectedImagesPaths = <String>[].obs;
+
+  //CONTROLLER E KEY DESPESA
+
   final formKeyExpense = GlobalKey<FormState>();
-  final descriptionController = TextEditingController();
-  final expenseCategoryIdController = TextEditingController();
-  final specificTypeExpenseIdController = TextEditingController();
-  final valueController = TextEditingController();
-  final companyController = TextEditingController();
-  final cityController = TextEditingController();
-  final ufController = TextEditingController();
-  final dddController = TextEditingController();
-  final phoneController = TextEditingController();
-  final commetnsController = TextEditingController();
-  final peopleIdController = TextEditingController();
-  final vehicleIdController = TextEditingController();
-  final statusController = TextEditingController();
+  final formKeyExpenseCategory = GlobalKey<FormState>();
+  final txtDescriptionExpenseController = TextEditingController();
+  final txtDescriptionExpenseCategoryController = TextEditingController();
+  final txtCityController = TextEditingController();
+  final txtCompanyController = TextEditingController();
+  final txtDDDController = TextEditingController();
+  final txtPhoneController = TextEditingController();
+  final txtValueController = TextEditingController();
+  final txtDateController = TextEditingController();
 
   RxBool isLoading = true.obs;
 
@@ -27,7 +34,7 @@ class ExpenseController extends GetxController {
 
   RxList<Expense> listExpense = RxList<Expense>([]);
 
-  final repository = Get.find<ExpenseRepository>();
+  final repository = Get.put(ExpenseRepository());
 
   Map<String, dynamic> retorno = {
     "success": false,
@@ -35,6 +42,40 @@ class ExpenseController extends GetxController {
     "message": ["Preencha todos os campos!"]
   };
   dynamic mensagem;
+
+  var ufs = [
+    'AC',
+    'AL',
+    'AP',
+    'AM',
+    'BA',
+    'CE',
+    'DF',
+    'ES',
+    'GO',
+    'MA',
+    'MT',
+    'MS',
+    'MG',
+    'PA',
+    'PB',
+    'PR',
+    'PE',
+    'PI',
+    'RJ',
+    'RN',
+    'RS',
+    'RO',
+    'RR',
+    'SC',
+    'SP',
+    'SE',
+    'TO'
+  ].obs;
+  var selectedUf = 'AC'.obs;
+
+  var selectedSpecificType = Rxn<int>();
+  var selectedCategory = Rxn<int>();
 
   Future<void> getAll() async {
     isLoading.value = true;
@@ -46,55 +87,171 @@ class ExpenseController extends GetxController {
     isLoading.value = false;
   }
 
+  RxList<ExpenseCategory> expenseCategories = <ExpenseCategory>[].obs;
+  RxList<SpecificTypeExpense> specificTypes = <SpecificTypeExpense>[].obs;
+
+  Future<void> getMyCategories() async {
+    isLoading.value = true;
+    try {
+      expenseCategories.value = await repository.getMyCategories();
+    } catch (e) {
+      Exception(e);
+    }
+    isLoading.value = false;
+  }
+
+  Future<void> getMySpecifics() async {
+    isLoading.value = true;
+    try {
+      specificTypes.value = await repository.getMySpecifics();
+    } catch (e) {
+      Exception(e);
+    }
+    isLoading.value = false;
+  }
+
+  void pickImage(ImageSource source) async {
+    if (source == ImageSource.gallery) {
+      final List<XFile> pickedFiles = await ImagePicker().pickMultiImage();
+      for (var pickedFile in pickedFiles) {
+        final croppedFile = await ImageCropper().cropImage(
+          sourcePath: pickedFile.path,
+          uiSettings: [
+            AndroidUiSettings(
+              toolbarTitle: 'Recortar Imagem',
+              toolbarColor: Colors.deepOrange,
+              toolbarWidgetColor: Colors.white,
+              initAspectRatio: CropAspectRatioPreset.original,
+              lockAspectRatio: false,
+              aspectRatioPresets: [
+                CropAspectRatioPreset.square,
+                CropAspectRatioPreset.ratio3x2,
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.ratio4x3,
+                CropAspectRatioPreset.ratio16x9
+              ],
+            ),
+            IOSUiSettings(
+              minimumAspectRatio: 1.0,
+              title: 'Recortar Imagem',
+              aspectRatioPresets: [
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.square,
+              ],
+            ),
+          ],
+        );
+        if (croppedFile != null) {
+          selectedImagesPaths.add(croppedFile.path);
+        }
+      }
+    } else {
+      final pickedFile = await ImagePicker().pickImage(source: source);
+      if (pickedFile != null) {
+        final croppedFile = await ImageCropper().cropImage(
+          sourcePath: pickedFile.path,
+          uiSettings: [
+            AndroidUiSettings(
+              toolbarTitle: 'Recortar Imagem',
+              toolbarColor: Colors.deepOrange,
+              toolbarWidgetColor: Colors.white,
+              initAspectRatio: CropAspectRatioPreset.original,
+              lockAspectRatio: false,
+              aspectRatioPresets: [
+                CropAspectRatioPreset.square,
+                CropAspectRatioPreset.ratio3x2,
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.ratio4x3,
+                CropAspectRatioPreset.ratio16x9
+              ],
+            ),
+            IOSUiSettings(
+              minimumAspectRatio: 1.0,
+              title: 'Recortar Imagem',
+              aspectRatioPresets: [
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.square,
+              ],
+            ),
+          ],
+        );
+        if (croppedFile != null) {
+          selectedImagesPaths.add(croppedFile.path);
+        }
+      } else {
+        Get.snackbar('Erro', 'Nenhuma imagem selecionada');
+      }
+    }
+  }
+
+  void removeImage(String path) {
+    selectedImagesPaths.remove(path);
+  }
+
   Future<Map<String, dynamic>> insertExpense() async {
     if (formKeyExpense.currentState!.validate()) {
+      List<ExpensePhotos>? photos;
+      if (selectedImagesPaths.isNotEmpty) {
+        selectedImagesPaths
+            .map((element) => photos!.add(ExpensePhotos(arquivo: element)));
+      }
+
       mensagem = await repository.insert(Expense(
-        descricao: descriptionController.text,
-        categoriadespesaId: expenseCategoryIdController.text as int,
-        tipoespecificodespesaId: specificTypeExpenseIdController.text as int,
-        valor: valueController.text as double,
-        empresa: companyController.text,
-        cidade: cityController.text,
-        uf: ufController.text,
-        ddd: dddController.text,
-        telefone: phoneController.text,
-        observacoes: commetnsController.text,
-        pessoaId: peopleIdController.text as int,
-        veiculoId: vehicleIdController.text as int,
+        descricao: txtDescriptionExpenseController.text,
+        categoriadespesaId: 1,
+        tipoespecificodespesaId: 1,
+        valor: FormattedInputers.convertToDouble(txtValueController.text),
+        empresa: txtCompanyController.text,
+        cidade: txtCityController.text,
+        uf: selectedUf.value,
+        ddd: txtDDDController.text,
+        telefone: txtPhoneController.text,
+        observacoes: "",
         status: 1,
+        pessoaId: ServiceStorage.getUserId(),
+        veiculoId: ServiceStorage.idSelectedVehicle(),
+        expenseDate: txtDateController.text,
+        photos: photos,
       ));
-      retorno = {
-        'success': mensagem['success'],
-        'message': mensagem['message']
-      };
-      getAll();
+      if (mensagem != null) {
+        retorno = {
+          'success': mensagem['success'],
+          'message': mensagem['message']
+        };
+//        getAll();
+        formKeyExpense.currentState!.reset();
+      } else {
+        retorno = {
+          'success': false,
+          'message': ['Falha ao realizar a operação!']
+        };
+      }
     }
     return retorno;
   }
 
-  Future<Map<String, dynamic>> updateVehicle(int id) async {
-    if (formKeyExpense.currentState!.validate()) {
-      mensagem = await repository.update(Expense(
-        id: id,
-        descricao: descriptionController.text,
-        categoriadespesaId: expenseCategoryIdController.text as int,
-        tipoespecificodespesaId: specificTypeExpenseIdController.text as int,
-        valor: valueController.text as double,
-        empresa: companyController.text,
-        cidade: cityController.text,
-        uf: ufController.text,
-        ddd: dddController.text,
-        telefone: phoneController.text,
-        observacoes: commetnsController.text,
-        pessoaId: peopleIdController.text as int,
-        veiculoId: vehicleIdController.text as int,
-        status: 1,
-      ));
-      retorno = {
-        'success': mensagem['success'],
-        'message': mensagem['message']
-      };
-      getAll();
+  Future<Map<String, dynamic>> insertExpenseCategory(String type) async {
+    if (formKeyExpenseCategory.currentState!.validate()) {
+      mensagem = await repository.insertCategory(
+          ExpenseCategory(
+            descricao: txtDescriptionExpenseCategoryController.text,
+            status: 1,
+            userId: ServiceStorage.getUserId(),
+          ),
+          type);
+      if (mensagem != null) {
+        retorno = {
+          'success': mensagem['success'],
+          'message': mensagem['message']
+        };
+        getMyCategories();
+        getMySpecifics();
+      } else {
+        retorno = {
+          'success': false,
+          'message': ['Falha ao realizar a operação!']
+        };
+      }
     }
     return retorno;
   }
@@ -111,43 +268,43 @@ class ExpenseController extends GetxController {
     return retorno;
   }
 
-  void fillInFields() {
-    descriptionController.text = selectedExpense.descricao.toString();
-    expenseCategoryIdController.text =
-        selectedExpense.categoriadespesaId.toString();
-    specificTypeExpenseIdController.text =
-        selectedExpense.tipoespecificodespesaId.toString();
-    valueController.text = selectedExpense.valor.toString();
-    companyController.text = selectedExpense.empresa.toString();
-    cityController.text = selectedExpense.cidade.toString();
-    ufController.text = selectedExpense.uf.toString();
-    dddController.text = selectedExpense.ddd.toString();
-    phoneController.text = selectedExpense.telefone.toString();
-    commetnsController.text = selectedExpense.observacoes.toString();
-    peopleIdController.text = selectedExpense.pessoaId.toString();
-    vehicleIdController.text = selectedExpense.veiculoId.toString();
-    statusController.text = selectedExpense.status.toString();
-  }
-
-  void clearAllFields() {
-    final textControllers = [
-      descriptionController,
-      expenseCategoryIdController,
-      specificTypeExpenseIdController,
-      valueController,
-      companyController,
-      cityController,
-      ufController,
-      dddController,
-      phoneController,
-      commetnsController,
-      peopleIdController,
-      vehicleIdController,
-      statusController
-    ];
-
-    for (final controller in textControllers) {
-      controller.clear();
-    }
-  }
+// void fillInFields() {
+//   descriptionController.text = selectedExpense.descricao.toString();
+//   expenseCategoryIdController.text =
+//       selectedExpense.categoriadespesaId.toString();
+//   specificTypeExpenseIdController.text =
+//       selectedExpense.tipoespecificodespesaId.toString();
+//   valueController.text = selectedExpense.valor.toString();
+//   companyController.text = selectedExpense.empresa.toString();
+//   cityController.text = selectedExpense.cidade.toString();
+//   ufController.text = selectedExpense.uf.toString();
+//   dddController.text = selectedExpense.ddd.toString();
+//   phoneController.text = selectedExpense.telefone.toString();
+//   commetnsController.text = selectedExpense.observacoes.toString();
+//   peopleIdController.text = selectedExpense.pessoaId.toString();
+//   vehicleIdController.text = selectedExpense.veiculoId.toString();
+//   statusController.text = selectedExpense.status.toString();
+// }
+//
+// void clearAllFields() {
+//   final textControllers = [
+//     descriptionController,
+//     expenseCategoryIdController,
+//     specificTypeExpenseIdController,
+//     valueController,
+//     companyController,
+//     cityController,
+//     ufController,
+//     dddController,
+//     phoneController,
+//     commetnsController,
+//     peopleIdController,
+//     vehicleIdController,
+//     statusController
+//   ];
+// //
+// //   for (final controller in textControllers) {
+// //     controller.clear();
+// //   }
+// // }
 }

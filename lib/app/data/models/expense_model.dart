@@ -1,4 +1,5 @@
 import 'package:rodocalc/app/data/models/expense_category_model.dart';
+import 'package:rodocalc/app/data/models/expense_photos_model.dart';
 import 'package:rodocalc/app/data/models/specific_type_expense_model.dart';
 
 class Expense {
@@ -21,6 +22,7 @@ class Expense {
   String? expenseDate;
   ExpenseCategory? expenseCategory;
   SpecificTypeExpense? specificTypeExpense;
+  List<ExpensePhotos>? photos;
 
   Expense({
     this.id,
@@ -41,6 +43,7 @@ class Expense {
     this.updatedAt,
     this.expenseDate,
     this.expenseCategory,
+    this.photos,
   });
 
   Expense.fromJson(Map<String, dynamic> json) {
@@ -67,6 +70,13 @@ class Expense {
     specificTypeExpense = json['tipoespecificodespesa'] != null
         ? SpecificTypeExpense.fromJson(json['tipoespecificodespesa'])
         : null;
+
+    if (json['fotos'] != null) {
+      photos = <ExpensePhotos>[];
+      json['fotos'].forEach((v) {
+        photos!.add(ExpensePhotos.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -88,6 +98,9 @@ class Expense {
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
     data['data_despesa'] = expenseDate;
+    if (photos != null) {
+      data['fotos'] = photos!.map((v) => v.toJson()).toList();
+    }
     return data;
   }
 }

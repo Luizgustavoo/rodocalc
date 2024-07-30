@@ -1,13 +1,15 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:rodocalc/app/data/controllers/financial_controller.dart';
+import 'package:rodocalc/app/data/controllers/expense_controller.dart';
+import 'package:rodocalc/app/data/models/expense_category_model.dart';
+import 'package:rodocalc/app/data/models/specific_type_expense_model.dart';
+import 'package:rodocalc/app/modules/vehicle/widgets/photo_item.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 
-class CreateExpenseModal extends GetView<FinancialController> {
+class CreateExpenseModal extends GetView<ExpenseController> {
   const CreateExpenseModal({super.key});
 
   @override
@@ -43,27 +45,50 @@ class CreateExpenseModal extends GetView<FinancialController> {
                 color: Colors.black,
               ),
               const SizedBox(height: 10),
-              GestureDetector(
-                onTap: () => _showPicker(context),
-                child: Obx(() => ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Container(
-                        width: 100,
-                        height: 100,
-                        color: Colors.grey,
-                        child: controller.selectedImagePath.value != ''
-                            ? Image.file(
-                                File(controller.selectedImagePath.value),
-                                fit: BoxFit.cover,
-                              )
-                            : const Icon(
-                                Icons.camera_alt,
-                                size: 50,
-                                color: Colors.white,
-                              ),
+
+              //COMEÇA AQUI AS FOTOS
+
+              Obx(
+                () => SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => _showPicker(context),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Container(
+                            width: 100,
+                            height: 100,
+                            color: Colors.grey,
+                            child: const Icon(
+                              Icons.camera_alt,
+                              size: 50,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
                       ),
-                    )),
+                      const SizedBox(width: 10),
+                      Row(
+                        children: controller.selectedImagesPaths.map((path) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            child: PhotoItem(
+                              photo: File(path),
+                              onDelete: () {
+                                controller.removeImage(path);
+                              },
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  ),
+                ),
               ),
+              //TERMINA AQUI AS FOTOS
+
               const SizedBox(height: 10),
               TextFormField(
                 controller: controller.txtDescriptionExpenseController,
@@ -114,7 +139,8 @@ class CreateExpenseModal extends GetView<FinancialController> {
                   labelText: 'VALOR',
                 ),
                 onChanged: (value) {
-                  controller.onValueChanged(value, 'value');
+                  FormattedInputers.onformatValueChanged(
+                      value, controller.txtValueController);
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -124,62 +150,77 @@ class CreateExpenseModal extends GetView<FinancialController> {
                 },
               ),
               const SizedBox(height: 15),
-              DropdownButtonFormField<String>(
-                decoration: InputDecoration(
-                  prefixIcon: IconButton(
-                    onPressed: () {
-                      showSpecificTypeModal(context);
-                    },
-                    icon: const Icon(
-                      Icons.add_rounded,
+              Obx(
+                () => DropdownButtonFormField<int>(
+                  decoration: InputDecoration(
+                    prefixIcon: IconButton(
+                      onPressed: () {
+                        showSpecificTypeModal(context, 'tipoespecificodespesa');
+                      },
+                      icon: const Icon(
+                        Icons.add_rounded,
+                      ),
                     ),
+                    labelText: 'TIPO ESPECÍFICO',
                   ),
-                  labelText: 'TIPO ESPECÍFICO',
+                  items: controller.specificTypes
+                      .map((SpecificTypeExpense specific) {
+                    return DropdownMenuItem<int>(
+                      value: specific.id!,
+                      child: Text(specific.descricao!),
+                    );
+                  }).toList(),
+                  onChanged: (newValue) {
+                    controller.selectedSpecificType.value = newValue!;
+                  },
+                  value: controller.selectedSpecificType.value,
+                  validator: (value) {
+                    if (value == null) {
+                      return 'Por favor, selecione o tipo específico';
+                    }
+                    return null;
+                  },
                 ),
-                items: controller.specificTypes.map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (newValue) {
-                  controller.selectedSpecificType.value = newValue!;
-                },
-                value: controller.selectedSpecificType.value,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, selecione o tipo específico';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 15),
-              DropdownButtonFormField<String>(
-                decoration: InputDecoration(
-                  prefixIcon: IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.add_rounded,
+
+              Obx(
+                () => DropdownButtonFormField<int>(
+                  decoration: InputDecoration(
+                    prefixIcon: IconButton(
+                      onPressed: () {
+                        showSpecificTypeModal(context, 'categoriadespesa');
+                      },
+                      icon: const Icon(
+                        Icons.add_rounded,
+                      ),
                     ),
+                    labelText: 'CATEGORIA',
                   ),
-                  labelText: 'CATEGORIA',
+                  items: [
+                    const DropdownMenuItem<int>(
+                      value: null,
+                      child: Text('Selecione uma categoria'),
+                    ),
+                    ...controller.expenseCategories
+                        .map((ExpenseCategory category) {
+                      return DropdownMenuItem<int>(
+                        value: category.id!,
+                        child: Text(category.descricao!),
+                      );
+                    }).toList(),
+                  ],
+                  onChanged: (newValue) {
+                    controller.selectedCategory.value = newValue!;
+                  },
+                  value: controller.selectedCategory.value,
+                  validator: (value) {
+                    if (value == null) {
+                      return 'Por favor, selecione a categoria';
+                    }
+                    return null;
+                  },
                 ),
-                items: controller.categories.map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (newValue) {
-                  controller.selectedCategory.value = newValue!;
-                },
-                value: controller.selectedCategory.value,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, selecione a categoria';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 10),
               Row(
@@ -239,8 +280,11 @@ class CreateExpenseModal extends GetView<FinancialController> {
                   Expanded(
                     flex: 1,
                     child: TextFormField(
+                      keyboardType: TextInputType.number,
+                      maxLength: 2,
                       controller: controller.txtDDDController,
                       decoration: const InputDecoration(
+                        counterText: '',
                         labelText: 'DDD',
                       ),
                     ),
@@ -259,82 +303,12 @@ class CreateExpenseModal extends GetView<FinancialController> {
                         labelText: 'TELEFONE',
                       ),
                       onChanged: (value) {
-                        controller.onContactChanged(value);
+                        FormattedInputers.onContactChanged(
+                            value, controller.txtPhoneController);
                       },
                     ),
                   ),
                 ],
-              ),
-              const SizedBox(height: 16),
-              const Padding(
-                padding: EdgeInsets.only(top: 10, bottom: 5),
-                child: Text(
-                  'Fotos',
-                  style: TextStyle(
-                    fontFamily: 'Inter-Bold',
-                    fontSize: 17,
-                    color: Color(0xFFFF6B00),
-                  ),
-                ),
-              ),
-              const Divider(
-                endIndent: 20,
-                indent: 20,
-                height: 5,
-                thickness: 2,
-                color: Colors.black,
-              ),
-              SizedBox(
-                height: 90, // Defina a altura desejada
-                child: Row(
-                  children: [
-                    Obx(() => Expanded(
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: controller.selectedsImagesExpense.length,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                      width: 100,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        border: Border.all(
-                                          color: Colors.grey.shade500,
-                                          width: 2,
-                                        ),
-                                      ),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: Image.file(
-                                          File(controller.selectedsImagesExpense
-                                              .value[index]),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      top: 0,
-                                      right: 0,
-                                      child: IconButton(
-                                        onPressed: () {},
-                                        icon: const Icon(
-                                          Icons.delete,
-                                          color: Colors.red,
-                                        ),
-                                        iconSize: 24,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                        )),
-                  ],
-                ),
               ),
               const SizedBox(height: 16),
               Row(
@@ -422,14 +396,39 @@ class CreateExpenseModal extends GetView<FinancialController> {
     );
   }
 
-  void showSpecificTypeModal(BuildContext context) {
+  void showSpecificTypeModal(BuildContext context, String type) {
+    String titulo = type == 'categoriadespesa'
+        ? "CATEGORIA DE DESPESA"
+        : "TIPO ESPECÍFICO DE DESPESA";
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text(
-            'CATEGORIA DE DESPESA',
-            style: TextStyle(fontFamily: 'Inter_bold', fontSize: 18),
+          backgroundColor: Colors.grey.shade300,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+                8.0), // Aqui você pode ajustar o valor para o raio desejado
+          ),
+          title: Column(
+            children: [
+              Text(
+                titulo,
+                style: const TextStyle(
+                  fontFamily: 'Inter_bold',
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFFFF6B00),
+                ),
+              ),
+              const Divider(
+                endIndent: 10,
+                indent: 10,
+                height: 5,
+                thickness: 2,
+                color: Colors.black45,
+              ),
+              const SizedBox(height: 10),
+            ],
           ),
           content: Form(
             key: controller.formKeyExpenseCategory,
@@ -452,7 +451,7 @@ class CreateExpenseModal extends GetView<FinancialController> {
             TextButton(
               onPressed: () async {
                 Map<String, dynamic> retorno =
-                    await controller.insertExpenseCategory();
+                    await controller.insertExpenseCategory(type);
 
                 if (retorno['success'] == true) {
                   Get.back();
@@ -469,7 +468,10 @@ class CreateExpenseModal extends GetView<FinancialController> {
                       snackPosition: SnackPosition.BOTTOM);
                 }
               },
-              child: const Text('SALVAR'),
+              child: const Text(
+                'SALVAR',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
             TextButton(
               onPressed: () {

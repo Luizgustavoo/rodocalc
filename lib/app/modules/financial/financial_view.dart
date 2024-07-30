@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/base_url.dart';
+import 'package:rodocalc/app/data/controllers/expense_controller.dart';
 import 'package:rodocalc/app/data/controllers/financial_controller.dart';
 import 'package:rodocalc/app/modules/financial/widgets/create_expense_modal.dart';
 import 'package:rodocalc/app/modules/financial/widgets/create_receipt_modal.dart';
@@ -144,6 +145,9 @@ class FinancialView extends GetView<FinancialController> {
                 label: 'ADICIONAR DESPESA',
                 labelStyle: const TextStyle(fontFamily: "Inter-Black"),
                 onTap: () {
+                  final expenseController = Get.put(ExpenseController());
+                  expenseController.getMyCategories();
+                  expenseController.getMySpecifics();
                   showModalBottomSheet(
                     isScrollControlled: true,
                     context: context,

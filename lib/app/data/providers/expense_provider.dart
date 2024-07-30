@@ -54,10 +54,13 @@ class ExpenseApiClient {
 
       var request = http.MultipartRequest('POST', vehicleUrl);
 
-      // if (expense.foto!.isNotEmpty) {
-      //   request.files
-      //       .add(await http.MultipartFile.fromPath('foto', expense.foto!));
-      // }
+      if (expense.photos != null && expense.photos!.isNotEmpty) {
+        for (var foto in expense.photos!) {
+          request.files
+              .add(await http.MultipartFile.fromPath('fotos[]', foto.arquivo!));
+        }
+      }
+
       request.fields.addAll({
         "descricao": expense.descricao.toString(),
         "categoriadespesa_id": expense.categoriadespesaId.toString(),
@@ -98,18 +101,23 @@ class ExpenseApiClient {
     return null;
   }
 
-  insertCategory(ExpenseCategory category) async {
+  insertCategory(ExpenseCategory category, String type) async {
     try {
+      String rotaFinal = "categoriadespesa";
+      if (type == 'tipoespecificodespesa') {
+        rotaFinal = "tipoespecificodespesa";
+      }
+
       final token = "Bearer ${ServiceStorage.getToken()}";
 
-      var vehicleUrl = Uri.parse('$baseUrl/v1/categoriadespesa');
+      var vehicleUrl = Uri.parse('$baseUrl/v1/$rotaFinal');
 
       var request = http.MultipartRequest('POST', vehicleUrl);
 
       request.fields.addAll({
         "descricao": category.descricao.toString(),
         "status": category.status.toString(),
-        "pessoa_id": category.userId.toString()
+        "user_id": category.userId.toString()
       });
 
       request.headers.addAll({
@@ -131,6 +139,76 @@ class ExpenseApiClient {
       }
     } catch (err) {
       Exception(err);
+    }
+    return null;
+  }
+
+  getMyCategories() async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+
+      Uri categoriesUrl;
+      String url =
+          '$baseUrl/v1/categoriadespesa/my/${ServiceStorage.getUserId().toString()}';
+      categoriesUrl = Uri.parse(url);
+      var response = await httpClient.get(
+        categoriesUrl,
+        headers: {
+          "Accept": "application/json",
+          "Authorization": token,
+        },
+      );
+      if (response.statusCode == 201) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401 &&
+          json.decode(response.body)['message'] == "Token has expired") {
+        var resposta = {
+          'success': false,
+          'data': null,
+          'message': ['Token expirado']
+        };
+        var box = GetStorage('projeto');
+        box.erase();
+        Get.offAllNamed('/login');
+        return json.decode(resposta as String);
+      }
+    } catch (e) {
+      Exception(e);
+    }
+    return null;
+  }
+
+  getMySpecifics() async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+
+      Uri categoriesUrl;
+      String url =
+          '$baseUrl/v1/tipoespecificodespesa/my/${ServiceStorage.getUserId().toString()}';
+      categoriesUrl = Uri.parse(url);
+      var response = await httpClient.get(
+        categoriesUrl,
+        headers: {
+          "Accept": "application/json",
+          "Authorization": token,
+        },
+      );
+      if (response.statusCode == 201) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401 &&
+          json.decode(response.body)['message'] == "Token has expired") {
+        var resposta = {
+          'success': false,
+          'data': null,
+          'message': ['Token expirado']
+        };
+        var box = GetStorage('projeto');
+        box.erase();
+        Get.offAllNamed('/login');
+        return json.decode(resposta as String);
+      }
+    } catch (e) {
+      Exception(e);
     }
     return null;
   }
