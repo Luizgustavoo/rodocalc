@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/controllers/financial_controller.dart';
@@ -263,6 +264,77 @@ class CreateExpenseModal extends GetView<FinancialController> {
                     ),
                   ),
                 ],
+              ),
+              const SizedBox(height: 16),
+              const Padding(
+                padding: EdgeInsets.only(top: 10, bottom: 5),
+                child: Text(
+                  'Fotos',
+                  style: TextStyle(
+                    fontFamily: 'Inter-Bold',
+                    fontSize: 17,
+                    color: Color(0xFFFF6B00),
+                  ),
+                ),
+              ),
+              const Divider(
+                endIndent: 20,
+                indent: 20,
+                height: 5,
+                thickness: 2,
+                color: Colors.black,
+              ),
+              SizedBox(
+                height: 90, // Defina a altura desejada
+                child: Row(
+                  children: [
+                    Obx(() => Expanded(
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: controller.selectedsImagesExpense.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      width: 100,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                          color: Colors.grey.shade500,
+                                          width: 2,
+                                        ),
+                                      ),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: Image.file(
+                                          File(controller.selectedsImagesExpense
+                                              .value[index]),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      top: 0,
+                                      right: 0,
+                                      child: IconButton(
+                                        onPressed: () {},
+                                        icon: const Icon(
+                                          Icons.delete,
+                                          color: Colors.red,
+                                        ),
+                                        iconSize: 24,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        )),
+                  ],
+                ),
               ),
               const SizedBox(height: 16),
               Row(

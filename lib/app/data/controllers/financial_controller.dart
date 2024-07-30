@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/models/expense_category_model.dart';
@@ -10,6 +11,8 @@ import 'package:rodocalc/app/utils/service_storage.dart';
 
 class FinancialController extends GetxController {
   var selectedImagePath = ''.obs;
+
+  RxList<String> selectedsImagesExpense = <String>[].obs;
   RxBool setImage = false.obs;
   RxBool isLoading = true.obs;
 
@@ -192,6 +195,7 @@ class FinancialController extends GetxController {
       );
       if (croppedFile != null) {
         selectedImagePath.value = croppedFile.path;
+        selectedsImagesExpense.add(selectedImagePath.value);
       }
     } else {
       Get.snackbar('Erro', 'Nenhuma imagem selecionada');
