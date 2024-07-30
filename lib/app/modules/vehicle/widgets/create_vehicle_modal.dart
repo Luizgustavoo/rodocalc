@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/controllers/vehicle_controller.dart';
 import 'package:rodocalc/app/data/models/vehicle_model.dart';
+import 'package:rodocalc/app/modules/vehicle/widgets/photo_item.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 
 class CreateVehicleModal extends GetView<VehiclesController> {
@@ -50,28 +50,42 @@ class CreateVehicleModal extends GetView<VehiclesController> {
                 const SizedBox(height: 10),
                 GestureDetector(
                   onTap: () => _showPicker(context),
-                  child: Obx(() => ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        // Ajuste o valor para bordas mais ou menos arredondadas
-                        child: Container(
-                          width: 100, // Ajuste a largura conforme necessário
-                          height: 100, // Ajuste a altura conforme necessário
-                          color: Colors.grey,
-                          child: controller.setImage.value == true
-                              ? Image.network(
-                                  "$urlImagem/storage/fotos/veiculos/${controller.selectedImagePath.value}")
-                              : controller.selectedImagePath.value != ''
-                                  ? Image.file(
-                                      File(controller.selectedImagePath.value),
-                                      fit: BoxFit.cover,
-                                    )
-                                  : const Icon(
-                                      Icons.camera_alt,
-                                      size: 50,
-                                      color: Colors.white,
-                                    ),
-                        ),
-                      )),
+                  child: Obx(
+                    () => ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Container(
+                        width: 100,
+                        height: 100,
+                        color: Colors.grey,
+                        child: controller.selectedImagePath.value != ''
+                            ? Image.file(
+                                File(controller.selectedImagePath.value),
+                                fit: BoxFit.cover,
+                              )
+                            : const Icon(
+                                Icons.camera_alt,
+                                size: 50,
+                                color: Colors.white,
+                              ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Obx(
+                  () => SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: controller.selectedImagesPaths.map((path) {
+                        return PhotoItem(
+                          photo: File(path),
+                          onDelete: () {
+                            controller.removeImage(path);
+                          },
+                        );
+                      }).toList(),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 10),
                 Obx(() => TextFormField(

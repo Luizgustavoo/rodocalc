@@ -173,7 +173,7 @@ class VehiclesView extends GetView<VehiclesController> {
           backgroundColor: const Color(0xFFFF6B00),
           onPressed: () {
             controller.isLoading.value = false;
-            // controller.selectedImagePath.value = "";
+            controller.selectedImagesPaths.value = [];
             controller.clearAllFields();
             showModalBottomSheet(
               isScrollControlled: true,
