@@ -116,7 +116,7 @@ class CreateExpenseModal extends GetView<ExpenseController> {
                     Icons.calendar_month,
                     size: 25,
                   ),
-                  labelText: 'DATA DE INÍCIO',
+                  labelText: 'DATA DESPESA',
                 ),
                 onChanged: (value) {
                   FormattedInputers.onDateChanged(
@@ -275,40 +275,20 @@ class CreateExpenseModal extends GetView<ExpenseController> {
                 ),
               ),
               const SizedBox(height: 10),
-              Row(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: TextFormField(
-                      keyboardType: TextInputType.number,
-                      maxLength: 2,
-                      controller: controller.txtDDDController,
-                      decoration: const InputDecoration(
-                        counterText: '',
-                        labelText: 'DDD',
-                      ),
-                    ),
+              TextFormField(
+                controller: controller.txtPhoneController,
+                maxLength: 14,
+                decoration: const InputDecoration(
+                  counterText: '',
+                  prefixIcon: Icon(
+                    Icons.phone_rounded,
                   ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    flex: 3,
-                    child: TextFormField(
-                      controller: controller.txtPhoneController,
-                      maxLength: 14,
-                      decoration: const InputDecoration(
-                        counterText: '',
-                        prefixIcon: Icon(
-                          Icons.phone_rounded,
-                        ),
-                        labelText: 'TELEFONE',
-                      ),
-                      onChanged: (value) {
-                        FormattedInputers.onContactChanged(
-                            value, controller.txtPhoneController);
-                      },
-                    ),
-                  ),
-                ],
+                  labelText: 'TELEFONE',
+                ),
+                onChanged: (value) {
+                  FormattedInputers.onContactChanged(
+                      value, controller.txtPhoneController);
+                },
               ),
               const SizedBox(height: 16),
               Row(

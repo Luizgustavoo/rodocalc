@@ -190,10 +190,11 @@ class ExpenseController extends GetxController {
 
   Future<Map<String, dynamic>> insertExpense() async {
     if (formKeyExpense.currentState!.validate()) {
-      List<ExpensePhotos>? photos;
+      List<ExpensePhotos>? photos = [];
       if (selectedImagesPaths.isNotEmpty) {
-        selectedImagesPaths
-            .map((element) => photos!.add(ExpensePhotos(arquivo: element)));
+        for (var element in selectedImagesPaths) {
+          photos.add(ExpensePhotos(arquivo: element));
+        }
       }
 
       mensagem = await repository.insert(Expense(
@@ -219,7 +220,7 @@ class ExpenseController extends GetxController {
           'message': mensagem['message']
         };
 //        getAll();
-        formKeyExpense.currentState!.reset();
+        clearAllFields();
       } else {
         retorno = {
           'success': false,
@@ -286,25 +287,21 @@ class ExpenseController extends GetxController {
 //   statusController.text = selectedExpense.status.toString();
 // }
 //
-// void clearAllFields() {
-//   final textControllers = [
-//     descriptionController,
-//     expenseCategoryIdController,
-//     specificTypeExpenseIdController,
-//     valueController,
-//     companyController,
-//     cityController,
-//     ufController,
-//     dddController,
-//     phoneController,
-//     commetnsController,
-//     peopleIdController,
-//     vehicleIdController,
-//     statusController
-//   ];
-// //
-// //   for (final controller in textControllers) {
-// //     controller.clear();
-// //   }
-// // }
+  void clearAllFields() {
+    final textControllers = [
+      txtDescriptionExpenseController,
+      txtDescriptionExpenseCategoryController,
+      txtCityController,
+      txtCompanyController,
+      txtDDDController,
+      txtPhoneController,
+      txtValueController,
+      txtDateController,
+    ];
+
+    for (final controller in textControllers) {
+      controller.clear();
+    }
+    selectedImagesPaths = <String>[].obs;
+  }
 }
