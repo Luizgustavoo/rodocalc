@@ -1,4 +1,5 @@
 import 'package:get_storage/get_storage.dart';
+import 'package:rodocalc/app/data/models/auth_model.dart';
 import 'package:rodocalc/app/data/models/vehicle_model.dart';
 
 class ServiceStorage {
@@ -35,7 +36,15 @@ class ServiceStorage {
 
   static String getUserName() {
     if (existUser()) {
-      return _box.read('auth')['pessoa']['nome'];
+      Map<String, dynamic> authJson = _box.read('auth');
+      Auth auth = Auth.fromJson(authJson);
+      String nomePessoa = auth.user!.people!.nome!;
+
+      List<String> nomeParts = nomePessoa.split(' ');
+      String primeiroNome = nomeParts.first;
+      String ultimoNome = nomeParts.length > 1 ? nomeParts.last : '';
+
+      return "$primeiroNome $ultimoNome";
     }
     return "";
   }

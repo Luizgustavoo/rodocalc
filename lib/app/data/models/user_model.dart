@@ -1,3 +1,5 @@
+import 'package:rodocalc/app/data/models/people_model.dart';
+
 class User {
   int? id;
   String? name;
@@ -9,18 +11,21 @@ class User {
   String? dataInicio;
   int? status;
   String? contato;
+  People? people;
 
-  User(
-      {this.id,
-      this.name,
-      this.email,
-      this.password,
-      this.emailVerifiedAt,
-      this.createdAt,
-      this.updatedAt,
-      this.dataInicio,
-      this.status,
-      this.contato});
+  User({
+    this.id,
+    this.name,
+    this.email,
+    this.password,
+    this.emailVerifiedAt,
+    this.createdAt,
+    this.updatedAt,
+    this.dataInicio,
+    this.status,
+    this.contato,
+    this.people,
+  });
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -33,6 +38,7 @@ class User {
     dataInicio = json['data_inicio'];
     status = json['status'];
     contato = json['contato'];
+    people = json['pessoa'] != null ? People.fromJson(json['pessoa']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -47,6 +53,9 @@ class User {
     data['data_inicio'] = dataInicio;
     data['status'] = status;
     data['contato'] = contato;
+    if (people != null) {
+      data['pessoa'] = people!.toJson();
+    }
     return data;
   }
 }

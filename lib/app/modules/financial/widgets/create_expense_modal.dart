@@ -208,7 +208,7 @@ class CreateExpenseModal extends GetView<ExpenseController> {
                         value: category.id!,
                         child: Text(category.descricao!),
                       );
-                    }).toList(),
+                    }),
                   ],
                   onChanged: (newValue) {
                     controller.selectedCategory.value = newValue!;

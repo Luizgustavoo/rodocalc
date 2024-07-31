@@ -18,13 +18,14 @@ class FinancialView extends GetView<FinancialController> {
         appBar: AppBar(
           title: Column(
             children: [
-              Text('FINANCEIRO',
+              const Text('FINANCEIRO',
                   style: TextStyle(
                     fontFamily: 'Inter-Black',
                   )),
               Text(
                 ServiceStorage.titleSelectedVehicle(),
-                style: TextStyle(fontFamily: 'Inter-Regular', fontSize: 14),
+                style:
+                    const TextStyle(fontFamily: 'Inter-Regular', fontSize: 14),
               )
             ],
           ),
@@ -50,7 +51,7 @@ class FinancialView extends GetView<FinancialController> {
                   child: !ServiceStorage.existsSelectedVehicle()
                       ? Image.asset('assets/images/caminhao.jpg')
                       : Image.network(
-                          "$urlImagem/storage/fotos/veiculos/${ServiceStorage.photoSelectedVehicle()!}",
+                          "$urlImagem/storage/fotos/veiculos/${ServiceStorage.photoSelectedVehicle()}",
                           fit: BoxFit.cover,
                         ),
                 ),

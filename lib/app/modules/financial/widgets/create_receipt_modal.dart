@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:rodocalc/app/data/controllers/financial_controller.dart';
+import 'package:rodocalc/app/data/controllers/receipt_controller.dart';
+import 'package:rodocalc/app/modules/vehicle/widgets/photo_item.dart';
+import 'package:rodocalc/app/utils/formatter.dart';
 
-class CreateReceiptModal extends GetView<FinancialController> {
+class CreateReceiptModal extends GetView<ReceiptController> {
   const CreateReceiptModal({super.key});
 
   @override
@@ -13,6 +15,7 @@ class CreateReceiptModal extends GetView<FinancialController> {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Form(
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           key: controller.formKeyReceipt,
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
@@ -39,30 +42,52 @@ class CreateReceiptModal extends GetView<FinancialController> {
                   color: Colors.black,
                 ),
                 const SizedBox(height: 10),
-                GestureDetector(
-                  onTap: () => _showPicker(context),
-                  child: Obx(() => ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Container(
-                          width: 100,
-                          height: 100,
-                          color: Colors.grey,
-                          child: controller.selectedImagePath.value != ''
-                              ? Image.file(
-                                  File(controller.selectedImagePath.value),
-                                  fit: BoxFit.cover,
-                                )
-                              : const Icon(
-                                  Icons.camera_alt,
-                                  size: 50,
-                                  color: Colors.white,
-                                ),
+                //COMEÇA AQUI AS FOTOS
+
+                Obx(
+                  () => SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => _showPicker(context),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              width: 100,
+                              height: 100,
+                              color: Colors.grey,
+                              child: const Icon(
+                                Icons.camera_alt,
+                                size: 50,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
                         ),
-                      )),
+                        const SizedBox(width: 10),
+                        Row(
+                          children: controller.selectedImagesPaths.map((path) {
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 5),
+                              child: PhotoItem(
+                                photo: File(path),
+                                onDelete: () {
+                                  controller.removeImage(path);
+                                },
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
+                //TERMINA AQUI AS FOTOS
                 const SizedBox(height: 10),
                 TextFormField(
-                  controller: controller.descriptionController,
+                  controller: controller.txtDescriptionController,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
                       Icons.message_outlined,
@@ -79,7 +104,30 @@ class CreateReceiptModal extends GetView<FinancialController> {
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
-                  controller: controller.originController,
+                  maxLength: 10,
+                  controller: controller.txtReceiptDate,
+                  decoration: const InputDecoration(
+                    counterText: '',
+                    prefixIcon: Icon(
+                      Icons.calendar_month,
+                      size: 25,
+                    ),
+                    labelText: 'DATA RECEBIMENTO',
+                  ),
+                  onChanged: (value) {
+                    FormattedInputers.onDateChanged(
+                        value, controller.txtReceiptDate);
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira a data da despesa';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: controller.txtOriginController,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
                       Icons.pin_drop_outlined,
@@ -95,7 +143,7 @@ class CreateReceiptModal extends GetView<FinancialController> {
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
-                  controller: controller.destinyController,
+                  controller: controller.txtDestinyController,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
                       Icons.pin_drop_outlined,
@@ -111,7 +159,7 @@ class CreateReceiptModal extends GetView<FinancialController> {
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
-                  controller: controller.amountController,
+                  controller: controller.txtAmountController,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
                       Icons.monetization_on_outlined,
@@ -119,7 +167,9 @@ class CreateReceiptModal extends GetView<FinancialController> {
                     labelText: 'VALOR RECEBIDO',
                   ),
                   onChanged: (value) {
-                    controller.onValueChanged(value, 'valueReceive');
+                    FormattedInputers.onformatValueChanged(
+                        value, controller.txtAmountController);
+                    // controller.onValueChanged(value, 'valueReceive');
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -130,7 +180,7 @@ class CreateReceiptModal extends GetView<FinancialController> {
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
-                  controller: controller.tonController,
+                  controller: controller.txtTonController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
@@ -174,7 +224,26 @@ class CreateReceiptModal extends GetView<FinancialController> {
                 Row(
                   children: [
                     ElevatedButton(
-                      onPressed: () async {},
+                      onPressed: () async {
+                        Map<String, dynamic> retorno =
+                            await controller.insertReceipt();
+
+                        if (retorno['success'] == true) {
+                          Get.back();
+                          Get.snackbar(
+                              'Sucesso!', retorno['message'].join('\n'),
+                              backgroundColor: Colors.green,
+                              colorText: Colors.white,
+                              duration: const Duration(seconds: 2),
+                              snackPosition: SnackPosition.BOTTOM);
+                        } else {
+                          Get.snackbar('Falha!', retorno['message'].join('\n'),
+                              backgroundColor: Colors.red,
+                              colorText: Colors.white,
+                              duration: const Duration(seconds: 2),
+                              snackPosition: SnackPosition.BOTTOM);
+                        }
+                      },
                       child: const Text(
                         'CADASTRAR',
                         style: TextStyle(
