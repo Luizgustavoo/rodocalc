@@ -1,14 +1,15 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
+import 'package:rodocalc/app/data/models/charge_type_model.dart';
 import 'package:rodocalc/app/modules/vehicle/widgets/photo_item.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 
 class CreateReceiptModal extends GetView<TransactionController> {
-  const CreateReceiptModal({super.key});
+  CreateReceiptModal({super.key, required this.isUpdate});
+
+  final bool isUpdate;
 
   @override
   Widget build(BuildContext context) {
@@ -72,9 +73,10 @@ class CreateReceiptModal extends GetView<TransactionController> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 5),
                               child: PhotoItem(
-                                photo: File(path),
+                                isUpdate: isUpdate,
+                                photo: path[0],
                                 onDelete: () {
-                                  controller.removeImage(path);
+                                  controller.removeImage(path[0]);
                                 },
                               ),
                             );
@@ -196,29 +198,44 @@ class CreateReceiptModal extends GetView<TransactionController> {
                   },
                 ),
                 const SizedBox(height: 15),
-                DropdownButtonFormField<String>(
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.sort_by_alpha_rounded,
+                Obx(
+                  () => DropdownButtonFormField<int>(
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(
+                        Icons.sort_by_alpha_rounded,
+                      ),
+                      labelText: 'TIPO DE CARGA',
                     ),
-                    labelText: 'TIPO DE CARGA',
+                    items: [
+                      const DropdownMenuItem<int>(
+                        value: null,
+                        child: Text('Selecione uma categoria'),
+                      ),
+                      ...controller.listChargeTypes.map((ChargeType charge) {
+                        return DropdownMenuItem<int>(
+                          value: charge.id!,
+                          child: Container(
+                            constraints:
+                                BoxConstraints(maxWidth: Get.width * .7),
+                            child: Text(
+                              charge.descricao!,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ],
+                    onChanged: (newValue) {
+                      controller.selectedCargoType.value = newValue;
+                    },
+                    value: controller.selectedCargoType.value,
+                    validator: (value) {
+                      if (value == null) {
+                        return 'Por favor, selecione o tipo de carga';
+                      }
+                      return null;
+                    },
                   ),
-                  items: controller.cargoTypes.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (newValue) {
-                    controller.selectedCargoType.value = newValue!;
-                  },
-                  value: controller.selectedCargoType.value,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, selecione o tipo de carga';
-                    }
-                    return null;
-                  },
                 ),
                 const SizedBox(height: 16),
                 Row(

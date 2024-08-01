@@ -17,7 +17,7 @@ class TransactionApiClient {
 
       Uri companyUrl;
       String url =
-          '$baseUrl/v1/transaction/my/${ServiceStorage.getUserId().toString()}';
+          '$baseUrl/v1/transacao/${ServiceStorage.idSelectedVehicle().toString()}';
       companyUrl = Uri.parse(url);
       var response = await httpClient.get(
         companyUrl,
@@ -144,13 +144,48 @@ class TransactionApiClient {
     return null;
   }
 
+  getMyChargeTypes() async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+
+      Uri categoriesUrl;
+      String url =
+          '$baseUrl/v1/tipocarga/my/${ServiceStorage.getUserId().toString()}';
+      categoriesUrl = Uri.parse(url);
+      var response = await httpClient.get(
+        categoriesUrl,
+        headers: {
+          "Accept": "application/json",
+          "Authorization": token,
+        },
+      );
+      if (response.statusCode == 201) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401 &&
+          json.decode(response.body)['message'] == "Token has expired") {
+        var resposta = {
+          'success': false,
+          'data': null,
+          'message': ['Token expirado']
+        };
+        var box = GetStorage('projeto');
+        box.erase();
+        Get.offAllNamed('/login');
+        return json.decode(resposta as String);
+      }
+    } catch (e) {
+      Exception(e);
+    }
+    return null;
+  }
+
   getMyCategories() async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
       Uri categoriesUrl;
       String url =
-          '$baseUrl/v1/transacao/categoriadespesa/my/${ServiceStorage.getUserId().toString()}';
+          '$baseUrl/v1/categoriadespesa/my/${ServiceStorage.getUserId().toString()}';
       categoriesUrl = Uri.parse(url);
       var response = await httpClient.get(
         categoriesUrl,
@@ -185,7 +220,7 @@ class TransactionApiClient {
 
       Uri categoriesUrl;
       String url =
-          '$baseUrl/v1/transacao/tipoespecificodespesa/my/${ServiceStorage.getUserId().toString()}';
+          '$baseUrl/v1/tipoespecificodespesa/my/${ServiceStorage.getUserId().toString()}';
       categoriesUrl = Uri.parse(url);
       var response = await httpClient.get(
         categoriesUrl,

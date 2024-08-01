@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:rodocalc/app/data/models/charge_type_model.dart';
 import 'package:rodocalc/app/data/models/expense_category_model.dart';
 import 'package:rodocalc/app/data/models/specific_type_expense_model.dart';
 import 'package:rodocalc/app/data/models/transaction_photos_model.dart';
@@ -13,7 +15,7 @@ import 'package:rodocalc/app/utils/service_storage.dart';
 class TransactionController extends GetxController {
   RxBool trailerCheckboxValue = false.obs;
 
-  var selectedImagesPaths = <String>[].obs;
+  var selectedImagesPaths = <Map<String, dynamic>>[{}].obs;
 
   //CONTROLLER E KEY DESPESA
 
@@ -32,9 +34,6 @@ class TransactionController extends GetxController {
   final txtOriginController = TextEditingController();
   final txtDestinyController = TextEditingController();
   final txtTonController = TextEditingController();
-
-  var cargoTypes = ['Tipo 1', 'Tipo 2', 'Tipo 3', 'Tipo 4'].obs;
-  var selectedCargoType = 'Tipo 1'.obs;
 
   RxBool isLoading = true.obs;
 
@@ -84,11 +83,24 @@ class TransactionController extends GetxController {
 
   var selectedSpecificType = Rxn<int>();
   var selectedCategory = Rxn<int>();
+  var selectedCargoType = Rxn<int>();
+
+  var balance = 10000.0.obs;
+  var transactions = <Transacoes>[].obs;
+  var filteredTransactions = <Transacoes>[].obs;
+  var searchQuery = ''.obs;
+
+  // @override
+  // void onInit() {
+  //   super.onInit();
+  //   getAll();
+  // }
 
   Future<void> getAll() async {
     isLoading.value = true;
     try {
       listTransactions.value = await repository.getAll();
+      filteredTransactions.value = listTransactions;
     } catch (e) {
       Exception(e);
     }
@@ -97,6 +109,17 @@ class TransactionController extends GetxController {
 
   RxList<ExpenseCategory> expenseCategories = <ExpenseCategory>[].obs;
   RxList<SpecificTypeExpense> specificTypes = <SpecificTypeExpense>[].obs;
+  RxList<ChargeType> listChargeTypes = <ChargeType>[].obs;
+
+  Future<void> getMyChargeTypes() async {
+    isLoading.value = true;
+    try {
+      listChargeTypes.value = await repository.getMyChargeTypes();
+    } catch (e) {
+      Exception(e);
+    }
+    isLoading.value = false;
+  }
 
   Future<void> getMyCategories() async {
     isLoading.value = true;
@@ -150,7 +173,11 @@ class TransactionController extends GetxController {
           ],
         );
         if (croppedFile != null) {
-          selectedImagesPaths.add(croppedFile.path);
+          Map<String, dynamic> foto = {
+            "arquivo": croppedFile.path,
+            "tipo": "insert"
+          };
+          selectedImagesPaths.add(foto);
         }
       }
     } else {
@@ -184,7 +211,11 @@ class TransactionController extends GetxController {
           ],
         );
         if (croppedFile != null) {
-          selectedImagesPaths.add(croppedFile.path);
+          Map<String, dynamic> foto = {
+            "arquivo": croppedFile.path,
+            "tipo": "insert"
+          };
+          selectedImagesPaths.add(foto);
         }
       } else {
         Get.snackbar('Erro', 'Nenhuma imagem selecionada');
@@ -201,7 +232,7 @@ class TransactionController extends GetxController {
       List<TransactionsPhotos>? photos = [];
       if (selectedImagesPaths.isNotEmpty) {
         for (var element in selectedImagesPaths) {
-          photos.add(TransactionsPhotos(arquivo: element));
+          photos.add(TransactionsPhotos(arquivo: element['arquivo']));
         }
       }
 
@@ -232,7 +263,57 @@ class TransactionController extends GetxController {
           'success': mensagem['success'],
           'message': mensagem['message']
         };
-//        getAll();
+        getAll();
+        clearAllFields();
+      } else {
+        retorno = {
+          'success': false,
+          'message': ['Falha ao realizar a operação!']
+        };
+      }
+    }
+    return retorno;
+  }
+
+  Future<Map<String, dynamic>> updateTransaction(String typeTransaction) async {
+    if (formKeyTransaction.currentState!.validate()) {
+      List<TransactionsPhotos>? photos = [];
+      if (selectedImagesPaths.isNotEmpty) {
+        for (var element in selectedImagesPaths) {
+          if (element[1] == 'insert') {
+            photos.add(TransactionsPhotos(arquivo: element['arquivo']));
+          }
+        }
+      }
+
+      /* mensagem = await repository.insert(Transacoes(
+        descricao: txtDescriptionController.text,
+        data: txtDateController.text,
+        categoriaDespesaId: 1,
+        tipoEspecificoDespesaId: 1,
+        valor: FormattedInputers.convertToDouble(txtValueController.text),
+        empresa: txtCompanyController.text,
+        cidade: txtCityController.text,
+        uf: selectedUf.value,
+        ddd: txtDDDController.text,
+        telefone: txtPhoneController.text,
+        status: 1,
+        pessoaId: ServiceStorage.getUserId(),
+        veiculoId: ServiceStorage.idSelectedVehicle(),
+        origem: txtOriginController.text,
+        destino: txtDestinyController.text,
+        quantidadeTonelada:
+            FormattedInputers.convertToDouble(txtTonController.text),
+        tipoCargaId: 1,
+        tipoTransacao: typeTransaction,
+        photos: photos,
+      ));*/
+      if (mensagem != null) {
+        retorno = {
+          'success': mensagem['success'],
+          'message': mensagem['message']
+        };
+        getAll();
         clearAllFields();
       } else {
         retorno = {
@@ -282,24 +363,62 @@ class TransactionController extends GetxController {
     return retorno;
   }
 
-// void fillInFields() {
-//   descriptionController.text = selectedExpense.descricao.toString();
-//   expenseCategoryIdController.text =
-//       selectedExpense.categoriadespesaId.toString();
-//   specificTypeExpenseIdController.text =
-//       selectedExpense.tipoespecificodespesaId.toString();
-//   valueController.text = selectedExpense.valor.toString();
-//   companyController.text = selectedExpense.empresa.toString();
-//   cityController.text = selectedExpense.cidade.toString();
-//   ufController.text = selectedExpense.uf.toString();
-//   dddController.text = selectedExpense.ddd.toString();
-//   phoneController.text = selectedExpense.telefone.toString();
-//   commetnsController.text = selectedExpense.observacoes.toString();
-//   peopleIdController.text = selectedExpense.pessoaId.toString();
-//   vehicleIdController.text = selectedExpense.veiculoId.toString();
-//   statusController.text = selectedExpense.status.toString();
-// }
-//
+  void fillInFields() {
+    txtDescriptionController.text = selectedTransaction.descricao!;
+
+    if (selectedTransaction!.data != null &&
+        selectedTransaction!.data!.isNotEmpty) {
+      try {
+        DateTime date =
+            DateFormat('yyyy-MM-dd').parse(selectedTransaction.data!);
+        txtDateController.text = DateFormat('dd/MM/yyyy').format(date);
+      } catch (e) {
+        txtDateController.clear();
+      }
+    } else {
+      txtDateController.clear();
+    }
+
+    txtValueController.text = FormattedInputers.formatValuePTBR(
+        selectedTransaction.valor!.toString());
+    txtCityController.text = selectedTransaction.cidade != null
+        ? selectedTransaction.cidade.toString()
+        : "";
+    txtCompanyController.text = selectedTransaction.empresa != null
+        ? selectedTransaction.empresa.toString()
+        : "";
+    txtDDDController.text = selectedTransaction.ddd != null
+        ? selectedTransaction.ddd.toString()
+        : "";
+    txtPhoneController.text = selectedTransaction.telefone != null
+        ? selectedTransaction.telefone.toString()
+        : "";
+    txtOriginController.text = selectedTransaction.origem != null
+        ? selectedTransaction.origem.toString()
+        : "";
+    txtDestinyController.text = selectedTransaction.destino != null
+        ? selectedTransaction.destino.toString()
+        : "";
+    txtTonController.text = selectedTransaction.quantidadeTonelada != null
+        ? selectedTransaction.quantidadeTonelada.toString()
+        : "";
+
+    selectedCategory.value = selectedTransaction.categoriaDespesaId!;
+    selectedCargoType.value = selectedTransaction.tipoCargaId;
+    selectedSpecificType.value = selectedTransaction.tipoEspecificoDespesaId;
+
+    if (selectedTransaction.photos!.isNotEmpty) {
+      selectedImagesPaths.clear();
+      for (var photo in selectedTransaction!.photos!) {
+        Map<String, dynamic> foto = {
+          "arquivo": photo.arquivo,
+          "tipo": "update",
+        };
+        selectedImagesPaths.add(foto);
+      }
+    }
+  }
+
   void clearAllFields() {
     final textControllers = [
       txtDescriptionController,
@@ -318,6 +437,19 @@ class TransactionController extends GetxController {
     for (final controller in textControllers) {
       controller.clear();
     }
-    selectedImagesPaths = <String>[].obs;
+    selectedImagesPaths.clear();
+  }
+
+  void filterTransactions(String query) {
+    searchQuery.value = query;
+    if (query.isEmpty) {
+      filteredTransactions.value = transactions;
+    } else {
+      filteredTransactions.value = transactions.where((transaction) {
+        return transaction.descricao!
+            .toLowerCase()
+            .contains(query.toLowerCase());
+      }).toList();
+    }
   }
 }

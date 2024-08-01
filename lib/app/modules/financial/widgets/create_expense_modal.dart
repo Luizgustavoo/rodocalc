@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -10,7 +8,9 @@ import 'package:rodocalc/app/modules/vehicle/widgets/photo_item.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 
 class CreateExpenseModal extends GetView<TransactionController> {
-  const CreateExpenseModal({super.key});
+  CreateExpenseModal({super.key, required this.isUpdate});
+
+  final bool isUpdate;
 
   @override
   Widget build(BuildContext context) {
@@ -75,9 +75,10 @@ class CreateExpenseModal extends GetView<TransactionController> {
                           return Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 5),
                             child: PhotoItem(
-                              photo: File(path),
+                              isUpdate: path['tipo'] == 'insert' ? false : true,
+                              photo: path['arquivo'],
                               onDelete: () {
-                                controller.removeImage(path);
+                                controller.removeImage(path['arquivo']);
                               },
                             ),
                           );
@@ -163,13 +164,25 @@ class CreateExpenseModal extends GetView<TransactionController> {
                     ),
                     labelText: 'TIPO ESPECÍFICO',
                   ),
-                  items: controller.specificTypes
-                      .map((SpecificTypeExpense specific) {
-                    return DropdownMenuItem<int>(
-                      value: specific.id!,
-                      child: Text(specific.descricao!),
-                    );
-                  }).toList(),
+                  items: [
+                    const DropdownMenuItem<int>(
+                      value: null,
+                      child: Text('Selecione um tipo específico'),
+                    ),
+                    ...controller.specificTypes
+                        .map((SpecificTypeExpense specific) {
+                      return DropdownMenuItem<int>(
+                        value: specific.id!,
+                        child: Container(
+                          constraints: BoxConstraints(maxWidth: Get.width * .7),
+                          child: Text(
+                            specific.descricao!,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ],
                   onChanged: (newValue) {
                     controller.selectedSpecificType.value = newValue!;
                   },
@@ -206,7 +219,13 @@ class CreateExpenseModal extends GetView<TransactionController> {
                         .map((ExpenseCategory category) {
                       return DropdownMenuItem<int>(
                         value: category.id!,
-                        child: Text(category.descricao!),
+                        child: Container(
+                          constraints: BoxConstraints(maxWidth: Get.width * .7),
+                          child: Text(
+                            category.descricao!,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
                       );
                     }),
                   ],
@@ -295,8 +314,9 @@ class CreateExpenseModal extends GetView<TransactionController> {
                 children: [
                   ElevatedButton(
                     onPressed: () async {
-                      Map<String, dynamic> retorno =
-                          await controller.insertTransaction("saida");
+                      Map<String, dynamic> retorno = isUpdate
+                          ? await controller.updateTransaction("saida")
+                          : await controller.insertTransaction("saida");
 
                       if (retorno['success'] == true) {
                         Get.back();

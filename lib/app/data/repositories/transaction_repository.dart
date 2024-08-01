@@ -1,5 +1,5 @@
+import 'package:rodocalc/app/data/models/charge_type_model.dart';
 import 'package:rodocalc/app/data/models/expense_category_model.dart';
-import 'package:rodocalc/app/data/models/expense_model.dart';
 import 'package:rodocalc/app/data/models/specific_type_expense_model.dart';
 import 'package:rodocalc/app/data/models/transactions_model.dart';
 import 'package:rodocalc/app/data/providers/transaction_provider.dart';
@@ -29,6 +29,20 @@ class TransactionRepository {
     if (response != null) {
       response['data'].forEach((e) {
         list.add(ExpenseCategory.fromJson(e));
+      });
+    }
+
+    return list;
+  }
+
+  getMyChargeTypes() async {
+    List<ChargeType> list = <ChargeType>[];
+
+    var response = await apiClient.getMyChargeTypes();
+
+    if (response != null) {
+      response['data'].forEach((e) {
+        list.add(ChargeType.fromJson(e));
       });
     }
 

@@ -1,4 +1,5 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 abstract class FormattedInputers {
   static String formatCpfCnpj(String value) {
@@ -97,6 +98,15 @@ abstract class FormattedInputers {
     return buffer.toString();
   }
 
+  static String formatValuePTBR(dynamic value) {
+    if (value is String) {
+      value = double.tryParse(value) ?? 0.0;
+    }
+    final NumberFormat formatter =
+        NumberFormat.currency(symbol: '', decimalDigits: 2, locale: 'pt_BR');
+    return formatter.format(value);
+  }
+
   static bool validatePlate(String value) {
     if (value.isEmpty) {
       return false;
@@ -121,5 +131,14 @@ abstract class FormattedInputers {
     }
 
     return 0;
+  }
+
+  static String formatApiDate(String dateString) {
+    try {
+      DateTime dateTime = DateTime.parse(dateString);
+      return DateFormat('dd/MM/yyyy').format(dateTime);
+    } catch (e) {
+      return 'Data inválida';
+    }
   }
 }

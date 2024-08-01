@@ -51,7 +51,7 @@ class AppPages {
     GetPage(
       name: Routes.financial,
       page: () => const FinancialView(),
-      binding: FinancialBinding(),
+      binding: TransactionBinding(),
     ),
     GetPage(
       name: Routes.freight,

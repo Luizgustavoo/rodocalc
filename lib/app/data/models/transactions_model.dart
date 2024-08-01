@@ -9,7 +9,8 @@ class Transacoes {
   String? data;
   int? categoriaDespesaId;
   int? tipoEspecificoDespesaId;
-  double? valor;
+  dynamic? valor;
+  dynamic? saldo;
   String? empresa;
   String? cidade;
   String? uf;
@@ -20,7 +21,7 @@ class Transacoes {
   int? veiculoId;
   String? origem;
   String? destino;
-  double? quantidadeTonelada;
+  dynamic? quantidadeTonelada;
   int? tipoCargaId;
   String? tipoTransacao; // 'entrada' ou 'saida'
   String? createdAt;
@@ -37,6 +38,7 @@ class Transacoes {
     this.categoriaDespesaId,
     this.tipoEspecificoDespesaId,
     this.valor,
+    this.saldo,
     this.empresa,
     this.cidade,
     this.uf,
@@ -65,6 +67,7 @@ class Transacoes {
     categoriaDespesaId = json['categoriadespesa_id'];
     tipoEspecificoDespesaId = json['tipoespecificodespesa_id'];
     valor = json['valor'];
+    saldo = json['saldo'];
     empresa = json['empresa'];
     cidade = json['cidade'];
     uf = json['uf'];
@@ -90,9 +93,9 @@ class Transacoes {
         ? SpecificTypeExpense.fromJson(json['tipoespecificodespesa'])
         : null;
 
-    if (json['fotos'] != null) {
+    if (json['fotostransacoes'] != null) {
       photos = <TransactionsPhotos>[];
-      json['fotos'].forEach((v) {
+      json['fotostransacoes'].forEach((v) {
         photos!.add(TransactionsPhotos.fromJson(v));
       });
     }
@@ -106,6 +109,7 @@ class Transacoes {
     data['categoriadespesa_id'] = categoriaDespesaId;
     data['tipoespecificodespesa_id'] = tipoEspecificoDespesaId;
     data['valor'] = valor;
+    data['saldo'] = saldo;
     data['empresa'] = empresa;
     data['cidade'] = cidade;
     data['uf'] = uf;
@@ -123,7 +127,7 @@ class Transacoes {
     data['updated_at'] = updatedAt;
 
     if (photos != null) {
-      data['fotos'] = photos!.map((v) => v.toJson()).toList();
+      data['fotostransacoes'] = photos!.map((v) => v.toJson()).toList();
     }
     return data;
   }
