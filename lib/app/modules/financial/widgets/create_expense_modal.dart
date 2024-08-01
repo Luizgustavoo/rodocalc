@@ -3,13 +3,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:rodocalc/app/data/controllers/expense_controller.dart';
+import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
 import 'package:rodocalc/app/data/models/expense_category_model.dart';
 import 'package:rodocalc/app/data/models/specific_type_expense_model.dart';
 import 'package:rodocalc/app/modules/vehicle/widgets/photo_item.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 
-class CreateExpenseModal extends GetView<ExpenseController> {
+class CreateExpenseModal extends GetView<TransactionController> {
   const CreateExpenseModal({super.key});
 
   @override
@@ -18,7 +18,7 @@ class CreateExpenseModal extends GetView<ExpenseController> {
       padding: MediaQuery.of(context).viewInsets,
       child: Form(
         autovalidateMode: AutovalidateMode.onUserInteraction,
-        key: controller.formKeyExpense,
+        key: controller.formKeyTransaction,
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           padding: const EdgeInsets.all(12.0),
@@ -91,7 +91,7 @@ class CreateExpenseModal extends GetView<ExpenseController> {
 
               const SizedBox(height: 10),
               TextFormField(
-                controller: controller.txtDescriptionExpenseController,
+                controller: controller.txtDescriptionController,
                 decoration: const InputDecoration(
                   prefixIcon: Icon(
                     Icons.message_outlined,
@@ -296,7 +296,7 @@ class CreateExpenseModal extends GetView<ExpenseController> {
                   ElevatedButton(
                     onPressed: () async {
                       Map<String, dynamic> retorno =
-                          await controller.insertExpense();
+                          await controller.insertTransaction("saida");
 
                       if (retorno['success'] == true) {
                         Get.back();

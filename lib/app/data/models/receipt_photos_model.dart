@@ -1,4 +1,4 @@
-import 'package:rodocalc/app/data/models/expense_model.dart';
+/*import 'package:rodocalc/app/data/models/expense_model.dart';
 
 class ReceiptPhotos {
   int? id;
@@ -39,4 +39,4 @@ class ReceiptPhotos {
     data['updated_at'] = updatedAt;
     return data;
   }
-}
+}*/

@@ -3,23 +3,23 @@ import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/models/expense_category_model.dart';
-import 'package:rodocalc/app/data/models/expense_model.dart';
-import 'package:rodocalc/app/data/models/expense_photos_model.dart';
 import 'package:rodocalc/app/data/models/specific_type_expense_model.dart';
-import 'package:rodocalc/app/data/repositories/expense_repository.dart';
+import 'package:rodocalc/app/data/models/transaction_photos_model.dart';
+import 'package:rodocalc/app/data/models/transactions_model.dart';
+import 'package:rodocalc/app/data/repositories/transaction_repository.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 
-class ExpenseController extends GetxController {
+class TransactionController extends GetxController {
   RxBool trailerCheckboxValue = false.obs;
 
   var selectedImagesPaths = <String>[].obs;
 
   //CONTROLLER E KEY DESPESA
 
-  final formKeyExpense = GlobalKey<FormState>();
+  final formKeyTransaction = GlobalKey<FormState>();
   final formKeyExpenseCategory = GlobalKey<FormState>();
-  final txtDescriptionExpenseController = TextEditingController();
+  final txtDescriptionController = TextEditingController();
   final txtDescriptionExpenseCategoryController = TextEditingController();
   final txtCityController = TextEditingController();
   final txtCompanyController = TextEditingController();
@@ -28,13 +28,21 @@ class ExpenseController extends GetxController {
   final txtValueController = TextEditingController();
   final txtDateController = TextEditingController();
 
+//RECEBIMENTO
+  final txtOriginController = TextEditingController();
+  final txtDestinyController = TextEditingController();
+  final txtTonController = TextEditingController();
+
+  var cargoTypes = ['Tipo 1', 'Tipo 2', 'Tipo 3', 'Tipo 4'].obs;
+  var selectedCargoType = 'Tipo 1'.obs;
+
   RxBool isLoading = true.obs;
 
-  late Expense selectedExpense;
+  late Transacoes selectedTransaction;
 
-  RxList<Expense> listExpense = RxList<Expense>([]);
+  RxList<Transacoes> listTransactions = RxList<Transacoes>([]);
 
-  final repository = Get.put(ExpenseRepository());
+  final repository = Get.put(TransactionRepository());
 
   Map<String, dynamic> retorno = {
     "success": false,
@@ -80,7 +88,7 @@ class ExpenseController extends GetxController {
   Future<void> getAll() async {
     isLoading.value = true;
     try {
-      listExpense.value = await repository.getAll();
+      listTransactions.value = await repository.getAll();
     } catch (e) {
       Exception(e);
     }
@@ -188,30 +196,35 @@ class ExpenseController extends GetxController {
     selectedImagesPaths.remove(path);
   }
 
-  Future<Map<String, dynamic>> insertExpense() async {
-    if (formKeyExpense.currentState!.validate()) {
-      List<ExpensePhotos>? photos = [];
+  Future<Map<String, dynamic>> insertTransaction(String typeTransaction) async {
+    if (formKeyTransaction.currentState!.validate()) {
+      List<TransactionsPhotos>? photos = [];
       if (selectedImagesPaths.isNotEmpty) {
         for (var element in selectedImagesPaths) {
-          photos.add(ExpensePhotos(arquivo: element));
+          photos.add(TransactionsPhotos(arquivo: element));
         }
       }
 
-      mensagem = await repository.insert(Expense(
-        descricao: txtDescriptionExpenseController.text,
-        categoriadespesaId: 1,
-        tipoespecificodespesaId: 1,
+      mensagem = await repository.insert(Transacoes(
+        descricao: txtDescriptionController.text,
+        data: txtDateController.text,
+        categoriaDespesaId: 1,
+        tipoEspecificoDespesaId: 1,
         valor: FormattedInputers.convertToDouble(txtValueController.text),
         empresa: txtCompanyController.text,
         cidade: txtCityController.text,
         uf: selectedUf.value,
         ddd: txtDDDController.text,
         telefone: txtPhoneController.text,
-        observacoes: "",
         status: 1,
         pessoaId: ServiceStorage.getUserId(),
         veiculoId: ServiceStorage.idSelectedVehicle(),
-        expenseDate: txtDateController.text,
+        origem: txtOriginController.text,
+        destino: txtDestinyController.text,
+        quantidadeTonelada:
+            FormattedInputers.convertToDouble(txtTonController.text),
+        tipoCargaId: 1,
+        tipoTransacao: typeTransaction,
         photos: photos,
       ));
       if (mensagem != null) {
@@ -257,9 +270,9 @@ class ExpenseController extends GetxController {
     return retorno;
   }
 
-  Future<Map<String, dynamic>> deleteVehicle(int id) async {
-    if (formKeyExpense.currentState!.validate()) {
-      mensagem = await repository.delete(Expense(id: id));
+  Future<Map<String, dynamic>> deleteTransaction(int id) async {
+    if (formKeyTransaction.currentState!.validate()) {
+      mensagem = await repository.delete(Transacoes(id: id));
       retorno = {
         'success': mensagem['success'],
         'message': mensagem['message']
@@ -289,7 +302,7 @@ class ExpenseController extends GetxController {
 //
   void clearAllFields() {
     final textControllers = [
-      txtDescriptionExpenseController,
+      txtDescriptionController,
       txtDescriptionExpenseCategoryController,
       txtCityController,
       txtCompanyController,
@@ -297,6 +310,9 @@ class ExpenseController extends GetxController {
       txtPhoneController,
       txtValueController,
       txtDateController,
+      txtOriginController,
+      txtDestinyController,
+      txtTonController,
     ];
 
     for (final controller in textControllers) {

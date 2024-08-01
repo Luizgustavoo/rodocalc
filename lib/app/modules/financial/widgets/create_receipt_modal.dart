@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:rodocalc/app/data/controllers/receipt_controller.dart';
+import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
 import 'package:rodocalc/app/modules/vehicle/widgets/photo_item.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 
-class CreateReceiptModal extends GetView<ReceiptController> {
+class CreateReceiptModal extends GetView<TransactionController> {
   const CreateReceiptModal({super.key});
 
   @override
@@ -16,7 +16,7 @@ class CreateReceiptModal extends GetView<ReceiptController> {
       padding: MediaQuery.of(context).viewInsets,
       child: Form(
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          key: controller.formKeyReceipt,
+          key: controller.formKeyTransaction,
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             padding: const EdgeInsets.all(12.0),
@@ -105,7 +105,7 @@ class CreateReceiptModal extends GetView<ReceiptController> {
                 const SizedBox(height: 10),
                 TextFormField(
                   maxLength: 10,
-                  controller: controller.txtReceiptDate,
+                  controller: controller.txtDateController,
                   decoration: const InputDecoration(
                     counterText: '',
                     prefixIcon: Icon(
@@ -116,7 +116,7 @@ class CreateReceiptModal extends GetView<ReceiptController> {
                   ),
                   onChanged: (value) {
                     FormattedInputers.onDateChanged(
-                        value, controller.txtReceiptDate);
+                        value, controller.txtDateController);
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -159,7 +159,7 @@ class CreateReceiptModal extends GetView<ReceiptController> {
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
-                  controller: controller.txtAmountController,
+                  controller: controller.txtValueController,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
                       Icons.monetization_on_outlined,
@@ -168,7 +168,7 @@ class CreateReceiptModal extends GetView<ReceiptController> {
                   ),
                   onChanged: (value) {
                     FormattedInputers.onformatValueChanged(
-                        value, controller.txtAmountController);
+                        value, controller.txtValueController);
                     // controller.onValueChanged(value, 'valueReceive');
                   },
                   validator: (value) {
@@ -226,7 +226,7 @@ class CreateReceiptModal extends GetView<ReceiptController> {
                     ElevatedButton(
                       onPressed: () async {
                         Map<String, dynamic> retorno =
-                            await controller.insertReceipt();
+                            await controller.insertTransaction("entrada");
 
                         if (retorno['success'] == true) {
                           Get.back();

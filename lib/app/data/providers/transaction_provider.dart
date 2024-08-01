@@ -4,23 +4,23 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:rodocalc/app/data/base_url.dart';
-import 'package:rodocalc/app/data/models/charge_type_model.dart';
-import 'package:rodocalc/app/data/models/receipt_model.dart';
+import 'package:rodocalc/app/data/models/expense_category_model.dart';
+import 'package:rodocalc/app/data/models/transactions_model.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 
-class ReceiptApiClient {
+class TransactionApiClient {
   final http.Client httpClient = http.Client();
 
   gettAll() async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
-      Uri receiptUrl;
+      Uri companyUrl;
       String url =
-          '$baseUrl/v1/receita/my/${ServiceStorage.getUserId().toString()}';
-      receiptUrl = Uri.parse(url);
+          '$baseUrl/v1/transaction/my/${ServiceStorage.getUserId().toString()}';
+      companyUrl = Uri.parse(url);
       var response = await httpClient.get(
-        receiptUrl,
+        companyUrl,
         headers: {
           "Accept": "application/json",
           "Authorization": token,
@@ -46,30 +46,36 @@ class ReceiptApiClient {
     return null;
   }
 
-  insert(Receipt receipt) async {
+  insert(Transacoes transacoes) async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
-      var vehicleUrl = Uri.parse('$baseUrl/v1/receita');
+      var vehicleUrl = Uri.parse('$baseUrl/v1/transacoes');
 
       var request = http.MultipartRequest('POST', vehicleUrl);
 
-      if (receipt.photos != null && receipt.photos!.isNotEmpty) {
-        for (var foto in receipt.photos!) {
+      if (transacoes.photos != null && transacoes.photos!.isNotEmpty) {
+        for (var foto in transacoes.photos!) {
           request.files
               .add(await http.MultipartFile.fromPath('fotos[]', foto.arquivo!));
         }
       }
 
       request.fields.addAll({
-        "descricao": receipt.descricao.toString(),
-        "origem": receipt.origem.toString(),
-        "destino": receipt.destino.toString(),
-        "valor": receipt.valor.toString(),
-        "quantidade_tonelada": receipt.quantidadeTonelada.toString(),
-        "veiculo_id": receipt.veiculoId.toString(),
-        "tipocarga_id": receipt.tipoCargaId.toString(),
-        "data_receita": receipt.receiptDate.toString(),
+        "descricao": transacoes.descricao.toString(),
+        "categoriadespesa_id": transacoes.categoriaDespesaId.toString(),
+        "tipoespecificodespesa_id":
+            transacoes.tipoEspecificoDespesaId.toString(),
+        "valor": transacoes.valor.toString(),
+        "empresa": transacoes.empresa.toString(),
+        "cidade": transacoes.cidade.toString(),
+        "uf": transacoes.uf.toString(),
+        "ddd": transacoes.ddd.toString(),
+        "telefone": transacoes.telefone.toString(),
+        "status": transacoes.status.toString(),
+        "pessoa_id": transacoes.pessoaId.toString(),
+        "veiculo_id": transacoes.veiculoId.toString(),
+        "data": transacoes.data.toString()
       });
 
       request.headers.addAll({
@@ -95,17 +101,19 @@ class ReceiptApiClient {
     return null;
   }
 
-  insertChargeType(ChargeType type) async {
+  insertCategory(ExpenseCategory category, String type) async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
-      var vehicleUrl = Uri.parse('$baseUrl/v1/tipocarga');
+      var vehicleUrl = Uri.parse('$baseUrl/v1/transacoes/categoriadespesa');
 
       var request = http.MultipartRequest('POST', vehicleUrl);
 
       request.fields.addAll({
-        "descricao": type.descricao.toString(),
-        "status": type.status.toString()
+        "descricao": category.descricao.toString(),
+        "status": category.status.toString(),
+        "user_id": category.userId.toString(),
+        "tipo": type.toString()
       });
 
       request.headers.addAll({
@@ -131,13 +139,13 @@ class ReceiptApiClient {
     return null;
   }
 
-  getMyChargeTypes() async {
+  getMyCategories() async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
       Uri categoriesUrl;
       String url =
-          '$baseUrl/v1/tipocarga/my/${ServiceStorage.getUserId().toString()}';
+          '$baseUrl/v1/transacoes/categoriadespesa/my/${ServiceStorage.getUserId().toString()}';
       categoriesUrl = Uri.parse(url);
       var response = await httpClient.get(
         categoriesUrl,
@@ -166,23 +174,64 @@ class ReceiptApiClient {
     return null;
   }
 
-  update(Receipt receipt) async {
+  getMySpecifics() async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
-      var receiptUrl = Uri.parse('$baseUrl/v1/tipocarga/update/${receipt.id}');
+      Uri categoriesUrl;
+      String url =
+          '$baseUrl/v1/transacoes/tipoespecificodespesa/my/${ServiceStorage.getUserId().toString()}';
+      categoriesUrl = Uri.parse(url);
+      var response = await httpClient.get(
+        categoriesUrl,
+        headers: {
+          "Accept": "application/json",
+          "Authorization": token,
+        },
+      );
+      if (response.statusCode == 201) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401 &&
+          json.decode(response.body)['message'] == "Token has expired") {
+        var resposta = {
+          'success': false,
+          'data': null,
+          'message': ['Token expirado']
+        };
+        var box = GetStorage('projeto');
+        box.erase();
+        Get.offAllNamed('/login');
+        return json.decode(resposta as String);
+      }
+    } catch (e) {
+      Exception(e);
+    }
+    return null;
+  }
 
-      var request = http.MultipartRequest('POST', receiptUrl);
+  update(Transacoes transacoes) async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+
+      var transacoesUrl =
+          Uri.parse('$baseUrl/v1/transacoes/update/${transacoes.id}');
+
+      var request = http.MultipartRequest('POST', transacoesUrl);
 
       request.fields.addAll({
-        "descricao": receipt.descricao.toString(),
-        "origem": receipt.origem.toString(),
-        "destino": receipt.destino.toString(),
-        "valor": receipt.valor.toString(),
-        "quantidade_tonelada": receipt.quantidadeTonelada.toString(),
-        "veiculo_id": receipt.veiculoId.toString(),
-        "tipocarga_id": receipt.tipoCargaId.toString(),
-        "data_receita": receipt.receiptDate.toString(),
+        "descricao": transacoes.descricao.toString(),
+        "categoriadespesa_id": transacoes.categoriaDespesaId.toString(),
+        "tipoespecificodespesa_id":
+            transacoes.tipoEspecificoDespesaId.toString(),
+        "valor": transacoes.valor.toString(),
+        "empresa": transacoes.empresa.toString(),
+        "cidade": transacoes.cidade.toString(),
+        "uf": transacoes.uf.toString(),
+        "ddd": transacoes.ddd.toString(),
+        "telefone": transacoes.telefone.toString(),
+        "status": transacoes.status.toString(),
+        "pessoa_id": transacoes.pessoaId.toString(),
+        "veiculo_id": transacoes.veiculoId.toString()
       });
 
       request.headers.addAll({
@@ -202,13 +251,14 @@ class ReceiptApiClient {
     return null;
   }
 
-  delete(Receipt receipt) async {
+  delete(Transacoes transacoes) async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
-      var receiptUrl = Uri.parse('$baseUrl/v1/tipocarga/delete/${receipt.id}');
+      var expenseUrl =
+          Uri.parse('$baseUrl/v1/transacoes/delete/${transacoes.id}');
 
-      var request = http.MultipartRequest('POST', receiptUrl);
+      var request = http.MultipartRequest('POST', expenseUrl);
 
       request.headers.addAll({
         'Accept': 'application/json',

@@ -1,19 +1,20 @@
 import 'package:rodocalc/app/data/models/expense_category_model.dart';
 import 'package:rodocalc/app/data/models/expense_model.dart';
 import 'package:rodocalc/app/data/models/specific_type_expense_model.dart';
-import 'package:rodocalc/app/data/providers/expense_provider.dart';
+import 'package:rodocalc/app/data/models/transactions_model.dart';
+import 'package:rodocalc/app/data/providers/transaction_provider.dart';
 
-class ExpenseRepository {
-  final ExpenseApiClient apiClient = ExpenseApiClient();
+class TransactionRepository {
+  final TransactionApiClient apiClient = TransactionApiClient();
 
   getAll() async {
-    List<Expense> list = <Expense>[];
+    List<Transacoes> list = <Transacoes>[];
 
     var response = await apiClient.gettAll();
 
     if (response != null) {
       response['data'].forEach((e) {
-        list.add(Expense.fromJson(e));
+        list.add(Transacoes.fromJson(e));
       });
     }
 
@@ -48,9 +49,9 @@ class ExpenseRepository {
     return list;
   }
 
-  insert(Expense expense) async {
+  insert(Transacoes transaction) async {
     try {
-      var response = await apiClient.insert(expense);
+      var response = await apiClient.insert(transaction);
       return response;
     } catch (e) {
       Exception(e);
@@ -66,18 +67,18 @@ class ExpenseRepository {
     }
   }
 
-  update(Expense expense) async {
+  update(Transacoes transaction) async {
     try {
-      var response = await apiClient.update(expense);
+      var response = await apiClient.update(transaction);
       return response;
     } catch (e) {
       Exception(e);
     }
   }
 
-  delete(Expense expense) async {
+  delete(Transacoes transaction) async {
     try {
-      var response = await apiClient.delete(expense);
+      var response = await apiClient.delete(transaction);
       return response;
     } catch (e) {
       Exception(e);

@@ -1,6 +1,6 @@
-import 'package:rodocalc/app/data/models/charge_type_model.dart';
+/*import 'package:rodocalc/app/data/models/charge_type_model.dart';
 import 'package:rodocalc/app/data/models/expense_category_model.dart';
-import 'package:rodocalc/app/data/models/expense_photos_model.dart';
+import 'package:rodocalc/app/data/models/transaction_photos_model.dart';
 import 'package:rodocalc/app/data/models/receipt_photos_model.dart';
 import 'package:rodocalc/app/data/models/specific_type_expense_model.dart';
 
@@ -80,3 +80,4 @@ class Receipt {
     return data;
   }
 }
+*/
