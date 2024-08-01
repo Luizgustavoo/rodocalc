@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/freight_controller.dart';
+import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 
 class CreateFreightModal extends GetView<FreightController> {
   const CreateFreightModal({super.key});
@@ -179,16 +180,8 @@ class CreateFreightModal extends GetView<FreightController> {
                 ),
                 const SizedBox(height: 16),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    ElevatedButton(
-                      onPressed: () async {},
-                      child: const Text(
-                        'CALCULAR',
-                        style: TextStyle(
-                            fontFamily: 'Inter-Bold', color: Colors.white),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
                     SizedBox(
                       width: 120,
                       child: TextButton(
@@ -201,7 +194,16 @@ class CreateFreightModal extends GetView<FreightController> {
                                 fontFamily: 'Inter-Bold',
                                 color: Color(0xFFFF6B00)),
                           )),
-                    )
+                    ),
+                    const SizedBox(width: 10),
+                    CustomElevatedButton(
+                      onPressed: () async {},
+                      child: const Text(
+                        'CALCULAR',
+                        style: TextStyle(
+                            fontFamily: 'Inter-Bold', color: Colors.white),
+                      ),
+                    ),
                   ],
                 ),
               ],

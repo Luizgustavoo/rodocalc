@@ -6,7 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
 import 'package:rodocalc/app/data/models/expense_category_model.dart';
 import 'package:rodocalc/app/data/models/specific_type_expense_model.dart';
-import 'package:rodocalc/app/modules/vehicle/widgets/photo_item.dart';
+import 'package:rodocalc/app/modules/financial/widgets/photo_item.dart';
+import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 
 class CreateExpenseModal extends GetView<TransactionController> {
@@ -94,7 +95,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
                 controller: controller.txtDescriptionController,
                 decoration: const InputDecoration(
                   prefixIcon: Icon(
-                    Icons.message_outlined,
+                    Icons.message,
                     size: 25,
                   ),
                   labelText: 'DESCRIÇÃO',
@@ -134,7 +135,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
                 controller: controller.txtValueController,
                 decoration: const InputDecoration(
                   prefixIcon: Icon(
-                    Icons.monetization_on_outlined,
+                    Icons.monetization_on,
                   ),
                   labelText: 'VALOR',
                 ),
@@ -292,8 +293,25 @@ class CreateExpenseModal extends GetView<TransactionController> {
               ),
               const SizedBox(height: 16),
               Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  ElevatedButton(
+                  SizedBox(
+                    width: 120,
+                    child: TextButton(
+                      onPressed: () {
+                        Get.back();
+                      },
+                      child: const Text(
+                        'CANCELAR',
+                        style: TextStyle(
+                          fontFamily: 'Inter-Bold',
+                          color: Color(0xFFFF6B00),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  CustomElevatedButton(
                     onPressed: () async {
                       Map<String, dynamic> retorno =
                           await controller.insertTransaction("saida");
@@ -318,22 +336,6 @@ class CreateExpenseModal extends GetView<TransactionController> {
                       style: TextStyle(
                         fontFamily: 'Inter-Bold',
                         color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  SizedBox(
-                    width: 120,
-                    child: TextButton(
-                      onPressed: () {
-                        Get.back();
-                      },
-                      child: const Text(
-                        'CANCELAR',
-                        style: TextStyle(
-                          fontFamily: 'Inter-Bold',
-                          color: Color(0xFFFF6B00),
-                        ),
                       ),
                     ),
                   ),

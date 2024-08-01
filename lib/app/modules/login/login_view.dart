@@ -124,8 +124,8 @@ class LoginView extends GetView<LoginController> {
                                   width: double.infinity,
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      controller.login();
-                                      // Get.offAllNamed(Routes.home);
+                                      // controller.login();
+                                      Get.offAllNamed(Routes.home);
                                     },
                                     style: ElevatedButton.styleFrom(
                                       padding: const EdgeInsets.symmetric(

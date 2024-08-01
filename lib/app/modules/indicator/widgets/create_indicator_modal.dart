@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/indicator_controller.dart';
+import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 
 class CreateIndicatorModal extends GetView<IndicatorController> {
   const CreateIndicatorModal({super.key});
@@ -75,16 +76,8 @@ class CreateIndicatorModal extends GetView<IndicatorController> {
                 ),
                 const SizedBox(height: 16),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    ElevatedButton(
-                      onPressed: () async {},
-                      child: const Text(
-                        'CADASTRAR',
-                        style: TextStyle(
-                            fontFamily: 'Inter-Bold', color: Colors.white),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
                     SizedBox(
                       width: 120,
                       child: TextButton(
@@ -97,7 +90,16 @@ class CreateIndicatorModal extends GetView<IndicatorController> {
                                 fontFamily: 'Inter-Bold',
                                 color: Color(0xFFFF6B00)),
                           )),
-                    )
+                    ),
+                    const SizedBox(width: 10),
+                    CustomElevatedButton(
+                      onPressed: () async {},
+                      child: const Text(
+                        'CADASTRAR',
+                        style: TextStyle(
+                            fontFamily: 'Inter-Bold', color: Colors.white),
+                      ),
+                    ),
                   ],
                 ),
               ],

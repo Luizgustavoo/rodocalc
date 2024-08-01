@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
-import 'package:rodocalc/app/modules/vehicle/widgets/photo_item.dart';
+import 'package:rodocalc/app/modules/financial/widgets/photo_item.dart';
+import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 
 class CreateReceiptModal extends GetView<TransactionController> {
@@ -90,7 +91,7 @@ class CreateReceiptModal extends GetView<TransactionController> {
                   controller: controller.txtDescriptionController,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
-                      Icons.message_outlined,
+                      Icons.message,
                       size: 25,
                     ),
                     labelText: 'DESCRIÇÃO',
@@ -130,7 +131,7 @@ class CreateReceiptModal extends GetView<TransactionController> {
                   controller: controller.txtOriginController,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
-                      Icons.pin_drop_outlined,
+                      Icons.pin_drop,
                     ),
                     labelText: 'ORIGEM',
                   ),
@@ -146,7 +147,7 @@ class CreateReceiptModal extends GetView<TransactionController> {
                   controller: controller.txtDestinyController,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
-                      Icons.pin_drop_outlined,
+                      Icons.pin_drop,
                     ),
                     labelText: 'DESTINO',
                   ),
@@ -162,7 +163,7 @@ class CreateReceiptModal extends GetView<TransactionController> {
                   controller: controller.txtValueController,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
-                      Icons.monetization_on_outlined,
+                      Icons.monetization_on,
                     ),
                     labelText: 'VALOR RECEBIDO',
                   ),
@@ -199,7 +200,7 @@ class CreateReceiptModal extends GetView<TransactionController> {
                 DropdownButtonFormField<String>(
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
-                      Icons.sort_by_alpha_rounded,
+                      Icons.sort_by_alpha,
                     ),
                     labelText: 'TIPO DE CARGA',
                   ),
@@ -222,8 +223,23 @@ class CreateReceiptModal extends GetView<TransactionController> {
                 ),
                 const SizedBox(height: 16),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    ElevatedButton(
+                    SizedBox(
+                      width: 120,
+                      child: TextButton(
+                          onPressed: () {
+                            Get.back();
+                          },
+                          child: const Text(
+                            'CANCELAR',
+                            style: TextStyle(
+                                fontFamily: 'Inter-Bold',
+                                color: Color(0xFFFF6B00)),
+                          )),
+                    ),
+                    const SizedBox(width: 10),
+                    CustomElevatedButton(
                       onPressed: () async {
                         Map<String, dynamic> retorno =
                             await controller.insertTransaction("entrada");
@@ -250,20 +266,6 @@ class CreateReceiptModal extends GetView<TransactionController> {
                             fontFamily: 'Inter-Bold', color: Colors.white),
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    SizedBox(
-                      width: 120,
-                      child: TextButton(
-                          onPressed: () {
-                            Get.back();
-                          },
-                          child: const Text(
-                            'CANCELAR',
-                            style: TextStyle(
-                                fontFamily: 'Inter-Bold',
-                                color: Color(0xFFFF6B00)),
-                          )),
-                    )
                   ],
                 ),
               ],

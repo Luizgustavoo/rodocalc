@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/controllers/document_controller.dart';
+import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 
 class CreateDocumentModal extends GetView<DocumentController> {
   const CreateDocumentModal({super.key});
@@ -116,16 +117,8 @@ class CreateDocumentModal extends GetView<DocumentController> {
                 ),
                 const SizedBox(height: 16),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    ElevatedButton(
-                      onPressed: () async {},
-                      child: const Text(
-                        'CADASTRAR',
-                        style: TextStyle(
-                            fontFamily: 'Inter-Bold', color: Colors.white),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
                     SizedBox(
                       width: 120,
                       child: TextButton(
@@ -138,7 +131,16 @@ class CreateDocumentModal extends GetView<DocumentController> {
                                 fontFamily: 'Inter-Bold',
                                 color: Color(0xFFFF6B00)),
                           )),
-                    )
+                    ),
+                    const SizedBox(width: 10),
+                    CustomElevatedButton(
+                      onPressed: () async {},
+                      child: const Text(
+                        'CADASTRAR',
+                        style: TextStyle(
+                            fontFamily: 'Inter-Bold', color: Colors.white),
+                      ),
+                    ),
                   ],
                 ),
               ],

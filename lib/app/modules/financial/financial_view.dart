@@ -49,7 +49,10 @@ class FinancialView extends GetView<FinancialController> {
                     BlendMode.darken,
                   ),
                   child: !ServiceStorage.existsSelectedVehicle()
-                      ? Image.asset('assets/images/caminhao.jpg')
+                      ? Image.asset(
+                          'assets/images/caminhao.jpg',
+                          fit: BoxFit.cover,
+                        )
                       : Image.network(
                           "$urlImagem/storage/fotos/veiculos/${ServiceStorage.photoSelectedVehicle()}",
                           fit: BoxFit.cover,
@@ -163,24 +166,35 @@ class FinancialView extends GetView<FinancialController> {
   }
 
   Widget _buildHeader() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          const Text('Saldo Atual',
-              style: TextStyle(fontSize: 18, fontFamily: 'Inter-Bold')),
-          const SizedBox(width: 5),
-          Obx(() => Text('R\$ ${controller.balance.value.toStringAsFixed(2)}',
-              style: const TextStyle(fontSize: 18, fontFamily: 'Inter-Black'))),
-        ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: SizedBox(
+        height: 50,
+        child: Card(
+          color: Colors.grey.shade300,
+          elevation: 0,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              const Text('Saldo Atual:',
+                  style: TextStyle(fontSize: 18, fontFamily: 'Inter-Bold')),
+              const SizedBox(width: 5),
+              Obx(() => Text(
+                  'R\$ ${controller.balance.value.toStringAsFixed(2)}',
+                  style: const TextStyle(
+                      fontSize: 18, fontFamily: 'Inter-Black'))),
+            ],
+          ),
+        ),
       ),
     );
   }
 
   Widget _buildSearchBar(FinancialController controller) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.only(left: 8, right: 8),
       child: SizedBox(
         height: 40,
         child: TextFormField(

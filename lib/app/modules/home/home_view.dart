@@ -190,7 +190,7 @@ class HomeView extends GetView<HomeController> {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 CustomHomeCard(
-                                  icon: Icons.local_shipping,
+                                  imagePath: 'assets/images/caminhao.png',
                                   label: 'Caminhões',
                                   onTap: () {
                                     vehicleController.isLoading.value = false;
@@ -201,7 +201,7 @@ class HomeView extends GetView<HomeController> {
                                 ),
                                 const SizedBox(width: 5),
                                 CustomHomeCard(
-                                  icon: Icons.monetization_on,
+                                  imagePath: 'assets/images/frete.png',
                                   label: 'Financeiro',
                                   onTap: () {
                                     Get.toNamed(Routes.financial);
@@ -209,7 +209,7 @@ class HomeView extends GetView<HomeController> {
                                 ),
                                 const SizedBox(width: 5),
                                 CustomHomeCard(
-                                  icon: Icons.add_road_rounded,
+                                  imagePath: 'assets/images/estrada.png',
                                   label: 'Fretes',
                                   onTap: () {
                                     Get.toNamed(Routes.freight);
@@ -217,7 +217,7 @@ class HomeView extends GetView<HomeController> {
                                 ),
                                 const SizedBox(width: 5),
                                 CustomHomeCard(
-                                  icon: Icons.task,
+                                  imagePath: 'assets/images/documento.png',
                                   label: 'Documentos',
                                   onTap: () {
                                     Get.toNamed(Routes.document);
@@ -225,7 +225,7 @@ class HomeView extends GetView<HomeController> {
                                 ),
                                 const SizedBox(width: 5),
                                 CustomHomeCard(
-                                  icon: Icons.accessibility_new_rounded,
+                                  imagePath: 'assets/images/indicador.png',
                                   label: 'Indicador',
                                   onTap: () {
                                     Get.toNamed(Routes.indicator);
@@ -233,7 +233,7 @@ class HomeView extends GetView<HomeController> {
                                 ),
                                 const SizedBox(width: 5),
                                 CustomHomeCard(
-                                  icon: Icons.credit_card,
+                                  imagePath: 'assets/images/plano.png',
                                   label: 'Planos',
                                   onTap: () {
                                     Get.toNamed(Routes.plan);

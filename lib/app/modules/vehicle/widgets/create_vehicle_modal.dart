@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/controllers/vehicle_controller.dart';
 import 'package:rodocalc/app/data/models/vehicle_model.dart';
+import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 
 class CreateVehicleModal extends GetView<VehiclesController> {
@@ -125,7 +126,7 @@ class CreateVehicleModal extends GetView<VehiclesController> {
                   controller: controller.txtBrandController,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
-                      Icons.local_offer_outlined,
+                      Icons.local_offer,
                     ),
                     labelText: 'MARCA',
                   ),
@@ -142,7 +143,7 @@ class CreateVehicleModal extends GetView<VehiclesController> {
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
-                      Icons.calendar_month_outlined,
+                      Icons.calendar_month,
                     ),
                     labelText: 'ANO',
                   ),
@@ -158,7 +159,7 @@ class CreateVehicleModal extends GetView<VehiclesController> {
                   controller: controller.txtModelController,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
-                      Icons.directions_car_filled_outlined,
+                      Icons.directions_car,
                     ),
                     labelText: 'MODELO',
                   ),
@@ -208,8 +209,23 @@ class CreateVehicleModal extends GetView<VehiclesController> {
                 ),
                 const SizedBox(height: 16),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    ElevatedButton(
+                    SizedBox(
+                      width: 120,
+                      child: TextButton(
+                          onPressed: () {
+                            Get.back();
+                          },
+                          child: const Text(
+                            'CANCELAR',
+                            style: TextStyle(
+                                fontFamily: 'Inter-Bold',
+                                color: Color(0xFFFF6B00)),
+                          )),
+                    ),
+                    const SizedBox(width: 10),
+                    CustomElevatedButton(
                       onPressed: () async {
                         if (controller.selectedImagePath.value.isEmpty) {
                           Get.snackbar('Atenção!',
@@ -247,20 +263,6 @@ class CreateVehicleModal extends GetView<VehiclesController> {
                             fontFamily: 'Inter-Bold', color: Colors.white),
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    SizedBox(
-                      width: 120,
-                      child: TextButton(
-                          onPressed: () {
-                            Get.back();
-                          },
-                          child: const Text(
-                            'CANCELAR',
-                            style: TextStyle(
-                                fontFamily: 'Inter-Bold',
-                                color: Color(0xFFFF6B00)),
-                          )),
-                    )
                   ],
                 ),
               ],
