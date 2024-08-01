@@ -50,7 +50,7 @@ class TransactionApiClient {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
-      var vehicleUrl = Uri.parse('$baseUrl/v1/transacoes');
+      var vehicleUrl = Uri.parse('$baseUrl/v1/transacao');
 
       var request = http.MultipartRequest('POST', vehicleUrl);
 
@@ -110,7 +110,7 @@ class TransactionApiClient {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
-      var vehicleUrl = Uri.parse('$baseUrl/v1/transacoes/categoriadespesa');
+      var vehicleUrl = Uri.parse('$baseUrl/v1/transacao/categoriadespesa');
 
       var request = http.MultipartRequest('POST', vehicleUrl);
 
@@ -150,7 +150,7 @@ class TransactionApiClient {
 
       Uri categoriesUrl;
       String url =
-          '$baseUrl/v1/transacoes/categoriadespesa/my/${ServiceStorage.getUserId().toString()}';
+          '$baseUrl/v1/transacao/categoriadespesa/my/${ServiceStorage.getUserId().toString()}';
       categoriesUrl = Uri.parse(url);
       var response = await httpClient.get(
         categoriesUrl,
@@ -185,7 +185,7 @@ class TransactionApiClient {
 
       Uri categoriesUrl;
       String url =
-          '$baseUrl/v1/transacoes/tipoespecificodespesa/my/${ServiceStorage.getUserId().toString()}';
+          '$baseUrl/v1/transacao/tipoespecificodespesa/my/${ServiceStorage.getUserId().toString()}';
       categoriesUrl = Uri.parse(url);
       var response = await httpClient.get(
         categoriesUrl,
@@ -219,7 +219,7 @@ class TransactionApiClient {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
       var transacoesUrl =
-          Uri.parse('$baseUrl/v1/transacoes/update/${transacoes.id}');
+          Uri.parse('$baseUrl/v1/transacao/update/${transacoes.id}');
 
       var request = http.MultipartRequest('POST', transacoesUrl);
 
@@ -261,7 +261,7 @@ class TransactionApiClient {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
       var expenseUrl =
-          Uri.parse('$baseUrl/v1/transacoes/delete/${transacoes.id}');
+          Uri.parse('$baseUrl/v1/transacao/delete/${transacoes.id}');
 
       var request = http.MultipartRequest('POST', expenseUrl);
 
