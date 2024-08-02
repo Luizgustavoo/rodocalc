@@ -46,6 +46,41 @@ class TransactionApiClient {
     return null;
   }
 
+  gettSaldo() async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+
+      Uri companyUrl;
+      String url =
+          '$baseUrl/v1/transacao/saldo/${ServiceStorage.idSelectedVehicle().toString()}';
+      companyUrl = Uri.parse(url);
+      var response = await httpClient.get(
+        companyUrl,
+        headers: {
+          "Accept": "application/json",
+          "Authorization": token,
+        },
+      );
+      if (response.statusCode == 201) {
+        return json.decode(response.body);
+      } else if (response.statusCode == 401 &&
+          json.decode(response.body)['message'] == "Token has expired") {
+        var resposta = {
+          'success': false,
+          'data': null,
+          'message': ['Token expirado']
+        };
+        var box = GetStorage('projeto');
+        box.erase();
+        Get.offAllNamed('/login');
+        return json.decode(resposta as String);
+      }
+    } catch (e) {
+      Exception(e);
+    }
+    return null;
+  }
+
   insert(Transacoes transacoes) async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";

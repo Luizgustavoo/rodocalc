@@ -74,7 +74,6 @@ class CreateReceiptModal extends GetView<TransactionController> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 5),
                               child: PhotoItem(
-                                isUpdate: isUpdate,
                                 photo: path[0],
                                 onDelete: () {
                                   controller.removeImage(path[0]);

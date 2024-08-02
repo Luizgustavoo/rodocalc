@@ -176,15 +176,33 @@ class FinancialView extends GetView<TransactionController> {
   Widget _buildHeader() {
     return Container(
       padding: const EdgeInsets.all(16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          const Text('Saldo Atual',
-              style: TextStyle(fontSize: 18, fontFamily: 'Inter-Bold')),
-          const SizedBox(width: 5),
-          Obx(() => Text('R\$ ${controller.balance.value.toStringAsFixed(2)}',
-              style: const TextStyle(fontSize: 18, fontFamily: 'Inter-Black'))),
-        ],
+      child: Card(
+        color: Colors.grey.shade300,
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              const Text('Saldo Atual',
+                  style: TextStyle(fontSize: 18, fontFamily: 'Inter-Bold')),
+              const SizedBox(width: 5),
+              Obx(
+                () {
+                  Color c = controller.balance.value == 0
+                      ? Colors.black
+                      : (controller.balance.value > 0
+                          ? Colors.green
+                          : Colors.red);
+                  return Text(
+                    'R\$ ${FormattedInputers.formatValuePTBR(controller.balance.value)}',
+                    style: const TextStyle(
+                        fontSize: 22, fontFamily: 'Inter-Black'),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -228,9 +246,9 @@ class FinancialView extends GetView<TransactionController> {
             controller.listTransactions.isNotEmpty) {
           return ListView.builder(
             padding: const EdgeInsets.all(16),
-            itemCount: controller.filteredTransactions.length,
+            itemCount: controller.listTransactions.length,
             itemBuilder: (context, index) {
-              final transaction = controller.filteredTransactions[index];
+              final transaction = controller.listTransactions[index];
               return _buildTimelineTile(transaction, context);
             },
           );
@@ -269,17 +287,17 @@ class FinancialView extends GetView<TransactionController> {
 
     return GestureDetector(
       onTap: () {
+        controller.selectedTransaction = transaction;
+        controller.fillInFields();
         controller.getMyCategories();
         controller.getMyChargeTypes();
         controller.getMySpecifics();
-        controller.selectedTransaction = transaction;
-        controller.fillInFields();
 
         if (transaction.tipoTransacao == 'entrada') {
           showModalBottomSheet(
             isScrollControlled: true,
             context: context,
-            builder: (context) => CreateReceiptModal(
+            builder: (context) => const CreateReceiptModal(
               isUpdate: true,
             ),
           );
@@ -290,7 +308,7 @@ class FinancialView extends GetView<TransactionController> {
           showModalBottomSheet(
             isScrollControlled: true,
             context: context,
-            builder: (context) => CreateExpenseModal(
+            builder: (context) => const CreateExpenseModal(
               isUpdate: true,
             ),
           );

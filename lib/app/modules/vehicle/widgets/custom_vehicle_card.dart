@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/models/vehicle_model.dart';
@@ -34,10 +35,9 @@ class CustomVehicleCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
             image: DecorationImage(
               image: vehicle.foto!.isNotEmpty
-                  ? NetworkImage(
-                          "$urlImagem/storage/fotos/veiculos/${vehicle.foto}")
-                      as ImageProvider
-                  : const AssetImage('assets/images/logo.png'),
+                  ? CachedNetworkImageProvider(
+                      "$urlImagem/storage/fotos/veiculos/${vehicle.foto}")
+                  : const AssetImage('assets/images/logo.png') as ImageProvider,
               fit: BoxFit.cover,
             ),
           ),

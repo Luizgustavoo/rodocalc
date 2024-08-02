@@ -2,6 +2,7 @@ import 'package:rodocalc/app/data/models/charge_type_model.dart';
 import 'package:rodocalc/app/data/models/expense_category_model.dart';
 import 'package:rodocalc/app/data/models/specific_type_expense_model.dart';
 import 'package:rodocalc/app/data/models/transactions_model.dart';
+import 'package:rodocalc/app/data/models/vehicle_balance_model.dart';
 import 'package:rodocalc/app/data/providers/transaction_provider.dart';
 
 class TransactionRepository {
@@ -19,6 +20,15 @@ class TransactionRepository {
     }
 
     return list;
+  }
+
+  getSaldo() async {
+    VehicleBalance balance = VehicleBalance();
+    var response = await apiClient.gettSaldo();
+    if (response != null) {
+      balance = VehicleBalance.fromJson(response['data']);
+    }
+    return balance;
   }
 
   getMyCategories() async {

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/controllers/home_controller.dart';
 import 'package:rodocalc/app/data/controllers/login_controller.dart';
+import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
 import 'package:rodocalc/app/data/controllers/vehicle_controller.dart';
 import 'package:rodocalc/app/modules/home/widgets/custom_home_card.dart';
 import 'package:rodocalc/app/routes/app_routes.dart';
@@ -12,6 +13,7 @@ class HomeView extends GetView<HomeController> {
   HomeView({super.key});
 
   final vehicleController = Get.put(VehiclesController());
+  final transactionController = Get.put(TransactionController());
 
   @override
   Widget build(BuildContext context) {
@@ -204,6 +206,8 @@ class HomeView extends GetView<HomeController> {
                                   imagePath: 'assets/images/frete.png',
                                   label: 'Financeiro',
                                   onTap: () {
+                                    transactionController.getAll();
+                                    transactionController.getSaldo();
                                     Get.toNamed(Routes.financial);
                                   },
                                 ),

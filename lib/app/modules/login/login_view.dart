@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/login_controller.dart';
-import 'package:rodocalc/app/routes/app_routes.dart';
 
 class LoginView extends GetView<LoginController> {
   const LoginView({super.key});
@@ -124,8 +123,7 @@ class LoginView extends GetView<LoginController> {
                                   width: double.infinity,
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      // controller.login();
-                                      Get.offAllNamed(Routes.home);
+                                      controller.login();
                                     },
                                     style: ElevatedButton.styleFrom(
                                       padding: const EdgeInsets.symmetric(

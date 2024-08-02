@@ -15,7 +15,8 @@ import 'package:rodocalc/app/utils/service_storage.dart';
 class TransactionController extends GetxController {
   RxBool trailerCheckboxValue = false.obs;
 
-  var selectedImagesPaths = <Map<String, dynamic>>[{}].obs;
+  var selectedImagesPaths = <String>[].obs;
+  var selectedImagesPathsApi = <String>[].obs;
 
   //CONTROLLER E KEY DESPESA
 
@@ -36,6 +37,7 @@ class TransactionController extends GetxController {
   final txtTonController = TextEditingController();
 
   RxBool isLoading = true.obs;
+  RxBool isLoadingBalance = true.obs;
 
   late Transacoes selectedTransaction;
 
@@ -85,7 +87,7 @@ class TransactionController extends GetxController {
   var selectedCategory = Rxn<int>();
   var selectedCargoType = Rxn<int>();
 
-  var balance = 10000.0.obs;
+  var balance = 0.0.obs;
   var transactions = <Transacoes>[].obs;
   var filteredTransactions = <Transacoes>[].obs;
   var searchQuery = ''.obs;
@@ -105,6 +107,17 @@ class TransactionController extends GetxController {
       Exception(e);
     }
     isLoading.value = false;
+  }
+
+  Future<void> getSaldo() async {
+    isLoadingBalance.value = true;
+    try {
+      final balanceVehicle = await repository.getSaldo();
+      balance.value = (balanceVehicle.saldoTotal as num).toDouble();
+    } catch (e) {
+      Exception(e);
+    }
+    isLoadingBalance.value = false;
   }
 
   RxList<ExpenseCategory> expenseCategories = <ExpenseCategory>[].obs;
@@ -173,11 +186,7 @@ class TransactionController extends GetxController {
           ],
         );
         if (croppedFile != null) {
-          Map<String, dynamic> foto = {
-            "arquivo": croppedFile.path,
-            "tipo": "insert"
-          };
-          selectedImagesPaths.add(foto);
+          selectedImagesPaths.add(croppedFile.path);
         }
       }
     } else {
@@ -211,11 +220,7 @@ class TransactionController extends GetxController {
           ],
         );
         if (croppedFile != null) {
-          Map<String, dynamic> foto = {
-            "arquivo": croppedFile.path,
-            "tipo": "insert"
-          };
-          selectedImagesPaths.add(foto);
+          selectedImagesPaths.add(croppedFile.path);
         }
       } else {
         Get.snackbar('Erro', 'Nenhuma imagem selecionada');
@@ -227,12 +232,16 @@ class TransactionController extends GetxController {
     selectedImagesPaths.remove(path);
   }
 
+  void removeImageApi(String path) {
+    selectedImagesPathsApi.remove(path);
+  }
+
   Future<Map<String, dynamic>> insertTransaction(String typeTransaction) async {
     if (formKeyTransaction.currentState!.validate()) {
       List<TransactionsPhotos>? photos = [];
       if (selectedImagesPaths.isNotEmpty) {
         for (var element in selectedImagesPaths) {
-          photos.add(TransactionsPhotos(arquivo: element['arquivo']));
+          photos.add(TransactionsPhotos(arquivo: element));
         }
       }
 
@@ -280,9 +289,7 @@ class TransactionController extends GetxController {
       List<TransactionsPhotos>? photos = [];
       if (selectedImagesPaths.isNotEmpty) {
         for (var element in selectedImagesPaths) {
-          if (element[1] == 'insert') {
-            photos.add(TransactionsPhotos(arquivo: element['arquivo']));
-          }
+          photos.add(TransactionsPhotos(arquivo: element));
         }
       }
 
@@ -408,13 +415,9 @@ class TransactionController extends GetxController {
     selectedSpecificType.value = selectedTransaction.tipoEspecificoDespesaId;
 
     if (selectedTransaction.photos!.isNotEmpty) {
-      selectedImagesPaths.clear();
-      for (var photo in selectedTransaction!.photos!) {
-        Map<String, dynamic> foto = {
-          "arquivo": photo.arquivo,
-          "tipo": "update",
-        };
-        selectedImagesPaths.add(foto);
+      selectedImagesPathsApi.clear();
+      for (var photo in selectedTransaction.photos!) {
+        selectedImagesPathsApi.add(photo.arquivo!.toString());
       }
     }
   }

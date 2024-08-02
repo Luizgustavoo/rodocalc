@@ -5,6 +5,7 @@ import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
 import 'package:rodocalc/app/data/models/expense_category_model.dart';
 import 'package:rodocalc/app/data/models/specific_type_expense_model.dart';
 import 'package:rodocalc/app/modules/vehicle/widgets/photo_item.dart';
+import 'package:rodocalc/app/modules/vehicle/widgets/photo_item_network.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 
@@ -49,46 +50,61 @@ class CreateExpenseModal extends GetView<TransactionController> {
 
               //COMEÇA AQUI AS FOTOS
 
-              Obx(
-                () => SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () => _showPicker(context),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Container(
-                            width: 100,
-                            height: 100,
-                            color: Colors.grey,
-                            child: const Icon(
-                              Icons.camera_alt,
-                              size: 50,
-                              color: Colors.white,
-                            ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () => _showPicker(context),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Container(
+                          width: 100,
+                          height: 100,
+                          color: Colors.grey,
+                          child: const Icon(
+                            Icons.camera_alt,
+                            size: 50,
+                            color: Colors.white,
                           ),
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      Row(
+                    ),
+                    const SizedBox(width: 10),
+                    Obx(
+                      () => Row(
                         children: controller.selectedImagesPaths.map((path) {
                           return Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 5),
                             child: PhotoItem(
-                              isUpdate: path['tipo'] == 'insert' ? false : true,
-                              photo: path['arquivo'],
+                              photo: path,
                               onDelete: () {
-                                controller.removeImage(path['arquivo']);
+                                controller.removeImage(path);
                               },
                             ),
                           );
                         }).toList(),
                       ),
-                    ],
-                  ),
+                    ),
+                    Obx(
+                      () => Row(
+                        children: controller.selectedImagesPathsApi.map((path) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            child: PhotoItemNetwork(
+                              photo: path,
+                              onDelete: () {
+                                controller.removeImageApi(path);
+                              },
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ],
                 ),
               ),
+
               //TERMINA AQUI AS FOTOS
 
               const SizedBox(height: 10),
@@ -243,47 +259,39 @@ class CreateExpenseModal extends GetView<TransactionController> {
                 ),
               ),
               const SizedBox(height: 10),
-              Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: TextFormField(
-                      controller: controller.txtCityController,
-                      decoration: const InputDecoration(
-                        prefixIcon: Icon(
-                          Icons.location_city_outlined,
-                        ),
-                        labelText: 'CIDADE',
-                      ),
-                    ),
+              TextFormField(
+                controller: controller.txtCityController,
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(
+                    Icons.location_city_outlined,
                   ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    flex: 1,
-                    child: DropdownButtonFormField<String>(
-                      decoration: const InputDecoration(
-                        labelText: 'UF',
-                      ),
-                      items: controller.ufs.map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      onChanged: (newValue) {
-                        controller.selectedUf.value = newValue!;
-                      },
-                      value: controller.selectedUf.value,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Selecione a UF';
-                        }
-                        return null;
-                      },
-                    ),
-                  )
-                ],
+                  labelText: 'CIDADE',
+                ),
               ),
+
+              const SizedBox(height: 10),
+              DropdownButtonFormField<String>(
+                decoration: const InputDecoration(
+                  labelText: 'UF',
+                ),
+                items: controller.ufs.map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (newValue) {
+                  controller.selectedUf.value = newValue!;
+                },
+                value: controller.selectedUf.value,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Selecione a UF';
+                  }
+                  return null;
+                },
+              ),
+
               const SizedBox(height: 10),
               TextFormField(
                 controller: controller.txtCompanyController,

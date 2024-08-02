@@ -1,12 +1,13 @@
-import 'dart:io';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:rodocalc/app/data/base_url.dart';
 
-class PhotoItem extends StatelessWidget {
+class PhotoItemNetwork extends StatelessWidget {
   final String photo;
   final VoidCallback onDelete;
 
-  const PhotoItem({required this.photo, required this.onDelete, super.key});
+  const PhotoItemNetwork(
+      {required this.photo, required this.onDelete, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +22,21 @@ class PhotoItem extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: Image.file(
-                File(photo),
+              child: Container(
                 width: 100,
                 height: 100,
-                fit: BoxFit.cover,
+                decoration: BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.circular(10),
+                  image: DecorationImage(
+                    image: CachedNetworkImageProvider(
+                      "$urlImagem/storage/fotos/transacoes/${photo}",
+                      maxWidth: 100,
+                      maxHeight: 100,
+                    ),
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
             ),
             Positioned(
