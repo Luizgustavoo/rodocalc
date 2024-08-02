@@ -65,19 +65,29 @@ class CustomPlanCard extends StatelessWidget {
                 const SizedBox(height: 16.0),
                 Align(
                   alignment: Alignment.centerRight,
-                  child: ElevatedButton(
-                    onPressed: onPressed,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24.0,
-                        vertical: 12.0,
-                      ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(colors: [
+                        Color(0xFFFF6B00),
+                        Color.fromARGB(127, 221, 101, 15)
+                      ]),
+                      borderRadius: BorderRadius.circular(50),
                     ),
-                    child: const Text(
-                      'CONTRATAR',
-                      style: TextStyle(
-                          fontFamily: 'Inter-Bold', color: Colors.white),
+                    child: ElevatedButton(
+                      onPressed: onPressed,
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24.0,
+                          vertical: 12.0,
+                        ),
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                      ),
+                      child: const Text(
+                        'CONTRATAR',
+                        style: TextStyle(
+                            fontFamily: 'Inter-Bold', color: Colors.white),
+                      ),
                     ),
                   ),
                 ),

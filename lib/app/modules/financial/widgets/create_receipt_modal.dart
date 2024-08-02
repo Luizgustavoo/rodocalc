@@ -4,10 +4,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
 import 'package:rodocalc/app/data/models/charge_type_model.dart';
 import 'package:rodocalc/app/modules/vehicle/widgets/photo_item.dart';
+import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 
 class CreateReceiptModal extends GetView<TransactionController> {
-  CreateReceiptModal({super.key, required this.isUpdate});
+  const CreateReceiptModal({super.key, required this.isUpdate});
 
   final bool isUpdate;
 
@@ -223,7 +224,7 @@ class CreateReceiptModal extends GetView<TransactionController> {
                             ),
                           ),
                         );
-                      }).toList(),
+                      }),
                     ],
                     onChanged: (newValue) {
                       controller.selectedCargoType.value = newValue;
@@ -239,8 +240,23 @@ class CreateReceiptModal extends GetView<TransactionController> {
                 ),
                 const SizedBox(height: 16),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    ElevatedButton(
+                    SizedBox(
+                      width: 120,
+                      child: TextButton(
+                          onPressed: () {
+                            Get.back();
+                          },
+                          child: const Text(
+                            'CANCELAR',
+                            style: TextStyle(
+                                fontFamily: 'Inter-Bold',
+                                color: Color(0xFFFF6B00)),
+                          )),
+                    ),
+                    const SizedBox(width: 10),
+                    CustomElevatedButton(
                       onPressed: () async {
                         Map<String, dynamic> retorno =
                             await controller.insertTransaction("entrada");
@@ -267,20 +283,6 @@ class CreateReceiptModal extends GetView<TransactionController> {
                             fontFamily: 'Inter-Bold', color: Colors.white),
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    SizedBox(
-                      width: 120,
-                      child: TextButton(
-                          onPressed: () {
-                            Get.back();
-                          },
-                          child: const Text(
-                            'CANCELAR',
-                            style: TextStyle(
-                                fontFamily: 'Inter-Bold',
-                                color: Color(0xFFFF6B00)),
-                          )),
-                    )
                   ],
                 ),
               ],

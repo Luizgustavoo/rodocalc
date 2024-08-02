@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/controllers/home_controller.dart';
 import 'package:rodocalc/app/data/controllers/login_controller.dart';
-import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
 import 'package:rodocalc/app/data/controllers/vehicle_controller.dart';
 import 'package:rodocalc/app/modules/home/widgets/custom_home_card.dart';
 import 'package:rodocalc/app/routes/app_routes.dart';
@@ -13,7 +12,6 @@ class HomeView extends GetView<HomeController> {
   HomeView({super.key});
 
   final vehicleController = Get.put(VehiclesController());
-  final transactionController = Get.put(TransactionController());
 
   @override
   Widget build(BuildContext context) {
@@ -192,7 +190,7 @@ class HomeView extends GetView<HomeController> {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 CustomHomeCard(
-                                  icon: Icons.local_shipping,
+                                  imagePath: 'assets/images/caminhao.png',
                                   label: 'Caminhões',
                                   onTap: () {
                                     vehicleController.isLoading.value = false;
@@ -203,16 +201,15 @@ class HomeView extends GetView<HomeController> {
                                 ),
                                 const SizedBox(width: 5),
                                 CustomHomeCard(
-                                  icon: Icons.monetization_on,
+                                  imagePath: 'assets/images/frete.png',
                                   label: 'Financeiro',
                                   onTap: () {
-                                    transactionController.getAll();
                                     Get.toNamed(Routes.financial);
                                   },
                                 ),
                                 const SizedBox(width: 5),
                                 CustomHomeCard(
-                                  icon: Icons.add_road_rounded,
+                                  imagePath: 'assets/images/estrada.png',
                                   label: 'Fretes',
                                   onTap: () {
                                     Get.toNamed(Routes.freight);
@@ -220,7 +217,7 @@ class HomeView extends GetView<HomeController> {
                                 ),
                                 const SizedBox(width: 5),
                                 CustomHomeCard(
-                                  icon: Icons.task,
+                                  imagePath: 'assets/images/documento.png',
                                   label: 'Documentos',
                                   onTap: () {
                                     Get.toNamed(Routes.document);
@@ -228,7 +225,7 @@ class HomeView extends GetView<HomeController> {
                                 ),
                                 const SizedBox(width: 5),
                                 CustomHomeCard(
-                                  icon: Icons.accessibility_new_rounded,
+                                  imagePath: 'assets/images/indicador.png',
                                   label: 'Indicador',
                                   onTap: () {
                                     Get.toNamed(Routes.indicator);
@@ -236,7 +233,7 @@ class HomeView extends GetView<HomeController> {
                                 ),
                                 const SizedBox(width: 5),
                                 CustomHomeCard(
-                                  icon: Icons.credit_card,
+                                  imagePath: 'assets/images/plano.png',
                                   label: 'Planos',
                                   onTap: () {
                                     Get.toNamed(Routes.plan);

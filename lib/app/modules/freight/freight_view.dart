@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/controllers/freight_controller.dart';
 import 'package:rodocalc/app/modules/freight/widgets/create_freight_modal.dart';
 import 'package:rodocalc/app/modules/freight/widgets/custom_freight_card.dart';
+import 'package:rodocalc/app/utils/service_storage.dart';
 
 class FreightView extends GetView<FreightController> {
   const FreightView({super.key});
@@ -42,10 +44,15 @@ class FreightView extends GetView<FreightController> {
                   Colors.black.withOpacity(0.6),
                   BlendMode.darken,
                 ),
-                child: Image.network(
-                  'https://portalgoverno.com.br/wp-content/uploads/2023/11/Caminhao-Carroceria-Plataforma-Mercedes-Benz-Atego-333054-Imagem-Ilustrativa-00-uai-634x634.jpg',
-                  fit: BoxFit.cover,
-                ),
+                child: !ServiceStorage.existsSelectedVehicle()
+                    ? Image.asset(
+                        'assets/images/caminhao.jpg',
+                        fit: BoxFit.cover,
+                      )
+                    : Image.network(
+                        "$urlImagem/storage/fotos/veiculos/${ServiceStorage.photoSelectedVehicle()}",
+                        fit: BoxFit.cover,
+                      ),
               ),
             ),
           ],

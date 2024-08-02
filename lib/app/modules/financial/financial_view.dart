@@ -50,7 +50,10 @@ class FinancialView extends GetView<TransactionController> {
                     BlendMode.darken,
                   ),
                   child: !ServiceStorage.existsSelectedVehicle()
-                      ? Image.asset('assets/images/caminhao.jpg')
+                      ? Image.asset(
+                          'assets/images/caminhao.jpg',
+                          fit: BoxFit.cover,
+                        )
                       : Image.network(
                           "$urlImagem/storage/fotos/veiculos/${ServiceStorage.photoSelectedVehicle()}",
                           fit: BoxFit.cover,
