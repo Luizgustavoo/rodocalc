@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/login_controller.dart';
 
@@ -24,21 +25,21 @@ class LoginView extends GetView<LoginController> {
         resizeToAvoidBottomInset: true,
         body: Stack(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
+            Positioned(
+              top: 40,
+              left: 120,
+              child: Image.asset(
+                'assets/images/logo_laranja.png',
+                height: 100,
+              ),
+            ),
+            SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 40),
-                    child: Center(
-                      child: Image.asset(
-                        'assets/images/logo_laranja.png',
-                        height: 100,
-                      ),
-                    ),
-                  ),
-                  const Spacer(),
+                  SizedBox(
+                      height: MediaQuery.of(context).size.height /
+                          2), // Ajuste a altura conforme necessário
                   Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -112,39 +113,41 @@ class LoginView extends GetView<LoginController> {
                               ),
                             ),
                             const SizedBox(height: 5),
-                            Obx(
-                              () => Visibility(
-                                //visible: !controller.loading.value,
-                                visible: true,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20.0),
-                                  height: 50,
-                                  width: double.infinity,
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      controller.login();
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 100,
-                                        vertical: 15,
+                            SizedBox(
+                              height: 50,
+                              width: double.infinity,
+                              child: Stack(
+                                fit: StackFit.expand,
+                                children: [
+                                  Obx(
+                                    () => Visibility(
+                                      visible: !controller.loading.value,
+                                      child: ElevatedButton(
+                                        child: const Text(
+                                          'ENTRAR',
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontFamily: 'Inter-Black',
+                                              color: Colors.white),
+                                        ),
+                                        onPressed: () {
+                                          controller.login();
+                                        },
                                       ),
-                                      backgroundColor: Colors.orange,
                                     ),
-                                    child: controller.isLoading.value
-                                        ? const CircularProgressIndicator(
-                                            color: Colors.white,
-                                          )
-                                        : const Text(
-                                            'ENTRAR',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 18,
-                                                fontFamily: 'Inter-Bold'),
-                                          ),
                                   ),
-                                ),
+                                  Obx(
+                                    () => Visibility(
+                                      visible: controller.loading.value,
+                                      child: Center(
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 5,
+                                          color: Theme.of(context).primaryColor,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                             TextButton(

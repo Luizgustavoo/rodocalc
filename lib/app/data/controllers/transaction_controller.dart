@@ -373,8 +373,8 @@ class TransactionController extends GetxController {
   void fillInFields() {
     txtDescriptionController.text = selectedTransaction.descricao!;
 
-    if (selectedTransaction!.data != null &&
-        selectedTransaction!.data!.isNotEmpty) {
+    if (selectedTransaction.data != null &&
+        selectedTransaction.data!.isNotEmpty) {
       try {
         DateTime date =
             DateFormat('yyyy-MM-dd').parse(selectedTransaction.data!);

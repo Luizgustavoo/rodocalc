@@ -9,8 +9,8 @@ class Transacoes {
   String? data;
   int? categoriaDespesaId;
   int? tipoEspecificoDespesaId;
-  dynamic? valor;
-  dynamic? saldo;
+  dynamic valor;
+  dynamic saldo;
   String? empresa;
   String? cidade;
   String? uf;
@@ -21,7 +21,7 @@ class Transacoes {
   int? veiculoId;
   String? origem;
   String? destino;
-  dynamic? quantidadeTonelada;
+  dynamic quantidadeTonelada;
   int? tipoCargaId;
   String? tipoTransacao; // 'entrada' ou 'saida'
   String? createdAt;

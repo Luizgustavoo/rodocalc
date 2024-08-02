@@ -9,7 +9,7 @@ class Financial {
   String? uf;
   String? ddd;
   String? telefone;
-  Null? observacoes;
+  Null observacoes;
   int? veiculoId;
 
   Financial(
@@ -42,19 +42,19 @@ class Financial {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['descricao'] = this.descricao;
-    data['valor'] = this.valor;
-    data['tipo'] = this.tipo;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['descricao'] = descricao;
+    data['valor'] = valor;
+    data['tipo'] = tipo;
     data['data'] = this.data;
-    data['empresa'] = this.empresa;
-    data['cidade'] = this.cidade;
-    data['uf'] = this.uf;
-    data['ddd'] = this.ddd;
-    data['telefone'] = this.telefone;
-    data['observacoes'] = this.observacoes;
-    data['veiculo_id'] = this.veiculoId;
+    data['empresa'] = empresa;
+    data['cidade'] = cidade;
+    data['uf'] = uf;
+    data['ddd'] = ddd;
+    data['telefone'] = telefone;
+    data['observacoes'] = observacoes;
+    data['veiculo_id'] = veiculoId;
     return data;
   }
 }

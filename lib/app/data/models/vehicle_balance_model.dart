@@ -11,8 +11,8 @@ class VehicleBalance {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['saldo_total'] = this.saldoTotal;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['saldo_total'] = saldoTotal;
     return data;
   }
 }

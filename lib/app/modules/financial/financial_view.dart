@@ -135,7 +135,7 @@ class FinancialView extends GetView<TransactionController> {
                   showModalBottomSheet(
                     isScrollControlled: true,
                     context: context,
-                    builder: (context) => CreateReceiptModal(
+                    builder: (context) => const CreateReceiptModal(
                       isUpdate: false,
                     ),
                   );
@@ -162,7 +162,7 @@ class FinancialView extends GetView<TransactionController> {
                   showModalBottomSheet(
                     isScrollControlled: true,
                     context: context,
-                    builder: (context) => CreateExpenseModal(
+                    builder: (context) => const CreateExpenseModal(
                       isUpdate: false,
                     ),
                   );
@@ -195,8 +195,8 @@ class FinancialView extends GetView<TransactionController> {
                           : Colors.red);
                   return Text(
                     'R\$ ${FormattedInputers.formatValuePTBR(controller.balance.value)}',
-                    style: const TextStyle(
-                        fontSize: 22, fontFamily: 'Inter-Black'),
+                    style: TextStyle(
+                        fontSize: 22, fontFamily: 'Inter-Black', color: c),
                   );
                 },
               ),
@@ -224,47 +224,43 @@ class FinancialView extends GetView<TransactionController> {
   }
 
   Widget _buildTransactionList(TransactionController controller) {
-    return Expanded(
-      child: Obx(() {
-        if (controller.isLoading.value) {
-          return const Expanded(
-            child: Center(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Carregando...'),
-                  SizedBox(height: 20.0),
-                  CircularProgressIndicator(
-                    value: 5,
-                  ),
-                ],
+    return Obx(() {
+      if (controller.isLoading.value) {
+        return const Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Carregando...'),
+              SizedBox(height: 20.0),
+              CircularProgressIndicator(
+                value: 5,
               ),
-            ),
-          );
-        } else if (!controller.isLoading.value &&
-            controller.listTransactions.isNotEmpty) {
-          return ListView.builder(
+            ],
+          ),
+        );
+      } else if (!controller.isLoading.value &&
+          controller.listTransactions.isNotEmpty) {
+        return Expanded(
+          child: ListView.builder(
             padding: const EdgeInsets.all(16),
             itemCount: controller.listTransactions.length,
             itemBuilder: (context, index) {
               final transaction = controller.listTransactions[index];
               return _buildTimelineTile(transaction, context);
             },
-          );
-        } else {
-          return const Expanded(
-            child: Center(
-              child: Text(
-                'NÃO HÁ TRANSAÇÕES PARA O VEÍCULO SELECIONADO!',
-                style: TextStyle(fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          );
-        }
-      }),
-    );
+          ),
+        );
+      } else {
+        return const Center(
+          child: Text(
+            'NÃO HÁ TRANSAÇÕES PARA O VEÍCULO SELECIONADO!',
+            style: TextStyle(fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+          ),
+        );
+      }
+    });
   }
 
   Widget _buildTimelineTile(Transacoes transaction, BuildContext context) {

@@ -30,7 +30,7 @@ class PhotoItemNetwork extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                   image: DecorationImage(
                     image: CachedNetworkImageProvider(
-                      "$urlImagem/storage/fotos/transacoes/${photo}",
+                      "$urlImagem/storage/fotos/transacoes/$photo",
                       maxWidth: 100,
                       maxHeight: 100,
                     ),
