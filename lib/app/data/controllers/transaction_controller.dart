@@ -88,15 +88,17 @@ class TransactionController extends GetxController {
   var selectedCargoType = Rxn<int>();
 
   var balance = 0.0.obs;
+
+  var entradasMesAtual = 0.0.obs;
+  var saidasMesAtual = 0.0.obs;
+  var entradasMesAnterior = 0.0.obs;
+  var saidasMesAnterior = 0.0.obs;
+  var variacaoEntradas = "".obs;
+  var variacaoSaidas = "".obs;
+
   var transactions = <Transacoes>[].obs;
   var filteredTransactions = <Transacoes>[].obs;
   var searchQuery = ''.obs;
-
-  // @override
-  // void onInit() {
-  //   super.onInit();
-  //   getAll();
-  // }
 
   Future<void> getAll() async {
     isLoading.value = true;
@@ -113,7 +115,15 @@ class TransactionController extends GetxController {
     isLoadingBalance.value = true;
     try {
       final balanceVehicle = await repository.getSaldo();
-      balance.value = (balanceVehicle.saldoTotal as num).toDouble();
+      if (balanceVehicle != null) {
+        balance.value = (balanceVehicle.saldoTotal as num).toDouble();
+        entradasMesAtual.value = balanceVehicle.entradasMesAtual;
+        saidasMesAtual.value = balanceVehicle.saidasMesAtual;
+        entradasMesAnterior.value = balanceVehicle.entradasMesAnterior;
+        saidasMesAnterior.value = balanceVehicle.saidasMesAnterior;
+        variacaoEntradas.value = balanceVehicle.variacaoEntradas;
+        variacaoSaidas.value = balanceVehicle.variacaoSaidas;
+      }
     } catch (e) {
       Exception(e);
     }
@@ -273,6 +283,7 @@ class TransactionController extends GetxController {
           'message': mensagem['message']
         };
         getAll();
+        getSaldo();
         clearAllFields();
       } else {
         retorno = {
@@ -370,14 +381,12 @@ class TransactionController extends GetxController {
     return retorno;
   }
 
-  void fillInFields() {
-    txtDescriptionController.text = selectedTransaction.descricao!;
+  void fillInFields(Transacoes selected) {
+    txtDescriptionController.text = selected.descricao!;
 
-    if (selectedTransaction.data != null &&
-        selectedTransaction.data!.isNotEmpty) {
+    if (selected.data != null && selected.data!.isNotEmpty) {
       try {
-        DateTime date =
-            DateFormat('yyyy-MM-dd').parse(selectedTransaction.data!);
+        DateTime date = DateFormat('yyyy-MM-dd').parse(selected.data!);
         txtDateController.text = DateFormat('dd/MM/yyyy').format(date);
       } catch (e) {
         txtDateController.clear();
@@ -386,37 +395,30 @@ class TransactionController extends GetxController {
       txtDateController.clear();
     }
 
-    txtValueController.text = FormattedInputers.formatValuePTBR(
-        selectedTransaction.valor!.toString());
-    txtCityController.text = selectedTransaction.cidade != null
-        ? selectedTransaction.cidade.toString()
-        : "";
-    txtCompanyController.text = selectedTransaction.empresa != null
-        ? selectedTransaction.empresa.toString()
-        : "";
-    txtDDDController.text = selectedTransaction.ddd != null
-        ? selectedTransaction.ddd.toString()
-        : "";
-    txtPhoneController.text = selectedTransaction.telefone != null
-        ? selectedTransaction.telefone.toString()
-        : "";
-    txtOriginController.text = selectedTransaction.origem != null
-        ? selectedTransaction.origem.toString()
-        : "";
-    txtDestinyController.text = selectedTransaction.destino != null
-        ? selectedTransaction.destino.toString()
-        : "";
-    txtTonController.text = selectedTransaction.quantidadeTonelada != null
-        ? selectedTransaction.quantidadeTonelada.toString()
+    txtValueController.text =
+        FormattedInputers.formatValuePTBR(selected.valor!.toString());
+    txtCityController.text =
+        selected.cidade != null ? selected.cidade.toString() : "";
+    txtCompanyController.text =
+        selected.empresa != null ? selected.empresa.toString() : "";
+    txtDDDController.text = selected.ddd != null ? selected.ddd.toString() : "";
+    txtPhoneController.text =
+        selected.telefone != null ? selected.telefone.toString() : "";
+    txtOriginController.text =
+        selected.origem != null ? selected.origem.toString() : "";
+    txtDestinyController.text =
+        selected.destino != null ? selected.destino.toString() : "";
+    txtTonController.text = selected.quantidadeTonelada != null
+        ? selected.quantidadeTonelada.toString()
         : "";
 
-    selectedCategory.value = selectedTransaction.categoriaDespesaId!;
-    selectedCargoType.value = selectedTransaction.tipoCargaId;
-    selectedSpecificType.value = selectedTransaction.tipoEspecificoDespesaId;
+    selectedCategory.value = selected.categoriaDespesaId!;
+    selectedCargoType.value = selected.tipoCargaId;
+    selectedSpecificType.value = selected.tipoEspecificoDespesaId;
 
-    if (selectedTransaction.photos!.isNotEmpty) {
+    if (selected.photos!.isNotEmpty) {
       selectedImagesPathsApi.clear();
-      for (var photo in selectedTransaction.photos!) {
+      for (var photo in selected.photos!) {
         selectedImagesPathsApi.add(photo.arquivo!.toString());
       }
     }
@@ -441,6 +443,16 @@ class TransactionController extends GetxController {
       controller.clear();
     }
     selectedImagesPaths.clear();
+    selectedImagesPathsApi.clear();
+  }
+
+  void clearDescriptionModal() {
+    final textControllers = [
+      txtDescriptionExpenseCategoryController,
+    ];
+    for (final controller in textControllers) {
+      controller.clear();
+    }
   }
 
   void filterTransactions(String query) {

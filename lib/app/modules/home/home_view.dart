@@ -7,6 +7,7 @@ import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
 import 'package:rodocalc/app/data/controllers/vehicle_controller.dart';
 import 'package:rodocalc/app/modules/home/widgets/custom_home_card.dart';
 import 'package:rodocalc/app/routes/app_routes.dart';
+import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -17,6 +18,7 @@ class HomeView extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
+    transactionController.getSaldo();
     return Scaffold(
       backgroundColor: Colors.grey,
       body: Stack(
@@ -142,7 +144,7 @@ class HomeView extends GetView<HomeController> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20)),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.end,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 CircleAvatar(
@@ -156,29 +158,56 @@ class HomeView extends GetView<HomeController> {
                                               "$urlImagem/storage/fotos/veiculos/${ServiceStorage.photoSelectedVehicle()}",
                                             ),
                                 ),
-                                const SizedBox(width: 20),
-                                const Padding(
-                                  padding: EdgeInsets.all(8.0),
+                                const SizedBox(width: 10),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 10, bottom: 10, left: 8, right: 18),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
-                                      Text(
+                                      const Text(
                                         'Saldo do caminhão',
                                         style: TextStyle(
-                                            color: Colors.black, fontSize: 14),
+                                            fontFamily: 'Inter-Regular',
+                                            color: Colors.black,
+                                            fontSize: 14),
                                       ),
-                                      Text(
-                                        'R\$ 10.307,00',
-                                        style: TextStyle(
-                                            color: Colors.green,
-                                            fontSize: 24,
-                                            fontFamily: 'Inter-Black'),
-                                      ),
-                                      Text(
-                                        '+15% entradas últimos 30 dias',
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 12),
-                                      ),
+                                      Obx(() {
+                                        return Text(
+                                          "R\$ ${FormattedInputers.formatValuePTBR(transactionController.balance.value)}",
+                                          style: TextStyle(
+                                              color: transactionController
+                                                          .balance.value ==
+                                                      0
+                                                  ? Colors.black
+                                                  : (transactionController
+                                                              .balance.value <
+                                                          0
+                                                      ? Colors.red
+                                                      : Colors.green),
+                                              fontSize: 24,
+                                              fontFamily: 'Inter-Black'),
+                                        );
+                                      }),
+                                      Obx(() {
+                                        return SizedBox(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              .58,
+                                          child: SingleChildScrollView(
+                                            scrollDirection: Axis.horizontal,
+                                            child: Text(
+                                              '${transactionController.variacaoEntradas} entradas (em comparação ao mês anterior)',
+                                              style: const TextStyle(
+                                                color: Colors.black,
+                                                fontFamily: 'Inter-Regular',
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }),
                                     ],
                                   ),
                                 )
@@ -256,7 +285,7 @@ class HomeView extends GetView<HomeController> {
           ),
           // Card de conteúdo com borda arredondada somente na parte de cima
           Positioned(
-            top: MediaQuery.of(context).size.height / 1.8,
+            top: Get.height * .56,
             left: 16,
             right: 16,
             bottom: 0,

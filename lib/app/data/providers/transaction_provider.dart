@@ -144,8 +144,13 @@ class TransactionApiClient {
   insertCategory(ExpenseCategory category, String type) async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
+      String finalRoute = "categoriadespesa";
 
-      var vehicleUrl = Uri.parse('$baseUrl/v1/transacao/categoriadespesa');
+      if (type == 'tipoespecificodespesa') {
+        finalRoute = "tipoespecificodespesa";
+      }
+
+      var vehicleUrl = Uri.parse('$baseUrl/v1/$finalRoute');
 
       var request = http.MultipartRequest('POST', vehicleUrl);
 

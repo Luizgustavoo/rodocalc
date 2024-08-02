@@ -91,4 +91,13 @@ class ServiceStorage {
     }
     return id;
   }
+
+  static double balanceSelectedVehicle() {
+    dynamic saldo = 0.0;
+    Vehicle v = getVehicleStorage();
+    if (!v.isEmpty() && v.saldo != null) {
+      saldo = v.saldo!;
+    }
+    return saldo;
+  }
 }

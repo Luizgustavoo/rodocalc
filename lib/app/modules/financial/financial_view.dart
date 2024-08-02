@@ -154,11 +154,13 @@ class FinancialView extends GetView<TransactionController> {
                 label: 'ADICIONAR DESPESA',
                 labelStyle: const TextStyle(fontFamily: "Inter-Black"),
                 onTap: () {
+                  controller.clearAllFields();
                   final transactionController =
                       Get.put(TransactionController());
+
                   transactionController.getMyCategories();
                   transactionController.getMySpecifics();
-                  controller.clearAllFields();
+
                   showModalBottomSheet(
                     isScrollControlled: true,
                     context: context,
@@ -243,11 +245,45 @@ class FinancialView extends GetView<TransactionController> {
           controller.listTransactions.isNotEmpty) {
         return Expanded(
           child: ListView.builder(
-            padding: const EdgeInsets.all(16),
+            padding:
+                const EdgeInsets.only(left: 16, top: 16, right: 16, bottom: 60),
             itemCount: controller.listTransactions.length,
             itemBuilder: (context, index) {
               final transaction = controller.listTransactions[index];
-              return _buildTimelineTile(transaction, context);
+              return InkWell(
+                splashColor: Colors.grey.shade50,
+                onTap: () {
+                  //METODO PARA EDITAR UMA TRANSAÇÃO
+                  controller.clearAllFields();
+                  controller.fillInFields(transaction);
+                  controller.getMyCategories();
+                  controller.getMyChargeTypes();
+                  controller.getMySpecifics();
+
+                  if (transaction.tipoTransacao == 'entrada') {
+                    showModalBottomSheet(
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (context) => const CreateReceiptModal(
+                        isUpdate: true,
+                      ),
+                    );
+                  } else if (transaction.tipoTransacao == 'saida') {
+                    final transactionController =
+                        Get.put(TransactionController());
+                    transactionController.getMyCategories();
+                    transactionController.getMySpecifics();
+                    showModalBottomSheet(
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (context) => const CreateExpenseModal(
+                        isUpdate: true,
+                      ),
+                    );
+                  }
+                },
+                child: _buildTimelineTile(transaction, context),
+              );
             },
           ),
         );
@@ -281,129 +317,95 @@ class FinancialView extends GetView<TransactionController> {
       cor = Colors.red;
     }
 
-    return GestureDetector(
-      onTap: () {
-        controller.selectedTransaction = transaction;
-        controller.fillInFields();
-        controller.getMyCategories();
-        controller.getMyChargeTypes();
-        controller.getMySpecifics();
-
-        if (transaction.tipoTransacao == 'entrada') {
-          showModalBottomSheet(
-            isScrollControlled: true,
-            context: context,
-            builder: (context) => const CreateReceiptModal(
-              isUpdate: true,
-            ),
-          );
-        } else if (transaction.tipoTransacao == 'saida') {
-          final transactionController = Get.put(TransactionController());
-          transactionController.getMyCategories();
-          transactionController.getMySpecifics();
-          showModalBottomSheet(
-            isScrollControlled: true,
-            context: context,
-            builder: (context) => const CreateExpenseModal(
-              isUpdate: true,
-            ),
-          );
-        }
-      },
-      child: TimelineTile(
-        alignment: TimelineAlign.start,
-        isFirst: false,
-        indicatorStyle: const IndicatorStyle(
-            width: 20,
-            indicatorXY: 0.4,
-            indicator: Icon(
-              Icons.circle_outlined,
-              size: 20,
-              color: Colors.grey,
-            ),
-            padding: EdgeInsets.only(top: 3, bottom: 3)),
-        endChild: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: 2,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      FormattedInputers.formatApiDate(transaction.data!),
-                      style: TextStyle(
-                          fontFamily: 'Inter-Bold', fontSize: 11, color: cor),
-                    ),
-                    Text(
-                      stringTitulo,
-                      style: TextStyle(
-                          fontFamily: 'Inter-Bold', fontSize: 12, color: cor),
-                    ),
-                    Text(
-                      "CÓDIGO",
-                      style: TextStyle(
-                          fontFamily: 'Inter-Regular',
-                          fontSize: 12,
-                          color: cor),
-                    ),
-                    Text(
-                      'SALDO',
-                      style: TextStyle(
-                          fontFamily: 'Inter-Regular',
-                          fontSize: 12,
-                          color: cor),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      stringValor,
-                      style: TextStyle(
-                        fontFamily: 'Inter-Bold',
-                        fontSize: 13,
-                        color: cor,
-                      ),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        const SizedBox(height: 10),
-                        Text(
-                          transaction.id.toString().padLeft(5, '0'),
-                          style: TextStyle(
-                            fontFamily: 'Inter-Regular',
-                            fontSize: 12,
-                            color: cor,
-                          ),
-                        ),
-                        Text(
-                          'R\$ ${transaction.saldo!.toStringAsFixed(2)}',
-                          style: TextStyle(
-                            fontFamily: 'Inter-Regular',
-                            fontSize: 12,
-                            color: cor,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
+    return TimelineTile(
+      alignment: TimelineAlign.start,
+      isFirst: false,
+      indicatorStyle: const IndicatorStyle(
+          width: 20,
+          indicatorXY: 0.4,
+          indicator: Icon(
+            Icons.circle_outlined,
+            size: 20,
+            color: Colors.grey,
           ),
+          padding: EdgeInsets.only(top: 3, bottom: 3)),
+      endChild: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 2,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    FormattedInputers.formatApiDate(transaction.data!),
+                    style: TextStyle(
+                        fontFamily: 'Inter-Bold', fontSize: 11, color: cor),
+                  ),
+                  Text(
+                    "${stringTitulo} - ${transaction.photos!.length!}",
+                    style: TextStyle(
+                        fontFamily: 'Inter-Bold', fontSize: 12, color: cor),
+                  ),
+                  Text(
+                    "CÓDIGO",
+                    style: TextStyle(
+                        fontFamily: 'Inter-Regular', fontSize: 12, color: cor),
+                  ),
+                  Text(
+                    'SALDO',
+                    style: TextStyle(
+                        fontFamily: 'Inter-Regular', fontSize: 12, color: cor),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    stringValor,
+                    style: TextStyle(
+                      fontFamily: 'Inter-Bold',
+                      fontSize: 13,
+                      color: cor,
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      const SizedBox(height: 10),
+                      Text(
+                        transaction.id.toString().padLeft(5, '0'),
+                        style: TextStyle(
+                          fontFamily: 'Inter-Regular',
+                          fontSize: 12,
+                          color: cor,
+                        ),
+                      ),
+                      Text(
+                        'R\$ ${transaction.saldo!.toStringAsFixed(2)}',
+                        style: TextStyle(
+                          fontFamily: 'Inter-Regular',
+                          fontSize: 12,
+                          color: cor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
-        beforeLineStyle: const LineStyle(
-          color: Colors.grey,
-          thickness: 2,
-        ),
+      ),
+      beforeLineStyle: const LineStyle(
+        color: Colors.grey,
+        thickness: 2,
       ),
     );
   }

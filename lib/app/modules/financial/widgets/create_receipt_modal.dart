@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
 import 'package:rodocalc/app/data/models/charge_type_model.dart';
 import 'package:rodocalc/app/modules/vehicle/widgets/photo_item.dart';
+import 'package:rodocalc/app/modules/vehicle/widgets/photo_item_network.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 
@@ -45,45 +46,61 @@ class CreateReceiptModal extends GetView<TransactionController> {
                 ),
                 const SizedBox(height: 10),
                 //COMEÇA AQUI AS FOTOS
-
-                Obx(
-                  () => SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () => _showPicker(context),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Container(
-                              width: 100,
-                              height: 100,
-                              color: Colors.grey,
-                              child: const Icon(
-                                Icons.camera_alt,
-                                size: 50,
-                                color: Colors.white,
-                              ),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => _showPicker(context),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Container(
+                            width: 100,
+                            height: 100,
+                            color: Colors.grey,
+                            child: const Icon(
+                              Icons.camera_alt,
+                              size: 50,
+                              color: Colors.white,
                             ),
                           ),
                         ),
-                        const SizedBox(width: 10),
-                        Row(
+                      ),
+                      const SizedBox(width: 10),
+                      Obx(
+                        () => Row(
                           children: controller.selectedImagesPaths.map((path) {
                             return Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 5),
                               child: PhotoItem(
-                                photo: path[0],
+                                photo: path,
                                 onDelete: () {
-                                  controller.removeImage(path[0]);
+                                  controller.removeImage(path);
                                 },
                               ),
                             );
                           }).toList(),
                         ),
-                      ],
-                    ),
+                      ),
+                      Obx(
+                        () => Row(
+                          children:
+                              controller.selectedImagesPathsApi.map((path) {
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 5),
+                              child: PhotoItemNetwork(
+                                photo: path,
+                                onDelete: () {
+                                  controller.removeImageApi(path);
+                                },
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 //TERMINA AQUI AS FOTOS

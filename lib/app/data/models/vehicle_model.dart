@@ -11,6 +11,7 @@ class Vehicle {
   String? createdAt;
   String? updatedAt;
   int? status;
+  dynamic saldo;
 
   Vehicle({
     this.id,
@@ -25,6 +26,7 @@ class Vehicle {
     this.createdAt,
     this.updatedAt,
     this.status,
+    this.saldo,
   });
 
   Vehicle.fromJson(Map<String, dynamic> json) {
@@ -40,6 +42,9 @@ class Vehicle {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     status = json['status'];
+    saldo = (json['saldo'] is int
+        ? (json['saldo'] as int).toDouble()
+        : json['saldo'] as double?);
   }
 
   Map<String, dynamic> toJson() {
@@ -56,6 +61,7 @@ class Vehicle {
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
     data['status'] = status;
+    data['saldo'] = saldo;
     return data;
   }
 

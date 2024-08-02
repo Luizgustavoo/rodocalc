@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/login_controller.dart';
 
@@ -41,6 +40,7 @@ class LoginView extends GetView<LoginController> {
                       height: MediaQuery.of(context).size.height /
                           2), // Ajuste a altura conforme necessário
                   Card(
+                    color: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),

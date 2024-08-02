@@ -126,6 +126,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
               ),
               const SizedBox(height: 15),
               TextFormField(
+                keyboardType: TextInputType.number,
                 maxLength: 10,
                 controller: controller.txtDateController,
                 decoration: const InputDecoration(
@@ -143,6 +144,8 @@ class CreateExpenseModal extends GetView<TransactionController> {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, insira a data da despesa';
+                  } else if (!FormattedInputers.validatePlate(value)) {
+                    return 'Por favor, insira uma data válida!';
                   }
                   return null;
                 },
@@ -173,6 +176,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
                   decoration: InputDecoration(
                     prefixIcon: IconButton(
                       onPressed: () {
+                        controller.clearDescriptionModal();
                         showSpecificTypeModal(context, 'tipoespecificodespesa');
                       },
                       icon: const Icon(
@@ -219,6 +223,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
                   decoration: InputDecoration(
                     prefixIcon: IconButton(
                       onPressed: () {
+                        controller.clearDescriptionModal();
                         showSpecificTypeModal(context, 'categoriadespesa');
                       },
                       icon: const Icon(
