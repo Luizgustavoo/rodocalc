@@ -47,6 +47,7 @@ dependencies:
   flutter_speed_dial: ^7.0.0
   cached_network_image: ^3.3.1
   carousel_slider: ^4.2.1
+  rive: ^0.13.12
 
 dev_dependencies:
   flutter_test:

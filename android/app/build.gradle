@@ -24,9 +24,9 @@ if (flutterVersionName == null) {
 
 android {
     namespace "br.com.rodocalc.rodocalc"
+    ndkVersion "25.1.8937393"
     compileSdk flutter.compileSdkVersion
-    ndkVersion flutter.ndkVersion
-
+    
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8

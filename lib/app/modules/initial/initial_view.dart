@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rive/rive.dart';
 import 'package:rodocalc/app/data/controllers/initial_controller.dart';
 
 class InitialView extends GetView<InitialController> {
@@ -9,22 +10,28 @@ class InitialView extends GetView<InitialController> {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final route = controller.verifyAuth();
-      Future.delayed(const Duration(seconds: 2), () {
+      Future.delayed(const Duration(seconds: 5), () {
         Get.offAllNamed(route);
       });
     });
 
     return const Scaffold(
+      backgroundColor: Colors.white,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'Carregando...',
-              style: TextStyle(fontSize: 24.0),
+            SizedBox(
+              height: 250,
+              width: 250,
+              child: RiveAnimation.asset(
+                'assets/images/rodocalc.riv',
+              ),
             ),
-            SizedBox(height: 20.0),
-            CircularProgressIndicator(),
+            SizedBox(height: 18.0),
+            CircularProgressIndicator(
+              strokeWidth: 3,
+            ),
           ],
         ),
       ),
