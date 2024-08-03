@@ -9,9 +9,11 @@ import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 
 class CreateReceiptModal extends GetView<TransactionController> {
-  const CreateReceiptModal({super.key, required this.isUpdate});
+  const CreateReceiptModal(
+      {super.key, required this.isUpdate, this.idTransaction});
 
   final bool isUpdate;
+  final int? idTransaction;
 
   @override
   Widget build(BuildContext context) {
@@ -140,6 +142,8 @@ class CreateReceiptModal extends GetView<TransactionController> {
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Por favor, insira a data da despesa';
+                    } else if (!FormattedInputers.validateDate(value)) {
+                      return 'Por favor, insira uma data válida!';
                     }
                     return null;
                   },
@@ -215,45 +219,77 @@ class CreateReceiptModal extends GetView<TransactionController> {
                   },
                 ),
                 const SizedBox(height: 15),
-                Obx(
-                  () => DropdownButtonFormField<int>(
-                    decoration: const InputDecoration(
-                      prefixIcon: Icon(
-                        Icons.sort_by_alpha_rounded,
+
+                Obx(() {
+                  if (controller.isLoadingChargeTypes.value) {
+                    return DropdownButtonFormField<int>(
+                      decoration: const InputDecoration(
+                        prefixIcon: Icon(
+                          Icons.sort_by_alpha_rounded,
+                        ),
+                        labelText: 'TIPO DE CARGA',
                       ),
-                      labelText: 'TIPO DE CARGA',
-                    ),
-                    items: [
-                      const DropdownMenuItem<int>(
-                        value: null,
-                        child: Text('Selecione uma categoria'),
+                      items: const [
+                        DropdownMenuItem<int>(
+                          value: null,
+                          child: Text('Carregando...'),
+                        ),
+                      ],
+                      onChanged: null, // Disable changes while loading
+                    );
+                  } else if (controller.listChargeTypes.isNotEmpty) {
+                    return DropdownButtonFormField<int>(
+                      decoration: const InputDecoration(
+                        prefixIcon: Icon(
+                          Icons.sort_by_alpha_rounded,
+                        ),
+                        labelText: 'TIPO DE CARGA',
                       ),
-                      ...controller.listChargeTypes.map((ChargeType charge) {
-                        return DropdownMenuItem<int>(
-                          value: charge.id!,
-                          child: Container(
-                            constraints:
-                                BoxConstraints(maxWidth: Get.width * .7),
+                      items: [
+                        const DropdownMenuItem<int>(
+                          value: null,
+                          child: Text('Selecione um tipo'),
+                        ),
+                        ...controller.listChargeTypes.map((ChargeType charge) {
+                          return DropdownMenuItem<int>(
+                            value: charge.id,
                             child: Text(
                               charge.descricao!,
                               overflow: TextOverflow.ellipsis,
                             ),
-                          ),
-                        );
-                      }),
-                    ],
-                    onChanged: (newValue) {
-                      controller.selectedCargoType.value = newValue;
-                    },
-                    value: controller.selectedCargoType.value,
-                    validator: (value) {
-                      if (value == null) {
-                        return 'Por favor, selecione o tipo de carga';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
+                          );
+                        }),
+                      ],
+                      onChanged: (newValue) {
+                        controller.selectedCargoType.value = newValue;
+                      },
+                      value: controller.selectedCargoType.value,
+                      validator: (value) {
+                        if (value == null) {
+                          return 'Por favor, selecione o tipo de carga';
+                        }
+                        return null;
+                      },
+                    );
+                  } else {
+                    return DropdownButtonFormField<int>(
+                      decoration: const InputDecoration(
+                        prefixIcon: Icon(
+                          Icons.sort_by_alpha_rounded,
+                        ),
+                        labelText: 'TIPO DE CARGA',
+                      ),
+                      items: const [
+                        DropdownMenuItem<int>(
+                          value: null,
+                          child: Text('Nenhum tipo encontrado!'),
+                        ),
+                      ],
+                      onChanged: null, // Disable changes if no types available
+                    );
+                  }
+                }),
+
                 const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -274,8 +310,10 @@ class CreateReceiptModal extends GetView<TransactionController> {
                     const SizedBox(width: 10),
                     CustomElevatedButton(
                       onPressed: () async {
-                        Map<String, dynamic> retorno =
-                            await controller.insertTransaction("entrada");
+                        Map<String, dynamic> retorno = isUpdate
+                            ? await controller.updateTransaction(
+                                "entrada", idTransaction!)
+                            : await controller.insertTransaction("entrada");
 
                         if (retorno['success'] == true) {
                           Get.back();
@@ -293,9 +331,9 @@ class CreateReceiptModal extends GetView<TransactionController> {
                               snackPosition: SnackPosition.BOTTOM);
                         }
                       },
-                      child: const Text(
-                        'CADASTRAR',
-                        style: TextStyle(
+                      child: Text(
+                        isUpdate ? 'ALTERAR' : 'CADASTRAR',
+                        style: const TextStyle(
                             fontFamily: 'Inter-Bold', color: Colors.white),
                       ),
                     ),

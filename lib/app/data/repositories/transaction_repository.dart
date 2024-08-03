@@ -91,9 +91,9 @@ class TransactionRepository {
     }
   }
 
-  update(Transacoes transaction) async {
+  update(Transacoes transaction, List<String> photosRemove) async {
     try {
-      var response = await apiClient.update(transaction);
+      var response = await apiClient.update(transaction, photosRemove);
       return response;
     } catch (e) {
       Exception(e);

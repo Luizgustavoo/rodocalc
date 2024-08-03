@@ -264,8 +264,9 @@ class FinancialView extends GetView<TransactionController> {
                     showModalBottomSheet(
                       isScrollControlled: true,
                       context: context,
-                      builder: (context) => const CreateReceiptModal(
+                      builder: (context) => CreateReceiptModal(
                         isUpdate: true,
+                        idTransaction: transaction.id!,
                       ),
                     );
                   } else if (transaction.tipoTransacao == 'saida') {
@@ -276,8 +277,9 @@ class FinancialView extends GetView<TransactionController> {
                     showModalBottomSheet(
                       isScrollControlled: true,
                       context: context,
-                      builder: (context) => const CreateExpenseModal(
+                      builder: (context) => CreateExpenseModal(
                         isUpdate: true,
+                        idTransaction: transaction.id,
                       ),
                     );
                   }

@@ -289,7 +289,7 @@ class TransactionApiClient {
     return null;
   }
 
-  update(Transacoes transacoes) async {
+  update(Transacoes transacoes, List<String> photosRemove) async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
@@ -297,6 +297,13 @@ class TransactionApiClient {
           Uri.parse('$baseUrl/v1/transacao/update/${transacoes.id}');
 
       var request = http.MultipartRequest('POST', transacoesUrl);
+
+      if (transacoes.photos != null && transacoes.photos!.isNotEmpty) {
+        for (var foto in transacoes.photos!) {
+          request.files
+              .add(await http.MultipartFile.fromPath('fotos[]', foto.arquivo!));
+        }
+      }
 
       request.fields.addAll({
         "descricao": transacoes.descricao.toString(),
@@ -311,7 +318,14 @@ class TransactionApiClient {
         "telefone": transacoes.telefone.toString(),
         "status": transacoes.status.toString(),
         "pessoa_id": transacoes.pessoaId.toString(),
-        "veiculo_id": transacoes.veiculoId.toString()
+        "veiculo_id": transacoes.veiculoId.toString(),
+        "data": transacoes.data.toString(),
+        "origem": transacoes.origem.toString(),
+        "destino": transacoes.destino.toString(),
+        "quantidade_tonelada": transacoes.quantidadeTonelada.toString(),
+        "tipocarga_id": transacoes.tipoCargaId.toString(),
+        "tipo_transacao": transacoes.tipoTransacao.toString(),
+        "fotos_para_excluir": photosRemove.join(','),
       });
 
       request.headers.addAll({
@@ -323,6 +337,8 @@ class TransactionApiClient {
 
       var responseStream = await response.stream.bytesToString();
       var httpResponse = http.Response(responseStream, response.statusCode);
+
+      print(json.decode(httpResponse.body));
 
       return json.decode(httpResponse.body);
     } catch (err) {

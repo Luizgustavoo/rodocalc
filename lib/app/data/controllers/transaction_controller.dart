@@ -17,6 +17,7 @@ class TransactionController extends GetxController {
 
   var selectedImagesPaths = <String>[].obs;
   var selectedImagesPathsApi = <String>[].obs;
+  var selectedImagesPathsApiRemove = <String>[].obs;
 
   //CONTROLLER E KEY DESPESA
 
@@ -37,6 +38,7 @@ class TransactionController extends GetxController {
   final txtTonController = TextEditingController();
 
   RxBool isLoading = true.obs;
+  RxBool isLoadingChargeTypes = true.obs;
   RxBool isLoadingBalance = true.obs;
 
   late Transacoes selectedTransaction;
@@ -135,13 +137,13 @@ class TransactionController extends GetxController {
   RxList<ChargeType> listChargeTypes = <ChargeType>[].obs;
 
   Future<void> getMyChargeTypes() async {
-    isLoading.value = true;
+    isLoadingChargeTypes.value = true;
     try {
       listChargeTypes.value = await repository.getMyChargeTypes();
     } catch (e) {
       Exception(e);
     }
-    isLoading.value = false;
+    isLoadingChargeTypes.value = false;
   }
 
   Future<void> getMyCategories() async {
@@ -243,6 +245,7 @@ class TransactionController extends GetxController {
   }
 
   void removeImageApi(String path) {
+    selectedImagesPathsApiRemove.add(path);
     selectedImagesPathsApi.remove(path);
   }
 
@@ -295,7 +298,8 @@ class TransactionController extends GetxController {
     return retorno;
   }
 
-  Future<Map<String, dynamic>> updateTransaction(String typeTransaction) async {
+  Future<Map<String, dynamic>> updateTransaction(
+      String typeTransaction, int $id) async {
     if (formKeyTransaction.currentState!.validate()) {
       List<TransactionsPhotos>? photos = [];
       if (selectedImagesPaths.isNotEmpty) {
@@ -304,28 +308,31 @@ class TransactionController extends GetxController {
         }
       }
 
-      /* mensagem = await repository.insert(Transacoes(
-        descricao: txtDescriptionController.text,
-        data: txtDateController.text,
-        categoriaDespesaId: 1,
-        tipoEspecificoDespesaId: 1,
-        valor: FormattedInputers.convertToDouble(txtValueController.text),
-        empresa: txtCompanyController.text,
-        cidade: txtCityController.text,
-        uf: selectedUf.value,
-        ddd: txtDDDController.text,
-        telefone: txtPhoneController.text,
-        status: 1,
-        pessoaId: ServiceStorage.getUserId(),
-        veiculoId: ServiceStorage.idSelectedVehicle(),
-        origem: txtOriginController.text,
-        destino: txtDestinyController.text,
-        quantidadeTonelada:
-            FormattedInputers.convertToDouble(txtTonController.text),
-        tipoCargaId: 1,
-        tipoTransacao: typeTransaction,
-        photos: photos,
-      ));*/
+      mensagem = await repository.update(
+          Transacoes(
+            id: $id,
+            descricao: txtDescriptionController.text,
+            data: txtDateController.text,
+            categoriaDespesaId: 1,
+            tipoEspecificoDespesaId: 1,
+            valor: FormattedInputers.convertToDouble(txtValueController.text),
+            empresa: txtCompanyController.text,
+            cidade: txtCityController.text,
+            uf: selectedUf.value,
+            ddd: txtDDDController.text,
+            telefone: txtPhoneController.text,
+            status: 1,
+            pessoaId: ServiceStorage.getUserId(),
+            veiculoId: ServiceStorage.idSelectedVehicle(),
+            origem: txtOriginController.text,
+            destino: txtDestinyController.text,
+            quantidadeTonelada:
+                FormattedInputers.convertToDouble(txtTonController.text),
+            tipoCargaId: 1,
+            tipoTransacao: typeTransaction,
+            photos: photos,
+          ),
+          selectedImagesPathsApiRemove.value);
       if (mensagem != null) {
         retorno = {
           'success': mensagem['success'],
@@ -417,6 +424,7 @@ class TransactionController extends GetxController {
     selectedSpecificType.value = selected.tipoEspecificoDespesaId;
 
     if (selected.photos!.isNotEmpty) {
+      selectedImagesPathsApiRemove.clear();
       selectedImagesPathsApi.clear();
       for (var photo in selected.photos!) {
         selectedImagesPathsApi.add(photo.arquivo!.toString());
@@ -444,6 +452,7 @@ class TransactionController extends GetxController {
     }
     selectedImagesPaths.clear();
     selectedImagesPathsApi.clear();
+    selectedImagesPathsApiRemove.clear();
   }
 
   void clearDescriptionModal() {

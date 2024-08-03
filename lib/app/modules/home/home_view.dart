@@ -132,10 +132,11 @@ class HomeView extends GetView<HomeController> {
                                 )),
                           ),
                           const SizedBox(height: 40),
-                          const Text(
-                            'Scania Bitrem FCF-0827',
+                          Text(
+                            ServiceStorage.titleSelectedVehicle(),
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(color: Colors.white, fontSize: 16),
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 16),
                           ),
                           const SizedBox(height: 8),
                           Card(

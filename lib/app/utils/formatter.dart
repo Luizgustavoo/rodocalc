@@ -141,4 +141,30 @@ abstract class FormattedInputers {
       return 'Data inválida';
     }
   }
+
+  static bool validateDate(String value) {
+    // Verifica se o valor não está vazio
+    if (value.isEmpty) {
+      return false;
+    }
+
+    // Verifica o formato da data no formato DD/MM/YYYY
+    final regex = RegExp(r'^\d{2}/\d{2}/\d{4}$');
+    if (!regex.hasMatch(value)) {
+      return false;
+    }
+
+    // Verifica se a data é válida
+    try {
+      final parts = value.split('/');
+      final day = int.parse(parts[0]);
+      final month = int.parse(parts[1]);
+      final year = int.parse(parts[2]);
+
+      final date = DateTime(year, month, day);
+      return date.day == day && date.month == month && date.year == year;
+    } catch (e) {
+      return false;
+    }
+  }
 }

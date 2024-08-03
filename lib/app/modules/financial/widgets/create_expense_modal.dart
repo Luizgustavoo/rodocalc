@@ -10,16 +10,17 @@ import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 
 class CreateExpenseModal extends GetView<TransactionController> {
-  const CreateExpenseModal({super.key, required this.isUpdate});
+  const CreateExpenseModal(
+      {super.key, required this.isUpdate, this.idTransaction});
 
   final bool isUpdate;
+  final int? idTransaction;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Form(
-        autovalidateMode: AutovalidateMode.onUserInteraction,
         key: controller.formKeyTransaction,
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -144,7 +145,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, insira a data da despesa';
-                  } else if (!FormattedInputers.validatePlate(value)) {
+                  } else if (!FormattedInputers.validateDate(value)) {
                     return 'Por favor, insira uma data válida!';
                   }
                   return null;
@@ -169,52 +170,6 @@ class CreateExpenseModal extends GetView<TransactionController> {
                   }
                   return null;
                 },
-              ),
-              const SizedBox(height: 15),
-              Obx(
-                () => DropdownButtonFormField<int>(
-                  decoration: InputDecoration(
-                    prefixIcon: IconButton(
-                      onPressed: () {
-                        controller.clearDescriptionModal();
-                        showSpecificTypeModal(context, 'tipoespecificodespesa');
-                      },
-                      icon: const Icon(
-                        Icons.add_rounded,
-                      ),
-                    ),
-                    labelText: 'TIPO ESPECÍFICO',
-                  ),
-                  items: [
-                    const DropdownMenuItem<int>(
-                      value: null,
-                      child: Text('Selecione um tipo específico'),
-                    ),
-                    ...controller.specificTypes
-                        .map((SpecificTypeExpense specific) {
-                      return DropdownMenuItem<int>(
-                        value: specific.id!,
-                        child: Container(
-                          constraints: BoxConstraints(maxWidth: Get.width * .7),
-                          child: Text(
-                            specific.descricao!,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      );
-                    }),
-                  ],
-                  onChanged: (newValue) {
-                    controller.selectedSpecificType.value = newValue!;
-                  },
-                  value: controller.selectedSpecificType.value,
-                  validator: (value) {
-                    if (value == null) {
-                      return 'Por favor, selecione o tipo específico';
-                    }
-                    return null;
-                  },
-                ),
               ),
               const SizedBox(height: 15),
 
@@ -263,6 +218,54 @@ class CreateExpenseModal extends GetView<TransactionController> {
                   },
                 ),
               ),
+
+              const SizedBox(height: 15),
+              Obx(
+                () => DropdownButtonFormField<int>(
+                  decoration: InputDecoration(
+                    prefixIcon: IconButton(
+                      onPressed: () {
+                        controller.clearDescriptionModal();
+                        showSpecificTypeModal(context, 'tipoespecificodespesa');
+                      },
+                      icon: const Icon(
+                        Icons.add_rounded,
+                      ),
+                    ),
+                    labelText: 'TIPO ESPECÍFICO',
+                  ),
+                  items: [
+                    const DropdownMenuItem<int>(
+                      value: null,
+                      child: Text('Selecione um tipo específico'),
+                    ),
+                    ...controller.specificTypes
+                        .map((SpecificTypeExpense specific) {
+                      return DropdownMenuItem<int>(
+                        value: specific.id!,
+                        child: Container(
+                          constraints: BoxConstraints(maxWidth: Get.width * .7),
+                          child: Text(
+                            specific.descricao!,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      );
+                    }),
+                  ],
+                  onChanged: (newValue) {
+                    controller.selectedSpecificType.value = newValue!;
+                  },
+                  value: controller.selectedSpecificType.value,
+                  validator: (value) {
+                    if (value == null) {
+                      return 'Por favor, selecione o tipo específico';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+
               const SizedBox(height: 10),
               TextFormField(
                 controller: controller.txtCityController,
@@ -346,7 +349,8 @@ class CreateExpenseModal extends GetView<TransactionController> {
                   CustomElevatedButton(
                     onPressed: () async {
                       Map<String, dynamic> retorno = isUpdate
-                          ? await controller.updateTransaction("saida")
+                          ? await controller.updateTransaction(
+                              "saida", idTransaction!)
                           : await controller.insertTransaction("saida");
 
                       if (retorno['success'] == true) {
@@ -364,9 +368,9 @@ class CreateExpenseModal extends GetView<TransactionController> {
                             snackPosition: SnackPosition.BOTTOM);
                       }
                     },
-                    child: const Text(
-                      'CADASTRAR',
-                      style: TextStyle(
+                    child: Text(
+                      isUpdate ? 'ALTERAR' : 'CADASTRAR',
+                      style: const TextStyle(
                         fontFamily: 'Inter-Bold',
                         color: Colors.white,
                       ),
