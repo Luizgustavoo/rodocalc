@@ -377,7 +377,7 @@ class TransactionController extends GetxController {
   }
 
   Future<Map<String, dynamic>> deleteTransaction(int id) async {
-    if (formKeyTransaction.currentState!.validate()) {
+    if (id > 0) {
       mensagem = await repository.delete(Transacoes(id: id));
       retorno = {
         'success': mensagem['success'],

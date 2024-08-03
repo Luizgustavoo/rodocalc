@@ -5,6 +5,7 @@ import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
 import 'package:rodocalc/app/data/models/charge_type_model.dart';
 import 'package:rodocalc/app/modules/vehicle/widgets/photo_item.dart';
 import 'package:rodocalc/app/modules/vehicle/widgets/photo_item_network.dart';
+import 'package:rodocalc/app/routes/app_routes.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 
@@ -294,18 +295,36 @@ class CreateReceiptModal extends GetView<TransactionController> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    SizedBox(
-                      width: 120,
-                      child: TextButton(
+                    Expanded(
+                      flex: 1,
+                      child: IconButton(
+                        onPressed: () {
+                          showDialogDeleteTransaction(
+                              context, idTransaction!, controller);
+                        },
+                        icon: const Icon(
+                          Icons.delete,
+                          size: 25,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: SizedBox(
+                        width: 120,
+                        child: TextButton(
                           onPressed: () {
                             Get.back();
                           },
                           child: const Text(
                             'CANCELAR',
                             style: TextStyle(
-                                fontFamily: 'Inter-Bold',
-                                color: Color(0xFFFF6B00)),
-                          )),
+                              fontFamily: 'Inter-Bold',
+                              color: Color(0xFFFF6B00),
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                     const SizedBox(width: 10),
                     CustomElevatedButton(
@@ -372,6 +391,59 @@ class CreateReceiptModal extends GetView<TransactionController> {
           ),
         );
       },
+    );
+  }
+
+  void showDialogDeleteTransaction(
+      context, int transaction, TransactionController controller) {
+    Get.defaultDialog(
+      titlePadding: const EdgeInsets.all(16),
+      contentPadding: const EdgeInsets.all(16),
+      title: "Confirmação",
+      content: const Text(
+        textAlign: TextAlign.center,
+        "Tem certeza que deseja excluir esta transação?",
+        style: TextStyle(
+          fontFamily: 'Poppins',
+          fontSize: 18,
+        ),
+      ),
+      actions: [
+        ElevatedButton(
+          onPressed: () async {
+            Map<String, dynamic> retorno =
+                await controller.deleteTransaction(transaction);
+
+            if (retorno['success'] == true) {
+              Get.offAllNamed(Routes.home);
+              Get.snackbar('Sucesso!', retorno['message'].join('\n'),
+                  backgroundColor: Colors.green,
+                  colorText: Colors.white,
+                  duration: const Duration(seconds: 2),
+                  snackPosition: SnackPosition.BOTTOM);
+            } else {
+              Get.snackbar('Falha!', retorno['message'].join('\n'),
+                  backgroundColor: Colors.red,
+                  colorText: Colors.white,
+                  duration: const Duration(seconds: 2),
+                  snackPosition: SnackPosition.BOTTOM);
+            }
+          },
+          child: const Text(
+            "CONFIRMAR",
+            style: TextStyle(fontFamily: 'Poppinss', color: Colors.white),
+          ),
+        ),
+        TextButton(
+          onPressed: () {
+            Get.back();
+          },
+          child: const Text(
+            "CANCELAR",
+            style: TextStyle(fontFamily: 'Poppinss'),
+          ),
+        ),
+      ],
     );
   }
 }
