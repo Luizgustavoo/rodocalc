@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/indicator_controller.dart';
+import 'package:rodocalc/app/data/models/indication_model.dart';
 import 'package:rodocalc/app/global/custom_app_bar.dart';
 import 'package:rodocalc/app/modules/indicator/widgets/create_indicator_modal.dart';
 import 'package:rodocalc/app/modules/indicator/widgets/custom_indicator_card.dart';
+import 'package:rodocalc/app/utils/formatter.dart';
 
-class IndicatorView extends GetView<IndicatorController> {
+class IndicatorView extends GetView<IndicationController> {
   const IndicatorView({super.key});
 
   @override
@@ -33,6 +35,7 @@ class IndicatorView extends GetView<IndicatorController> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Card(
+                  color: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -55,16 +58,25 @@ class IndicatorView extends GetView<IndicatorController> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: 10,
-                          itemBuilder: (context, index) {
-                            return const CustomIndicatorCard(
-                                name: 'Luiz Gustavo',
-                                phone: '(43)99999-9999',
-                                status: 'ATIVO',
-                                date: '20/09/2024');
+                        Obx(
+                          () {
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: controller.listIndications.length,
+                              itemBuilder: (context, index) {
+                                Indication indication =
+                                    controller.listIndications[index];
+
+                                return CustomIndicatorCard(
+                                  name: indication.nome!,
+                                  phone: indication.telefone!,
+                                  status: indication.status!,
+                                  date: FormattedInputers.formatApiDate(
+                                      indication.createdAt!),
+                                );
+                              },
+                            );
                           },
                         ),
                       ],
@@ -81,10 +93,13 @@ class IndicatorView extends GetView<IndicatorController> {
         child: FloatingActionButton(
           backgroundColor: const Color(0xFFFF6B00),
           onPressed: () {
+            controller.clearAllFields();
             showModalBottomSheet(
               isScrollControlled: true,
               context: context,
-              builder: (context) => const CreateIndicatorModal(),
+              builder: (context) => CreateIndicatorModal(
+                isUpdate: false,
+              ),
             );
           },
           child: const Icon(

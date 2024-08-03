@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/controllers/home_controller.dart';
+import 'package:rodocalc/app/data/controllers/indicator_controller.dart';
 import 'package:rodocalc/app/data/controllers/login_controller.dart';
 import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
 import 'package:rodocalc/app/data/controllers/vehicle_controller.dart';
@@ -15,6 +16,7 @@ class HomeView extends GetView<HomeController> {
 
   final vehicleController = Get.put(VehiclesController());
   final transactionController = Get.put(TransactionController());
+  final indicationController = Get.put(IndicationController());
 
   @override
   Widget build(BuildContext context) {
@@ -262,6 +264,7 @@ class HomeView extends GetView<HomeController> {
                                   imagePath: 'assets/images/indicador.png',
                                   label: 'Indicador',
                                   onTap: () {
+                                    indicationController.getAll();
                                     Get.toNamed(Routes.indicator);
                                   },
                                 ),

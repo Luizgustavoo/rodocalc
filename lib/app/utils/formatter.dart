@@ -167,4 +167,15 @@ abstract class FormattedInputers {
       return false;
     }
   }
+
+  static void toUpperCase(String text, TextEditingController controller) {
+    if (controller.text != text.toUpperCase()) {
+      controller.value = controller.value.copyWith(
+        text: text.toUpperCase(),
+        selection: TextSelection.fromPosition(
+          TextPosition(offset: text.toUpperCase().length),
+        ),
+      );
+    }
+  }
 }

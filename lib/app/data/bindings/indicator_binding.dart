@@ -4,6 +4,6 @@ import 'package:rodocalc/app/data/controllers/indicator_controller.dart';
 class IndicatorBinding implements Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<IndicatorController>(() => IndicatorController());
+    Get.lazyPut<IndicationController>(() => IndicationController());
   }
 }

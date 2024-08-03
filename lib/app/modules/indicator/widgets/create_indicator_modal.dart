@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/indicator_controller.dart';
+import 'package:rodocalc/app/data/models/indication_model.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
+import 'package:rodocalc/app/utils/formatter.dart';
 
-class CreateIndicatorModal extends GetView<IndicatorController> {
-  const CreateIndicatorModal({super.key});
+class CreateIndicatorModal extends GetView<IndicationController> {
+  CreateIndicatorModal({super.key, required this.isUpdate, this.indication});
+
+  bool isUpdate;
+  Indication? indication;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Form(
-          key: controller.formKeyIndicator,
+          key: controller.formKeyIndication,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             padding: const EdgeInsets.all(12.0),
@@ -38,7 +44,7 @@ class CreateIndicatorModal extends GetView<IndicatorController> {
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
-                  controller: controller.nameController,
+                  controller: controller.txtNomeIndication,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
                       Icons.person,
@@ -46,6 +52,9 @@ class CreateIndicatorModal extends GetView<IndicatorController> {
                     ),
                     labelText: 'NOME',
                   ),
+                  textCapitalization: TextCapitalization.characters,
+                  onChanged: (value) => FormattedInputers.toUpperCase(
+                      value, controller.txtNomeIndication),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Por favor, insira o nome';
@@ -55,7 +64,7 @@ class CreateIndicatorModal extends GetView<IndicatorController> {
                 ),
                 const SizedBox(height: 15),
                 TextFormField(
-                  controller: controller.phoneController,
+                  controller: controller.txtTelefoneIndication,
                   maxLength: 14,
                   decoration: const InputDecoration(
                     counterText: '',
@@ -65,7 +74,8 @@ class CreateIndicatorModal extends GetView<IndicatorController> {
                     labelText: 'TELEFONE',
                   ),
                   onChanged: (value) {
-                    controller.onContactChanged(value);
+                    FormattedInputers.onContactChanged(
+                        value, controller.txtTelefoneIndication);
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -93,7 +103,27 @@ class CreateIndicatorModal extends GetView<IndicatorController> {
                     ),
                     const SizedBox(width: 10),
                     CustomElevatedButton(
-                      onPressed: () async {},
+                      onPressed: () async {
+                        Map<String, dynamic> retorno = isUpdate
+                            ? await controller.updateIndication(indication!.id!)
+                            : await controller.insertIndication();
+
+                        if (retorno['success'] == true) {
+                          Get.back();
+                          Get.snackbar(
+                              'Sucesso!', retorno['message'].join('\n'),
+                              backgroundColor: Colors.green,
+                              colorText: Colors.white,
+                              duration: const Duration(seconds: 2),
+                              snackPosition: SnackPosition.BOTTOM);
+                        } else {
+                          Get.snackbar('Falha!', retorno['message'].join('\n'),
+                              backgroundColor: Colors.red,
+                              colorText: Colors.white,
+                              duration: const Duration(seconds: 2),
+                              snackPosition: SnackPosition.BOTTOM);
+                        }
+                      },
                       child: const Text(
                         'CADASTRAR',
                         style: TextStyle(
