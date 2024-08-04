@@ -91,6 +91,7 @@ class CreateFreightModal extends GetView<FreightController> {
                 const SizedBox(height: 10),
                 TextFormField(
                   controller: controller.distanceController,
+                  keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
                       Icons.social_distance_rounded,

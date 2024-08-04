@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/plan_controller.dart';
 import 'package:rodocalc/app/global/custom_app_bar.dart';
 import 'package:rodocalc/app/modules/plan/widgets/custom_plan_card.dart';
+import 'package:rodocalc/app/modules/plan/widgets/create_plan_modal.dart';
 
 class PlanView extends GetView<PlanController> {
   const PlanView({super.key});
@@ -92,7 +93,14 @@ class PlanView extends GetView<PlanController> {
                               name: plan['name'],
                               description: plan['description'],
                               price: plan['price'],
-                              onPressed: () {},
+                              onPressed: () {
+                                controller.updateSelectedPlan(plan);
+                                showModalBottomSheet(
+                                  context: context,
+                                  builder: (_) => CreatePlanModal(),
+                                  isScrollControlled: true,
+                                );
+                              },
                             );
                           },
                         ),

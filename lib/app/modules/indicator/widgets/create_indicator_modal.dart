@@ -6,10 +6,11 @@ import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 
 class CreateIndicatorModal extends GetView<IndicationController> {
-  CreateIndicatorModal({super.key, required this.isUpdate, this.indication});
+  const CreateIndicatorModal(
+      {super.key, required this.isUpdate, this.indication});
 
-  bool isUpdate;
-  Indication? indication;
+  final bool isUpdate;
+  final Indication? indication;
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +66,8 @@ class CreateIndicatorModal extends GetView<IndicationController> {
                 const SizedBox(height: 15),
                 TextFormField(
                   controller: controller.txtTelefoneIndication,
-                  maxLength: 14,
+                  keyboardType: TextInputType.number,
+                  maxLength: 15,
                   decoration: const InputDecoration(
                     counterText: '',
                     prefixIcon: Icon(

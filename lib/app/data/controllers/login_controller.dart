@@ -9,7 +9,7 @@ class LoginController extends GetxController {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final loginKey = GlobalKey<FormState>();
-
+  final RxBool isImageLoaded = false.obs;
   var isPasswordHidden = true.obs;
 
   final repository = Get.put(AuthRepository());
@@ -18,6 +18,18 @@ class LoginController extends GetxController {
 
   Auth? auth;
   RxBool showErrorSnackbar = false.obs;
+
+  @override
+  void onInit() {
+    preloadImage();
+    super.onInit();
+  }
+
+  Future<void> preloadImage() async {
+    await precacheImage(
+        const AssetImage('assets/images/background.jpg'), Get.context!);
+    isImageLoaded.value = true;
+  }
 
   void login() async {
     if (loginKey.currentState!.validate()) {

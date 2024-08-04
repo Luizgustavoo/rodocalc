@@ -118,7 +118,7 @@ class SignUpView extends GetView<SignUpController> {
                           const SizedBox(height: 10),
                           TextFormField(
                             controller: controller.txtTelefoneController,
-                            maxLength: 14,
+                            maxLength: 15,
                             decoration: const InputDecoration(
                                 prefixIcon: Icon(Icons.phone),
                                 labelText: 'TELEFONE',
@@ -195,10 +195,12 @@ class SignUpView extends GetView<SignUpController> {
                           const SizedBox(height: 10),
                           TextFormField(
                             controller: controller.txtCpfController,
+                            maxLength: 14,
+                            keyboardType: TextInputType.number,
                             decoration: const InputDecoration(
-                              prefixIcon: Icon(Icons.credit_card),
-                              labelText: 'CPF',
-                            ),
+                                prefixIcon: Icon(Icons.credit_card),
+                                labelText: 'CPF',
+                                counterText: ''),
                             onChanged: (value) {
                               FormattedInputers.onCpfChanged(
                                   value, controller.txtCpfController);

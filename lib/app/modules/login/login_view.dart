@@ -7,18 +7,36 @@ class LoginView extends GetView<LoginController> {
 
   @override
   Widget build(BuildContext context) {
+    return Obx(
+      () {
+        if (controller.isImageLoaded.value) {
+          return _buildLoginView(context);
+        } else {
+          return const Scaffold(
+            backgroundColor: Colors.white,
+            body: Center(
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+              ),
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  Widget _buildLoginView(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          image: DecorationImage(
-        colorFilter: ColorFilter.mode(
-          Colors.black.withOpacity(0.5),
-          BlendMode.darken,
+        image: DecorationImage(
+          colorFilter: ColorFilter.mode(
+            Colors.black.withOpacity(0.5),
+            BlendMode.darken,
+          ),
+          image: const AssetImage('assets/images/background.jpg'),
+          fit: BoxFit.cover,
         ),
-        image: const AssetImage(
-          'assets/images/background.jpg',
-        ),
-        fit: BoxFit.cover,
-      )),
+      ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         resizeToAvoidBottomInset: true,
@@ -37,8 +55,8 @@ class LoginView extends GetView<LoginController> {
               child: Column(
                 children: [
                   SizedBox(
-                      height: MediaQuery.of(context).size.height /
-                          2), // Ajuste a altura conforme necessário
+                    height: MediaQuery.of(context).size.height / 2,
+                  ), // Ajuste a altura conforme necessário
                   Card(
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
@@ -126,9 +144,10 @@ class LoginView extends GetView<LoginController> {
                                         child: const Text(
                                           'ENTRAR',
                                           style: TextStyle(
-                                              fontSize: 20,
-                                              fontFamily: 'Inter-Black',
-                                              color: Colors.white),
+                                            fontSize: 20,
+                                            fontFamily: 'Inter-Black',
+                                            color: Colors.white,
+                                          ),
                                         ),
                                         onPressed: () {
                                           controller.login();
@@ -157,8 +176,9 @@ class LoginView extends GetView<LoginController> {
                               child: const Text(
                                 'CRIAR UMA CONTA',
                                 style: TextStyle(
-                                    color: Color(0xFFFF6B00),
-                                    fontFamily: 'Inter-Bold'),
+                                  color: Color(0xFFFF6B00),
+                                  fontFamily: 'Inter-Bold',
+                                ),
                               ),
                             ),
                           ],

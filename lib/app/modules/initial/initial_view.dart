@@ -10,7 +10,7 @@ class InitialView extends GetView<InitialController> {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final route = controller.verifyAuth();
-      Future.delayed(const Duration(seconds: 5), () {
+      Future.delayed(const Duration(seconds: 3), () {
         Get.offAllNamed(route);
       });
     });

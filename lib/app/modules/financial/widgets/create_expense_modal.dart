@@ -4,7 +4,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
 import 'package:rodocalc/app/data/models/expense_category_model.dart';
 import 'package:rodocalc/app/data/models/specific_type_expense_model.dart';
-import 'package:rodocalc/app/data/models/transactions_model.dart';
 import 'package:rodocalc/app/modules/vehicle/widgets/photo_item.dart';
 import 'package:rodocalc/app/modules/vehicle/widgets/photo_item_network.dart';
 import 'package:rodocalc/app/routes/app_routes.dart';
@@ -156,6 +155,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
               const SizedBox(height: 15),
               TextFormField(
                 controller: controller.txtValueController,
+                keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   prefixIcon: Icon(
                     Icons.monetization_on,
@@ -315,7 +315,8 @@ class CreateExpenseModal extends GetView<TransactionController> {
               const SizedBox(height: 10),
               TextFormField(
                 controller: controller.txtPhoneController,
-                maxLength: 14,
+                maxLength: 15,
+                keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   counterText: '',
                   prefixIcon: Icon(

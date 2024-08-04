@@ -211,7 +211,7 @@ class FinancialView extends GetView<TransactionController> {
 
   Widget _buildSearchBar(TransactionController controller) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.only(top: 5, left: 12, right: 12, bottom: 10),
       child: SizedBox(
         height: 40,
         child: TextFormField(
