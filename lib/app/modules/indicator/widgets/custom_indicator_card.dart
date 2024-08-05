@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:rodocalc/app/data/models/indication_model.dart';
+
+import '../../../utils/formatter.dart';
 
 class CustomIndicatorCard extends StatelessWidget {
-  final String name;
-  final String phone;
-  final String status;
-  final String date;
+
+  final VoidCallback functionUpdate;
+  final Indication indication;
 
   const CustomIndicatorCard({
     super.key,
-    required this.name,
-    required this.phone,
-    required this.status,
-    required this.date,
+    required this.functionUpdate,
+    required this.indication
   });
 
   @override
@@ -23,6 +23,10 @@ class CustomIndicatorCard extends StatelessWidget {
       ),
       margin: const EdgeInsets.only(bottom: 10),
       child: ListTile(
+        trailing: IconButton(
+           onPressed: functionUpdate,
+          icon: Icon(Icons.edit),
+        ),
         title: RichText(
           text: TextSpan(
             style: const TextStyle(
@@ -37,7 +41,7 @@ class CustomIndicatorCard extends StatelessWidget {
                   fontFamily: 'Inter-Bold',
                 ),
               ),
-              TextSpan(text: name.toUpperCase()),
+              TextSpan(text: indication.nome!.toUpperCase()),
             ],
           ),
         ),
@@ -59,7 +63,7 @@ class CustomIndicatorCard extends StatelessWidget {
                       fontFamily: 'Inter-Bold',
                     ),
                   ),
-                  TextSpan(text: phone.toUpperCase()),
+                  TextSpan(text: indication.telefone!.toUpperCase()),
                 ],
               ),
             ),
@@ -78,7 +82,7 @@ class CustomIndicatorCard extends StatelessWidget {
                       fontFamily: 'Inter-Bold',
                     ),
                   ),
-                  TextSpan(text: status.toUpperCase()),
+                  TextSpan(text: indication.status!.toUpperCase()),
                 ],
               ),
             ),
@@ -97,7 +101,8 @@ class CustomIndicatorCard extends StatelessWidget {
                       fontFamily: 'Inter-Bold',
                     ),
                   ),
-                  TextSpan(text: date.toUpperCase()),
+                  TextSpan(text: FormattedInputers.formatApiDate(
+                      indication.createdAt!)),
                 ],
               ),
             ),

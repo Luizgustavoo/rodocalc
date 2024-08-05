@@ -121,11 +121,10 @@ class IndicatorView extends GetView<IndicationController> {
                                       controller.listIndications[index];
 
                                   return CustomIndicatorCard(
-                                    name: indication.nome!,
-                                    phone: indication.telefone!,
-                                    status: indication.status!,
-                                    date: FormattedInputers.formatApiDate(
-                                        indication.createdAt!),
+                                    functionUpdate: (){
+                                      Get.snackbar("Clicou", "Clicou");
+                                    },
+                                    indication: indication,
                                   );
                                 },
                               );
