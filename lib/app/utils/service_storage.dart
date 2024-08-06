@@ -49,6 +49,26 @@ class ServiceStorage {
     return "";
   }
 
+  static Auth getDataUser() {
+    if (existUser()) {
+      Map<String, dynamic> authJson = _box.read('auth');
+      Auth auth = Auth.fromJson(authJson);
+      return auth;
+    } else {
+      return Auth();
+    }
+  }
+
+  static String getUserPhoto() {
+    if (existUser()) {
+      Map<String, dynamic> authJson = _box.read('auth');
+      Auth auth = Auth.fromJson(authJson);
+      return auth.user!.people!.foto!;
+    } else {
+      return "";
+    }
+  }
+
   static bool existsSelectedVehicle() {
     if (_box.read('vehicle') != null) {
       return true;

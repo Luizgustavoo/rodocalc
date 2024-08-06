@@ -1,9 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/controllers/home_controller.dart';
 import 'package:rodocalc/app/data/controllers/indicator_controller.dart';
 import 'package:rodocalc/app/data/controllers/login_controller.dart';
+import 'package:rodocalc/app/data/controllers/perfil_controller.dart';
 import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
 import 'package:rodocalc/app/data/controllers/vehicle_controller.dart';
 import 'package:rodocalc/app/modules/home/widgets/custom_home_card.dart';
@@ -17,6 +19,7 @@ class HomeView extends GetView<HomeController> {
   final vehicleController = Get.put(VehiclesController());
   final transactionController = Get.put(TransactionController());
   final indicationController = Get.put(IndicationController());
+  final perfilController = Get.put(PerfilController());
 
   @override
   Widget build(BuildContext context) {
@@ -91,18 +94,25 @@ class HomeView extends GetView<HomeController> {
                                           ),
                                         ),
                                         const SizedBox(width: 5),
-                                        const CircleAvatar(
-                                          radius: 30,
-                                          backgroundImage: NetworkImage(
-                                            'https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133352156-stock-illustration-default-placeholder-profile-icon.jpg',
-                                          ),
-                                        ),
+                                        Obx(() => CircleAvatar(
+                                              radius: 30,
+                                              backgroundImage: controller
+                                                      .userPhoto
+                                                      .value
+                                                      .isNotEmpty
+                                                  ? CachedNetworkImageProvider(
+                                                          "$urlImagem/storage/fotos/users/${controller.userPhoto.value}")
+                                                      as ImageProvider
+                                                  : const NetworkImage(
+                                                      'https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133352156-stock-illustration-default-placeholder-profile-icon.jpg'),
+                                            )),
                                         PopupMenuButton<String>(
                                           padding: EdgeInsets.zero,
                                           iconColor: Colors.white,
                                           onSelected: (String value) {
                                             switch (value) {
                                               case 'Perfil':
+                                                perfilController.fillInFields();
                                                 Get.toNamed(Routes.perfil);
                                                 break;
                                               case 'Sair':

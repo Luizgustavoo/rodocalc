@@ -34,7 +34,7 @@ class Auth {
     }
     data['access_token'] = accessToken;
     data['token_type'] = tokenType as String;
-    data['expires_in'] = expiresIn;
+    data['expires_in'] = expiresIn as String;
     return data;
   }
 }

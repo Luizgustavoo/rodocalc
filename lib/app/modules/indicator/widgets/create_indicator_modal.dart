@@ -26,11 +26,11 @@ class CreateIndicatorModal extends GetView<IndicationController> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Padding(
+                Padding(
                   padding: EdgeInsets.only(top: 10, bottom: 5),
                   child: Text(
-                    'CADASTRO DE INDICADOR',
-                    style: TextStyle(
+                    isUpdate ? 'ALTERAR INDICAÇÃO' : 'CADASTRO DE INDICAÇÃO',
+                    style: const TextStyle(
                         fontFamily: 'Inter-Bold',
                         fontSize: 17,
                         color: Color(0xFFFF6B00)),
@@ -126,9 +126,9 @@ class CreateIndicatorModal extends GetView<IndicationController> {
                               snackPosition: SnackPosition.BOTTOM);
                         }
                       },
-                      child: const Text(
-                        'CADASTRAR',
-                        style: TextStyle(
+                      child: Text(
+                        isUpdate ? 'ALTERAR' : 'CADASTRAR',
+                        style: const TextStyle(
                             fontFamily: 'Inter-Bold', color: Colors.white),
                       ),
                     ),

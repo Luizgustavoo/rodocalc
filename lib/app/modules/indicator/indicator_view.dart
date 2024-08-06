@@ -111,22 +111,91 @@ class IndicatorView extends GetView<IndicationController> {
                           const SizedBox(height: 16),
                           Obx(
                             () {
-                              return ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: controller.listIndications.length,
-                                itemBuilder: (context, index) {
-                                  Indication indication =
-                                      controller.listIndications[index];
+                              if (controller.isLoading.value) {
+                                return const Column(
+                                  children: [
+                                    Text('Carregando...'),
+                                    SizedBox(height: 20.0),
+                                    CircularProgressIndicator(),
+                                  ],
+                                );
+                              } else if (controller.isLoading.value == false &&
+                                  controller.listIndications.isNotEmpty) {
+                                return ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: controller.listIndications.length,
+                                  itemBuilder: (context, index) {
+                                    Indication indication =
+                                        controller.listIndications[index];
 
-                                  return CustomIndicatorCard(
-                                    functionUpdate: () {
-                                      Get.snackbar("Clicou", "Clicou");
-                                    },
-                                    indication: indication,
-                                  );
-                                },
-                              );
+                                    return Dismissible(
+                                      key: UniqueKey(),
+                                      direction: DismissDirection.endToStart,
+                                      confirmDismiss:
+                                          (DismissDirection direction) async {
+                                        if (direction ==
+                                            DismissDirection.endToStart) {
+                                          showDialog(
+                                              context, indication, controller);
+                                        }
+                                        return false;
+                                      },
+                                      background: Container(
+                                        margin: const EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: Colors.red,
+                                        ),
+                                        child: const Align(
+                                          alignment: Alignment.centerRight,
+                                          child: Padding(
+                                              padding: EdgeInsets.all(10),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  Icon(
+                                                    Icons.check_rounded,
+                                                    size: 25,
+                                                    color: Colors.white,
+                                                  ),
+                                                  SizedBox(width: 10),
+                                                  Text(
+                                                    'EXCLUIR',
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                      ),
+                                      child: CustomIndicatorCard(
+                                        functionUpdate: () {
+                                          controller.fillInFields(indication);
+                                          showModalBottomSheet(
+                                            isScrollControlled: true,
+                                            context: context,
+                                            builder: (context) =>
+                                                CreateIndicatorModal(
+                                              isUpdate: true,
+                                              indication: indication,
+                                            ),
+                                          );
+                                        },
+                                        indication: indication,
+                                      ),
+                                    );
+                                  },
+                                );
+                              } else {
+                                return const Center(
+                                  child: Text("Nenhuma indicação encontrada!"),
+                                );
+                              }
                             },
                           ),
                         ],
@@ -161,4 +230,57 @@ class IndicatorView extends GetView<IndicationController> {
       ),
     );
   }
+}
+
+void showDialog(
+    context, Indication indication, IndicationController controller) {
+  Get.defaultDialog(
+    titlePadding: const EdgeInsets.all(16),
+    contentPadding: const EdgeInsets.all(16),
+    title: "Confirmação",
+    content: const Text(
+      textAlign: TextAlign.center,
+      "Tem certeza que deseja excluir a indicação selecionada?",
+      style: TextStyle(
+        fontFamily: 'Poppins',
+        fontSize: 18,
+      ),
+    ),
+    actions: [
+      ElevatedButton(
+        onPressed: () async {
+          Map<String, dynamic> retorno =
+              await controller.deleteIndication(indication.id!);
+
+          if (retorno['success'] == true) {
+            Get.back();
+            Get.snackbar('Sucesso!', retorno['message'].join('\n'),
+                backgroundColor: Colors.green,
+                colorText: Colors.white,
+                duration: const Duration(seconds: 2),
+                snackPosition: SnackPosition.BOTTOM);
+          } else {
+            Get.snackbar('Falha!', retorno['message'].join('\n'),
+                backgroundColor: Colors.red,
+                colorText: Colors.white,
+                duration: const Duration(seconds: 2),
+                snackPosition: SnackPosition.BOTTOM);
+          }
+        },
+        child: const Text(
+          "CONFIRMAR",
+          style: TextStyle(fontFamily: 'Poppinss', color: Colors.white),
+        ),
+      ),
+      TextButton(
+        onPressed: () {
+          Get.back();
+        },
+        child: const Text(
+          "CANCELAR",
+          style: TextStyle(fontFamily: 'Poppinss'),
+        ),
+      ),
+    ],
+  );
 }

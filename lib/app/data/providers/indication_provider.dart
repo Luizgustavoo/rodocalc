@@ -89,12 +89,12 @@ class IndicationApiClient {
         headers: {
           'Accept': 'application/json',
           'Authorization': token,
-          'Content-Type': 'application/json',
         },
         body: requestBody,
       );
 
-      if (response.statusCode == 201 ||
+      if (response.statusCode == 200 ||
+          response.statusCode == 201 ||
           response.statusCode == 422 ||
           response.statusCode == 404) {
         return json.decode(response.body);
@@ -121,6 +121,7 @@ class IndicationApiClient {
         },
       );
 
+      print(json.decode(response.body));
       return json.decode(response.body);
     } catch (err) {
       Exception(err);

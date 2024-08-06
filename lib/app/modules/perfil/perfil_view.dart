@@ -11,6 +11,25 @@ import 'package:rodocalc/app/utils/services.dart';
 class PerfilView extends GetView<PerfilController> {
   const PerfilView({super.key});
 
+  String? _validateSenha(String? value) {
+    if (value == null || value.isEmpty) {
+      return null; // Senha não é obrigatória
+    }
+    return null;
+  }
+
+  String? _validateConfirmaSenha(String? value) {
+    if (controller.txtSenhaController.text.isNotEmpty) {
+      if (value == null || value.isEmpty) {
+        return 'Confirme sua senha';
+      }
+      if (value != controller.txtSenhaController.text) {
+        return 'As senhas não coincidem';
+      }
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,6 +85,7 @@ class PerfilView extends GetView<PerfilController> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Card(
+                    color: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -241,6 +261,7 @@ class PerfilView extends GetView<PerfilController> {
                               prefixIcon: Icon(Icons.key),
                               labelText: 'SENHA',
                             ),
+                            validator: _validateSenha,
                           ),
                           const SizedBox(height: 10),
                           TextFormField(
@@ -250,12 +271,33 @@ class PerfilView extends GetView<PerfilController> {
                               prefixIcon: Icon(Icons.key),
                               labelText: 'CONFIRME SUA SENHA',
                             ),
+                            validator: _validateConfirmaSenha,
                           ),
                           const SizedBox(height: 20),
                           CustomElevatedButton(
                             height: 50,
                             width: double.infinity,
-                            onPressed: () {},
+                            onPressed: () async {
+                              Map<String, dynamic> retorno =
+                                  await controller.updateUser();
+
+                              if (retorno['success'] == true) {
+                                Get.back();
+                                Get.snackbar(
+                                    'Sucesso!', retorno['message'].join('\n'),
+                                    backgroundColor: Colors.green,
+                                    colorText: Colors.white,
+                                    duration: const Duration(seconds: 2),
+                                    snackPosition: SnackPosition.BOTTOM);
+                              } else {
+                                Get.snackbar(
+                                    'Falha!', retorno['message'].join('\n'),
+                                    backgroundColor: Colors.red,
+                                    colorText: Colors.white,
+                                    duration: const Duration(seconds: 2),
+                                    snackPosition: SnackPosition.BOTTOM);
+                              }
+                            },
                             child: const Text(
                               'SALVAR',
                               style: TextStyle(

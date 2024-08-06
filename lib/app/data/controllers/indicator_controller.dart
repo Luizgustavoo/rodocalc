@@ -25,6 +25,7 @@ class IndicationController extends GetxController {
     "data": null,
     "message": ["Preencha todos os campos!"]
   };
+  
   dynamic mensagem;
 
   Future<void> getAll() async {
@@ -32,6 +33,7 @@ class IndicationController extends GetxController {
     try {
       listIndications.value = await repository.getAll();
     } catch (e) {
+      listIndications.clear();
       Exception(e);
     }
     isLoading.value = false;
@@ -61,9 +63,9 @@ class IndicationController extends GetxController {
     return retorno;
   }
 
-  void fillInFields() {
-    txtNomeIndication.text = selectedIndication.nome.toString();
-    txtTelefoneIndication.text = selectedIndication.telefone.toString();
+  void fillInFields(Indication indication) {
+    txtNomeIndication.text = indication.nome.toString();
+    txtTelefoneIndication.text = indication.telefone.toString();
   }
 
   void clearAllFields() {
@@ -109,14 +111,13 @@ class IndicationController extends GetxController {
         'success': mensagem['success'],
         'message': mensagem['message']
       };
-      getAll();
     } else {
       retorno = {
         'success': false,
         'message': ['Falha ao realizar a operação!']
       };
     }
-
+    getAll();
     return retorno;
   }
 }

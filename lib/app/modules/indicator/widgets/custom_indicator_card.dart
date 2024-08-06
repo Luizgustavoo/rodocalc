@@ -1,18 +1,18 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:rodocalc/app/data/models/indication_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../utils/formatter.dart';
 
 class CustomIndicatorCard extends StatelessWidget {
-
   final VoidCallback functionUpdate;
   final Indication indication;
 
-  const CustomIndicatorCard({
-    super.key,
-    required this.functionUpdate,
-    required this.indication
-  });
+  const CustomIndicatorCard(
+      {super.key, required this.functionUpdate, required this.indication});
 
   @override
   Widget build(BuildContext context) {
@@ -24,13 +24,45 @@ class CustomIndicatorCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 10),
       child: ListTile(
         trailing: IconButton(
-           onPressed: functionUpdate,
+          onPressed: functionUpdate,
           icon: Icon(Icons.edit),
+        ),
+        leading: IconButton(
+          onPressed: () async {
+            String phone = indication.telefone!
+                .replaceAll('(', '')
+                .replaceAll(')', '')
+                .replaceAll('-', '')
+                .replaceAll(' ', '');
+            String linkWhatsApp =
+                "https://meusite.com.br?codigo=EDVFERgvcdfgrth342re";
+
+            var contact = phone;
+            var androidUrl =
+                "whatsapp://send?phone=+55$contact&text=$linkWhatsApp";
+            var iosUrl = "https://wa.me/+55$contact&text=$linkWhatsApp";
+
+            try {
+              if (Platform.isIOS) {
+                await launchUrl(Uri.parse(iosUrl));
+              } else {
+                await launchUrl(Uri.parse(androidUrl));
+              }
+            } on Exception {
+              Get.snackbar('Falha', 'Whatsapp não instalado!',
+                  backgroundColor: Colors.red.shade500,
+                  colorText: Colors.white,
+                  snackPosition: SnackPosition.BOTTOM);
+            }
+
+            //Share.share(linkWhatsApp);
+          },
+          icon: Icon(Icons.share),
         ),
         title: RichText(
           text: TextSpan(
             style: const TextStyle(
-              fontSize: 16,
+              fontSize: 13,
               color: Colors.black,
               fontFamily: 'Inter-Regular',
             ),
@@ -52,7 +84,7 @@ class CustomIndicatorCard extends StatelessWidget {
             RichText(
               text: TextSpan(
                 style: const TextStyle(
-                  fontSize: 14,
+                  fontSize: 13,
                   color: Colors.black,
                   fontFamily: 'Inter-Regular',
                 ),
@@ -71,7 +103,7 @@ class CustomIndicatorCard extends StatelessWidget {
             RichText(
               text: TextSpan(
                 style: const TextStyle(
-                  fontSize: 14,
+                  fontSize: 13,
                   color: Colors.black,
                   fontFamily: 'Inter-Regular',
                 ),
@@ -90,7 +122,7 @@ class CustomIndicatorCard extends StatelessWidget {
             RichText(
               text: TextSpan(
                 style: const TextStyle(
-                  fontSize: 14,
+                  fontSize: 13,
                   color: Colors.black,
                   fontFamily: 'Inter-Regular',
                 ),
@@ -101,8 +133,9 @@ class CustomIndicatorCard extends StatelessWidget {
                       fontFamily: 'Inter-Bold',
                     ),
                   ),
-                  TextSpan(text: FormattedInputers.formatApiDate(
-                      indication.createdAt!)),
+                  TextSpan(
+                      text: FormattedInputers.formatApiDate(
+                          indication.createdAt!)),
                 ],
               ),
             ),

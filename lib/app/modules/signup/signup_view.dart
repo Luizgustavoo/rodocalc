@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -66,6 +67,7 @@ class SignUpView extends GetView<SignUpController> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Card(
+                    color: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),

@@ -1,8 +1,11 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:rodocalc/app/data/base_url.dart';
+import 'package:rodocalc/app/data/controllers/home_controller.dart';
+import 'package:rodocalc/app/data/models/auth_model.dart';
 import 'package:rodocalc/app/data/models/people_model.dart';
 import 'package:rodocalc/app/data/models/user_model.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
@@ -92,5 +95,81 @@ class AuthApiClient {
       Exception(err);
     }
     return null;
+  }
+
+  Future<Map<String, dynamic>?> updateUser(People people, User user) async {
+    try {
+      var token = ServiceStorage.getToken();
+      var companyUrl = Uri.parse('$baseUrl/v1/usuario/update/${user.id}');
+
+      var request = http.MultipartRequest('POST', companyUrl);
+
+      if (people.foto != null && people.foto!.isNotEmpty) {
+        request.files
+            .add(await http.MultipartFile.fromPath('foto', people.foto!));
+      }
+
+      if (people.nome != null && people.nome!.isNotEmpty) {
+        request.fields['nome'] = people.nome!;
+      }
+      if (people.ddd != null && people.ddd!.isNotEmpty) {
+        request.fields['ddd'] = people.ddd!;
+      }
+      if (people.telefone != null && people.telefone!.isNotEmpty) {
+        request.fields['telefone'] = people.telefone!;
+      }
+      if (people.cpf != null && people.cpf!.isNotEmpty) {
+        request.fields['cpf'] = people.cpf!;
+      }
+      if (people.apelido != null && people.apelido!.isNotEmpty) {
+        request.fields['apelido'] = people.apelido!;
+      }
+      if (people.cidade != null && people.cidade!.isNotEmpty) {
+        request.fields['cidade'] = people.cidade!;
+      }
+      if (people.uf != null && people.uf!.isNotEmpty) {
+        request.fields['uf'] = people.uf!;
+      }
+      if (people.status != null && people.status!.toString().isNotEmpty) {
+        request.fields['status'] = people.status!.toString();
+      }
+      if (people.cupomParaIndicar != null &&
+          people.cupomParaIndicar!.isNotEmpty) {
+        request.fields['cupom_para_indicar'] = people.cupomParaIndicar!;
+      }
+      if (user.email != null && user.email!.isNotEmpty) {
+        request.fields['email'] = user.email!;
+      }
+      if (user.password != null && user.password!.isNotEmpty) {
+        request.fields['password'] = user.password!;
+      }
+
+      request.fields['usertype_id'] = "2";
+
+      request.headers.addAll({
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      });
+
+      var response = await request.send();
+
+      var responseStream = await response.stream.bytesToString();
+      var httpResponse = http.Response(responseStream, response.statusCode);
+
+      if (httpResponse.statusCode == 200 || httpResponse.statusCode == 201) {
+        final box = GetStorage('rodocalc');
+        Map<String, dynamic> responseData = json.decode(httpResponse.body);
+        Auth? auth = Auth.fromJson(responseData);
+        box.write('auth', auth.toJson());
+
+        Get.find<HomeController>().updateUserPhoto();
+        print(ServiceStorage.getUserPhoto());
+      }
+
+      return json.decode(httpResponse.body);
+    } catch (err) {
+      print('Error: $err');
+      return null;
+    }
   }
 }
