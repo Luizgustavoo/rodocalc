@@ -45,5 +45,11 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+    <key>NSCameraUsageDescription</key>
+	    <string>O aplicativo precisa de permissão para acessar a câmera. Isso será necessário para cadastrar uma pessoa ou para alterar sua foto de perfil.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	    <string>A aplicação requer acesso à sua galeria e biblioteca de imagens para possibilitar a seleção de fotos previamente capturadas.</string>
+
 </dict>
 </plist>
