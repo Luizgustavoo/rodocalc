@@ -56,7 +56,7 @@ class LoginView extends GetView<LoginController> {
                 children: [
                   SizedBox(
                     height: MediaQuery.of(context).size.height / 2,
-                  ), // Ajuste a altura conforme necessário
+                  ),
                   Card(
                     color: Colors.white,
                     shape: RoundedRectangleBorder(

@@ -6,6 +6,7 @@ import 'package:rodocalc/app/data/bindings/home_binding.dart';
 import 'package:rodocalc/app/data/bindings/indicator_binding.dart';
 import 'package:rodocalc/app/data/bindings/initial_binding.dart';
 import 'package:rodocalc/app/data/bindings/login_binding.dart';
+import 'package:rodocalc/app/data/bindings/perfil_binding.dart';
 import 'package:rodocalc/app/data/bindings/plan_binding.dart';
 import 'package:rodocalc/app/data/bindings/signup_binding.dart';
 import 'package:rodocalc/app/data/bindings/vehicle_binding.dart';
@@ -16,6 +17,7 @@ import 'package:rodocalc/app/modules/home/home_view.dart';
 import 'package:rodocalc/app/modules/indicator/indicator_view.dart';
 import 'package:rodocalc/app/modules/initial/initial_view.dart';
 import 'package:rodocalc/app/modules/login/login_view.dart';
+import 'package:rodocalc/app/modules/perfil/perfil_view.dart';
 import 'package:rodocalc/app/modules/plan/plan_view.dart';
 import 'package:rodocalc/app/modules/signup/signup_view.dart';
 import 'package:rodocalc/app/modules/vehicle/vehicle_view.dart';
@@ -72,6 +74,11 @@ class AppPages {
       name: Routes.plan,
       page: () => const PlanView(),
       binding: PlanBinding(),
+    ),
+    GetPage(
+      name: Routes.perfil,
+      page: () => const PerfilView(),
+      binding: PerfilBinding(),
     ),
   ];
 }

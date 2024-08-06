@@ -5,7 +5,6 @@ import 'package:rodocalc/app/data/models/indication_model.dart';
 import 'package:rodocalc/app/global/custom_app_bar.dart';
 import 'package:rodocalc/app/modules/indicator/widgets/create_indicator_modal.dart';
 import 'package:rodocalc/app/modules/indicator/widgets/custom_indicator_card.dart';
-import 'package:rodocalc/app/utils/formatter.dart';
 
 class IndicatorView extends GetView<IndicationController> {
   const IndicatorView({super.key});
@@ -121,7 +120,7 @@ class IndicatorView extends GetView<IndicationController> {
                                       controller.listIndications[index];
 
                                   return CustomIndicatorCard(
-                                    functionUpdate: (){
+                                    functionUpdate: () {
                                       Get.snackbar("Clicou", "Clicou");
                                     },
                                     indication: indication,

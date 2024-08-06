@@ -15,8 +15,8 @@ class CustomElevatedButton extends StatelessWidget {
     this.borderRadius,
     this.width,
     this.height = 44.0,
-    this.gradient = const LinearGradient(
-        colors: [Color(0xFFFF6B00), Color.fromARGB(127, 221, 101, 15)]),
+    this.gradient =
+        const LinearGradient(colors: [Color(0xFFFF6B00), Colors.orangeAccent]),
   });
 
   @override

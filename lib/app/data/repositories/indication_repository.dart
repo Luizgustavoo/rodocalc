@@ -1,6 +1,5 @@
 import 'package:rodocalc/app/data/models/indication_model.dart';
 import 'package:rodocalc/app/data/providers/indication_provider.dart';
-import 'package:rodocalc/app/data/providers/vehicle_provider.dart';
 
 class IndicationRepository {
   final IndicationApiClient apiClient = IndicationApiClient();

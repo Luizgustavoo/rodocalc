@@ -1,14 +1,15 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:rodocalc/app/data/controllers/signup_controller.dart';
+import 'package:rodocalc/app/data/controllers/perfil_controller.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/services.dart';
 
-class SignUpView extends GetView<SignUpController> {
-  const SignUpView({super.key});
+class PerfilView extends GetView<PerfilController> {
+  const PerfilView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,7 @@ class SignUpView extends GetView<SignUpController> {
                 child: Padding(
                   padding: EdgeInsets.only(right: 90),
                   child: Text(
-                    'CRIAR CONTA',
+                    'PERFIL',
                     style: TextStyle(
                         fontFamily: 'Inter-Regular', color: Color(0xFFFF6B00)),
                   ),
@@ -60,8 +61,7 @@ class SignUpView extends GetView<SignUpController> {
           SingleChildScrollView(
             padding: const EdgeInsets.all(12.0),
             child: Form(
-              key: controller.formSignupKey,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
+              key: controller.perfilKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -232,16 +232,6 @@ class SignUpView extends GetView<SignUpController> {
                               prefixIcon: Icon(Icons.email),
                               labelText: 'E-MAIL',
                             ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Por favor, insira seu email';
-                              }
-                              final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
-                              if (!emailRegex.hasMatch(value)) {
-                                return 'Por favor, insira um email válido';
-                              }
-                              return null;
-                            },
                           ),
                           const SizedBox(height: 10),
                           TextFormField(
@@ -251,15 +241,6 @@ class SignUpView extends GetView<SignUpController> {
                               prefixIcon: Icon(Icons.key),
                               labelText: 'SENHA',
                             ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Por favor, insira sua senha';
-                              }
-                              if (value.length < 6) {
-                                return 'A senha deve ter pelo menos 6 caracteres';
-                              }
-                              return null;
-                            },
                           ),
                           const SizedBox(height: 10),
                           TextFormField(
@@ -269,46 +250,34 @@ class SignUpView extends GetView<SignUpController> {
                               prefixIcon: Icon(Icons.key),
                               labelText: 'CONFIRME SUA SENHA',
                             ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Por favor, confirme sua senha';
-                              }
-                              if (value != controller.txtSenhaController.text) {
-                                return 'As senhas não coincidem';
-                              }
-                              return null;
-                            },
                           ),
                           const SizedBox(height: 20),
                           CustomElevatedButton(
                             height: 50,
                             width: double.infinity,
-                            onPressed: () async {
-                              Map<String, dynamic> retorno =
-                                  await controller.insertUser();
-
-                              if (retorno['success'] == true) {
-                                Get.back();
-                                Get.snackbar(
-                                    'Sucesso!', retorno['message'].join('\n'),
-                                    backgroundColor: Colors.green,
-                                    colorText: Colors.white,
-                                    duration: const Duration(seconds: 2),
-                                    snackPosition: SnackPosition.BOTTOM);
-                              } else {
-                                Get.snackbar(
-                                    'Falha!', retorno['message'].join('\n'),
-                                    backgroundColor: Colors.red,
-                                    colorText: Colors.white,
-                                    duration: const Duration(seconds: 2),
-                                    snackPosition: SnackPosition.BOTTOM);
-                              }
-                            },
+                            onPressed: () {},
                             child: const Text(
                               'SALVAR',
                               style: TextStyle(
                                   fontFamily: 'Inter-Bold',
                                   fontSize: 18,
+                                  color: Colors.white),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          CustomElevatedButton(
+                            height: 40,
+                            gradient: LinearGradient(colors: [
+                              Colors.red,
+                              Colors.redAccent.shade100
+                            ]),
+                            width: double.infinity,
+                            onPressed: () {},
+                            child: const Text(
+                              'DELETAR CONTA',
+                              style: TextStyle(
+                                  fontFamily: 'Inter-Bold',
+                                  fontSize: 15,
                                   color: Colors.white),
                             ),
                           ),

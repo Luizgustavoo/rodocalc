@@ -9,4 +9,5 @@ abstract class Routes {
   static const document = '/document';
   static const indicator = '/indicator';
   static const plan = '/plan';
+  static const perfil = '/perfil';
 }
