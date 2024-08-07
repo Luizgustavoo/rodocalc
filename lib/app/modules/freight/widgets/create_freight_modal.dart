@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/freight_controller.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
@@ -36,37 +37,167 @@ class CreateFreightModal extends GetView<FreightController> {
                   thickness: 2,
                   color: Colors.black,
                 ),
-                const SizedBox(height: 10),
-                TextFormField(
-                  controller: controller.originController,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.pin_drop,
+                const SizedBox(height: 15),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: TextFormField(
+                        controller: controller.originController,
+                        decoration: const InputDecoration(
+                          prefixIcon: Icon(
+                            Icons.pin_drop,
+                          ),
+                          labelText: 'ORIGEM',
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Por favor, insira a origem';
+                          }
+                          return null;
+                        },
+                      ),
                     ),
-                    labelText: 'ORIGEM',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, insira a origem';
-                    }
-                    return null;
-                  },
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Obx(() {
+                        return DropdownButtonFormField<String>(
+                          decoration: const InputDecoration(
+                            labelText: 'ESTADO',
+                          ),
+                          value: controller.selectedStateOrigin.value.isEmpty
+                              ? null
+                              : controller.selectedStateOrigin.value,
+                          items: [
+                            'AC',
+                            'AL',
+                            'AM',
+                            'AP',
+                            'BA',
+                            'CE',
+                            'DF',
+                            'ES',
+                            'GO',
+                            'MA',
+                            'MG',
+                            'MS',
+                            'MT',
+                            'PA',
+                            'PB',
+                            'PE',
+                            'PI',
+                            'PR',
+                            'RJ',
+                            'RN',
+                            'RO',
+                            'RR',
+                            'RS',
+                            'SC',
+                            'SE',
+                            'SP',
+                            'TO'
+                          ].map((String state) {
+                            return DropdownMenuItem<String>(
+                              value: state,
+                              child: Text(state.toUpperCase(),
+                                  style:
+                                      const TextStyle(fontFamily: 'Poppins')),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            controller.selectedStateOrigin.value = value!;
+                          },
+                          validator: (value) {
+                            if (value == null) {
+                              return 'Por favor, selecione um estado';
+                            }
+                            return null;
+                          },
+                        );
+                      }),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 10),
-                TextFormField(
-                  controller: controller.destinyController,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.pin_drop,
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: TextFormField(
+                        controller: controller.destinyController,
+                        decoration: const InputDecoration(
+                          prefixIcon: Icon(
+                            Icons.pin_drop,
+                          ),
+                          labelText: 'DESTINO',
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Por favor, insira o destino';
+                          }
+                          return null;
+                        },
+                      ),
                     ),
-                    labelText: 'DESTINO',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, insira o destino';
-                    }
-                    return null;
-                  },
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Obx(() {
+                        return DropdownButtonFormField<String>(
+                          decoration: const InputDecoration(
+                            labelText: 'ESTADO',
+                          ),
+                          value: controller.selectedStateDestiny.value.isEmpty
+                              ? null
+                              : controller.selectedStateDestiny.value,
+                          items: [
+                            'AC',
+                            'AL',
+                            'AM',
+                            'AP',
+                            'BA',
+                            'CE',
+                            'DF',
+                            'ES',
+                            'GO',
+                            'MA',
+                            'MG',
+                            'MS',
+                            'MT',
+                            'PA',
+                            'PB',
+                            'PE',
+                            'PI',
+                            'PR',
+                            'RJ',
+                            'RN',
+                            'RO',
+                            'RR',
+                            'RS',
+                            'SC',
+                            'SE',
+                            'SP',
+                            'TO'
+                          ].map((String state) {
+                            return DropdownMenuItem<String>(
+                              value: state,
+                              child: Text(state.toUpperCase(),
+                                  style:
+                                      const TextStyle(fontFamily: 'Poppins')),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            controller.selectedStateDestiny.value = value!;
+                          },
+                          validator: (value) {
+                            if (value == null) {
+                              return 'Por favor, selecione um estado';
+                            }
+                            return null;
+                          },
+                        );
+                      }),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
@@ -175,6 +306,26 @@ class CreateFreightModal extends GetView<FreightController> {
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Por favor, insira o preço';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: controller.valueTollController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(
+                      Icons.paid,
+                    ),
+                    labelText: 'VALOR PEDÁGIO',
+                  ),
+                  onChanged: (value) {
+                    controller.onValueChanged(value, 'valueToll');
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira o preço do pedágio';
                     }
                     return null;
                   },

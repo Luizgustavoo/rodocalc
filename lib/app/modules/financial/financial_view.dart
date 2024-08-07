@@ -118,7 +118,7 @@ class FinancialView extends GetView<TransactionController> {
             buttonSize: const Size(50, 50),
             children: [
               SpeedDialChild(
-                backgroundColor: const Color(0xFFFF6B00),
+                backgroundColor: Colors.green.shade600,
                 child: const SizedBox(
                   width: 40,
                   height: 40,
@@ -142,7 +142,7 @@ class FinancialView extends GetView<TransactionController> {
                 },
               ),
               SpeedDialChild(
-                backgroundColor: const Color(0xFFFF6B00),
+                backgroundColor: Colors.red.shade600,
                 child: const SizedBox(
                   width: 40,
                   height: 40,

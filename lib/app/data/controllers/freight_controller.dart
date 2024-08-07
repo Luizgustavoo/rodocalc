@@ -4,7 +4,6 @@ import 'package:rodocalc/app/utils/formatter.dart';
 
 class FreightController extends GetxController {
   final freightKey = GlobalKey<FormState>();
-
   final originController = TextEditingController();
   final destinyController = TextEditingController();
   final valueReceiveController = TextEditingController();
@@ -13,6 +12,10 @@ class FreightController extends GetxController {
   final priceController = TextEditingController();
   final totalTiresController = TextEditingController();
   final priceTiresController = TextEditingController();
+  final valueTollController = TextEditingController();
+
+  final selectedStateOrigin = ''.obs;
+  final selectedStateDestiny = ''.obs;
   var result = ''.obs;
   void onValueChanged(String value, String controllerType) {
     String formattedValue = FormattedInputers.formatTESTE(value);
@@ -32,6 +35,12 @@ class FreightController extends GetxController {
         break;
       case 'priceTires':
         priceTiresController.value = priceTiresController.value.copyWith(
+          text: formattedValue,
+          selection: TextSelection.collapsed(offset: formattedValue.length),
+        );
+        break;
+      case 'valueToll':
+        valueTollController.value = valueTollController.value.copyWith(
           text: formattedValue,
           selection: TextSelection.collapsed(offset: formattedValue.length),
         );
@@ -63,7 +72,7 @@ class FreightController extends GetxController {
     final double tireWearExpense =
         (distance / 800) * (totalTires * priceTires * 0.27 / 100);
 
-    const double otherExpenses = 45.80;
+    double otherExpenses = double.parse(cleanValue(valueTollController.text));
 
     final double totalExpenses =
         dieselExpense + tireWearExpense + otherExpenses;
