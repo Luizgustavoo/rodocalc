@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/freight_controller.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
+import 'package:rodocalc/app/utils/formatter.dart';
 
 class CreateFreightModal extends GetView<FreightController> {
   const CreateFreightModal({super.key});
@@ -210,7 +211,8 @@ class CreateFreightModal extends GetView<FreightController> {
                     labelText: 'VALOR A RECEBER',
                   ),
                   onChanged: (value) {
-                    controller.onValueChanged(value, 'valueReceive');
+                    FormattedInputers.onformatValueChanged(
+                        value, controller.valueReceiveController);
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -255,7 +257,7 @@ class CreateFreightModal extends GetView<FreightController> {
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
-                  controller: controller.priceController,
+                  controller: controller.priceDieselController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
@@ -264,7 +266,8 @@ class CreateFreightModal extends GetView<FreightController> {
                     labelText: 'PREÇO/LITRO DIESEL',
                   ),
                   onChanged: (value) {
-                    controller.onValueChanged(value, 'price');
+                    FormattedInputers.onformatValueChanged(
+                        value, controller.priceDieselController);
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -301,7 +304,8 @@ class CreateFreightModal extends GetView<FreightController> {
                     labelText: 'PREÇO PAGO NOS PNEUS',
                   ),
                   onChanged: (value) {
-                    controller.onValueChanged(value, 'priceTires');
+                    FormattedInputers.onformatValueChanged(
+                        value, controller.priceTiresController);
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {

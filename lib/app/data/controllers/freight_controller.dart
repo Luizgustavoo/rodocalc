@@ -9,7 +9,7 @@ class FreightController extends GetxController {
   final valueReceiveController = TextEditingController();
   final distanceController = TextEditingController();
   final averageController = TextEditingController();
-  final priceController = TextEditingController();
+  final priceDieselController = TextEditingController();
   final totalTiresController = TextEditingController();
   final priceTiresController = TextEditingController();
   final valueTollController = TextEditingController();
@@ -17,6 +17,7 @@ class FreightController extends GetxController {
   final selectedStateOrigin = ''.obs;
   final selectedStateDestiny = ''.obs;
   var result = ''.obs;
+
   void onValueChanged(String value, String controllerType) {
     String formattedValue = FormattedInputers.formatTESTE(value);
 
@@ -28,7 +29,7 @@ class FreightController extends GetxController {
         );
         break;
       case 'price':
-        priceController.value = priceController.value.copyWith(
+        priceDieselController.value = priceDieselController.value.copyWith(
           text: formattedValue,
           selection: TextSelection.collapsed(offset: formattedValue.length),
         );
@@ -57,25 +58,22 @@ class FreightController extends GetxController {
   void calculateFreight() {
     final double valueReceive =
         double.parse(cleanValue(valueReceiveController.text));
-    final double distance = double.parse(cleanValue(distanceController.text));
-    final double average = double.parse(cleanValue(averageController.text));
-    final double price = double.parse(cleanValue(priceController.text));
-    final int totalTires = int.parse(totalTiresController.text);
-    final double priceTires =
-        double.parse(cleanValue(priceTiresController.text));
 
-    final double dieselExpense = (distance / average) * price;
-    print(dieselExpense);
+    final double D =
+        double.parse(cleanValue(distanceController.text)); //distancia
+    final double M =
+        double.parse(cleanValue(averageController.text)); // media km/l
 
-    //mudei aqui
+    final double P = double.parse(
+        cleanValue(priceDieselController.text)); //preco litro diesel
 
-    final double tireWearExpense =
-        (distance / 800) * (totalTires * priceTires * 0.27 / 100);
+    final int Pn = int.parse(totalTiresController.text); //total de pneus
+    final double T =
+        double.parse(cleanValue(priceTiresController.text)); // preco dos pneus
 
     double otherExpenses = double.parse(cleanValue(valueTollController.text));
 
-    final double totalExpenses =
-        dieselExpense + tireWearExpense + otherExpenses;
+    final double totalExpenses = D + Pn + otherExpenses;
 
     final double profit = valueReceive - totalExpenses;
 
