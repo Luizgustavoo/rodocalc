@@ -198,7 +198,19 @@ class CreateFreightModal extends GetView<FreightController> {
                     ),
                     const SizedBox(width: 10),
                     CustomElevatedButton(
-                      onPressed: () async {},
+                      onPressed: () async {
+                        if (controller.freightKey.currentState!.validate()) {
+                          controller.calculateFreight();
+                          Get.snackbar(
+                            'Resultado do Cálculo',
+                            controller.result.value,
+                            snackPosition: SnackPosition.BOTTOM,
+                            backgroundColor: Colors.black,
+                            colorText: Colors.white,
+                            duration: const Duration(seconds: 3),
+                          );
+                        }
+                      },
                       child: const Text(
                         'CALCULAR',
                         style: TextStyle(

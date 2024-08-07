@@ -98,6 +98,19 @@ abstract class FormattedInputers {
     return buffer.toString();
   }
 
+  static String formatTESTE(String value) {
+    var text = value.replaceAll(RegExp(r'[^0-9]'), '');
+    var textLength = text.length;
+
+    if (textLength > 2) {
+      var formattedText =
+          '${text.substring(0, textLength - 2)},${text.substring(textLength - 2)}';
+      return 'R\$ ${formattedText.replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')}';
+    } else {
+      return 'R\$ $text';
+    }
+  }
+
   static String formatValuePTBR(dynamic value) {
     if (value is String) {
       value = double.tryParse(value) ?? 0.0;
