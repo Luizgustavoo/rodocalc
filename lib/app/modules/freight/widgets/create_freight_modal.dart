@@ -124,7 +124,7 @@ class CreateFreightModal extends GetView<FreightController> {
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
-                  controller: controller.priceController,
+                  controller: controller.priceDieselController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
