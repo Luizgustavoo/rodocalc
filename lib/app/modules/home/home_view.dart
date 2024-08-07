@@ -83,15 +83,15 @@ class HomeView extends GetView<HomeController> {
                                     child: Row(
                                       children: [
                                         Expanded(
-                                          child: Text(
-                                            'Olá, ${ServiceStorage.getUserName()}',
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 28,
-                                              fontFamily: 'Inter-Black',
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
+                                          child: Obx(() => Text(
+                                                'Olá, ${controller.nomeUser}',
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 28,
+                                                  fontFamily: 'Inter-Black',
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              )),
                                         ),
                                         const SizedBox(width: 5),
                                         Obx(() => CircleAvatar(

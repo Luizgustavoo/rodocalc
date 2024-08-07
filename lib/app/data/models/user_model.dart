@@ -36,7 +36,8 @@ class User {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     dataInicio = json['data_inicio'];
-    status = json['status'];
+    status =
+        json['status'] != null ? int.tryParse(json['status'].toString()) : null;
     contato = json['contato'];
     people = json['pessoa'] != null ? People.fromJson(json['pessoa']) : null;
   }

@@ -86,6 +86,7 @@ class FreightView extends GetView<FreightController> {
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Card(
+            color: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
