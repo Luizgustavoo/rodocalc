@@ -38,189 +38,6 @@ class CreateFreightModal extends GetView<FreightController> {
                   color: Colors.black,
                 ),
                 const SizedBox(height: 15),
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: TextFormField(
-                        controller: controller.originController,
-                        decoration: const InputDecoration(
-                          prefixIcon: Icon(
-                            Icons.pin_drop,
-                          ),
-                          labelText: 'ORIGEM',
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Por favor, insira a origem';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Obx(() {
-                        return DropdownButtonFormField<String>(
-                          decoration: const InputDecoration(
-                            labelText: 'UF',
-                          ),
-                          value: controller.selectedStateOrigin.value.isEmpty
-                              ? null
-                              : controller.selectedStateOrigin.value,
-                          items: [
-                            'AC',
-                            'AL',
-                            'AM',
-                            'AP',
-                            'BA',
-                            'CE',
-                            'DF',
-                            'ES',
-                            'GO',
-                            'MA',
-                            'MG',
-                            'MS',
-                            'MT',
-                            'PA',
-                            'PB',
-                            'PE',
-                            'PI',
-                            'PR',
-                            'RJ',
-                            'RN',
-                            'RO',
-                            'RR',
-                            'RS',
-                            'SC',
-                            'SE',
-                            'SP',
-                            'TO'
-                          ].map((String state) {
-                            return DropdownMenuItem<String>(
-                              value: state,
-                              child: Text(state.toUpperCase(),
-                                  style:
-                                      const TextStyle(fontFamily: 'Poppins')),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            controller.selectedStateOrigin.value = value!;
-                          },
-                          validator: (value) {
-                            if (value == null) {
-                              return 'Por favor, selecione um estado';
-                            }
-                            return null;
-                          },
-                        );
-                      }),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: TextFormField(
-                        controller: controller.destinyController,
-                        decoration: const InputDecoration(
-                          prefixIcon: Icon(
-                            Icons.pin_drop,
-                          ),
-                          labelText: 'DESTINO',
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Por favor, insira o destino';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Obx(() {
-                        return DropdownButtonFormField<String>(
-                          decoration: const InputDecoration(
-                            labelText: 'UF',
-                          ),
-                          value: controller.selectedStateDestiny.value.isEmpty
-                              ? null
-                              : controller.selectedStateDestiny.value,
-                          items: [
-                            'AC',
-                            'AL',
-                            'AM',
-                            'AP',
-                            'BA',
-                            'CE',
-                            'DF',
-                            'ES',
-                            'GO',
-                            'MA',
-                            'MG',
-                            'MS',
-                            'MT',
-                            'PA',
-                            'PB',
-                            'PE',
-                            'PI',
-                            'PR',
-                            'RJ',
-                            'RN',
-                            'RO',
-                            'RR',
-                            'RS',
-                            'SC',
-                            'SE',
-                            'SP',
-                            'TO'
-                          ].map((String state) {
-                            return DropdownMenuItem<String>(
-                              value: state,
-                              child: Text(state.toUpperCase(),
-                                  style:
-                                      const TextStyle(fontFamily: 'Poppins')),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            controller.selectedStateDestiny.value = value!;
-                          },
-                          validator: (value) {
-                            if (value == null) {
-                              return 'Por favor, selecione um estado';
-                            }
-                            return null;
-                          },
-                        );
-                      }),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                TextFormField(
-                  controller: controller.priceTollsController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.money_off,
-                    ),
-                    labelText: 'TOTAL DE PEDAGIOS',
-                  ),
-                  onChanged: (value) {
-                    FormattedInputers.onformatValueChanged(
-                        value, controller.priceTollsController);
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, insira o preço de todos os pedagios';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 10),
                 TextFormField(
                   controller: controller.valueReceiveController,
                   keyboardType: TextInputType.number,
@@ -237,6 +54,176 @@ class CreateFreightModal extends GetView<FreightController> {
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Por favor, insira o valor';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20),
+                Card(
+                  elevation: 3,
+                  color: Colors.black,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 15, bottom: 15, left: 8, right: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: TextFormField(
+                                controller: controller.originController,
+                                decoration: const InputDecoration(
+                                    prefixIcon: Icon(
+                                      Icons.pin_drop,
+                                    ),
+                                    hintText: 'ORIGEM'),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Por favor, insira a origem';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Obx(() {
+                                return DropdownButtonFormField<String>(
+                                  decoration:
+                                      const InputDecoration(hintText: 'UF'),
+                                  value: controller
+                                          .selectedStateOrigin.value.isEmpty
+                                      ? null
+                                      : controller.selectedStateOrigin.value,
+                                  items: controller.states.map((String state) {
+                                    return DropdownMenuItem<String>(
+                                      value: state,
+                                      child: Text(state.toUpperCase(),
+                                          style: const TextStyle(
+                                              fontFamily: 'Poppins')),
+                                    );
+                                  }).toList(),
+                                  onChanged: (value) {
+                                    controller.selectedStateOrigin.value =
+                                        value!;
+                                  },
+                                  validator: (value) {
+                                    if (value == null) {
+                                      return 'Por favor, selecione um estado';
+                                    }
+                                    return null;
+                                  },
+                                );
+                              }),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 15),
+                        Row(
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: TextFormField(
+                                controller: controller.destinyController,
+                                decoration: const InputDecoration(
+                                    prefixIcon: Icon(
+                                      Icons.pin_drop,
+                                    ),
+                                    hintText: 'DESTINO'),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Por favor, insira o destino';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Obx(() {
+                                return DropdownButtonFormField<String>(
+                                  decoration:
+                                      const InputDecoration(hintText: 'UF'),
+                                  value: controller
+                                          .selectedStateDestiny.value.isEmpty
+                                      ? null
+                                      : controller.selectedStateDestiny.value,
+                                  items: controller.states.map((String state) {
+                                    return DropdownMenuItem<String>(
+                                      value: state,
+                                      child: Text(state.toUpperCase(),
+                                          style: const TextStyle(
+                                              fontFamily: 'Poppins')),
+                                    );
+                                  }).toList(),
+                                  onChanged: (value) {
+                                    controller.selectedStateDestiny.value =
+                                        value!;
+                                  },
+                                  validator: (value) {
+                                    if (value == null) {
+                                      return 'Por favor, selecione um estado';
+                                    }
+                                    return null;
+                                  },
+                                );
+                              }),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        SizedBox(
+                          width: Get.width * .7,
+                          height: 35,
+                          child: ElevatedButton.icon(
+                              onPressed: () async {
+                                if (controller
+                                        .destinyController.text.isNotEmpty &&
+                                    controller
+                                        .originController.text.isNotEmpty &&
+                                    controller
+                                        .selectedStateOrigin.value.isNotEmpty &&
+                                    controller.selectedStateDestiny.value
+                                        .isNotEmpty) {
+                                  await controller.getTripData();
+                                }
+                              },
+                              icon: Icon(
+                                Icons.search,
+                                color: Colors.white,
+                              ),
+                              label: const Text(
+                                'DISTANCIA E PEDÁGIOS',
+                                style: TextStyle(
+                                    fontFamily: 'Inter-Bold',
+                                    color: Colors.white),
+                              )),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: controller.priceTollsController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(
+                      Icons.money_off,
+                    ),
+                    labelText: 'VALOR DE PEDÁGIOS',
+                  ),
+                  onChanged: (value) {
+                    FormattedInputers.onformatValueChanged(
+                        value, controller.priceTollsController);
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira o preço de todos os pedagios';
                     }
                     return null;
                   },
@@ -381,15 +368,48 @@ class CreateFreightModal extends GetView<FreightController> {
                     CustomElevatedButton(
                       onPressed: () async {
                         if (controller.freightKey.currentState!.validate()) {
-                          controller.calculateFreight();
-                          Get.snackbar(
-                            'Resultado do Cálculo',
-                            controller.result.value,
-                            snackPosition: SnackPosition.BOTTOM,
-                            backgroundColor: Colors.black,
-                            colorText: Colors.white,
-                            duration: const Duration(seconds: 3),
-                          );
+                          Map<String, dynamic> retorno =
+                              await controller.calculateFreight();
+
+                          if (retorno['success'] == true) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('Resultado do cálculo:'),
+                                  content: SingleChildScrollView(
+                                    child: ListBody(
+                                      children: [
+                                        Text(
+                                          "Você irá lucrar: R\$${FormattedInputers.formatValuePTBR(retorno['lucro'])}",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18,
+                                              color: Colors.green.shade900),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: Text('OK'),
+                                      onPressed: () {
+                                        controller.clearAllFields();
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          } else {
+                            Get.snackbar(
+                                'Falha!', retorno['message'].join('\n'),
+                                backgroundColor: Colors.red,
+                                colorText: Colors.white,
+                                duration: const Duration(seconds: 2),
+                                snackPosition: SnackPosition.BOTTOM);
+                          }
                         }
                       },
                       child: const Text(

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rodocalc/app/data/models/freight_model.dart';
+import 'package:rodocalc/app/data/repositories/freight_repository.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
+import 'package:rodocalc/app/utils/service_storage.dart';
 
 class FreightController extends GetxController {
   final freightKey = GlobalKey<FormState>();
@@ -18,6 +21,76 @@ class FreightController extends GetxController {
   final selectedStateOrigin = ''.obs;
   final selectedStateDestiny = ''.obs;
   var result = ''.obs;
+
+  Map<String, dynamic> retorno = {
+    "success": false,
+    "data": null,
+    "message": ["Preencha todos os campos!"]
+  };
+
+  dynamic mensagem;
+
+  final repository = Get.put(FreightRepository());
+
+  final states = [
+    'AC',
+    'AL',
+    'AM',
+    'AP',
+    'BA',
+    'CE',
+    'DF',
+    'ES',
+    'GO',
+    'MA',
+    'MG',
+    'MS',
+    'MT',
+    'PA',
+    'PB',
+    'PE',
+    'PI',
+    'PR',
+    'RJ',
+    'RN',
+    'RO',
+    'RR',
+    'RS',
+    'SC',
+    'SE',
+    'SP',
+    'TO'
+  ];
+
+  final states_map = {
+    'AC': 'acre',
+    'AL': 'alagoas',
+    'AM': 'amazonas',
+    'AP': 'amapa',
+    'BA': 'bahia',
+    'CE': 'ceara',
+    'DF': 'distrito federal',
+    'ES': 'espirito santo',
+    'GO': 'goias',
+    'MA': 'maranhao',
+    'MG': 'minas gerais',
+    'MS': 'mato grosso do sul',
+    'MT': 'mato grosso',
+    'PA': 'para',
+    'PB': 'paraiba',
+    'PE': 'pernambuco',
+    'PI': 'piaui',
+    'PR': 'parana',
+    'RJ': 'rio de janeiro',
+    'RN': 'rio grande do norte',
+    'RO': 'rondonia',
+    'RR': 'roraima',
+    'RS': 'rio grande do sul',
+    'SC': 'santa catarina',
+    'SE': 'sergipe',
+    'SP': 'sao paulo',
+    'TO': 'tocantins'
+  };
 
   void onValueChanged(String value, String controllerType) {
     String formattedValue = FormattedInputers.formatTESTE(value);
@@ -59,7 +132,9 @@ class FreightController extends GetxController {
     return cleanedValue;
   }
 
-  void calculateFreight() {
+  calculateFreight() async {
+    //print(states_map[selectedStateOrigin]);
+
     final double valueReceive =
         double.parse(cleanValue(valueReceiveController.text));
 
@@ -87,17 +162,114 @@ class FreightController extends GetxController {
 
     final double profit = valueReceive - totalExpenses - tolls;
 
-    print("Distancia: $D");
-    print("Media km/l: $M");
-    print("quantidade de pneus: $Pn");
-    print("Preco dos pneus: $T");
-    print("Preco litro diesel: $P");
-    print("outras despesas: $otherExpenses");
-    print("Pedagios: $tolls");
+    mensagem = await repository.insert(Freight(
+      origem: originController.text,
+      ufOrigem: selectedStateOrigin.value,
+      destino: destinyController.text,
+      ufDestino: selectedStateDestiny.value,
+      valorPedagio:
+          FormattedInputers.convertToDouble(priceTollsController.text),
+      distanciaKm: FormattedInputers.convertToDouble(distanceController.text),
+      mediaKmL: FormattedInputers.convertToDouble(averageController.text),
+      precoCombustivel:
+          FormattedInputers.convertToDouble(priceDieselController.text),
+      quantidadePneus: int.tryParse(totalTiresController.text),
+      valorPneu: FormattedInputers.convertToDouble(priceTiresController.text),
+      valorRecebido:
+          FormattedInputers.convertToDouble(valueReceiveController.text),
+      totalGastos: totalExpenses,
+      lucro: profit,
+      outrosGastos:
+          FormattedInputers.convertToDouble(othersExpensesController.text),
+      status: 1,
+      userId: ServiceStorage.getUserId(),
+    ));
+    if (mensagem != null) {
+      retorno = {
+        'success': mensagem['success'],
+        'message': mensagem['message'],
+        'lucro': profit
+      };
+      getAll();
+    } else {
+      retorno = {
+        'success': false,
+        'message': ['Falha ao realizar a operação!'],
+        'lucro': 0
+      };
+    }
 
-    print("Formula 1: ${F1}");
-    print("Formula 2: ${F2}");
+    return retorno;
+  }
 
-    print("Voce ira lucrar $profit");
+  RxList<Freight> listFreight = RxList<Freight>([]);
+  RxBool isLoading = true.obs;
+  RxBool isLoadingData = true.obs;
+
+  Future<void> getAll() async {
+    isLoading.value = true;
+    try {
+      listFreight.value = await repository.getAll();
+    } catch (e) {
+      listFreight.clear();
+      Exception(e);
+    }
+    isLoading.value = false;
+  }
+
+  Future<void> getTripData() async {
+    isLoadingData.value = true;
+    try {
+      String origem = originController.text;
+      String uf_origem = states_map[selectedStateOrigin.value]!;
+      String destino = destinyController.text;
+      String uf_destino = states_map[selectedStateDestiny.value]!;
+
+      print(origem);
+      print(uf_origem);
+      print(destino);
+      print(uf_destino);
+      //var response = await repository.getTripData(origem, uf_origem, destino, uf_destino);
+    } catch (e) {
+      listFreight.clear();
+      Exception(e);
+    }
+    isLoadingData.value = false;
+  }
+
+  void fillInFields(Freight freight) {
+    originController.text = freight.origem!;
+    destinyController.text = freight.destino!;
+    valueReceiveController.text = freight.valorRecebido!.toString();
+    distanceController.text = freight.distanciaKm.toString();
+    averageController.text = freight.mediaKmL.toString();
+    priceDieselController.text = freight.precoCombustivel.toString();
+    totalTiresController.text = freight.quantidadePneus.toString();
+    priceTiresController.text = freight.valorPneu.toString();
+    priceTollsController.text = freight.valorPedagio.toString();
+    othersExpensesController.text = freight.outrosGastos.toString();
+    selectedStateOrigin.value = freight.ufOrigem.toString();
+    selectedStateDestiny.value = freight.ufDestino.toString();
+  }
+
+  void clearAllFields() {
+    final textControllers = [
+      originController,
+      destinyController,
+      valueReceiveController,
+      distanceController,
+      averageController,
+      priceDieselController,
+      totalTiresController,
+      priceTiresController,
+      priceTollsController,
+      othersExpensesController,
+    ];
+
+    for (final controller in textControllers) {
+      controller.clear();
+    }
+    selectedStateOrigin.value = '';
+    selectedStateDestiny.value = '';
   }
 }

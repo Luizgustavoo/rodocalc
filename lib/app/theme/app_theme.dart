@@ -34,6 +34,7 @@ final ThemeData appThemeData = ThemeData(
     fillColor: const Color(0xFFE8E3E3),
     labelStyle:
         const TextStyle(fontFamily: 'Inter-Bold', color: Colors.black54),
+    hintStyle: const TextStyle(fontFamily: 'Inter-Bold', color: Colors.black54),
     border: OutlineInputBorder(
         borderSide: BorderSide.none, borderRadius: BorderRadius.circular(15)),
   ),

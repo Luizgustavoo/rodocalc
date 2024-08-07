@@ -14,8 +14,6 @@ class IndicationController extends GetxController {
   final txtNomeIndication = TextEditingController();
   final txtTelefoneIndication = TextEditingController();
 
-  RxBool isLoading = true.obs;
-
   RxList<Indication> listIndications = RxList<Indication>([]);
 
   final repository = Get.put(IndicationRepository());
@@ -25,8 +23,9 @@ class IndicationController extends GetxController {
     "data": null,
     "message": ["Preencha todos os campos!"]
   };
-  
+
   dynamic mensagem;
+  RxBool isLoading = true.obs;
 
   Future<void> getAll() async {
     isLoading.value = true;

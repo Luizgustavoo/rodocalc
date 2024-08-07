@@ -201,7 +201,6 @@ abstract class FormattedInputers {
     } catch (e) {
       Exception("Erro ao converter o valor: $e");
     }
-
     return 0;
   }
 
