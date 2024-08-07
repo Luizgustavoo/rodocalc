@@ -58,6 +58,8 @@ class FreightController extends GetxController {
     final double dieselExpense = (distance / average) * price;
     print(dieselExpense);
 
+    //mudei aqui
+
     final double tireWearExpense =
         (distance / 800) * (totalTires * priceTires * 0.27 / 100);
 
