@@ -5,7 +5,6 @@ import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/controllers/home_controller.dart';
-import 'package:rodocalc/app/data/models/auth_model.dart';
 import 'package:rodocalc/app/data/models/people_model.dart';
 import 'package:rodocalc/app/data/models/user_model.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
@@ -158,12 +157,24 @@ class AuthApiClient {
 
       if (httpResponse.statusCode == 200 || httpResponse.statusCode == 201) {
         final box = GetStorage('rodocalc');
+        print("foto abtiga:");
+        //print(ServiceStorage.getUserPhoto());
         Map<String, dynamic> responseData = json.decode(httpResponse.body);
-        Auth? auth = Auth.fromJson(responseData);
-        box.write('auth', auth.toJson());
+        Map<String, dynamic> oldAuth = box.read('auth');
+
+        Map<String, dynamic> newAuth = {};
+
+        newAuth["user"] = responseData["user"];
+        newAuth["access_token"] = responseData["access_token"];
+        newAuth["token_type"] = responseData["token_type"];
+        newAuth["expires_in"] = responseData["expires_in"];
+
+        print("user antigo:${oldAuth['user']}");
+        print("user novo:${newAuth['user']}");
+
+        box.write('auth', newAuth);
 
         Get.find<HomeController>().updateUserPhoto();
-        print(ServiceStorage.getUserPhoto());
       }
 
       return json.decode(httpResponse.body);

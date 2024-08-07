@@ -3,12 +3,14 @@ import 'package:rodocalc/app/utils/service_storage.dart';
 
 class HomeController extends GetxController {
   var userPhoto = ServiceStorage.getUserPhoto().obs;
+  var nomeUser = ServiceStorage.getUserName().obs;
   var userName = 'João Silva'.obs;
   var truckInfo = 'Scania Bitrem FCF-0827'.obs;
   var truckBalance = 10307.00.obs;
 
   void updateUserPhoto() {
     userPhoto.value = ServiceStorage.getUserPhoto();
+    nomeUser.value = ServiceStorage.getUserName();
   }
 
   var recentTransactions = <Map<String, dynamic>>[
