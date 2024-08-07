@@ -12,7 +12,8 @@ class FreightController extends GetxController {
   final priceDieselController = TextEditingController();
   final totalTiresController = TextEditingController();
   final priceTiresController = TextEditingController();
-  final valueTollController = TextEditingController();
+  final priceTollsController = TextEditingController();
+  final othersExpensesController = TextEditingController();
 
   final selectedStateOrigin = ''.obs;
   final selectedStateDestiny = ''.obs;
@@ -41,7 +42,8 @@ class FreightController extends GetxController {
         );
         break;
       case 'valueToll':
-        valueTollController.value = valueTollController.value.copyWith(
+        othersExpensesController.value =
+            othersExpensesController.value.copyWith(
           text: formattedValue,
           selection: TextSelection.collapsed(offset: formattedValue.length),
         );
@@ -52,7 +54,9 @@ class FreightController extends GetxController {
   }
 
   String cleanValue(String value) {
-    return value.replaceAll(RegExp(r'[^0-9,]'), '').replaceAll(',', '.');
+    String cleanedValue = value.replaceAll(RegExp(r'R\$|\s'), '');
+    cleanedValue = cleanedValue.replaceAll('.', '').replaceAll(',', '.');
+    return cleanedValue;
   }
 
   void calculateFreight() {
@@ -71,12 +75,29 @@ class FreightController extends GetxController {
     final double T =
         double.parse(cleanValue(priceTiresController.text)); // preco dos pneus
 
-    double otherExpenses = double.parse(cleanValue(valueTollController.text));
+    double tolls = double.parse(cleanValue(priceTollsController.text));
 
-    final double totalExpenses = D + Pn + otherExpenses;
+    double otherExpenses =
+        double.parse(cleanValue(othersExpensesController.text));
 
-    final double profit = valueReceive - totalExpenses;
+    final double F1 = (D / M) * P;
+    final double F2 = (((Pn * D) / 800) / 100) * T;
 
-    result.value = 'Você irá lucrar R\$ ${profit.toStringAsFixed(2)}';
+    final double totalExpenses = F1 + F2 + otherExpenses;
+
+    final double profit = valueReceive - totalExpenses - tolls;
+
+    print("Distancia: $D");
+    print("Media km/l: $M");
+    print("quantidade de pneus: $Pn");
+    print("Preco dos pneus: $T");
+    print("Preco litro diesel: $P");
+    print("outras despesas: $otherExpenses");
+    print("Pedagios: $tolls");
+
+    print("Formula 1: ${F1}");
+    print("Formula 2: ${F2}");
+
+    print("Voce ira lucrar $profit");
   }
 }

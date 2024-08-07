@@ -76,6 +76,44 @@ abstract class FormattedInputers {
     );
   }
 
+  static void onformatValueChangedDecimal(
+      String value, TextEditingController textEditingController) {
+    textEditingController.value = textEditingController.value.copyWith(
+      text: formatValueDecimal(value),
+      selection:
+          TextSelection.collapsed(offset: formatValueDecimal(value).length),
+    );
+  }
+
+  static String formatToDecimal(String value) {
+    // Remove tudo que não é dígito ou vírgula
+    String cleanedValue = value.replaceAll(RegExp(r'[^\d,]'), '');
+
+    // Se houver mais de uma vírgula, mantém apenas a primeira
+    List<String> parts = cleanedValue.split(',');
+    if (parts.length > 2) {
+      cleanedValue = parts.sublist(0, 2).join(',');
+    } else {
+      cleanedValue = parts.join(',');
+    }
+
+    // Converte a parte decimal para garantir uma única casa decimal
+    if (cleanedValue.contains(',')) {
+      List<String> splitValue = cleanedValue.split(',');
+      String integerPart = splitValue[0];
+      String decimalPart = splitValue.length > 1 ? splitValue[1] : '';
+
+      if (decimalPart.length > 1) {
+        decimalPart =
+            decimalPart.substring(0, 1); // Mantém apenas uma casa decimal
+      }
+
+      cleanedValue = '$integerPart,$decimalPart';
+    }
+
+    return cleanedValue;
+  }
+
   static String formatValue(String value) {
     var text = value.replaceAll(RegExp(r'[^0-9]'), '');
     var buffer = StringBuffer();
@@ -93,6 +131,27 @@ abstract class FormattedInputers {
       }
     } else {
       buffer.write('R\$ $text');
+    }
+
+    return buffer.toString();
+  }
+
+  static String formatValueDecimal(String value) {
+    var text = value.replaceAll(RegExp(r'[^0-9]'), '');
+    var buffer = StringBuffer();
+    var textLength = text.length;
+
+    if (textLength > 1) {
+      for (var i = 0; i < textLength; i++) {
+        if (i == textLength - 1) {
+          buffer.write(',');
+        } else if (i > 0 && (textLength - i - 1) % 3 == 0) {
+          buffer.write('');
+        }
+        buffer.write(text[i]);
+      }
+    } else {
+      buffer.write('$text');
     }
 
     return buffer.toString();

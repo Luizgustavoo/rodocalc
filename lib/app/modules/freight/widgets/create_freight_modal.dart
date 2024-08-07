@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/freight_controller.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
@@ -64,7 +63,7 @@ class CreateFreightModal extends GetView<FreightController> {
                       child: Obx(() {
                         return DropdownButtonFormField<String>(
                           decoration: const InputDecoration(
-                            labelText: 'ESTADO',
+                            labelText: 'UF',
                           ),
                           value: controller.selectedStateOrigin.value.isEmpty
                               ? null
@@ -145,7 +144,7 @@ class CreateFreightModal extends GetView<FreightController> {
                       child: Obx(() {
                         return DropdownButtonFormField<String>(
                           decoration: const InputDecoration(
-                            labelText: 'ESTADO',
+                            labelText: 'UF',
                           ),
                           value: controller.selectedStateDestiny.value.isEmpty
                               ? null
@@ -202,6 +201,27 @@ class CreateFreightModal extends GetView<FreightController> {
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
+                  controller: controller.priceTollsController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(
+                      Icons.money_off,
+                    ),
+                    labelText: 'TOTAL DE PEDAGIOS',
+                  ),
+                  onChanged: (value) {
+                    FormattedInputers.onformatValueChanged(
+                        value, controller.priceTollsController);
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira o preço de todos os pedagios';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
                   controller: controller.valueReceiveController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
@@ -240,21 +260,32 @@ class CreateFreightModal extends GetView<FreightController> {
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
-                  controller: controller.averageController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.straighten_rounded,
+                    controller: controller.averageController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(
+                        Icons.straighten_rounded,
+                      ),
+                      labelText: 'MÉDIA KM/L DO CAMINHÃO',
                     ),
-                    labelText: 'MÉDIA KM/L DO CAMINHÃO',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, insira a média km/l';
-                    }
-                    return null;
-                  },
-                ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, insira a média km/l';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      // Atualiza o controlador com o valor formatado
+                      /*controller.averageController.value =
+                          controller.averageController.value.copyWith(
+                        text: FormattedInputers.formatToDecimal(value),
+                        selection: TextSelection.collapsed(
+                            offset: FormattedInputers.formatToDecimal(value)
+                                .length),
+                      );*/
+                      FormattedInputers.onformatValueChangedDecimal(
+                          value, controller.averageController);
+                    }),
                 const SizedBox(height: 10),
                 TextFormField(
                   controller: controller.priceDieselController,
@@ -316,22 +347,17 @@ class CreateFreightModal extends GetView<FreightController> {
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
-                  controller: controller.valueTollController,
+                  controller: controller.othersExpensesController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
                       Icons.paid,
                     ),
-                    labelText: 'VALOR PEDÁGIO',
+                    labelText: 'OUTROS GASTOS',
                   ),
                   onChanged: (value) {
-                    controller.onValueChanged(value, 'valueToll');
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, insira o preço do pedágio';
-                    }
-                    return null;
+                    FormattedInputers.onformatValueChanged(
+                        value, controller.othersExpensesController);
                   },
                 ),
                 const SizedBox(height: 16),
