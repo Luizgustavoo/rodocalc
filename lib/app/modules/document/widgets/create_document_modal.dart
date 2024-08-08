@@ -1,8 +1,8 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:rodocalc/app/data/controllers/document_controller.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 
@@ -40,27 +40,52 @@ class CreateDocumentModal extends GetView<DocumentController> {
                   color: Colors.black,
                 ),
                 const SizedBox(height: 10),
-                GestureDetector(
-                  onTap: () => _showPicker(context),
-                  child: Obx(() => ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Container(
-                          width: 100,
-                          height: 100,
-                          color: Colors.grey,
-                          child: controller.selectedImagePath.value != ''
-                              ? Image.file(
-                                  File(controller.selectedImagePath.value),
-                                  fit: BoxFit.cover,
-                                )
-                              : const Icon(
-                                  Icons.camera_alt,
-                                  size: 50,
-                                  color: Colors.white,
-                                ),
+                Obx(() {
+                  if (controller.selectedPdfPath.value.isNotEmpty) {
+                    return Column(
+                      children: [
+                        const Text(
+                          'PDF Selecionado:',
+                          style: TextStyle(
+                            color: Colors.green,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      )),
-                ),
+                        const SizedBox(height: 5),
+                        Text(
+                          controller.selectedPdfPath.value.split('/').last,
+                          style: const TextStyle(
+                            color: Colors.green,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return GestureDetector(
+                      onTap: () => _showPicker(context),
+                      child: Obx(() => ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              width: 100,
+                              height: 100,
+                              color: Colors.grey,
+                              child: controller.selectedImagePath.value != ''
+                                  ? Image.file(
+                                      File(controller.selectedImagePath.value),
+                                      fit: BoxFit.cover,
+                                    )
+                                  : const Icon(
+                                      Icons.camera_alt,
+                                      size: 50,
+                                      color: Colors.white,
+                                    ),
+                            ),
+                          )),
+                    );
+                  }
+                }),
                 const SizedBox(height: 10),
                 TextFormField(
                   controller: controller.descriptionController,
@@ -156,6 +181,14 @@ class CreateDocumentModal extends GetView<DocumentController> {
           child: Wrap(
             children: <Widget>[
               ListTile(
+                leading: const Icon(Icons.photo_camera),
+                title: const Text('Câmera'),
+                onTap: () {
+                  controller.pickImage(ImageSource.camera);
+                  Navigator.of(context).pop();
+                },
+              ),
+              ListTile(
                 leading: const Icon(Icons.photo_library),
                 title: const Text('Galeria'),
                 onTap: () {
@@ -164,11 +197,19 @@ class CreateDocumentModal extends GetView<DocumentController> {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.photo_camera),
-                title: const Text('Câmera'),
-                onTap: () {
-                  controller.pickImage(ImageSource.camera);
-                  Navigator.of(context).pop();
+                leading: const Icon(Icons.picture_as_pdf),
+                title: const Text('Escolher PDF'),
+                onTap: () async {
+                  FilePickerResult? result =
+                      await FilePicker.platform.pickFiles(
+                    type: FileType.custom,
+                    allowedExtensions: ['pdf'],
+                  );
+                  Navigator.pop(context);
+                  if (result != null) {
+                    controller.selectedPdfPath.value =
+                        result.files.single.path!;
+                  }
                 },
               ),
             ],

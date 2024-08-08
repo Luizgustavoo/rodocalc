@@ -62,7 +62,7 @@ class AppPages {
     ),
     GetPage(
       name: Routes.document,
-      page: () => const DocumentView(),
+      page: () => DocumentView(),
       binding: DocumentBinding(),
     ),
     GetPage(

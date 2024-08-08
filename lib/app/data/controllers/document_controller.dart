@@ -1,10 +1,13 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:rodocalc/app/data/models/document_model.dart';
 
 class DocumentController extends GetxController {
   var selectedImagePath = ''.obs;
+  var selectedPdfPath = ''.obs;
 
   final formKeyDocument = GlobalKey<FormState>();
   final descriptionController = TextEditingController();
@@ -58,6 +61,47 @@ class DocumentController extends GetxController {
       }
     } else {
       Get.snackbar('Erro', 'Nenhuma imagem selecionada');
+    }
+  }
+
+  void pickPdf() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+    );
+    if (result != null) {
+      selectedPdfPath.value = result.files.single.path!;
+    } else {
+      Get.snackbar('Erro', 'Nenhum arquivo PDF selecionado');
+    }
+  }
+
+  var documents =
+      <Document>[].obs; // Inicializa a lista de documentos como uma lista vazia
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchDocuments(); // Método para buscar documentos, se necessário
+  }
+
+  void fetchDocuments() {
+    // Simulação de busca de documentos
+    documents.value = [
+      Document(id: "1", nomeDocumento: "RG")
+    ]; // Certifique-se de que a lista não é nula
+  }
+
+  void clearAllFields() {
+    final textControllers = [
+      descriptionController,
+    ];
+
+    selectedImagePath.value = '';
+    selectedPdfPath.value = '';
+
+    for (final controller in textControllers) {
+      controller.clear();
     }
   }
 }

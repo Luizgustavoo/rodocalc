@@ -57,7 +57,7 @@ class DocumentView extends GetView<DocumentController> {
                         const SizedBox(height: 16),
                         ListView.builder(
                           shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
+                          physics: const AlwaysScrollableScrollPhysics(),
                           itemCount: 10,
                           itemBuilder: (context, index) {
                             return const CustomDocumentCard(
@@ -81,6 +81,7 @@ class DocumentView extends GetView<DocumentController> {
         child: FloatingActionButton(
           backgroundColor: const Color(0xFFFF6B00),
           onPressed: () {
+            controller.clearAllFields();
             showModalBottomSheet(
               isScrollControlled: true,
               context: context,
