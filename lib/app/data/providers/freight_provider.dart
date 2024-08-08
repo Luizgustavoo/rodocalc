@@ -47,7 +47,7 @@ class FreightApiClient {
           "Accept": "application/json",
         },
       );
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         return json.decode(response.body);
       } else {
         return null;

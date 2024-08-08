@@ -167,20 +167,16 @@ class FreightController extends GetxController {
       ufOrigem: selectedStateOrigin.value,
       destino: destinyController.text,
       ufDestino: selectedStateDestiny.value,
-      valorPedagio:
-          FormattedInputers.convertToDouble(priceTollsController.text),
-      distanciaKm: FormattedInputers.convertToDouble(distanceController.text),
-      mediaKmL: FormattedInputers.convertToDouble(averageController.text),
-      precoCombustivel:
-          FormattedInputers.convertToDouble(priceDieselController.text),
-      quantidadePneus: int.tryParse(totalTiresController.text),
-      valorPneu: FormattedInputers.convertToDouble(priceTiresController.text),
-      valorRecebido:
-          FormattedInputers.convertToDouble(valueReceiveController.text),
+      valorPedagio: tolls,
+      distanciaKm: D,
+      mediaKmL: M,
+      precoCombustivel: P,
+      quantidadePneus: Pn,
+      valorPneu: T,
+      valorRecebido: valueReceive,
       totalGastos: totalExpenses,
       lucro: profit,
-      outrosGastos:
-          FormattedInputers.convertToDouble(othersExpensesController.text),
+      outrosGastos: otherExpenses,
       status: 1,
       userId: ServiceStorage.getUserId(),
     ));
@@ -225,11 +221,15 @@ class FreightController extends GetxController {
       String destino = destinyController.text;
       String uf_destino = states_map[selectedStateDestiny.value]!;
 
-      print(origem);
-      print(uf_origem);
-      print(destino);
-      print(uf_destino);
-      //var response = await repository.getTripData(origem, uf_origem, destino, uf_destino);
+      var response =
+          await repository.getTripData(origem, uf_origem, destino, uf_destino);
+
+      if (response != null) {
+        distanceController.text =
+            FormattedInputers.formatValuePTBR(response[0]['distancia']);
+        priceTollsController.text =
+            FormattedInputers.formatValuePTBR(response[0]['valorPedagio']);
+      }
     } catch (e) {
       listFreight.clear();
       Exception(e);
