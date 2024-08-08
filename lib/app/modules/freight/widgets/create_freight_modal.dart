@@ -192,12 +192,12 @@ class CreateFreightModal extends GetView<FreightController> {
                                   await controller.getTripData();
                                 }
                               },
-                              icon: Icon(
+                              icon: const Icon(
                                 Icons.search,
                                 color: Colors.white,
                               ),
                               label: const Text(
-                                'DISTANCIA E PEDÁGIOS',
+                                'DISTÂNCIA E PEDÁGIOS',
                                 style: TextStyle(
                                     fontFamily: 'Inter-Bold',
                                     color: Colors.white),
@@ -211,8 +211,8 @@ class CreateFreightModal extends GetView<FreightController> {
                 TextFormField(
                   controller: controller.priceTollsController,
                   keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(
                       Icons.money_off,
                     ),
                     labelText: 'VALOR DE PEDÁGIOS',

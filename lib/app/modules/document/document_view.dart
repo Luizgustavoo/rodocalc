@@ -33,6 +33,7 @@ class DocumentView extends GetView<DocumentController> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Card(
+                  color: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),

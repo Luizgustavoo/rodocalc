@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:rodocalc/app/data/models/document_model.dart';
+import 'package:rodocalc/app/data/models/documents_model.dart';
 
 class DocumentController extends GetxController {
   var selectedImagePath = ''.obs;
@@ -76,8 +76,8 @@ class DocumentController extends GetxController {
     }
   }
 
-  var documents =
-      <Document>[].obs; // Inicializa a lista de documentos como uma lista vazia
+  var documents = <Documents>[]
+      .obs; // Inicializa a lista de documentos como uma lista vazia
 
   @override
   void onInit() {
@@ -88,7 +88,7 @@ class DocumentController extends GetxController {
   void fetchDocuments() {
     // Simulação de busca de documentos
     documents.value = [
-      Document(id: "1", nomeDocumento: "RG")
+      Documents(id: 1, nomeDocumento: "RG")
     ]; // Certifique-se de que a lista não é nula
   }
 
