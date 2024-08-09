@@ -104,40 +104,31 @@ class CreateDocumentModal extends GetView<DocumentController> {
                   },
                 ),
                 const SizedBox(height: 15),
-                DropdownButtonFormField<String>(
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.description),
-                    labelText: 'TIPO DE DOCUMENTO',
+                Obx(
+                  () => DropdownButtonFormField<int>(
+                    value: controller.selectedTipoDocumento.value,
+                    onChanged: (value) {
+                      controller.selectedTipoDocumento.value = value!;
+                    },
+                    items: controller.listDocumentsType
+                        .map<DropdownMenuItem<int>>((item) {
+                      return DropdownMenuItem<int>(
+                        value: item.id,
+                        child: Text(item.descricao ?? ''.toUpperCase()),
+                      );
+                    }).toList(),
+                    decoration: InputDecoration(
+                        labelStyle: const TextStyle(
+                          color: Colors.black54,
+                          fontFamily: 'Inter-Bold',
+                          fontSize: 12,
+                        ),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        labelText: 'ESTADO CIVIL'),
                   ),
-                  items: controller.tiposDocumento.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (newValue) {
-                    controller.setTipoDocumento(newValue!);
-                  },
-                  validator: (value) =>
-                      value == null ? 'Selecione um tipo de documento' : null,
-                ),
-                const SizedBox(height: 15),
-                DropdownButtonFormField<String>(
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.local_shipping),
-                    labelText: 'VEÍCULO',
-                  ),
-                  items: controller.veiculos.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (newValue) {
-                    controller.setVeiculo(newValue!);
-                  },
-                  validator: (value) =>
-                      value == null ? 'Selecione um veículo' : null,
                 ),
                 const SizedBox(height: 16),
                 Row(

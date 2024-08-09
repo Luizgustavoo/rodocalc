@@ -3,27 +3,45 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:rodocalc/app/data/models/documents_model.dart';
+import 'package:rodocalc/app/data/models/document_model.dart';
+import 'package:rodocalc/app/data/models/document_type_model.dart';
+import 'package:rodocalc/app/data/repositories/document_repository.dart';
 
 class DocumentController extends GetxController {
+  RxBool isLoading = true.obs;
   var selectedImagePath = ''.obs;
   var selectedPdfPath = ''.obs;
 
   final formKeyDocument = GlobalKey<FormState>();
   final descriptionController = TextEditingController();
+  final nameController = TextEditingController();
+  RxInt selectedTipoDocumento = 1.obs;
 
-  var selectedTipoDocumento = ''.obs;
-  var selectedVeiculo = ''.obs;
+  RxList<DocumentModel> listDocuments = RxList<DocumentModel>([]);
+  RxList<DocumentType> listDocumentsType = RxList<DocumentType>([]);
+
+  final repository = Get.put(DocumentRepository());
+
+  Map<String, dynamic> retorno = {
+    "success": false,
+    "data": null,
+    "message": ["Preencha todos os campos!"]
+  };
+  dynamic mensagem;
 
   List<String> tiposDocumento = ['CNH', 'RG', 'CPF'];
-  List<String> veiculos = ['Scania P360', 'Volvo FH', 'Mercedes Actros'];
 
-  void setTipoDocumento(String tipo) {
-    selectedTipoDocumento.value = tipo;
-  }
+  void clearAllFields() {
+    final textControllers = [
+      descriptionController,
+    ];
 
-  void setVeiculo(String veiculo) {
-    selectedVeiculo.value = veiculo;
+    selectedImagePath.value = '';
+    selectedPdfPath.value = '';
+
+    for (final controller in textControllers) {
+      controller.clear();
+    }
   }
 
   void pickImage(ImageSource source) async {
@@ -76,32 +94,116 @@ class DocumentController extends GetxController {
     }
   }
 
-  var documents = <Documents>[]
-      .obs; // Inicializa a lista de documentos como uma lista vazia
-
-  @override
-  void onInit() {
-    super.onInit();
-    fetchDocuments(); // Método para buscar documentos, se necessário
-  }
-
-  void fetchDocuments() {
-    // Simulação de busca de documentos
-    documents.value = [
-      Documents(id: 1, nomeDocumento: "RG")
-    ]; // Certifique-se de que a lista não é nula
-  }
-
-  void clearAllFields() {
-    final textControllers = [
-      descriptionController,
-    ];
-
-    selectedImagePath.value = '';
-    selectedPdfPath.value = '';
-
-    for (final controller in textControllers) {
-      controller.clear();
+  Future<void> getAll() async {
+    isLoading.value = true;
+    try {
+      listDocuments.value = await repository.getAll();
+    } catch (e) {
+      Exception(e);
     }
+    isLoading.value = false;
+  }
+
+  Future<void> getAllDocumentType() async {
+    isLoading.value = true;
+    try {
+      listDocumentsType.value = await repository.getAllDocumentType();
+    } catch (e) {
+      Exception(e);
+    }
+    isLoading.value = false;
+  }
+
+  Future<Map<String, dynamic>> insertDocument() async {
+    if (formKeyDocument.currentState!.validate()) {
+      String imagemPdf = '';
+      String arquivo = '';
+
+      if (selectedImagePath.value.isNotEmpty) {
+        imagemPdf = 'imagem';
+        arquivo = selectedImagePath.value;
+      } else if (selectedPdfPath.value.isNotEmpty) {
+        imagemPdf = 'pdf';
+        arquivo = selectedPdfPath.value;
+      }
+
+      mensagem = await repository.insert(DocumentModel(
+        descricao: descriptionController.text,
+        status: "1",
+        tipoDocumentoId: selectedTipoDocumento.value.toString(),
+        imagemPdf: imagemPdf,
+        arquivo: arquivo,
+      ));
+
+      if (mensagem != null) {
+        retorno = {
+          'success': mensagem['success'],
+          'message': mensagem['message']
+        };
+        getAll();
+      } else {
+        retorno = {
+          'success': false,
+          'message': ['Falha ao realizar a operação!']
+        };
+      }
+    }
+    return retorno;
+  }
+
+  Future<Map<String, dynamic>> updateDocument(int id) async {
+    if (formKeyDocument.currentState!.validate()) {
+      String imagemPdf = '';
+      String arquivo = '';
+
+      if (selectedImagePath.value.isNotEmpty) {
+        imagemPdf = 'imagem';
+        arquivo = selectedImagePath.value;
+      } else if (selectedPdfPath.value.isNotEmpty) {
+        imagemPdf = 'pdf';
+        arquivo = selectedPdfPath.value;
+      }
+
+      mensagem = await repository.insert(DocumentModel(
+        id: id,
+        descricao: descriptionController.text,
+        status: "1",
+        tipoDocumentoId: selectedTipoDocumento.value.toString(),
+        imagemPdf: imagemPdf,
+        arquivo: arquivo,
+      ));
+
+      if (mensagem != null) {
+        retorno = {
+          'success': mensagem['success'],
+          'message': mensagem['message']
+        };
+        getAll();
+      } else {
+        retorno = {
+          'success': false,
+          'message': ['Falha ao realizar a operação!']
+        };
+      }
+    }
+    return retorno;
+  }
+
+  Future<Map<String, dynamic>> deleteDocument(int id) async {
+    if (id > 0) {
+      mensagem = await repository.delete(DocumentModel(id: id));
+      retorno = {
+        'success': mensagem['success'],
+        'message': mensagem['message']
+      };
+      getAll();
+    } else {
+      retorno = {
+        'success': false,
+        'message': ['Falha ao realizar a operação!']
+      };
+    }
+
+    return retorno;
   }
 }

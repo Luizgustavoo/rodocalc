@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/base_url.dart';
+import 'package:rodocalc/app/data/controllers/document_controller.dart';
 import 'package:rodocalc/app/data/controllers/home_controller.dart';
 import 'package:rodocalc/app/data/controllers/indicator_controller.dart';
 import 'package:rodocalc/app/data/controllers/login_controller.dart';
@@ -20,6 +21,7 @@ class HomeView extends GetView<HomeController> {
   final transactionController = Get.put(TransactionController());
   final indicationController = Get.put(IndicationController());
   final perfilController = Get.put(PerfilController());
+  final documentController = Get.put(DocumentController());
 
   @override
   Widget build(BuildContext context) {
@@ -269,6 +271,7 @@ class HomeView extends GetView<HomeController> {
                                       imagePath: 'assets/images/documento.png',
                                       label: 'Documentos',
                                       onTap: () {
+                                        documentController.getAll();
                                         Get.toNamed(Routes.document);
                                       },
                                     ),

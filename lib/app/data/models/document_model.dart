@@ -1,4 +1,4 @@
-class Documents {
+class DocumentModel {
   int? id;
   String? descricao;
   String? tipoDocumentoId;
@@ -13,8 +13,8 @@ class Documents {
   String? base64Content;
   String? dataVencimento;
 
-  Documents({
-    required this.id,
+  DocumentModel({
+    this.id,
     this.descricao,
     this.tipoDocumentoId,
     this.pessoaId,
@@ -28,7 +28,7 @@ class Documents {
     this.dataVencimento,
   });
 
-  Documents.fromJson(Map<String, dynamic> json, this.nomeDocumento) {
+  DocumentModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     descricao = json['descricao'];
     tipoDocumentoId = json['tipodocumento_id'];

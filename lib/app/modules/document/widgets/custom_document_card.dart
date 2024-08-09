@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:rodocalc/app/data/models/document_model.dart';
 
 class CustomDocumentCard extends StatelessWidget {
-  final String description;
-  final String documentType;
-  final String conductor;
-  final String vehicle;
+  // final String description;
+  // final String documentType;
+  // final String conductor;
+  // final String vehicle;
+  final DocumentModel? document;
 
   const CustomDocumentCard({
     super.key,
-    required this.description,
-    required this.documentType,
-    required this.conductor,
-    required this.vehicle,
+    this.document,
+    // required this.description,
+    // required this.documentType,
+    // required this.conductor,
+    // required this.vehicle,
   });
 
   @override
@@ -37,7 +40,7 @@ class CustomDocumentCard extends StatelessWidget {
                   fontFamily: 'Inter-Bold',
                 ),
               ),
-              TextSpan(text: description.toUpperCase()),
+              TextSpan(text: document!.descricao!.toUpperCase()),
             ],
           ),
         ),
@@ -59,48 +62,48 @@ class CustomDocumentCard extends StatelessWidget {
                       fontFamily: 'Inter-Bold',
                     ),
                   ),
-                  TextSpan(text: documentType.toUpperCase()),
+                  TextSpan(text: document!.tipoDocumentoId!.toUpperCase()),
                 ],
               ),
             ),
             const SizedBox(height: 5),
-            RichText(
-              text: TextSpan(
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.black,
-                  fontFamily: 'Inter-Regular',
-                ),
-                children: [
-                  const TextSpan(
-                    text: 'CONDUTOR: ',
-                    style: TextStyle(
-                      fontFamily: 'Inter-Bold',
-                    ),
-                  ),
-                  TextSpan(text: conductor.toUpperCase()),
-                ],
-              ),
-            ),
-            const SizedBox(height: 5),
-            RichText(
-              text: TextSpan(
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.black,
-                  fontFamily: 'Inter-Regular',
-                ),
-                children: [
-                  const TextSpan(
-                    text: 'VEÍCULO: ',
-                    style: TextStyle(
-                      fontFamily: 'Inter-Bold',
-                    ),
-                  ),
-                  TextSpan(text: vehicle.toUpperCase()),
-                ],
-              ),
-            ),
+            // RichText(
+            //   text: TextSpan(
+            //     style: const TextStyle(
+            //       fontSize: 14,
+            //       color: Colors.black,
+            //       fontFamily: 'Inter-Regular',
+            //     ),
+            //     children: [
+            //       const TextSpan(
+            //         text: 'CONDUTOR: ',
+            //         style: TextStyle(
+            //           fontFamily: 'Inter-Bold',
+            //         ),
+            //       ),
+            //       TextSpan(text: conductor.toUpperCase()),
+            //     ],
+            //   ),
+            // ),
+            // const SizedBox(height: 5),
+            // RichText(
+            //   text: TextSpan(
+            //     style: const TextStyle(
+            //       fontSize: 14,
+            //       color: Colors.black,
+            //       fontFamily: 'Inter-Regular',
+            //     ),
+            //     children: [
+            //       const TextSpan(
+            //         text: 'VEÍCULO: ',
+            //         style: TextStyle(
+            //           fontFamily: 'Inter-Bold',
+            //         ),
+            //       ),
+            //       TextSpan(text: vehicle.toUpperCase()),
+            //     ],
+            //   ),
+            // ),
           ],
         ),
       ),

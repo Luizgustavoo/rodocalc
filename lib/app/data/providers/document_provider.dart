@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:path/path.dart' as path;
 import 'package:rodocalc/app/data/base_url.dart';
-import 'package:rodocalc/app/data/models/documents_model.dart';
+import 'package:rodocalc/app/data/models/document_model.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 
 class DocumentApiClient {
@@ -16,7 +16,7 @@ class DocumentApiClient {
 
       Uri documentUrl;
       String url =
-          '$baseUrl/v1/document/${ServiceStorage.getUserId().toString()}';
+          '$baseUrl/v1/documento/${ServiceStorage.getUserId().toString()}';
       documentUrl = Uri.parse(url);
       var response = await httpClient.get(
         documentUrl,
@@ -37,7 +37,33 @@ class DocumentApiClient {
     return null;
   }
 
-  insert(Documents document) async {
+  gettAllDocumentType() async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+
+      Uri documentUrl;
+      String url = '$baseUrl/v1/tipodocumento';
+      documentUrl = Uri.parse(url);
+      var response = await httpClient.get(
+        documentUrl,
+        headers: {
+          "Accept": "application/json",
+          "Authorization": token,
+        },
+      );
+      print(json.decode(response.body));
+      if (response.statusCode == 201) {
+        return json.decode(response.body);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      Exception(e);
+    }
+    return null;
+  }
+
+  insert(DocumentModel document) async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
@@ -89,7 +115,7 @@ class DocumentApiClient {
     return null;
   }
 
-  update(Documents document) async {
+  update(DocumentModel document) async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
@@ -136,7 +162,7 @@ class DocumentApiClient {
     return null;
   }
 
-  delete(Documents document) async {
+  delete(DocumentModel document) async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 

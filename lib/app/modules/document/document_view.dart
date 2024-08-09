@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/document_controller.dart';
+import 'package:rodocalc/app/data/models/document_model.dart';
 import 'package:rodocalc/app/global/custom_app_bar.dart';
 import 'package:rodocalc/app/modules/document/widgets/create_document_modal.dart';
 import 'package:rodocalc/app/modules/document/widgets/custom_document_card.dart';
@@ -29,6 +30,7 @@ class DocumentView extends GetView<DocumentController> {
             ),
           ),
           SingleChildScrollView(
+            physics: const NeverScrollableScrollPhysics(),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -56,18 +58,18 @@ class DocumentView extends GetView<DocumentController> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          itemCount: 10,
-                          itemBuilder: (context, index) {
-                            return const CustomDocumentCard(
-                                description: 'descricao',
-                                documentType: 'tipoDocumento',
-                                conductor: 'condutor',
-                                vehicle: 'veiculo');
-                          },
-                        ),
+                        Obx(
+                          () => ListView.builder(
+                            shrinkWrap: true,
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            itemCount: controller.listDocuments.length,
+                            itemBuilder: (context, index) {
+                              DocumentModel document =
+                                  controller.listDocuments[index];
+                              return CustomDocumentCard(document: document);
+                            },
+                          ),
+                        )
                       ],
                     ),
                   ),
@@ -83,6 +85,7 @@ class DocumentView extends GetView<DocumentController> {
           backgroundColor: const Color(0xFFFF6B00),
           onPressed: () {
             controller.clearAllFields();
+            controller.getAllDocumentType();
             showModalBottomSheet(
               isScrollControlled: true,
               context: context,
