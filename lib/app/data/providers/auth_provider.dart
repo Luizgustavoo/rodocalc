@@ -75,6 +75,7 @@ class AuthApiClient {
         "uf": people.uf.toString(),
         "status": people.status.toString(),
         "cupom_para_indicar": people.cupomParaIndicar.toString(),
+        "cupom_recebido": user.cupomRecebido.toString(),
         "email": user.email.toString(),
         "password": user.password.toString(),
         "usertype_id": "2"

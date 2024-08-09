@@ -9,6 +9,10 @@ class User {
   String? createdAt;
   String? updatedAt;
   String? dataInicio;
+
+  String? cupomParaIndicar;
+  String? cupomRecebido;
+
   int? status;
   String? contato;
   People? people;
@@ -25,6 +29,8 @@ class User {
     this.status,
     this.contato,
     this.people,
+    this.cupomParaIndicar,
+    this.cupomRecebido,
   });
 
   User.fromJson(Map<String, dynamic> json) {
@@ -36,6 +42,8 @@ class User {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     dataInicio = json['data_inicio'];
+    cupomParaIndicar = json['cupom_para_indicar'];
+    cupomRecebido = json['cupom_recebido'];
     status =
         json['status'] != null ? int.tryParse(json['status'].toString()) : null;
     contato = json['contato'];
@@ -54,6 +62,8 @@ class User {
     data['data_inicio'] = dataInicio;
     data['status'] = status;
     data['contato'] = contato;
+    data['cupom_para_indicar'] = cupomParaIndicar;
+    data['cupom_recebido'] = cupomRecebido;
     if (people != null) {
       data['pessoa'] = people!.toJson();
     }
