@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/base_url.dart';
+import 'package:rodocalc/app/data/controllers/freight_controller.dart';
 import 'package:rodocalc/app/data/controllers/home_controller.dart';
 import 'package:rodocalc/app/data/controllers/indicator_controller.dart';
 import 'package:rodocalc/app/data/controllers/login_controller.dart';
@@ -20,6 +21,7 @@ class HomeView extends GetView<HomeController> {
   final transactionController = Get.put(TransactionController());
   final indicationController = Get.put(IndicationController());
   final perfilController = Get.put(PerfilController());
+  final freightController = Get.put(FreightController());
 
   @override
   Widget build(BuildContext context) {
@@ -261,6 +263,7 @@ class HomeView extends GetView<HomeController> {
                                       imagePath: 'assets/images/estrada.png',
                                       label: 'Fretes',
                                       onTap: () {
+                                        freightController.getAll();
                                         Get.toNamed(Routes.freight);
                                       },
                                     ),

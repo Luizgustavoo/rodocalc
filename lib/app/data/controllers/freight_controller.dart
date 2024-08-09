@@ -92,40 +92,6 @@ class FreightController extends GetxController {
     'TO': 'tocantins'
   };
 
-  void onValueChanged(String value, String controllerType) {
-    String formattedValue = FormattedInputers.formatTESTE(value);
-
-    switch (controllerType) {
-      case 'valueReceive':
-        valueReceiveController.value = valueReceiveController.value.copyWith(
-          text: formattedValue,
-          selection: TextSelection.collapsed(offset: formattedValue.length),
-        );
-        break;
-      case 'price':
-        priceDieselController.value = priceDieselController.value.copyWith(
-          text: formattedValue,
-          selection: TextSelection.collapsed(offset: formattedValue.length),
-        );
-        break;
-      case 'priceTires':
-        priceTiresController.value = priceTiresController.value.copyWith(
-          text: formattedValue,
-          selection: TextSelection.collapsed(offset: formattedValue.length),
-        );
-        break;
-      case 'valueToll':
-        othersExpensesController.value =
-            othersExpensesController.value.copyWith(
-          text: formattedValue,
-          selection: TextSelection.collapsed(offset: formattedValue.length),
-        );
-        break;
-      default:
-        throw ArgumentError('Controller passado incorreto: $controllerType');
-    }
-  }
-
   String cleanValue(String value) {
     String cleanedValue = value.replaceAll(RegExp(r'R\$|\s'), '');
     cleanedValue = cleanedValue.replaceAll('.', '').replaceAll(',', '.');
@@ -206,6 +172,7 @@ class FreightController extends GetxController {
     isLoading.value = true;
     try {
       listFreight.value = await repository.getAll();
+      print(listFreight.value);
     } catch (e) {
       listFreight.clear();
       Exception(e);
