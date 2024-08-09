@@ -7,15 +7,20 @@ class FreightRepository {
   getAll() async {
     List<Freight> list = <Freight>[];
 
-    var response = await apiClient.gettAll();
+    try {
+      var response = await apiClient.gettAll();
 
-    if (response != null) {
-      response['data'].forEach((e) {
-        list.add(Freight.fromJson(e));
-      });
-    } else {
-      return null;
+      if (response != null) {
+        response['data'].forEach((e) {
+          list.add(Freight.fromJson(e));
+        });
+      } else {
+        return null;
+      }
+    } catch (e) {
+      Exception(e);
     }
+
     return list;
   }
 

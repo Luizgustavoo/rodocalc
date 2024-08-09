@@ -47,16 +47,16 @@ class Freight {
     ufOrigem = json['uf_origem'];
     destino = json['destino'];
     ufDestino = json['uf_destino'];
-    valorPedagio = json['valor_pedagio'];
-    distanciaKm = json['distancia_km'];
-    mediaKmL = json['media_km_l'];
-    precoCombustivel = json['preco_combustivel'];
-    valorRecebido = json['valor_recebido'];
+    valorPedagio = _toDouble(json['valor_pedagio']);
+    distanciaKm = _toDouble(json['distancia_km']);
+    mediaKmL = _toDouble(json['media_km_l']);
+    precoCombustivel = _toDouble(json['preco_combustivel']);
+    valorRecebido = _toDouble(json['valor_recebido']);
     quantidadePneus = json['quantidade_pneus'];
-    valorPneu = json['valor_pneu'];
-    outrosGastos = json['outros_gastos'];
-    totalGastos = json['total_gastos'];
-    lucro = json['lucro'];
+    valorPneu = _toDouble(json['valor_pneu']);
+    outrosGastos = _toDouble(json['outros_gastos']);
+    totalGastos = _toDouble(json['total_gastos']);
+    lucro = _toDouble(json['lucro']);
     status = json['status'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
@@ -89,5 +89,18 @@ class Freight {
 
   bool isEmpty() {
     return id == null && origem == null && destino == null;
+  }
+
+  double? _toDouble(dynamic value) {
+    if (value == null) {
+      return null;
+    }
+    if (value is double) {
+      return value;
+    }
+    if (value is int) {
+      return value.toDouble();
+    }
+    return double.tryParse(value.toString()) ?? 0.0;
   }
 }

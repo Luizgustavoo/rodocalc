@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/controllers/freight_controller.dart';
+import 'package:rodocalc/app/data/models/freight_model.dart';
 import 'package:rodocalc/app/modules/freight/widgets/create_freight_modal.dart';
 import 'package:rodocalc/app/modules/freight/widgets/custom_freight_card.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
@@ -107,18 +108,22 @@ class FreightView extends GetView<FreightController> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                ListView.builder(
+                Obx(() {
+                  return ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: 10,
+                    itemCount: controller.listFreight.length,
                     itemBuilder: (context, index) {
-                      return const CustomFreightCard(
-                        origin: 'ARAPONGAS - PR',
-                        destination: 'FLORIANÓPOLIS - SC',
-                        distance: '700KM',
-                        value: 'R\$ 25.000,00',
+                      Freight frete = controller.listFreight[index];
+                      return CustomFreightCard(
+                        origin: "${frete.origem!} - ${frete.ufOrigem}",
+                        destination: "${frete.destino!} - ${frete.ufDestino}",
+                        distance: frete.distanciaKm.toString(),
+                        value: frete.valorRecebido.toString(),
                       );
-                    })
+                    },
+                  );
+                }),
               ]),
             ),
           )
