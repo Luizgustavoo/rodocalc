@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:rodocalc/app/utils/formatter.dart';
 
 class CustomFreightCard extends StatelessWidget {
   final String origin;
   final String destination;
   final String distance;
   final String value;
+  final VoidCallback functionEdit;
 
   const CustomFreightCard({
     super.key,
@@ -12,6 +14,7 @@ class CustomFreightCard extends StatelessWidget {
     required this.destination,
     required this.distance,
     required this.value,
+    required this.functionEdit,
   });
 
   @override
@@ -23,25 +26,24 @@ class CustomFreightCard extends StatelessWidget {
       ),
       margin: const EdgeInsets.only(bottom: 10),
       child: ListTile(
-        leading: const Icon(
-          Icons.pin_drop,
-          size: 35,
+        trailing: IconButton(
+          onPressed: functionEdit,
+          icon: Icon(Icons.edit),
         ),
         title: RichText(
           text: TextSpan(
             style: const TextStyle(
-              fontSize: 16,
+              fontSize: 14,
               color: Colors.black,
               fontFamily: 'Inter-Regular',
             ),
             children: [
-              const TextSpan(
-                text: 'ORIGEM: ',
+              TextSpan(
+                text: "${origin.toUpperCase()} / ${destination.toUpperCase()}",
                 style: TextStyle(
                   fontFamily: 'Inter-Bold',
                 ),
               ),
-              TextSpan(text: origin),
             ],
           ),
         ),
@@ -58,31 +60,12 @@ class CustomFreightCard extends StatelessWidget {
                 ),
                 children: [
                   const TextSpan(
-                    text: 'DESTINO: ',
-                    style: TextStyle(
-                      fontFamily: 'Inter-Bold',
-                    ),
-                  ),
-                  TextSpan(text: destination),
-                ],
-              ),
-            ),
-            const SizedBox(height: 5),
-            RichText(
-              text: TextSpan(
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.black,
-                  fontFamily: 'Inter-Regular',
-                ),
-                children: [
-                  const TextSpan(
                     text: 'DISTÂNCIA: ',
                     style: TextStyle(
                       fontFamily: 'Inter-Bold',
                     ),
                   ),
-                  TextSpan(text: distance),
+                  TextSpan(text: "${distance} km"),
                 ],
               ),
             ),
@@ -101,7 +84,8 @@ class CustomFreightCard extends StatelessWidget {
                       fontFamily: 'Inter-Bold',
                     ),
                   ),
-                  TextSpan(text: value),
+                  TextSpan(
+                      text: 'R\$ ${FormattedInputers.formatValuePTBR(value)}'),
                 ],
               ),
             ),

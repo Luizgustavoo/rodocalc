@@ -164,6 +164,73 @@ class FreightController extends GetxController {
     return retorno;
   }
 
+  calculateFreightUpdate(Freight freight) async {
+    //print(states_map[selectedStateOrigin]);
+
+    final double valueReceive =
+        double.parse(cleanValue(valueReceiveController.text));
+
+    final double D =
+        double.parse(cleanValue(distanceController.text)); //distancia
+    final double M =
+        double.parse(cleanValue(averageController.text)); // media km/l
+
+    final double P = double.parse(
+        cleanValue(priceDieselController.text)); //preco litro diesel
+
+    final int Pn = int.parse(totalTiresController.text); //total de pneus
+    final double T =
+        double.parse(cleanValue(priceTiresController.text)); // preco dos pneus
+
+    double tolls = double.parse(cleanValue(priceTollsController.text));
+
+    double otherExpenses =
+        double.parse(cleanValue(othersExpensesController.text));
+
+    final double F1 = (D / M) * P;
+    final double F2 = (((Pn * D) / 800) / 100) * T;
+
+    final double totalExpenses = F1 + F2 + otherExpenses;
+
+    final double profit = valueReceive - totalExpenses - tolls;
+
+    mensagem = await repository.update(Freight(
+      id: freight.id,
+      origem: originController.text,
+      ufOrigem: selectedStateOrigin.value,
+      destino: destinyController.text,
+      ufDestino: selectedStateDestiny.value,
+      valorPedagio: tolls,
+      distanciaKm: D,
+      mediaKmL: M,
+      precoCombustivel: P,
+      quantidadePneus: Pn,
+      valorPneu: T,
+      valorRecebido: valueReceive,
+      totalGastos: totalExpenses,
+      lucro: profit,
+      outrosGastos: otherExpenses,
+      status: 1,
+      userId: ServiceStorage.getUserId(),
+    ));
+    if (mensagem != null) {
+      retorno = {
+        'success': mensagem['success'],
+        'message': mensagem['message'],
+        'lucro': profit
+      };
+      getAll();
+    } else {
+      retorno = {
+        'success': false,
+        'message': ['Falha ao realizar a operação!'],
+        'lucro': 0
+      };
+    }
+
+    return retorno;
+  }
+
   RxList<Freight> listFreight = RxList<Freight>([]);
   RxBool isLoading = true.obs;
   RxBool isLoadingData = true.obs;
@@ -207,14 +274,22 @@ class FreightController extends GetxController {
   void fillInFields(Freight freight) {
     originController.text = freight.origem!;
     destinyController.text = freight.destino!;
-    valueReceiveController.text = freight.valorRecebido!.toString();
-    distanceController.text = freight.distanciaKm.toString();
-    averageController.text = freight.mediaKmL.toString();
-    priceDieselController.text = freight.precoCombustivel.toString();
+    valueReceiveController.text =
+        "R\$ ${FormattedInputers.formatValuePTBR(freight.valorRecebido!.toString())}";
+    distanceController.text =
+        FormattedInputers.formatDoubleForDecimal(freight.distanciaKm!);
+    averageController.text =
+        FormattedInputers.formatDoubleForDecimal(freight.mediaKmL!);
+    priceDieselController.text =
+        "R\$ ${FormattedInputers.formatValuePTBR(freight.precoCombustivel!.toString())}";
     totalTiresController.text = freight.quantidadePneus.toString();
-    priceTiresController.text = freight.valorPneu.toString();
-    priceTollsController.text = freight.valorPedagio.toString();
-    othersExpensesController.text = freight.outrosGastos.toString();
+    priceTiresController.text =
+        "R\$ ${FormattedInputers.formatValuePTBR(freight.valorPneu!.toString())}";
+    priceTollsController.text =
+        "R\$ ${FormattedInputers.formatValuePTBR(freight.valorPedagio!.toString())}";
+
+    othersExpensesController.text =
+        "R\$ ${FormattedInputers.formatValuePTBR(freight.outrosGastos!.toString())}";
     selectedStateOrigin.value = freight.ufOrigem.toString();
     selectedStateDestiny.value = freight.ufDestino.toString();
   }
@@ -238,5 +313,23 @@ class FreightController extends GetxController {
     }
     selectedStateOrigin.value = '';
     selectedStateDestiny.value = '';
+  }
+
+  Future<Map<String, dynamic>> deleteFreight(int id) async {
+    if (id > 0) {
+      mensagem = await repository.delete(Freight(id: id));
+      retorno = {
+        'success': mensagem['success'],
+        'message': mensagem['message']
+      };
+      getAll();
+    } else {
+      retorno = {
+        'success': false,
+        'message': ['Falha ao realizar a operação!']
+      };
+    }
+
+    return retorno;
   }
 }

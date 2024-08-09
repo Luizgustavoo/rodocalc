@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/freight_controller.dart';
+import 'package:rodocalc/app/data/models/freight_model.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 
 class CreateFreightModal extends GetView<FreightController> {
-  const CreateFreightModal({super.key});
+  const CreateFreightModal({super.key, required this.isUpdate, this.freight});
+
+  final bool isUpdate;
+  final Freight? freight;
 
   @override
   Widget build(BuildContext context) {
@@ -60,8 +64,7 @@ class CreateFreightModal extends GetView<FreightController> {
                 ),
                 const SizedBox(height: 20),
                 Card(
-                  elevation: 3,
-                  color: Colors.black,
+                  color: Colors.grey.shade400,
                   child: Padding(
                     padding: const EdgeInsets.only(
                         top: 15, bottom: 15, left: 8, right: 8),
@@ -368,8 +371,10 @@ class CreateFreightModal extends GetView<FreightController> {
                     CustomElevatedButton(
                       onPressed: () async {
                         if (controller.freightKey.currentState!.validate()) {
-                          Map<String, dynamic> retorno =
-                              await controller.calculateFreight();
+                          Map<String, dynamic> retorno = isUpdate
+                              ? await controller
+                                  .calculateFreightUpdate(freight!)
+                              : await controller.calculateFreight();
 
                           if (retorno['success'] == true) {
                             showDialog(

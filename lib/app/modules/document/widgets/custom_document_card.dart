@@ -62,7 +62,8 @@ class CustomDocumentCard extends StatelessWidget {
                       fontFamily: 'Inter-Bold',
                     ),
                   ),
-                  TextSpan(text: document!.tipoDocumentoId!.toUpperCase()),
+                  TextSpan(
+                      text: document!.documentType!.descricao!.toUpperCase()),
                 ],
               ),
             ),

@@ -113,16 +113,19 @@ class FreightApiClient {
 
       var requestBody = {
         'origem': freight.origem.toString(),
-        'uf_origesm': freight.ufOrigem.toString(),
+        'uf_origem': freight.ufOrigem.toString(),
         'destino': freight.destino.toString(),
         'uf_destino': freight.ufDestino.toString(),
         'valor_pedagio': freight.valorPedagio.toString(),
+        'valor_recebido': freight.valorRecebido.toString(),
+        'lucro': freight.lucro.toString(),
         'distancia_km': freight.distanciaKm.toString(),
         'media_km_l': freight.mediaKmL.toString(),
         'preco_combustivel': freight.precoCombustivel.toString(),
         'quantidade_pneus': freight.quantidadePneus.toString(),
         'valor_pneu': freight.valorPneu.toString(),
         'outros_gastos': freight.outrosGastos.toString(),
+        'total_gastos': freight.totalGastos.toString(),
         'status': freight.status.toString(),
         'user_id': freight.userId.toString(),
       };

@@ -129,8 +129,8 @@ class DocumentController extends GetxController {
 
       mensagem = await repository.insert(DocumentModel(
         descricao: descriptionController.text,
-        status: "1",
-        tipoDocumentoId: selectedTipoDocumento.value.toString(),
+        status: 1,
+        tipoDocumentoId: selectedTipoDocumento.value,
         imagemPdf: imagemPdf,
         arquivo: arquivo,
       ));
@@ -167,8 +167,8 @@ class DocumentController extends GetxController {
       mensagem = await repository.insert(DocumentModel(
         id: id,
         descricao: descriptionController.text,
-        status: "1",
-        tipoDocumentoId: selectedTipoDocumento.value.toString(),
+        status: 1,
+        tipoDocumentoId: selectedTipoDocumento.value,
         imagemPdf: imagemPdf,
         arquivo: arquivo,
       ));

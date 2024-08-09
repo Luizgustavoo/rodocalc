@@ -179,6 +179,19 @@ abstract class FormattedInputers {
     return formatter.format(value);
   }
 
+  static String formatDoubleForDecimal(double value) {
+    String formatted = value.toStringAsFixed(2).replaceAll('.', ',');
+
+    if (formatted.endsWith(',00')) {
+      return formatted.substring(0, formatted.length - 3);
+    }
+    if (formatted.endsWith(',0')) {
+      return formatted.substring(0, formatted.length - 2);
+    }
+
+    return formatted;
+  }
+
   static bool validatePlate(String value) {
     if (value.isEmpty) {
       return false;

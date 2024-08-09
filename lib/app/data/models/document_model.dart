@@ -1,17 +1,21 @@
+import 'document_type_model.dart';
+
 class DocumentModel {
   int? id;
   String? descricao;
-  String? tipoDocumentoId;
-  String? pessoaId;
+  int? tipoDocumentoId;
+  int? pessoaId;
   String? arquivo;
   String? imagemPdf;
-  String? status;
+  int? status;
   String? createdAt;
   String? updatedAt;
 
   String? nomeDocumento;
   String? base64Content;
   String? dataVencimento;
+
+  DocumentType? documentType;
 
   DocumentModel({
     this.id,
@@ -26,6 +30,7 @@ class DocumentModel {
     this.nomeDocumento,
     this.base64Content,
     this.dataVencimento,
+    this.documentType,
   });
 
   DocumentModel.fromJson(Map<String, dynamic> json) {
@@ -38,6 +43,9 @@ class DocumentModel {
     status = json['status'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    documentType = json['tipodocumento'] != null
+        ? DocumentType.fromJson(json['tipodocumento'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -51,6 +59,9 @@ class DocumentModel {
     data['status'] = status;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
+    if (documentType != null) {
+      data['tipodocumento'] = documentType!.toJson();
+    }
 
     return data;
   }
