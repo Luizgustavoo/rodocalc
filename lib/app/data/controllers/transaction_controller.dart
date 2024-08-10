@@ -345,7 +345,7 @@ class TransactionController extends GetxController {
             tipoTransacao: typeTransaction,
             photos: photos,
           ),
-          selectedImagesPathsApiRemove.value);
+          selectedImagesPathsApiRemove);
       if (mensagem != null) {
         retorno = {
           'success': mensagem['success'],
