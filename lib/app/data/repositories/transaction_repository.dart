@@ -22,6 +22,20 @@ class TransactionRepository {
     return list;
   }
 
+  getLast() async {
+    List<Transacoes> list = <Transacoes>[];
+
+    var response = await apiClient.getLast();
+
+    if (response != null) {
+      response['data'].forEach((e) {
+        list.add(Transacoes.fromJson(e));
+      });
+    }
+
+    return list;
+  }
+
   getSaldo() async {
     VehicleBalance balance = VehicleBalance();
     var response = await apiClient.gettSaldo();
