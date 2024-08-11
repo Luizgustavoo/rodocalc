@@ -18,7 +18,7 @@ import 'package:rodocalc/app/utils/service_storage.dart';
 class HomeView extends GetView<HomeController> {
   HomeView({super.key});
 
-  final vehicleController = Get.put(VehiclesController());
+  final vehicleController = Get.put(VehicleController());
   final transactionController = Get.put(TransactionController());
   final indicationController = Get.put(IndicationController());
   final perfilController = Get.put(PerfilController());

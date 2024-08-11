@@ -62,7 +62,7 @@ class FreightController extends GetxController {
     'TO'
   ];
 
-  final states_map = {
+  final statesMap = {
     'AC': 'acre',
     'AL': 'alagoas',
     'AM': 'amazonas',
@@ -112,7 +112,7 @@ class FreightController extends GetxController {
     final double P = double.parse(
         cleanValue(priceDieselController.text)); //preco litro diesel
 
-    final int Pn = int.parse(totalTiresController.text); //total de pneus
+    final int pn = int.parse(totalTiresController.text); //total de pneus
     final double T =
         double.parse(cleanValue(priceTiresController.text)); // preco dos pneus
 
@@ -121,10 +121,10 @@ class FreightController extends GetxController {
     double otherExpenses =
         double.parse(cleanValue(othersExpensesController.text));
 
-    final double F1 = (D / M) * P;
-    final double F2 = (((Pn * D) / 800) / 100) * T;
+    final double f1 = (D / M) * P;
+    final double f2 = (((pn * D) / 800) / 100) * T;
 
-    final double totalExpenses = F1 + F2 + otherExpenses;
+    final double totalExpenses = f1 + f2 + otherExpenses;
 
     final double profit = valueReceive - totalExpenses - tolls;
 
@@ -137,7 +137,7 @@ class FreightController extends GetxController {
       distanciaKm: D,
       mediaKmL: M,
       precoCombustivel: P,
-      quantidadePneus: Pn,
+      quantidadePneus: pn,
       valorPneu: T,
       valorRecebido: valueReceive,
       totalGastos: totalExpenses,
@@ -178,7 +178,7 @@ class FreightController extends GetxController {
     final double P = double.parse(
         cleanValue(priceDieselController.text)); //preco litro diesel
 
-    final int Pn = int.parse(totalTiresController.text); //total de pneus
+    final int pn = int.parse(totalTiresController.text); //total de pneus
     final double T =
         double.parse(cleanValue(priceTiresController.text)); // preco dos pneus
 
@@ -187,10 +187,10 @@ class FreightController extends GetxController {
     double otherExpenses =
         double.parse(cleanValue(othersExpensesController.text));
 
-    final double F1 = (D / M) * P;
-    final double F2 = (((Pn * D) / 800) / 100) * T;
+    final double f1 = (D / M) * P;
+    final double f2 = (((pn * D) / 800) / 100) * T;
 
-    final double totalExpenses = F1 + F2 + otherExpenses;
+    final double totalExpenses = f1 + f2 + otherExpenses;
 
     final double profit = valueReceive - totalExpenses - tolls;
 
@@ -204,7 +204,7 @@ class FreightController extends GetxController {
       distanciaKm: D,
       mediaKmL: M,
       precoCombustivel: P,
-      quantidadePneus: Pn,
+      quantidadePneus: pn,
       valorPneu: T,
       valorRecebido: valueReceive,
       totalGastos: totalExpenses,
@@ -239,7 +239,6 @@ class FreightController extends GetxController {
     isLoading.value = true;
     try {
       listFreight.value = await repository.getAll();
-      print(listFreight.value);
     } catch (e) {
       listFreight.clear();
       Exception(e);
@@ -251,12 +250,12 @@ class FreightController extends GetxController {
     isLoadingData.value = true;
     try {
       String origem = originController.text;
-      String uf_origem = states_map[selectedStateOrigin.value]!;
+      String ufOrigem = statesMap[selectedStateOrigin.value]!;
       String destino = destinyController.text;
-      String uf_destino = states_map[selectedStateDestiny.value]!;
+      String ufDestino = statesMap[selectedStateDestiny.value]!;
 
       var response =
-          await repository.getTripData(origem, uf_origem, destino, uf_destino);
+          await repository.getTripData(origem, ufOrigem, destino, ufDestino);
 
       if (response != null) {
         distanceController.text =

@@ -25,7 +25,7 @@ class CustomIndicatorCard extends StatelessWidget {
       child: ListTile(
         trailing: IconButton(
           onPressed: functionUpdate,
-          icon: Icon(Icons.edit),
+          icon: const Icon(Icons.edit),
         ),
         leading: IconButton(
           onPressed: () async {
@@ -57,7 +57,7 @@ class CustomIndicatorCard extends StatelessWidget {
 
             //Share.share(linkWhatsApp);
           },
-          icon: Icon(Icons.share),
+          icon: const Icon(Icons.share),
         ),
         title: RichText(
           text: TextSpan(

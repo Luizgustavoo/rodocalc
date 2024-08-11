@@ -6,6 +6,6 @@ class HomeBinding implements Bindings {
   @override
   void dependencies() {
     Get.lazyPut<HomeController>(() => HomeController());
-    Get.lazyPut<VehiclesController>(() => VehiclesController());
+    Get.lazyPut<VehicleController>(() => VehicleController());
   }
 }

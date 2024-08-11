@@ -28,7 +28,7 @@ class CustomFreightCard extends StatelessWidget {
       child: ListTile(
         trailing: IconButton(
           onPressed: functionEdit,
-          icon: Icon(Icons.edit),
+          icon: const Icon(Icons.edit),
         ),
         title: RichText(
           text: TextSpan(
@@ -40,7 +40,7 @@ class CustomFreightCard extends StatelessWidget {
             children: [
               TextSpan(
                 text: "${origin.toUpperCase()} / ${destination.toUpperCase()}",
-                style: TextStyle(
+                style: const TextStyle(
                   fontFamily: 'Inter-Bold',
                 ),
               ),
@@ -65,7 +65,7 @@ class CustomFreightCard extends StatelessWidget {
                       fontFamily: 'Inter-Bold',
                     ),
                   ),
-                  TextSpan(text: "${distance} km"),
+                  TextSpan(text: "$distance km"),
                 ],
               ),
             ),

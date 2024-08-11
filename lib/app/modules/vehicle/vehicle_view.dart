@@ -8,7 +8,7 @@ import 'package:rodocalc/app/modules/vehicle/widgets/create_vehicle_modal.dart';
 import 'package:rodocalc/app/modules/vehicle/widgets/custom_vehicle_card.dart';
 import 'package:rodocalc/app/routes/app_routes.dart';
 
-class VehiclesView extends GetView<VehiclesController> {
+class VehiclesView extends GetView<VehicleController> {
   const VehiclesView({super.key});
 
   @override
@@ -173,7 +173,6 @@ class VehiclesView extends GetView<VehiclesController> {
           backgroundColor: const Color(0xFFFF6B00),
           onPressed: () {
             controller.isLoading.value = false;
-            // controller.selectedImagePath.value = "";
             controller.clearAllFields();
             showModalBottomSheet(
               isScrollControlled: true,
@@ -193,7 +192,7 @@ class VehiclesView extends GetView<VehiclesController> {
   }
 }
 
-void showDialog(context, Vehicle vehicle, VehiclesController controller) {
+void showDialog(context, Vehicle vehicle, VehicleController controller) {
   Get.defaultDialog(
     titlePadding: const EdgeInsets.all(16),
     contentPadding: const EdgeInsets.all(16),
@@ -202,7 +201,7 @@ void showDialog(context, Vehicle vehicle, VehiclesController controller) {
       textAlign: TextAlign.center,
       "Tem certeza que deseja excluir o veículo ${vehicle.marca}?",
       style: const TextStyle(
-        fontFamily: 'Poppins',
+        fontFamily: 'Inter-Regular',
         fontSize: 18,
       ),
     ),

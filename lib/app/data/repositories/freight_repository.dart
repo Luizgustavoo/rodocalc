@@ -24,10 +24,10 @@ class FreightRepository {
     return list;
   }
 
-  getTripData(String origem, String uf_origem, String destino,
-      String uf_destino) async {
+  getTripData(
+      String origem, String ufOrigem, String destino, String ufDestino) async {
     var response =
-        await apiClient.getTripData(origem, uf_origem, destino, uf_destino);
+        await apiClient.getTripData(origem, ufOrigem, destino, ufDestino);
     return response['rotas'];
   }
 

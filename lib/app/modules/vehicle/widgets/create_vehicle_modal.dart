@@ -9,7 +9,7 @@ import 'package:rodocalc/app/data/models/vehicle_model.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 
-class CreateVehicleModal extends GetView<VehiclesController> {
+class CreateVehicleModal extends GetView<VehicleController> {
   const CreateVehicleModal({super.key, this.vehicle, required this.update});
 
   final Vehicle? vehicle;

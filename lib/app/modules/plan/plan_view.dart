@@ -97,7 +97,7 @@ class PlanView extends GetView<PlanController> {
                                 controller.updateSelectedPlan(plan);
                                 showModalBottomSheet(
                                   context: context,
-                                  builder: (_) => CreatePlanModal(),
+                                  builder: (_) => const CreatePlanModal(),
                                   isScrollControlled: true,
                                 );
                               },

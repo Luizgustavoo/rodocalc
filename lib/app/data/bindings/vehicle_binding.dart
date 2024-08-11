@@ -5,7 +5,7 @@ import 'package:rodocalc/app/data/repositories/vehicle_repository.dart';
 class VehiclesBinding implements Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<VehiclesController>(() => VehiclesController());
+    Get.lazyPut<VehicleController>(() => VehicleController());
     Get.lazyPut<VehicleRepository>(() => VehicleRepository());
   }
 }

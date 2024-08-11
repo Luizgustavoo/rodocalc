@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/freight_controller.dart';
@@ -176,7 +178,7 @@ class CreateFreightModal extends GetView<FreightController> {
                             ),
                           ],
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 15,
                         ),
                         SizedBox(
@@ -381,7 +383,7 @@ class CreateFreightModal extends GetView<FreightController> {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  title: Text('Resultado do cálculo:'),
+                                  title: const Text('Resultado do cálculo:'),
                                   content: SingleChildScrollView(
                                     child: ListBody(
                                       children: [
@@ -397,7 +399,7 @@ class CreateFreightModal extends GetView<FreightController> {
                                   ),
                                   actions: <Widget>[
                                     TextButton(
-                                      child: Text('OK'),
+                                      child: const Text('OK'),
                                       onPressed: () {
                                         controller.clearAllFields();
                                         Navigator.of(context).pop();

@@ -34,12 +34,12 @@ class FreightApiClient {
     return null;
   }
 
-  getTripData(String origem, String uf_origem, String destino,
-      String uf_destino) async {
+  getTripData(
+      String origem, String ufOrigem, String destino, String ufDestino) async {
     try {
       Uri freightUrl;
       String url =
-          'https://rotasbrasil.com.br/apiRotas/enderecos/?pontos=$origem,$uf_origem;$destino,$uf_destino&veiculo=caminhao&token=f613a82d2cdde0ee09b75d8b43cd1878';
+          'https://rotasbrasil.com.br/apiRotas/enderecos/?pontos=$origem,$ufOrigem;$destino,$ufDestino&veiculo=caminhao&token=f613a82d2cdde0ee09b75d8b43cd1878';
       freightUrl = Uri.parse(url);
       var response = await httpClient.get(
         freightUrl,
@@ -90,8 +90,6 @@ class FreightApiClient {
         },
         body: requestBody,
       );
-
-      print(json.decode(response.body));
 
       if (response.statusCode == 201 ||
           response.statusCode == 422 ||
@@ -167,7 +165,6 @@ class FreightApiClient {
         },
       );
 
-      print(json.decode(response.body));
       return json.decode(response.body);
     } catch (err) {
       Exception(err);

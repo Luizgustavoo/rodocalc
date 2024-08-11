@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/models/document_model.dart';
 import 'package:rodocalc/app/data/models/document_type_model.dart';
 import 'package:rodocalc/app/data/repositories/document_repository.dart';
@@ -14,8 +15,9 @@ class DocumentController extends GetxController {
 
   final formKeyDocument = GlobalKey<FormState>();
   final descriptionController = TextEditingController();
-  final nameController = TextEditingController();
   RxInt selectedTipoDocumento = 1.obs;
+
+  late DocumentModel selectedDocument;
 
   RxList<DocumentModel> listDocuments = RxList<DocumentModel>([]);
   RxList<DocumentType> listDocumentsType = RxList<DocumentType>([]);
@@ -29,8 +31,6 @@ class DocumentController extends GetxController {
   };
   dynamic mensagem;
 
-  List<String> tiposDocumento = ['CNH', 'RG', 'CPF'];
-
   void clearAllFields() {
     final textControllers = [
       descriptionController,
@@ -41,6 +41,28 @@ class DocumentController extends GetxController {
 
     for (final controller in textControllers) {
       controller.clear();
+    }
+  }
+
+  void fillInFields() {
+    descriptionController.text = selectedDocument.descricao.toString();
+
+    selectedTipoDocumento.value = selectedDocument.tipoDocumentoId ?? 1;
+
+    if (selectedDocument.imagemPdf == 'IMAGEM' &&
+        selectedDocument.arquivo!.isNotEmpty) {
+      String imageUrl = selectedDocument.arquivo!;
+
+      if (!imageUrl.startsWith('http')) {
+        imageUrl = '$urlImagem/storage/fotos/documentos/$imageUrl';
+      }
+
+      selectedImagePath.value = imageUrl;
+      selectedPdfPath.value = '';
+    } else if (selectedDocument.imagemPdf == 'PDF' &&
+        selectedDocument.arquivo!.isNotEmpty) {
+      selectedPdfPath.value = selectedDocument.arquivo!;
+      selectedImagePath.value = '';
     }
   }
 

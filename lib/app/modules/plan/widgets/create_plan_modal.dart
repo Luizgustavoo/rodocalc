@@ -139,7 +139,7 @@ class CreatePlanModal extends GetView<PlanController> {
                   CustomElevatedButton(
                       onPressed: () {},
                       child: const Text(
-                        'PAGAR',
+                        'CONTRATAR',
                         style: TextStyle(
                             color: Colors.white, fontFamily: 'InterBold'),
                       ))

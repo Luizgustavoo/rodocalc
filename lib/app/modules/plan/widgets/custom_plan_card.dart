@@ -84,7 +84,7 @@ class CustomPlanCard extends StatelessWidget {
                         shadowColor: Colors.transparent,
                       ),
                       child: const Text(
-                        'CONTRATAR',
+                        'SELECIONAR',
                         style: TextStyle(
                             fontFamily: 'Inter-Bold', color: Colors.white),
                       ),

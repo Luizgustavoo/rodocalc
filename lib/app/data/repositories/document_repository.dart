@@ -23,7 +23,7 @@ class DocumentRepository {
   getAllDocumentType() async {
     List<DocumentType> list = <DocumentType>[];
 
-    var response = await apiClient.gettAll();
+    var response = await apiClient.gettAllDocumentType();
 
     if (response != null) {
       response['data'].forEach((e) {

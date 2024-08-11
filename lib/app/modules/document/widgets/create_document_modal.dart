@@ -1,13 +1,19 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:rodocalc/app/data/controllers/document_controller.dart';
+import 'package:rodocalc/app/data/models/document_model.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 
 class CreateDocumentModal extends GetView<DocumentController> {
-  const CreateDocumentModal({super.key});
+  const CreateDocumentModal({super.key, required this.update, this.document});
+
+  final bool update;
+  final DocumentModel? document;
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +66,25 @@ class CreateDocumentModal extends GetView<DocumentController> {
                             fontSize: 14,
                           ),
                         ),
+                        const SizedBox(height: 10),
+                        ElevatedButton(
+                          onPressed: () async {
+                            FilePickerResult? result =
+                                await FilePicker.platform.pickFiles(
+                              type: FileType.custom,
+                              allowedExtensions: ['pdf'],
+                            );
+                            if (result != null) {
+                              controller.selectedPdfPath.value =
+                                  result.files.single.path!;
+                            }
+                          },
+                          child: const Text(
+                            'ENVIAR NOVO PDF',
+                            style: TextStyle(
+                                fontFamily: 'Inter-Bold', color: Colors.white),
+                          ),
+                        ),
                       ],
                     );
                   } else {
@@ -72,10 +97,17 @@ class CreateDocumentModal extends GetView<DocumentController> {
                               height: 100,
                               color: Colors.grey,
                               child: controller.selectedImagePath.value != ''
-                                  ? Image.file(
-                                      File(controller.selectedImagePath.value),
-                                      fit: BoxFit.cover,
-                                    )
+                                  ? controller.selectedImagePath.value
+                                          .startsWith('http')
+                                      ? Image.network(
+                                          controller.selectedImagePath.value,
+                                          fit: BoxFit.cover,
+                                        )
+                                      : Image.file(
+                                          File(controller
+                                              .selectedImagePath.value),
+                                          fit: BoxFit.cover,
+                                        )
                                   : const Icon(
                                       Icons.camera_alt,
                                       size: 50,
@@ -127,7 +159,7 @@ class CreateDocumentModal extends GetView<DocumentController> {
                           borderSide: BorderSide.none,
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        labelText: 'ESTADO CIVIL'),
+                        labelText: 'TIPO DE DOCUMENTO'),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -149,10 +181,42 @@ class CreateDocumentModal extends GetView<DocumentController> {
                     ),
                     const SizedBox(width: 10),
                     CustomElevatedButton(
-                      onPressed: () async {},
-                      child: const Text(
-                        'CADASTRAR',
-                        style: TextStyle(
+                      onPressed: () async {
+                        if (controller.selectedImagePath.value.isEmpty &&
+                            controller.selectedPdfPath.value.isEmpty) {
+                          Get.snackbar(
+                            'Falha!',
+                            'Por favor, selecione uma imagem ou um PDF.',
+                            backgroundColor: Colors.orange,
+                            colorText: Colors.white,
+                            duration: const Duration(seconds: 2),
+                            snackPosition: SnackPosition.BOTTOM,
+                          );
+                          return;
+                        }
+                        Map<String, dynamic> retorno = update
+                            ? await controller.updateDocument(document!.id!)
+                            : await controller.insertDocument();
+
+                        if (retorno['success'] == true) {
+                          Get.back();
+                          Get.snackbar(
+                              'Sucesso!', retorno['message'].join('\n'),
+                              backgroundColor: Colors.green,
+                              colorText: Colors.white,
+                              duration: const Duration(seconds: 2),
+                              snackPosition: SnackPosition.BOTTOM);
+                        } else {
+                          Get.snackbar('Falha!', retorno['message'].join('\n'),
+                              backgroundColor: Colors.red,
+                              colorText: Colors.white,
+                              duration: const Duration(seconds: 2),
+                              snackPosition: SnackPosition.BOTTOM);
+                        }
+                      },
+                      child: Text(
+                        update ? 'ATUALIZAR' : 'CADASTRAR',
+                        style: const TextStyle(
                             fontFamily: 'Inter-Bold', color: Colors.white),
                       ),
                     ),

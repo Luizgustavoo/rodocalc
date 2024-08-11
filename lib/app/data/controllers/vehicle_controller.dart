@@ -8,7 +8,7 @@ import 'package:rodocalc/app/data/models/vehicle_model.dart';
 import 'package:rodocalc/app/data/repositories/vehicle_repository.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 
-class VehiclesController extends GetxController {
+class VehicleController extends GetxController {
   final box = GetStorage('rodocalc');
 
   var selectedImagePath = ''.obs;

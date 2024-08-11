@@ -338,8 +338,6 @@ class TransactionApiClient {
       var responseStream = await response.stream.bytesToString();
       var httpResponse = http.Response(responseStream, response.statusCode);
 
-      print(json.decode(httpResponse.body));
-
       return json.decode(httpResponse.body);
     } catch (err) {
       Exception(err);

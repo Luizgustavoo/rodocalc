@@ -151,7 +151,7 @@ abstract class FormattedInputers {
         buffer.write(text[i]);
       }
     } else {
-      buffer.write('$text');
+      buffer.write(text);
     }
 
     return buffer.toString();

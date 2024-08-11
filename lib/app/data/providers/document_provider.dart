@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
@@ -25,7 +27,6 @@ class DocumentApiClient {
           "Authorization": token,
         },
       );
-      print(json.decode(response.body));
       if (response.statusCode == 201) {
         return json.decode(response.body);
       } else {
@@ -51,7 +52,6 @@ class DocumentApiClient {
           "Authorization": token,
         },
       );
-      print(json.decode(response.body));
       if (response.statusCode == 201) {
         return json.decode(response.body);
       } else {
@@ -101,7 +101,6 @@ class DocumentApiClient {
 
       var responseStream = await response.stream.bytesToString();
       var httpResponse = http.Response(responseStream, response.statusCode);
-
       if (httpResponse.statusCode == 201 ||
           httpResponse.statusCode == 422 ||
           httpResponse.statusCode == 404) {

@@ -224,10 +224,10 @@ void showDialog(context, Freight freight, FreightController controller) {
     titlePadding: const EdgeInsets.all(16),
     contentPadding: const EdgeInsets.all(16),
     title: "Confirmação",
-    content: Text(
+    content: const Text(
       textAlign: TextAlign.center,
       "Tem certeza que deseja excluir o calculo selecionado?",
-      style: const TextStyle(
+      style: TextStyle(
         fontFamily: 'Poppins',
         fontSize: 18,
       ),

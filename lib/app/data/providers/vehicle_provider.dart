@@ -23,7 +23,6 @@ class VehicleApiClient {
           "Authorization": token,
         },
       );
-      print(json.decode(response.body));
       if (response.statusCode == 201) {
         return json.decode(response.body);
       } else {
@@ -147,7 +146,7 @@ class VehicleApiClient {
 
   searchPlate(String plate) async {
     try {
-      final token = "Bearer ${ServiceStorage.getToken()}";
+      // final token = "Bearer ${ServiceStorage.getToken()}";
 
       Uri vehicleUrl;
       String url = '$buscarPlacaUrl/$plate';
