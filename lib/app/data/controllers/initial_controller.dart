@@ -6,6 +6,8 @@ class InitialController extends GetxController {
   final box = GetStorage('rodocalc');
   dynamic auth;
 
+  RxString codigo = ''.obs;
+
   @override
   void onInit() {
     auth = box.read('auth');
@@ -13,6 +15,9 @@ class InitialController extends GetxController {
   }
 
   String verifyAuth() {
+    print('-------------valor de codigo-----------');
+    print(codigo.value);
+    print('---------------------------------------');
     if (auth != null) {
       return Routes.home;
     }

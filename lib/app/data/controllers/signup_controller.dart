@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/models/people_model.dart';
 import 'package:rodocalc/app/data/models/user_model.dart';
 import 'package:rodocalc/app/data/repositories/auth_repository.dart';
+import 'package:rodocalc/app/utils/service_storage.dart';
 
 class SignUpController extends GetxController {
   var selectedImagePath = ''.obs;
@@ -120,6 +121,7 @@ class SignUpController extends GetxController {
         email: txtEmailController.text,
         password: txtSenhaController.text,
         status: 1,
+        cupomRecebido: ServiceStorage.getCodeIndicator(),
       );
 
       mensagem = await repository.insertUser(people, user);

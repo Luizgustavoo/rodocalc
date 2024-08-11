@@ -34,6 +34,14 @@ class ServiceStorage {
     return 0;
   }
 
+  static String getCodeIndicator() {
+    if (_box.read('indicador') != null) {
+      return _box.read('indicador');
+    } else {
+      return "";
+    }
+  }
+
   static String getUserName() {
     if (existUser()) {
       Map<String, dynamic> authJson = _box.read('auth');
