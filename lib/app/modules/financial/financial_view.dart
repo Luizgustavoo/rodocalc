@@ -347,7 +347,7 @@ class FinancialView extends GetView<TransactionController> {
                         fontFamily: 'Inter-Bold', fontSize: 11, color: cor),
                   ),
                   Text(
-                    "$stringTitulo - ${transaction.photos!.length}",
+                    stringTitulo,
                     style: TextStyle(
                         fontFamily: 'Inter-Bold', fontSize: 12, color: cor),
                   ),

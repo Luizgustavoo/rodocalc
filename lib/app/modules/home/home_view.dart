@@ -8,6 +8,7 @@ import 'package:rodocalc/app/data/controllers/home_controller.dart';
 import 'package:rodocalc/app/data/controllers/indicator_controller.dart';
 import 'package:rodocalc/app/data/controllers/login_controller.dart';
 import 'package:rodocalc/app/data/controllers/perfil_controller.dart';
+import 'package:rodocalc/app/data/controllers/plan_controller.dart';
 import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
 import 'package:rodocalc/app/data/controllers/vehicle_controller.dart';
 import 'package:rodocalc/app/modules/home/widgets/custom_home_card.dart';
@@ -24,6 +25,7 @@ class HomeView extends GetView<HomeController> {
   final perfilController = Get.put(PerfilController());
   final documentController = Get.put(DocumentController());
   final freightController = Get.put(FreightController());
+  final planController = Get.put(PlanController());
 
   @override
   Widget build(BuildContext context) {
@@ -292,6 +294,8 @@ class HomeView extends GetView<HomeController> {
                                       imagePath: 'assets/images/plano.png',
                                       label: 'Planos',
                                       onTap: () {
+                                        planController.getAll();
+                                        planController.getMyPlan();
                                         Get.toNamed(Routes.plan);
                                       },
                                     ),
@@ -326,7 +330,7 @@ class HomeView extends GetView<HomeController> {
                     child: ListView(
                       padding: const EdgeInsets.all(16.0),
                       children: [
-                        const Row(
+                        Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
@@ -334,12 +338,24 @@ class HomeView extends GetView<HomeController> {
                               style: TextStyle(
                                   fontSize: 18.0, fontFamily: 'Inter-Bold'),
                             ),
-                            Icon(Icons.arrow_circle_right)
+                            IconButton(
+                                onPressed: () {
+                                  controller.getLast();
+                                },
+                                icon: Icon(Icons.arrow_circle_right))
                           ],
                         ),
                         Obx(() => Column(
-                              children: controller.recentTransactions
+                              children: controller.listLastTransactions
                                   .map((transaction) {
+                                String stringValor = "";
+                                if (transaction.tipoTransacao == 'saida') {
+                                  stringValor =
+                                      "-R\$ ${FormattedInputers.formatValuePTBR(transaction.valor)}";
+                                } else {
+                                  stringValor =
+                                      "+R\$ ${FormattedInputers.formatValuePTBR(transaction.valor)}";
+                                }
                                 return Card(
                                     surfaceTintColor: Colors.white,
                                     color: Colors.white,
@@ -356,8 +372,10 @@ class HomeView extends GetView<HomeController> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                Text(transaction['title']),
-                                                Text(transaction['description'])
+                                                Text(transaction.descricao!),
+                                                Text(transaction
+                                                    .expenseCategory!
+                                                    .descricao!)
                                               ],
                                             ),
                                             Column(
@@ -365,15 +383,18 @@ class HomeView extends GetView<HomeController> {
                                                   CrossAxisAlignment.end,
                                               children: [
                                                 Text(
-                                                  'R\$ ${transaction['amount'].toStringAsFixed(2)}',
+                                                  stringValor,
                                                   style: TextStyle(
-                                                      color: transaction[
-                                                                  'amount'] <
-                                                              0
+                                                      color: transaction
+                                                                  .tipoTransacao ==
+                                                              'saida'
                                                           ? Colors.red
                                                           : Colors.green),
                                                 ),
-                                                Text(transaction['date'],
+                                                Text(
+                                                    FormattedInputers
+                                                        .formatApiDate(
+                                                            transaction.data!),
                                                     style: const TextStyle(
                                                         color: Colors.grey)),
                                               ],

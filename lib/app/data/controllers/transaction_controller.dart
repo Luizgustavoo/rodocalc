@@ -38,7 +38,7 @@ class TransactionController extends GetxController {
   final txtTonController = TextEditingController();
 
   RxBool isLoading = true.obs;
-  RxBool isLoadingLast = true.obs;
+
   RxBool isLoadingChargeTypes = true.obs;
   RxBool isLoadingBalance = true.obs;
 
@@ -85,6 +85,7 @@ class TransactionController extends GetxController {
     'SE',
     'TO'
   ].obs;
+
   var selectedUf = 'AC'.obs;
 
   var selectedSpecificType = Rxn<int>();
@@ -113,17 +114,6 @@ class TransactionController extends GetxController {
       Exception(e);
     }
     isLoading.value = false;
-  }
-
-  Future<void> getLast() async {
-    isLoadingLast.value = true;
-    try {
-      listLastTransactions.value = await repository.getAll();
-      //filteredTransactions.value = listTransactions;
-    } catch (e) {
-      Exception(e);
-    }
-    isLoadingLast.value = false;
   }
 
   Future<void> getSaldo() async {

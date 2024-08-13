@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rodocalc/app/data/models/plan_model.dart';
+import 'package:rodocalc/app/data/models/user_plan_model.dart';
+import 'package:rodocalc/app/data/repositories/plan_repository.dart';
+import 'package:rodocalc/app/utils/service_storage.dart';
 
 class PlanController extends GetxController {
-  var currentPlan = 'Nenhum'.obs;
   var licenses = 1.obs;
-  var selectedPlan = Rxn<Map<String, dynamic>>();
+  var selectedPlan = Rxn<Plan>();
   var selectedLicenses = 1.obs;
   var calculatedPrice = ''.obs;
 
@@ -15,28 +18,68 @@ class PlanController extends GetxController {
   final cvvController = TextEditingController();
   final validateController = TextEditingController();
 
-  List<Map<String, dynamic>> plans = [
-    {
-      'name': 'PLANO MENSAL',
-      'description':
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque auctor, nibh vitae vehicula pretium, odio ligula varius urna, id tristique purus lacus ac ante. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      'price': 'R\$ 59,90',
-    },
-    {
-      'name': 'PLANO TRIMESTRAL',
-      'description':
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque auctor, nibh vitae vehicula pretium, odio ligula varius urna, id tristique purus lacus ac ante. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      'price': 'R\$ 59,90',
-    },
-    {
-      'name': 'PLANO SEMESTRAL',
-      'description':
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque auctor, nibh vitae vehicula pretium, odio ligula varius urna, id tristique purus lacus ac ante. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      'price': 'R\$ 59,90',
-    },
-  ];
+  RxList<Plan> listPlans = RxList<Plan>([]);
+  var myPlan = Rxn<UserPlan>();
 
-  void updateSelectedPlan(Map<String, dynamic> plan) {
+  final repository = Get.put(PlanRepository());
+
+  Map<String, dynamic> retorno = {
+    "success": false,
+    "data": null,
+    "message": ["Preencha todos os campos!"]
+  };
+
+  dynamic mensagem;
+  RxBool isLoading = true.obs;
+  RxBool isLoadingMyPlan = true.obs;
+
+  Future<Map<String, dynamic>> subscribe() async {
+    if (planKey.currentState!.validate()) {
+      mensagem = await repository.subscribe(UserPlan(
+        usuarioId: ServiceStorage.getUserId(),
+        planoId: selectedPlan.value!.id!,
+        quantidadeLicencas: selectedLicenses.value,
+      ));
+      if (mensagem != null) {
+        retorno = {
+          'success': mensagem['success'],
+          'message': mensagem['message']
+        };
+        getMyPlan();
+      } else {
+        retorno = {
+          'success': false,
+          'message': ['Falha ao realizar a operação!']
+        };
+      }
+    }
+    return retorno;
+  }
+
+  Future<void> getAll() async {
+    isLoading.value = true;
+    try {
+      listPlans.value = await repository.getAll();
+      print(listPlans);
+    } catch (e) {
+      listPlans.clear();
+      Exception(e);
+    }
+    isLoading.value = false;
+  }
+
+  Future<void> getMyPlan() async {
+    isLoadingMyPlan.value = true;
+    try {
+      myPlan.value = await repository.getMyplan();
+      print(myPlan.value);
+    } catch (e) {
+      Exception(e);
+    }
+    isLoadingMyPlan.value = false;
+  }
+
+  void updateSelectedPlan(Plan plan) {
     selectedPlan.value = plan;
     updatePrice();
   }
@@ -50,7 +93,8 @@ class PlanController extends GetxController {
 
   void updatePrice() {
     if (selectedPlan.value != null) {
-      double pricePerLicense = double.parse(selectedPlan.value!['price']
+      double pricePerLicense = double.parse(selectedPlan.value!.valor!
+          .toString()
           .replaceAll('R\$ ', '')
           .replaceAll(',', '.'));
       calculatedPrice.value =
@@ -68,5 +112,23 @@ class PlanController extends GetxController {
       buffer.write(value[i]);
     }
     return buffer.toString();
+  }
+
+  void clearAllFields() {
+    final textControllers = [
+      cpfController,
+      numberCardController,
+      nameCardController,
+      cvvController,
+      validateController,
+    ];
+
+    for (final controller in textControllers) {
+      controller.clear();
+    }
+    licenses = 1.obs;
+    selectedPlan = Rxn<Plan>();
+    selectedLicenses = 1.obs;
+    calculatedPrice = ''.obs;
   }
 }

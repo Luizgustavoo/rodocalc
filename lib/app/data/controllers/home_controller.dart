@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:rodocalc/app/data/models/transactions_model.dart';
+import 'package:rodocalc/app/data/repositories/transaction_repository.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 
 class HomeController extends GetxController {
@@ -11,6 +13,29 @@ class HomeController extends GetxController {
   void updateUserPhoto() {
     userPhoto.value = ServiceStorage.getUserPhoto();
     nomeUser.value = ServiceStorage.getUserName();
+  }
+
+  RxList<Transacoes> listLastTransactions = RxList<Transacoes>([]);
+
+  final repositoryTransaction = Get.put(TransactionRepository());
+
+  RxBool isLoadingLast = true.obs;
+
+  @override
+  void inInit() async {
+    super.onInit();
+    await getLast();
+  }
+
+  Future<void> getLast() async {
+    isLoadingLast.value = true;
+    try {
+      listLastTransactions.value = await repositoryTransaction.getLast();
+      //filteredTransactions.value = listTransactions;
+    } catch (e) {
+      Exception(e);
+    }
+    isLoadingLast.value = false;
   }
 
   var recentTransactions = <Map<String, dynamic>>[

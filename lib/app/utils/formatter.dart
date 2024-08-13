@@ -262,4 +262,83 @@ abstract class FormattedInputers {
       );
     }
   }
+
+  static bool isValidCardNumber(String input) {
+    int sum = 0;
+    bool shouldDouble = false;
+
+    // Itera do final para o início
+    for (int i = input.length - 1; i >= 0; i--) {
+      int digit = int.parse(input[i]);
+
+      if (shouldDouble) {
+        digit *= 2;
+        if (digit > 9) {
+          digit -= 9;
+        }
+      }
+
+      sum += digit;
+      shouldDouble = !shouldDouble;
+    }
+
+    return sum % 10 == 0;
+  }
+
+  static String formatCardExpiryDate(String value) {
+    var text = value.replaceAll(RegExp(r'[^0-9]'), '');
+    var buffer = StringBuffer();
+
+    for (var i = 0; i < text.length; i++) {
+      if (i == 2) {
+        buffer.write('/');
+      }
+      buffer.write(text[i]);
+    }
+
+    return buffer.toString();
+  }
+
+  static void onCardExpiryDateChanged(
+      String value, TextEditingController textEditingController) {
+    final formatted = formatCardExpiryDate(value);
+    textEditingController.value = textEditingController.value.copyWith(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: formatted.length),
+    );
+  }
+
+  static String? validateCardExpiryDate(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Por favor, insira a validade do cartão';
+    }
+
+    // Remove qualquer caracter não numérico
+    final text = value.replaceAll(RegExp(r'[^0-9]'), '');
+
+    if (text.length != 4) {
+      return 'Data inválida';
+    }
+
+    final month = int.tryParse(text.substring(0, 2));
+    final year = int.tryParse('20${text.substring(2, 4)}');
+
+    if (month == null || year == null) {
+      return 'Data inválida';
+    }
+
+    if (month < 1 || month > 12) {
+      return 'Mês inválido';
+    }
+
+    final now = DateTime.now();
+    final currentYear = now.year;
+    final currentMonth = now.month;
+
+    if (year < currentYear || (year == currentYear && month < currentMonth)) {
+      return 'Cartão expirado';
+    }
+
+    return null;
+  }
 }

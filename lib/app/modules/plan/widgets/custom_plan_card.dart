@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class CustomPlanCard extends StatelessWidget {
-  final String name;
-  final String description;
-  final String price;
+  final String? name;
+  final String? description;
+  final String? price;
 
   final VoidCallback onPressed;
 
@@ -27,7 +27,7 @@ class CustomPlanCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              name,
+              name!,
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontFamily: 'Inter-Black',
@@ -36,7 +36,7 @@ class CustomPlanCard extends StatelessWidget {
             ),
             const SizedBox(height: 8.0),
             Text(
-              description,
+              description!,
               textAlign: TextAlign.center,
               style: const TextStyle(fontFamily: 'Inter-Regular'),
             ),
@@ -47,7 +47,7 @@ class CustomPlanCard extends StatelessWidget {
                 Column(
                   children: [
                     Text(
-                      price,
+                      price!,
                       style: const TextStyle(
                         fontFamily: 'Inter-Black',
                         fontSize: 24.0,

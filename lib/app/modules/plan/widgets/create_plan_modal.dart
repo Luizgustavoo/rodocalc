@@ -17,11 +17,12 @@ class CreatePlanModal extends GetView<PlanController> {
         padding: const EdgeInsets.all(12.0),
         child: Form(
           key: controller.planKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Obx(() => Text(
-                    controller.selectedPlan.value?['name'] ?? '',
+                    controller.selectedPlan.value!.descricao ?? '',
                     style: const TextStyle(
                         fontFamily: 'Inter-Bold',
                         fontSize: 17,
@@ -48,7 +49,7 @@ class CreatePlanModal extends GetView<PlanController> {
                   onChanged: controller.updateLicenses,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(Icons.location_on),
-                    labelText: 'LICENÇAS',
+                    labelText: 'QUANTIDADE DE LICENÇAS',
                   ),
                 ),
               ),
@@ -68,18 +69,41 @@ class CreatePlanModal extends GetView<PlanController> {
                       TextSelection.fromPosition(TextPosition(
                           offset: controller.numberCardController.text.length));
                 },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, insira o número do cartão';
+                  }
+                  value =
+                      value.replaceAll(RegExp(r'\s+'), ''); // Remove espaços
+                  if (value.length < 16 || value.length > 19) {
+                    return 'Número do cartão inválido';
+                  }
+                  if (!FormattedInputers.isValidCardNumber(value)) {
+                    return 'Número do cartão inválido';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 10),
               Row(
                 children: [
                   Expanded(
                     child: TextFormField(
+                      maxLength: 5,
                       controller: controller.validateController,
                       decoration: const InputDecoration(
+                        counterText: '',
                         prefixIcon: Icon(Icons.date_range),
                         labelText: 'VALIDADE',
                       ),
                       keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        FormattedInputers.onCardExpiryDateChanged(
+                            value, controller.validateController);
+                      },
+                      validator: (value) {
+                        return FormattedInputers.validateCardExpiryDate(value);
+                      },
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -104,6 +128,12 @@ class CreatePlanModal extends GetView<PlanController> {
                   prefixIcon: Icon(Icons.person),
                   labelText: 'NOME NO CARTÃO',
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Digite o nome igual do cartão.';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 10),
               TextFormField(
@@ -137,7 +167,28 @@ class CreatePlanModal extends GetView<PlanController> {
                             fontFamily: 'Inter-Black', fontSize: 18),
                       )),
                   CustomElevatedButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        Map<String, dynamic> retorno =
+                            await controller.subscribe();
+
+                        if (retorno['success'] == true) {
+                          Get.back();
+                          controller.clearAllFields();
+
+                          Get.snackbar(
+                              'Sucesso!', retorno['message'].join('\n'),
+                              backgroundColor: Colors.green,
+                              colorText: Colors.white,
+                              duration: const Duration(seconds: 2),
+                              snackPosition: SnackPosition.BOTTOM);
+                        } else {
+                          Get.snackbar('Falha!', retorno['message'].join('\n'),
+                              backgroundColor: Colors.red,
+                              colorText: Colors.white,
+                              duration: const Duration(seconds: 2),
+                              snackPosition: SnackPosition.BOTTOM);
+                        }
+                      },
                       child: const Text(
                         'CONTRATAR',
                         style: TextStyle(
