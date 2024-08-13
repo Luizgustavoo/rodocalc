@@ -53,10 +53,9 @@ class CreateVehicleModal extends GetView<VehicleController> {
                   onTap: () => _showPicker(context),
                   child: Obx(() => ClipRRect(
                         borderRadius: BorderRadius.circular(10),
-                        // Ajuste o valor para bordas mais ou menos arredondadas
                         child: Container(
-                          width: 100, // Ajuste a largura conforme necessário
-                          height: 100, // Ajuste a altura conforme necessário
+                          width: 100,
+                          height: 100,
                           color: Colors.grey,
                           child: controller.setImage.value == true
                               ? Image.network(
@@ -126,7 +125,7 @@ class CreateVehicleModal extends GetView<VehicleController> {
                   controller: controller.txtBrandController,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
-                      Icons.local_offer_outlined,
+                      Icons.local_offer,
                     ),
                     labelText: 'MARCA',
                   ),
@@ -159,7 +158,7 @@ class CreateVehicleModal extends GetView<VehicleController> {
                   controller: controller.txtModelController,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
-                      Icons.directions_car_filled_outlined,
+                      Icons.directions_car_filled,
                     ),
                     labelText: 'MODELO',
                   ),

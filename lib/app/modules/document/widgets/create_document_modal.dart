@@ -155,6 +155,10 @@ class CreateDocumentModal extends GetView<DocumentController> {
                           fontFamily: 'Inter-Bold',
                           fontSize: 12,
                         ),
+                        prefixIcon: const Icon(
+                          Icons.description,
+                          size: 25,
+                        ),
                         border: OutlineInputBorder(
                           borderSide: BorderSide.none,
                           borderRadius: BorderRadius.circular(10),

@@ -112,7 +112,7 @@ class CreateReceiptModal extends GetView<TransactionController> {
                   controller: controller.txtDescriptionController,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
-                      Icons.message_outlined,
+                      Icons.description_rounded,
                       size: 25,
                     ),
                     labelText: 'DESCRIÇÃO',
@@ -154,7 +154,7 @@ class CreateReceiptModal extends GetView<TransactionController> {
                   controller: controller.txtOriginController,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
-                      Icons.pin_drop_outlined,
+                      Icons.pin_drop,
                     ),
                     labelText: 'ORIGEM',
                   ),
@@ -170,7 +170,7 @@ class CreateReceiptModal extends GetView<TransactionController> {
                   controller: controller.txtDestinyController,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
-                      Icons.pin_drop_outlined,
+                      Icons.pin_drop,
                     ),
                     labelText: 'DESTINO',
                   ),
@@ -186,7 +186,7 @@ class CreateReceiptModal extends GetView<TransactionController> {
                   controller: controller.txtValueController,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
-                      Icons.monetization_on_outlined,
+                      Icons.monetization_on,
                     ),
                     labelText: 'VALOR RECEBIDO',
                   ),
@@ -297,17 +297,19 @@ class CreateReceiptModal extends GetView<TransactionController> {
                   children: [
                     Expanded(
                       flex: 1,
-                      child: IconButton(
-                        onPressed: () {
-                          showDialogDeleteTransaction(
-                              context, idTransaction!, controller);
-                        },
-                        icon: const Icon(
-                          Icons.delete,
-                          size: 25,
-                          color: Colors.red,
-                        ),
-                      ),
+                      child: isUpdate
+                          ? IconButton(
+                              onPressed: () {
+                                showDialogDeleteTransaction(
+                                    context, idTransaction!, controller);
+                              },
+                              icon: const Icon(
+                                Icons.delete,
+                                size: 25,
+                                color: Colors.red,
+                              ),
+                            )
+                          : const SizedBox(),
                     ),
                     Expanded(
                       child: SizedBox(

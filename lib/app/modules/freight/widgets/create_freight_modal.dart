@@ -267,14 +267,6 @@ class CreateFreightModal extends GetView<FreightController> {
                       return null;
                     },
                     onChanged: (value) {
-                      // Atualiza o controlador com o valor formatado
-                      /*controller.averageController.value =
-                          controller.averageController.value.copyWith(
-                        text: FormattedInputers.formatToDecimal(value),
-                        selection: TextSelection.collapsed(
-                            offset: FormattedInputers.formatToDecimal(value)
-                                .length),
-                      );*/
                       FormattedInputers.onformatValueChangedDecimal(
                           value, controller.averageController);
                     }),

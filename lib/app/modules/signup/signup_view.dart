@@ -123,7 +123,7 @@ class SignUpView extends GetView<SignUpController> {
                             controller: controller.txtTelefoneController,
                             maxLength: 15,
                             decoration: const InputDecoration(
-                                prefixIcon: Icon(Icons.phone),
+                                prefixIcon: Icon(Icons.phone_android_rounded),
                                 labelText: 'TELEFONE',
                                 counterText: ''),
                             keyboardType: TextInputType.phone,
@@ -201,7 +201,7 @@ class SignUpView extends GetView<SignUpController> {
                             maxLength: 14,
                             keyboardType: TextInputType.number,
                             decoration: const InputDecoration(
-                                prefixIcon: Icon(Icons.credit_card),
+                                prefixIcon: Icon(Icons.contacts_rounded),
                                 labelText: 'CPF',
                                 counterText: ''),
                             onChanged: (value) {
@@ -223,7 +223,7 @@ class SignUpView extends GetView<SignUpController> {
                           TextFormField(
                             controller: controller.txtApelidoController,
                             decoration: const InputDecoration(
-                              prefixIcon: Icon(Icons.business),
+                              prefixIcon: Icon(Icons.message_rounded),
                               labelText: 'APELIDO OU TRANSPORTADORA',
                             ),
                           ),

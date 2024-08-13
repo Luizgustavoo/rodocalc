@@ -282,6 +282,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.map),
                   labelText: 'UF',
                 ),
                 items: controller.ufs.map((String value) {
@@ -307,7 +308,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
                 controller: controller.txtCompanyController,
                 decoration: const InputDecoration(
                   prefixIcon: Icon(
-                    Icons.business_rounded,
+                    Icons.location_city_outlined,
                   ),
                   labelText: 'EMPRESA',
                 ),
@@ -320,7 +321,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
                 decoration: const InputDecoration(
                   counterText: '',
                   prefixIcon: Icon(
-                    Icons.phone_rounded,
+                    Icons.phone_android_rounded,
                   ),
                   labelText: 'TELEFONE',
                 ),
@@ -335,17 +336,19 @@ class CreateExpenseModal extends GetView<TransactionController> {
                 children: [
                   Expanded(
                     flex: 1,
-                    child: IconButton(
-                      onPressed: () {
-                        showDialogDeleteTransaction(
-                            context, idTransaction!, controller);
-                      },
-                      icon: const Icon(
-                        Icons.delete,
-                        size: 25,
-                        color: Colors.red,
-                      ),
-                    ),
+                    child: isUpdate
+                        ? IconButton(
+                            onPressed: () {
+                              showDialogDeleteTransaction(
+                                  context, idTransaction!, controller);
+                            },
+                            icon: const Icon(
+                              Icons.delete,
+                              size: 25,
+                              color: Colors.red,
+                            ),
+                          )
+                        : const SizedBox(),
                   ),
                   Expanded(
                     child: SizedBox(

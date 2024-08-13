@@ -71,7 +71,7 @@ class CreateIndicatorModal extends GetView<IndicationController> {
                   decoration: const InputDecoration(
                     counterText: '',
                     prefixIcon: Icon(
-                      Icons.phone,
+                      Icons.phone_android_rounded,
                     ),
                     labelText: 'TELEFONE',
                   ),
