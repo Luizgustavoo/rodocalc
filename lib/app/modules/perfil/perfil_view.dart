@@ -105,11 +105,19 @@ class PerfilView extends GetView<PerfilController> {
                                     color: Colors.grey,
                                     child:
                                         controller.selectedImagePath.value != ''
-                                            ? Image.file(
-                                                File(controller
-                                                    .selectedImagePath.value),
-                                                fit: BoxFit.cover,
-                                              )
+                                            ? controller.selectedImagePath.value
+                                                    .startsWith('http')
+                                                ? Image.network(
+                                                    controller.selectedImagePath
+                                                        .value,
+                                                    fit: BoxFit.cover,
+                                                  )
+                                                : Image.file(
+                                                    File(controller
+                                                        .selectedImagePath
+                                                        .value),
+                                                    fit: BoxFit.cover,
+                                                  )
                                             : const Icon(
                                                 Icons.camera_alt,
                                                 size: 50,

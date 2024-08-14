@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/models/auth_model.dart';
 import 'package:rodocalc/app/data/models/people_model.dart';
 import 'package:rodocalc/app/data/models/user_model.dart';
@@ -67,16 +68,28 @@ class PerfilController extends GetxController {
 
   void fillInFields() {
     Auth auth = ServiceStorage.getDataUser();
+
     if (auth.user != null) {
-      txtNomeController.text = auth.user!.people!.nome!;
+      txtNomeController.text = auth.user!.people!.nome ?? '';
       FormattedInputers.onContactChanged(
-          auth.user!.people!.telefone!, txtTelefoneController);
-      txtDDDController.text = auth.user!.people!.ddd!;
-      txtCidadeController.text = auth.user!.people!.cidade!;
-      txtCpfController.text = auth.user!.people!.cpf!;
-      selectedState.value = auth.user!.people!.uf!;
-      txtApelidoController.text = auth.user!.people!.apelido!;
-      txtEmailController.text = auth.user!.email!;
+          auth.user!.people!.telefone ?? '', txtTelefoneController);
+      txtDDDController.text = auth.user!.people!.ddd ?? '';
+      txtCidadeController.text = auth.user!.people!.cidade ?? '';
+      txtUfController.text = auth.user!.people!.uf ?? '';
+      txtCpfController.text = auth.user!.people!.cpf ?? '';
+      txtApelidoController.text = auth.user!.people!.apelido ?? '';
+      txtEmailController.text = auth.user!.email ?? '';
+
+      if (auth.user!.people!.foto != null &&
+          auth.user!.people!.foto!.isNotEmpty) {
+        String imageUrl = auth.user!.people!.foto!;
+
+        if (!imageUrl.startsWith('http')) {
+          imageUrl = '$urlImagem/storage/fotos/perfil/$imageUrl';
+        }
+
+        selectedImagePath.value = imageUrl;
+      }
     }
   }
 
