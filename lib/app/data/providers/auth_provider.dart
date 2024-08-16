@@ -78,6 +78,10 @@ class AuthApiClient {
         "cupom_recebido": user.cupomRecebido.toString(),
         "email": user.email.toString(),
         "password": user.password.toString(),
+        "endereco": people.endereco.toString(),
+        "bairro": people.bairro.toString(),
+        "numero_casa": people.numeroCasa.toString(),
+        "cep": people.cep.toString(),
         "usertype_id": "2"
       });
 
@@ -142,6 +146,23 @@ class AuthApiClient {
       }
       if (user.password != null && user.password!.isNotEmpty) {
         request.fields['password'] = user.password!;
+      }
+
+      if (people.endereco != null && people.endereco!.toString().isNotEmpty) {
+        request.fields['endereco'] = people.endereco!.toString();
+      }
+
+      if (people.bairro != null && people.bairro!.toString().isNotEmpty) {
+        request.fields['bairro'] = people.bairro!.toString();
+      }
+
+      if (people.numeroCasa != null &&
+          people.numeroCasa!.toString().isNotEmpty) {
+        request.fields['numero_casa'] = people.numeroCasa!.toString();
+      }
+
+      if (people.cep != null && people.cep!.toString().isNotEmpty) {
+        request.fields['cep'] = people.cep!.toString();
       }
 
       request.fields['usertype_id'] = "2";

@@ -80,6 +80,7 @@ class PlanApiClient {
         body: requestBody,
       );
 
+      print(json.decode(response.body));
       if (response.statusCode == 201 ||
           response.statusCode == 422 ||
           response.statusCode == 404) {

@@ -8,6 +8,7 @@ class Plan {
   String? createdAt;
   String? updatedAt;
   String? observacoes;
+  String? gatewayPlanId;
 
   Plan(
       {this.id,
@@ -18,6 +19,7 @@ class Plan {
       this.status,
       this.createdAt,
       this.updatedAt,
+      this.gatewayPlanId,
       this.observacoes});
 
   Plan.fromJson(Map<String, dynamic> json) {
@@ -30,6 +32,7 @@ class Plan {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     observacoes = json['observacoes'];
+    gatewayPlanId = json['gateway_plan_id'];
   }
 
   Map<String, dynamic> toJson() {
@@ -44,6 +47,7 @@ class Plan {
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
     data['observacoes'] = this.observacoes;
+    data['gateway_plan_id'] = this.gatewayPlanId;
     return data;
   }
 }

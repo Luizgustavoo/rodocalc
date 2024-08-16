@@ -6,6 +6,7 @@ class UserPlan {
   int? planoId;
   String? dataAssinaturaPlano;
   String? dataVencimentoPlano;
+  String? gatewayAssignatureId;
   int? quantidadeLicencas;
   Plan? plano;
 
@@ -16,6 +17,7 @@ class UserPlan {
       this.dataAssinaturaPlano,
       this.dataVencimentoPlano,
       this.quantidadeLicencas,
+      this.gatewayAssignatureId,
       this.plano});
 
   UserPlan.fromJson(Map<String, dynamic> json) {
@@ -25,6 +27,7 @@ class UserPlan {
     dataAssinaturaPlano = json['data_assinatura_plano'];
     dataVencimentoPlano = json['data_vencimento_plano'];
     quantidadeLicencas = json['quantidade_licencas'];
+    gatewayAssignatureId = json['gateway_assignature_id'];
     plano = json['plano'] != null ? new Plan.fromJson(json['plano']) : null;
   }
 
@@ -36,6 +39,7 @@ class UserPlan {
     data['data_assinatura_plano'] = this.dataAssinaturaPlano;
     data['data_vencimento_plano'] = this.dataVencimentoPlano;
     data['quantidade_licencas'] = this.quantidadeLicencas;
+    data['gateway_assignature_id'] = this.gatewayAssignatureId;
     if (this.plano != null) {
       data['plano'] = this.plano!.toJson();
     }

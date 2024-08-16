@@ -13,6 +13,11 @@ class People {
   String? updatedAt;
   String? cupomParaIndicar;
 
+  String? endereco;
+  String? bairro;
+  String? numeroCasa;
+  String? cep;
+
   People({
     this.id,
     this.nome,
@@ -27,6 +32,10 @@ class People {
     this.createdAt,
     this.updatedAt,
     this.cupomParaIndicar,
+    this.endereco,
+    this.bairro,
+    this.numeroCasa,
+    this.cep,
   });
 
   People.fromJson(Map<String, dynamic> json) {
@@ -43,6 +52,10 @@ class People {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     cupomParaIndicar = json['cupom_para_indicar'];
+    endereco = json['endereco'];
+    bairro = json['bairro'];
+    numeroCasa = json['numero_casa'];
+    cep = json['cep'];
   }
 
   Map<String, dynamic> toJson() {
@@ -60,6 +73,10 @@ class People {
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
     data['cupom_para_indicar'] = cupomParaIndicar;
+    data['endereco'] = endereco;
+    data['bairro'] = bairro;
+    data['numero_casa'] = numeroCasa;
+    data['cep'] = cep;
 
     return data;
   }

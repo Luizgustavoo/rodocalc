@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/models/plan_model.dart';
 import 'package:rodocalc/app/data/models/user_plan_model.dart';
-import 'package:rodocalc/app/data/repositories/cep_repository.dart';
 import 'package:rodocalc/app/data/repositories/plan_repository.dart';
-import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 
 class PlanController extends GetxController {
@@ -19,16 +17,11 @@ class PlanController extends GetxController {
   final TextEditingController cvvController = TextEditingController();
   final TextEditingController nameCardController = TextEditingController();
   final TextEditingController cpfController = TextEditingController();
-  final TextEditingController cepController = TextEditingController();
-  final TextEditingController addressController = TextEditingController();
-  final TextEditingController neighborhoodController = TextEditingController();
-  final TextEditingController houseNumberController = TextEditingController();
 
   RxList<Plan> listPlans = RxList<Plan>([]);
   var myPlan = Rxn<UserPlan>();
 
   final repository = Get.put(PlanRepository());
-  final cepRepository = Get.put(CepRepository());
 
   Map<String, dynamic> retorno = {
     "success": false,
@@ -39,17 +32,6 @@ class PlanController extends GetxController {
   dynamic mensagem;
   RxBool isLoading = true.obs;
   RxBool isLoadingMyPlan = true.obs;
-
-  void fetchAddressFromCep(String cep) async {
-    if (cep.length == 9) {
-      final address = await cepRepository.getAddressByCep(cep);
-      if (address != null) {
-        addressController.text = address.logradouro;
-        neighborhoodController.text = address.bairro;
-        // handle additional fields if needed
-      }
-    }
-  }
 
   Future<Map<String, dynamic>> subscribe() async {
     if (planKey.currentState!.validate()) {
@@ -148,17 +130,5 @@ class PlanController extends GetxController {
     selectedPlan = Rxn<Plan>();
     selectedLicenses = 1.obs;
     calculatedPrice = ''.obs;
-  }
-
-  void onCEPChanged(String cep) {
-    final formattedCEP = FormattedInputers.formatCEP(cep);
-    cepController.value = TextEditingValue(
-      text: formattedCEP.value,
-      selection: TextSelection.collapsed(offset: formattedCEP.value.length),
-    );
-  }
-
-  bool validateCEP() {
-    return FormattedInputers.validateCEP(cepController.text);
   }
 }

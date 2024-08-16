@@ -5,6 +5,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/models/people_model.dart';
 import 'package:rodocalc/app/data/models/user_model.dart';
 import 'package:rodocalc/app/data/repositories/auth_repository.dart';
+import 'package:rodocalc/app/data/repositories/cep_repository.dart';
+import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 
 class SignUpController extends GetxController {
@@ -22,6 +24,11 @@ class SignUpController extends GetxController {
   final TextEditingController txtSenhaController = TextEditingController();
   final TextEditingController txtConfirmaSenhaController =
       TextEditingController();
+
+  final TextEditingController cepController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
+  final TextEditingController neighborhoodController = TextEditingController();
+  final TextEditingController houseNumberController = TextEditingController();
   final formSignupKey = GlobalKey<FormState>();
 
   RxBool loading = false.obs;
@@ -63,6 +70,31 @@ class SignUpController extends GetxController {
         'SE',
         'TO'
       ];
+
+  final cepRepository = Get.put(CepRepository());
+
+  void fetchAddressFromCep(String cep) async {
+    if (cep.length == 9) {
+      final address = await cepRepository.getAddressByCep(cep);
+      if (address != null) {
+        addressController.text = address.logradouro;
+        neighborhoodController.text = address.bairro;
+        // handle additional fields if needed
+      }
+    }
+  }
+
+  void onCEPChanged(String cep) {
+    final formattedCEP = FormattedInputers.formatCEP(cep);
+    cepController.value = TextEditingValue(
+      text: formattedCEP.value,
+      selection: TextSelection.collapsed(offset: formattedCEP.value.length),
+    );
+  }
+
+  bool validateCEP() {
+    return FormattedInputers.validateCEP(cepController.text);
+  }
 
   void pickImage(ImageSource source) async {
     final pickedFile = await ImagePicker().pickImage(source: source);
