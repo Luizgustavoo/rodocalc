@@ -139,63 +139,6 @@ class SignUpView extends GetView<SignUpController> {
                             },
                           ),
                           const SizedBox(height: 10),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              TextFormField(
-                                controller: controller.txtCidadeController,
-                                decoration: const InputDecoration(
-                                  prefixIcon: Icon(Icons.location_city),
-                                  labelText: 'CIDADE',
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return "Digite a sua cidade natal";
-                                  }
-                                  return null;
-                                },
-                              ),
-                              const SizedBox(height: 10),
-                              Obx(() {
-                                return DropdownButtonFormField<String>(
-                                  value: controller.selectedState.value == ''
-                                      ? null
-                                      : controller.selectedState.value,
-                                  decoration: const InputDecoration(
-                                    prefixIcon: Icon(Icons.map),
-                                    labelText: 'UF',
-                                  ),
-                                  items: [
-                                    const DropdownMenuItem<String>(
-                                      value: null,
-                                      child: Text(
-                                        'SELECIONE',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.grey),
-                                      ),
-                                    ),
-                                    ...controller.states.map((String state) {
-                                      return DropdownMenuItem<String>(
-                                        value: state,
-                                        child: Text(state),
-                                      );
-                                    }),
-                                  ],
-                                  onChanged: (newValue) {
-                                    controller.selectedState.value = newValue!;
-                                  },
-                                  validator: (value) {
-                                    if (value == null) {
-                                      return "Selecione uma UF";
-                                    }
-                                    return null;
-                                  },
-                                );
-                              }),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
                           TextFormField(
                             controller: controller.txtCpfController,
                             maxLength: 14,
@@ -291,6 +234,67 @@ class SignUpView extends GetView<SignUpController> {
                               }
                               return null;
                             },
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 3,
+                                child: TextFormField(
+                                  controller: controller.txtCidadeController,
+                                  decoration: const InputDecoration(
+                                    prefixIcon: Icon(Icons.location_city),
+                                    labelText: 'CIDADE',
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return "Digite a sua cidade";
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                              const SizedBox(width: 5),
+                              Flexible(
+                                flex: 2,
+                                fit: FlexFit.tight,
+                                child: Obx(() {
+                                  return DropdownButtonFormField<String>(
+                                    value:
+                                        controller.selectedState.value.isEmpty
+                                            ? null
+                                            : controller.selectedState.value,
+                                    decoration: const InputDecoration(
+                                      prefixIcon: Icon(Icons.map),
+                                      labelText: 'UF',
+                                    ),
+                                    items: [
+                                      const DropdownMenuItem<String>(
+                                        value: null,
+                                        child: Text(
+                                          'ESTADO',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ),
+                                      ...controller.states.map((String state) {
+                                        return DropdownMenuItem<String>(
+                                          value: state,
+                                          child: Text(state),
+                                        );
+                                      }),
+                                    ],
+                                    onChanged: (newValue) {
+                                      controller.selectedState.value =
+                                          newValue!;
+                                    },
+                                  );
+                                }),
+                              ),
+                            ],
                           ),
                           const SizedBox(height: 10),
                           TextFormField(

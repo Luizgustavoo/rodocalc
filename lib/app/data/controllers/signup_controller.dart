@@ -79,7 +79,8 @@ class SignUpController extends GetxController {
       if (address != null) {
         addressController.text = address.logradouro;
         neighborhoodController.text = address.bairro;
-        // handle additional fields if needed
+        txtCidadeController.text = address.cidade;
+        selectedState.value = address.uf;
       }
     }
   }
@@ -147,6 +148,10 @@ class SignUpController extends GetxController {
         uf: selectedState.value,
         status: 1,
         cupomParaIndicar: "",
+        bairro: neighborhoodController.text,
+        cep: cepController.text,
+        endereco: addressController.text,
+        numeroCasa: houseNumberController.text,
       );
 
       User user = User(
