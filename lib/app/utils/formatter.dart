@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 abstract class FormattedInputers {
@@ -13,6 +14,10 @@ abstract class FormattedInputers {
           RegExp(r'(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})'),
           (Match m) => "${m[1]}.${m[2]}.${m[3]}/${m[4]}-${m[5]}");
     }
+  }
+
+  static bool validateCEP(String cep) {
+    return cep.replaceAll(RegExp(r'\D'), '').length == 8;
   }
 
   static void onCpfChanged(
@@ -155,6 +160,19 @@ abstract class FormattedInputers {
     }
 
     return buffer.toString();
+  }
+
+  static RxString formatCEP(String cep) {
+    final RegExp cepRegex = RegExp(r'^(\d{5})(\d{3})$');
+
+    final matches = cepRegex.allMatches(cep);
+
+    if (matches.isNotEmpty) {
+      final match = matches.first;
+      return RxString('${match[1]}-${match[2]}');
+    }
+
+    return RxString(cep);
   }
 
   static String formatTESTE(String value) {

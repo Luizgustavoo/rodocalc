@@ -25,7 +25,7 @@ class CreatePlanModal extends GetView<PlanController> {
                     controller.selectedPlan.value!.descricao ?? '',
                     style: const TextStyle(
                         fontFamily: 'Inter-Bold',
-                        fontSize: 17,
+                        fontSize: 20,
                         color: Color(0xFFFF6B00)),
                   )),
               const Divider(
@@ -116,6 +116,12 @@ class CreatePlanModal extends GetView<PlanController> {
                         prefixIcon: Icon(Icons.lock),
                         labelText: 'CVV',
                       ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Digite o cvv do cartão.';
+                        }
+                        return null;
+                      },
                       keyboardType: TextInputType.number,
                     ),
                   ),
@@ -153,6 +159,84 @@ class CreatePlanModal extends GetView<PlanController> {
                   }
                   if (!Services.validCPF(value)) {
                     return "Digite um cpf ou cnpj válido";
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 10),
+              Focus(
+                onFocusChange: (hasFocus) async {
+                  if (!hasFocus) {
+                    controller
+                        .fetchAddressFromCep(controller.cepController.text);
+                  }
+                },
+                child: TextFormField(
+                  keyboardType: TextInputType.number,
+                  controller: controller.cepController,
+                  onChanged: (value) => controller.onCEPChanged(value),
+                  maxLength: 9,
+                  decoration: InputDecoration(
+                    counterText: '',
+                    suffixIcon: IconButton(
+                        splashRadius: 2,
+                        iconSize: 20,
+                        onPressed: () {
+                          controller.fetchAddressFromCep(
+                              controller.cepController.text);
+                        },
+                        icon: const Icon(
+                          Icons.search_rounded,
+                        )),
+                    labelText: 'CEP',
+                    prefixIcon: const Icon(Icons.location_pin),
+                  ),
+                  validator: (value) {
+                    if (!controller.validateCEP()) {
+                      return 'CEP inválido';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextFormField(
+                controller: controller.addressController,
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.home),
+                  labelText: 'ENDEREÇO',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Digite o endereço';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 10),
+              TextFormField(
+                controller: controller.neighborhoodController,
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.location_city),
+                  labelText: 'BAIRRO',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Digite o bairro';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 10),
+              TextFormField(
+                controller: controller.houseNumberController,
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.numbers),
+                  labelText: 'NÚMERO',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Digite o número da casa';
                   }
                   return null;
                 },
