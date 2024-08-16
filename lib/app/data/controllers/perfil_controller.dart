@@ -85,7 +85,7 @@ class PerfilController extends GetxController {
         String imageUrl = auth.user!.people!.foto!;
 
         if (!imageUrl.startsWith('http')) {
-          imageUrl = '$urlImagem/storage/fotos/perfil/$imageUrl';
+          imageUrl = '$urlImagem/storage/fotos/users/$imageUrl';
         }
 
         selectedImagePath.value = imageUrl;
