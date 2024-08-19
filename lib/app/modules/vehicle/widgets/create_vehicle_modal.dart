@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/controllers/vehicle_controller.dart';
+import 'package:rodocalc/app/data/models/user_plan_dropdown.dart';
 import 'package:rodocalc/app/data/models/vehicle_model.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
@@ -185,6 +186,57 @@ class CreateVehicleModal extends GetView<VehicleController> {
                     }
                     return null;
                   },
+                ),
+                const SizedBox(height: 15),
+                Obx(
+                  () => DropdownButtonFormField<int?>(
+                    decoration: const InputDecoration(
+                      labelText: 'Plano',
+                    ),
+                    items: [
+                      const DropdownMenuItem<int?>(
+                        value: 0,
+                        child: Text('Selecione um plano'),
+                      ),
+                      ...controller.listMyPlans.map((UserPlanDropdown plan) {
+                        // Verifique se plan.id é nulo e use um valor padrão se necessário
+                        if (plan.id == null) {
+                          return DropdownMenuItem<int?>(
+                            value: null,
+                            // Ou qualquer outro valor que não conflite
+                            child: Text(
+                                plan.descricao ?? 'Descrição não disponível'),
+                          );
+                        }
+                        String subtitulo = "";
+                        if (plan.totalVeiculosAtivos! > 0) {
+                          subtitulo =
+                              "- ${plan.totalVeiculosAtivos} veículo(s) cadastrado(s)";
+                        }
+                        return DropdownMenuItem<int?>(
+                          value: plan.id,
+                          child: Container(
+                            constraints:
+                                BoxConstraints(maxWidth: Get.width * .7),
+                            child: Text(
+                              "${plan.descricao} ${subtitulo}",
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ],
+                    onChanged: (newValue) {
+                      controller.selectedPlanDropDown.value = newValue!;
+                    },
+                    value: controller.selectedPlanDropDown.value,
+                    validator: (value) {
+                      if (value == null) {
+                        return 'Por favor, selecione um plano';
+                      }
+                      return null;
+                    },
+                  ),
                 ),
                 const SizedBox(height: 10),
                 Row(

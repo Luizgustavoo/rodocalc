@@ -4,6 +4,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/models/search_plate.dart';
+import 'package:rodocalc/app/data/models/user_plan_dropdown.dart';
 import 'package:rodocalc/app/data/models/vehicle_model.dart';
 import 'package:rodocalc/app/data/repositories/vehicle_repository.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
@@ -12,6 +13,7 @@ class VehicleController extends GetxController {
   final box = GetStorage('rodocalc');
 
   var selectedImagePath = ''.obs;
+  var selectedPlanDropDown = 0.obs;
   RxBool setImage = false.obs;
 
   RxBool trailerCheckboxValue = false.obs;
@@ -31,8 +33,10 @@ class VehicleController extends GetxController {
 
   RxBool isLoading = true.obs;
   RxBool isLoadingInitial = true.obs;
+  RxBool isLoadingDropDown = true.obs;
 
   RxList<Vehicle> listVehicles = RxList<Vehicle>([]);
+  RxList<UserPlanDropdown> listMyPlans = RxList<UserPlanDropdown>([]);
 
   final repository = Get.put(VehicleRepository());
 
@@ -101,6 +105,17 @@ class VehicleController extends GetxController {
     isLoading.value = false;
   }
 
+  Future<void> getAllUserPlans() async {
+    isLoadingDropDown.value = true;
+    try {
+      listMyPlans.value = await repository.getAllUserPlans();
+      print(listMyPlans);
+    } catch (e) {
+      Exception(e);
+    }
+    isLoadingDropDown.value = false;
+  }
+
   Future<void> searchPlates() async {
     isLoading.value = true;
     try {
@@ -127,6 +142,7 @@ class VehicleController extends GetxController {
         reboque: trailerCheckboxValue.value ? 'sim' : 'nao',
         foto: selectedImagePath.value,
         status: 1,
+        planoUsuarioId: selectedPlanDropDown.value,
       ));
       if (mensagem != null) {
         retorno = {
@@ -151,6 +167,7 @@ class VehicleController extends GetxController {
     txtModelController.text = selectedVehicle.modelo.toString();
     txtFipeController.text = selectedVehicle.fipe.toString();
     txtTrailerController.text = selectedVehicle.reboque.toString();
+    selectedPlanDropDown.value = selectedVehicle.planoUsuarioId!;
     if (selectedVehicle.foto!.isNotEmpty) {
       setImage(true);
       selectedImagePath.value = selectedVehicle.foto!;
@@ -188,6 +205,7 @@ class VehicleController extends GetxController {
         reboque: trailerCheckboxValue.value ? 'sim' : 'nao',
         foto: selectedImagePath.value,
         status: 1,
+        planoUsuarioId: selectedPlanDropDown.value,
       ));
       if (mensagem != null) {
         retorno = {

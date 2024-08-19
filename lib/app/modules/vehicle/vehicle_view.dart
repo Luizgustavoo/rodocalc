@@ -174,6 +174,7 @@ class VehiclesView extends GetView<VehicleController> {
           onPressed: () {
             controller.isLoading.value = false;
             controller.clearAllFields();
+            controller.getAllUserPlans();
             showModalBottomSheet(
               isScrollControlled: true,
               context: context,

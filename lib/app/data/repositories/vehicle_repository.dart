@@ -2,8 +2,25 @@ import 'package:rodocalc/app/data/models/search_plate.dart';
 import 'package:rodocalc/app/data/models/vehicle_model.dart';
 import 'package:rodocalc/app/data/providers/vehicle_provider.dart';
 
+import '../models/user_plan_dropdown.dart';
+
 class VehicleRepository {
   final VehicleApiClient apiClient = VehicleApiClient();
+
+  getAllUserPlans() async {
+    List<UserPlanDropdown> list = <UserPlanDropdown>[];
+
+    var response = await apiClient.getAllUserPlans();
+
+    if (response != null) {
+      response['data'].forEach((e) {
+        list.add(UserPlanDropdown.fromJson(e));
+      });
+    } else {
+      return null;
+    }
+    return list;
+  }
 
   getAll() async {
     List<Vehicle> list = <Vehicle>[];

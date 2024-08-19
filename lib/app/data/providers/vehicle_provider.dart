@@ -34,6 +34,32 @@ class VehicleApiClient {
     return null;
   }
 
+  getAllUserPlans() async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+
+      Uri vehicleUrl;
+      String url =
+          '$baseUrl/v1/planousuario/my/${ServiceStorage.getUserId().toString()}';
+      vehicleUrl = Uri.parse(url);
+      var response = await httpClient.get(
+        vehicleUrl,
+        headers: {
+          "Accept": "application/json",
+          "Authorization": token,
+        },
+      );
+      if (response.statusCode == 201) {
+        return json.decode(response.body);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      Exception(e);
+    }
+    return null;
+  }
+
   insert(Vehicle vehicle) async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
@@ -54,7 +80,8 @@ class VehicleApiClient {
         "placa": vehicle.placa.toString(),
         "fipe": vehicle.fipe.toString(),
         "reboque": vehicle.reboque.toString(),
-        "status": "1"
+        "status": "1",
+        "planousuario_id": vehicle.planoUsuarioId.toString(),
       });
 
       request.headers.addAll({
@@ -103,7 +130,8 @@ class VehicleApiClient {
         "reboque": vehicle.reboque.toString(),
         "foto": vehicle.foto.toString(),
         "user_id": ServiceStorage.getUserId().toString(),
-        "status": "1"
+        "status": "1",
+        "planousuario_id": vehicle.planoUsuarioId.toString(),
       });
 
       request.headers.addAll({

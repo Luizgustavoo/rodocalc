@@ -10,7 +10,7 @@ class Vehicle {
   String? foto;
   String? createdAt;
   String? updatedAt;
-  String? gatewayAssignatureId;
+  int? planoUsuarioId;
   int? status;
   dynamic saldo;
 
@@ -28,7 +28,7 @@ class Vehicle {
     this.updatedAt,
     this.status,
     this.saldo,
-    this.gatewayAssignatureId,
+    this.planoUsuarioId,
   });
 
   Vehicle.fromJson(Map<String, dynamic> json) {
@@ -44,7 +44,7 @@ class Vehicle {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     status = json['status'];
-    gatewayAssignatureId = json['gateway_assignature_id'];
+    planoUsuarioId = json['planousuario_id'];
     saldo = (json['saldo'] is int
         ? (json['saldo'] as int).toDouble()
         : json['saldo'] as double?);
@@ -65,7 +65,7 @@ class Vehicle {
     data['updated_at'] = updatedAt;
     data['status'] = status;
     data['saldo'] = saldo;
-    data['gateway_assignature_id'] = gatewayAssignatureId;
+    data['planousuario_id'] = planoUsuarioId;
     return data;
   }
 
