@@ -30,6 +30,7 @@ class VehicleController extends GetxController {
   final txtModelController = TextEditingController();
   final txtFipeController = TextEditingController();
   final txtTrailerController = TextEditingController();
+  final searchController = TextEditingController();
 
   RxBool isLoading = true.obs;
   RxBool isLoadingInitial = true.obs;

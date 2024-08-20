@@ -11,6 +11,9 @@ import 'package:rodocalc/app/utils/dynamic_link_handler.dart';
 void main() async {
   await GetStorage.init('rodocalc');
   WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
   DynamicLinkHandler.instance.initialize();
 
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(

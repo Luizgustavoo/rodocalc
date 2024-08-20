@@ -10,4 +10,6 @@ abstract class Routes {
   static const indicator = '/indicator';
   static const plan = '/plan';
   static const perfil = '/perfil';
+  static const classified = '/classified';
+  static const course = '/course';
 }

@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:rodocalc/app/data/bindings/classified_binding.dart';
+import 'package:rodocalc/app/data/bindings/course_binding.dart';
 import 'package:rodocalc/app/data/bindings/document_binding.dart';
 import 'package:rodocalc/app/data/bindings/financial_binding.dart';
 import 'package:rodocalc/app/data/bindings/freight_binding.dart';
@@ -10,6 +12,8 @@ import 'package:rodocalc/app/data/bindings/perfil_binding.dart';
 import 'package:rodocalc/app/data/bindings/plan_binding.dart';
 import 'package:rodocalc/app/data/bindings/signup_binding.dart';
 import 'package:rodocalc/app/data/bindings/vehicle_binding.dart';
+import 'package:rodocalc/app/modules/classified/classified_view.dart';
+import 'package:rodocalc/app/modules/course/course_view.dart';
 import 'package:rodocalc/app/modules/document/document_view.dart';
 import 'package:rodocalc/app/modules/financial/financial_view.dart';
 import 'package:rodocalc/app/modules/freight/freight_view.dart';
@@ -79,6 +83,16 @@ class AppPages {
       name: Routes.perfil,
       page: () => const PerfilView(),
       binding: PerfilBinding(),
+    ),
+    GetPage(
+      name: Routes.classified,
+      page: () => const ClassifiedView(),
+      binding: ClassifiedBinding(),
+    ),
+    GetPage(
+      name: Routes.course,
+      page: () => const CourseView(),
+      binding: CourseBinding(),
     ),
   ];
 }

@@ -299,6 +299,22 @@ class HomeView extends GetView<HomeController> {
                                         Get.toNamed(Routes.plan);
                                       },
                                     ),
+                                    const SizedBox(width: 5),
+                                    CustomHomeCard(
+                                      imagePath: 'assets/images/plano.png',
+                                      label: 'Classificados',
+                                      onTap: () {
+                                        Get.toNamed(Routes.classified);
+                                      },
+                                    ),
+                                    const SizedBox(width: 5),
+                                    CustomHomeCard(
+                                      imagePath: 'assets/images/plano.png',
+                                      label: 'Cursos',
+                                      onTap: () {
+                                        Get.toNamed(Routes.course);
+                                      },
+                                    ),
                                   ],
                                 ),
                               ),
@@ -333,7 +349,7 @@ class HomeView extends GetView<HomeController> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
+                            const Text(
                               'Últimas movimentações',
                               style: TextStyle(
                                   fontSize: 18.0, fontFamily: 'Inter-Bold'),
@@ -342,7 +358,7 @@ class HomeView extends GetView<HomeController> {
                                 onPressed: () {
                                   controller.getLast();
                                 },
-                                icon: Icon(Icons.arrow_circle_right))
+                                icon: const Icon(Icons.arrow_circle_right))
                           ],
                         ),
                         Obx(() => Column(

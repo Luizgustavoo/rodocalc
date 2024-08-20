@@ -51,6 +51,7 @@ class VehiclesView extends GetView<VehicleController> {
                         children: [
                           const SizedBox(height: 5),
                           TextFormField(
+                            controller: controller.searchController,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
