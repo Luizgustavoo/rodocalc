@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/base_url.dart';
+import 'package:rodocalc/app/data/controllers/classified_controller.dart';
+import 'package:rodocalc/app/data/controllers/course_controller.dart';
 import 'package:rodocalc/app/data/controllers/document_controller.dart';
 import 'package:rodocalc/app/data/controllers/freight_controller.dart';
 import 'package:rodocalc/app/data/controllers/home_controller.dart';
@@ -26,6 +28,8 @@ class HomeView extends GetView<HomeController> {
   final documentController = Get.put(DocumentController());
   final freightController = Get.put(FreightController());
   final planController = Get.put(PlanController());
+  final coursesController = Get.put(CourseController());
+  final classifiedsController = Get.put(ClassifiedController());
 
   @override
   Widget build(BuildContext context) {
@@ -304,6 +308,7 @@ class HomeView extends GetView<HomeController> {
                                       imagePath: 'assets/images/plano.png',
                                       label: 'Classificados',
                                       onTap: () {
+                                        classifiedsController.getAll();
                                         Get.toNamed(Routes.classified);
                                       },
                                     ),
@@ -312,6 +317,7 @@ class HomeView extends GetView<HomeController> {
                                       imagePath: 'assets/images/plano.png',
                                       label: 'Cursos',
                                       onTap: () {
+                                        coursesController.getAll();
                                         Get.toNamed(Routes.course);
                                       },
                                     ),

@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:rodocalc/app/data/models/classified_photos_model.dart';
+import 'package:rodocalc/app/data/models/classifieds_model.dart';
+import 'package:rodocalc/app/data/repositories/classifieds_repository.dart';
+import 'package:rodocalc/app/utils/formatter.dart';
+import 'package:rodocalc/app/utils/service_storage.dart';
 
 class ClassifiedController extends GetxController {
   var selectedImagesPaths = <String>[].obs;
@@ -14,6 +19,16 @@ class ClassifiedController extends GetxController {
   final modelController = TextEditingController();
 
   RxBool isLoading = true.obs;
+  RxList<Classifieds> listClassifieds = RxList<Classifieds>([]);
+
+  final repository = Get.put(ClassifiedsRepository());
+
+  Map<String, dynamic> retorno = {
+    "success": false,
+    "data": null,
+    "message": ["Preencha todos os campos!"]
+  };
+  dynamic mensagem;
 
   void pickImage(ImageSource source) async {
     if (source == ImageSource.gallery) {
@@ -96,5 +111,132 @@ class ClassifiedController extends GetxController {
   void removeImageApi(String path) {
     selectedImagesPathsApiRemove.add(path);
     selectedImagesPathsApi.remove(path);
+  }
+
+  Future<void> getAll() async {
+    isLoading.value = true;
+    try {
+      listClassifieds.value = await repository.getAll();
+    } catch (e) {
+      Exception(e);
+    }
+    isLoading.value = false;
+  }
+
+  Future<Map<String, dynamic>> insertClassificado() async {
+    if (formKeyClassified.currentState!.validate()) {
+      List<ClassifiedsPhotos>? photos = [];
+      if (selectedImagesPaths.isNotEmpty) {
+        for (var element in selectedImagesPaths) {
+          photos.add(ClassifiedsPhotos(arquivo: element));
+        }
+      }
+
+      mensagem = await repository.insert(
+        Classifieds(
+          descricao: descriptionController.text,
+          valor: FormattedInputers.convertToDouble(valueController.text),
+          status: 1,
+          fotosclassificados: photos,
+          userId: ServiceStorage.getUserId(),
+        ),
+      );
+      if (mensagem != null) {
+        retorno = {
+          'success': mensagem['success'],
+          'message': mensagem['message']
+        };
+        getAll();
+        clearAllFields();
+      } else {
+        retorno = {
+          'success': false,
+          'message': ['Falha ao realizar a operação!']
+        };
+      }
+    }
+    return retorno;
+  }
+
+  Future<Map<String, dynamic>> updateClassificado(int id) async {
+    if (formKeyClassified.currentState!.validate()) {
+      List<ClassifiedsPhotos>? photos = [];
+      if (selectedImagesPaths.isNotEmpty) {
+        for (var element in selectedImagesPaths) {
+          photos.add(ClassifiedsPhotos(arquivo: element));
+        }
+      }
+      mensagem = await repository.update(
+          Classifieds(
+            id: id,
+            descricao: descriptionController.text,
+            valor: FormattedInputers.convertToDouble(valueController.text),
+            status: 1,
+            fotosclassificados: photos,
+            userId: ServiceStorage.getUserId(),
+          ),
+          selectedImagesPathsApiRemove);
+      if (mensagem != null) {
+        retorno = {
+          'success': mensagem['success'],
+          'message': mensagem['message']
+        };
+        getAll();
+        clearAllFields();
+      } else {
+        retorno = {
+          'success': false,
+          'message': ['Falha ao realizar a operação!']
+        };
+      }
+    }
+    return retorno;
+  }
+
+  void clearAllFields() {
+    final textControllers = [
+      valueController,
+      descriptionController,
+      modelController,
+    ];
+
+    for (final controller in textControllers) {
+      controller.clear();
+    }
+    selectedImagesPaths.clear();
+    selectedImagesPathsApi.clear();
+    selectedImagesPathsApiRemove.clear();
+  }
+
+  void fillInFields(Classifieds selected) {
+    valueController.text =
+        FormattedInputers.formatValuePTBR(selected.valor!.toString());
+    descriptionController.text = selected.descricao!;
+
+    if (selected.fotosclassificados!.isNotEmpty) {
+      selectedImagesPathsApiRemove.clear();
+      selectedImagesPathsApi.clear();
+      for (var photo in selected.fotosclassificados!) {
+        selectedImagesPathsApi.add(photo.arquivo!.toString());
+      }
+    }
+  }
+
+  Future<Map<String, dynamic>> deleteClassificado(int id) async {
+    if (id > 0) {
+      mensagem = await repository.delete(Classifieds(id: id));
+      retorno = {
+        'success': mensagem['success'],
+        'message': mensagem['message']
+      };
+      getAll();
+    } else {
+      retorno = {
+        'success': false,
+        'message': ['Falha ao realizar a operação!']
+      };
+    }
+
+    return retorno;
   }
 }

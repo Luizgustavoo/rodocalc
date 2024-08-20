@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/course_controller.dart';
 import 'package:rodocalc/app/global/custom_app_bar.dart';
-import 'package:rodocalc/app/modules/classified/widgets/create_classified_modal.dart';
 import 'package:rodocalc/app/modules/course/widgets/custom_course_card.dart';
+import 'package:rodocalc/app/utils/formatter.dart';
+
+import '../../data/models/courses_model.dart';
 
 class CourseView extends GetView<CourseController> {
   const CourseView({super.key});
@@ -56,16 +58,39 @@ class CourseView extends GetView<CourseController> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          itemCount: 5,
-                          itemBuilder: (context, index) {
-                            return const CustomCourseCard(
-                              descricao: 'DESCRIÇÃO DO CURSO',
-                              duracao: '10 HORAS',
-                              valor: 'R\$250,00',
-                            );
+                        Obx(
+                          () {
+                            if (controller.isLoading.value) {
+                              return const Column(
+                                children: [
+                                  Text('Carregando...'),
+                                  SizedBox(height: 20.0),
+                                  CircularProgressIndicator(),
+                                ],
+                              );
+                            } else if (!controller.isLoading.value &&
+                                controller.listCourses.isNotEmpty) {
+                              return ListView.builder(
+                                shrinkWrap: true,
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                itemCount: controller.listCourses.length,
+                                itemBuilder: (context, index) {
+                                  final Courses curso =
+                                      controller.listCourses[index];
+                                  return CustomCourseCard(
+                                    descricao: curso.descricao.toString(),
+                                    duracao: curso.duracao.toString(),
+                                    valor:
+                                        "R\$ ${FormattedInputers.formatValuePTBR(curso.valor.toString())}",
+                                    link: curso.link.toString(),
+                                  );
+                                },
+                              );
+                            } else {
+                              return const Center(
+                                child: Text('Nenhum veículo encontrado!'),
+                              );
+                            }
                           },
                         ),
                       ]),

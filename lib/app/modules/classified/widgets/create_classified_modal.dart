@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/controllers/classified_controller.dart';
 import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
+import 'package:rodocalc/app/data/models/classifieds_model.dart';
 import 'package:rodocalc/app/modules/vehicle/widgets/photo_item.dart';
 import 'package:rodocalc/app/modules/vehicle/widgets/photo_item_network.dart';
 import 'package:rodocalc/app/routes/app_routes.dart';
@@ -10,9 +11,11 @@ import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 
 class CreateClassifiedModal extends GetView<ClassifiedController> {
-  const CreateClassifiedModal({super.key, required this.isUpdate});
+  const CreateClassifiedModal(
+      {super.key, required this.isUpdate, this.classificado});
 
   final bool isUpdate;
+  final Classifieds? classificado;
 
   @override
   Widget build(BuildContext context) {
@@ -105,15 +108,18 @@ class CreateClassifiedModal extends GetView<ClassifiedController> {
                   ),
                 ),
                 //TERMINA AQUI AS FOTOS
+
                 const SizedBox(height: 10),
                 TextFormField(
-                  controller: controller.modelController,
+                  controller: controller.descriptionController,
+                  keyboardType: TextInputType.number,
+                  maxLines: 7,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
-                      Icons.description_rounded,
-                      size: 25,
+                      Icons.description,
                     ),
-                    labelText: 'MODELO',
+                    labelText: 'DESCRIÇÃO',
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -137,25 +143,7 @@ class CreateClassifiedModal extends GetView<ClassifiedController> {
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Por favor, insira o valor recebido';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 10),
-                TextFormField(
-                  controller: controller.descriptionController,
-                  keyboardType: TextInputType.number,
-                  maxLines: 7,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.description,
-                    ),
-                    labelText: 'DESCRIÇÃO',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, insira a descrição';
+                      return 'Por favor, insira o valor do anúncio';
                     }
                     return null;
                   },
@@ -183,26 +171,37 @@ class CreateClassifiedModal extends GetView<ClassifiedController> {
                     const SizedBox(width: 10),
                     CustomElevatedButton(
                       onPressed: () async {
-                        // Map<String, dynamic> retorno = isUpdate
-                        //     ? await controller.updateTransaction(
-                        //         "entrada", idTransaction!)
-                        //     : await controller.insertTransaction("entrada");
+                        if (isUpdate == false &&
+                            controller.selectedImagesPaths.value.isEmpty) {
+                          Get.snackbar('Atenção!',
+                              "Selecione pelo menos uma imagem para o anúncio!",
+                              backgroundColor: Colors.orange,
+                              colorText: Colors.white,
+                              duration: const Duration(seconds: 2),
+                              snackPosition: SnackPosition.BOTTOM);
+                        } else {
+                          Map<String, dynamic> retorno = isUpdate
+                              ? await controller
+                                  .updateClassificado(classificado!.id!)
+                              : await controller.insertClassificado();
 
-                        // if (retorno['success'] == true) {
-                        //   Get.back();
-                        //   Get.snackbar(
-                        //       'Sucesso!', retorno['message'].join('\n'),
-                        //       backgroundColor: Colors.green,
-                        //       colorText: Colors.white,
-                        //       duration: const Duration(seconds: 2),
-                        //       snackPosition: SnackPosition.BOTTOM);
-                        // } else {
-                        //   Get.snackbar('Falha!', retorno['message'].join('\n'),
-                        //       backgroundColor: Colors.red,
-                        //       colorText: Colors.white,
-                        //       duration: const Duration(seconds: 2),
-                        //       snackPosition: SnackPosition.BOTTOM);
-                        // }
+                          if (retorno['success'] == true) {
+                            Get.back();
+                            Get.snackbar(
+                                'Sucesso!', retorno['message'].join('\n'),
+                                backgroundColor: Colors.green,
+                                colorText: Colors.white,
+                                duration: const Duration(seconds: 2),
+                                snackPosition: SnackPosition.BOTTOM);
+                          } else {
+                            Get.snackbar(
+                                'Falha!', retorno['message'].join('\n'),
+                                backgroundColor: Colors.red,
+                                colorText: Colors.white,
+                                duration: const Duration(seconds: 2),
+                                snackPosition: SnackPosition.BOTTOM);
+                          }
+                        }
                       },
                       child: Text(
                         isUpdate ? 'ALTERAR' : 'CADASTRAR',

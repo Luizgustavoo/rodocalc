@@ -1,20 +1,33 @@
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:rodocalc/app/data/base_url.dart';
+import 'package:rodocalc/app/data/models/classifieds_model.dart';
+import 'package:rodocalc/app/utils/formatter.dart';
+import 'package:rodocalc/app/utils/service_storage.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CustomClassifiedCard extends StatelessWidget {
-  const CustomClassifiedCard({
+  CustomClassifiedCard({
     super.key,
-    required this.modelo,
-    required this.valor,
-    required this.anunciante,
+    required this.classificado,
+    required this.fnEdit,
   });
 
-  final String modelo;
-  final String valor;
-  final String anunciante;
+  final Classifieds? classificado;
+  final Function() fnEdit;
 
   @override
   Widget build(BuildContext context) {
+    String url = "";
+    if (classificado!.fotosclassificados!.isNotEmpty) {
+      url =
+          "$urlImagem/storage/fotos/classificados/${classificado!.fotosclassificados!.first.arquivo}";
+    }
+
     return Card(
       color: Colors.orange.shade50,
       elevation: 2,
@@ -27,23 +40,59 @@ class CustomClassifiedCard extends StatelessWidget {
         dense: true,
         contentPadding:
             const EdgeInsets.only(bottom: 5, top: 5, left: 10, right: 10),
-        leading: Container(
-          width: 60,
-          height: 70,
-          decoration: BoxDecoration(
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(10),
-            image: const DecorationImage(
-              image: NetworkImage(
-                  'https://www.autoindustria.com.br/wp-content/uploads/2023/05/Scania-R450-Plus-1200x640.jpeg'),
-              fit: BoxFit.cover,
+        leading: InkWell(
+          onTap: () {
+            print('aquiii');
+          },
+          child: Container(
+            width: 60,
+            height: 70,
+            decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(10),
+              image: DecorationImage(
+                image: CachedNetworkImageProvider(url),
+                fit: BoxFit.cover,
+              ),
             ),
           ),
         ),
-        trailing: IconButton(
-          onPressed: () {},
-          icon: const Icon(FontAwesomeIcons.whatsapp),
-        ),
+        trailing: ServiceStorage.getUserId() != classificado!.user!.id
+            ? IconButton(
+                onPressed: () async {
+                  if (ServiceStorage.getUserId() != classificado!.user!.id) {
+                    String phone = classificado!.user!.people!.telefone!
+                        .replaceAll('(', '')
+                        .replaceAll(')', '')
+                        .replaceAll('-', '')
+                        .replaceAll(' ', '');
+
+                    var contact = phone;
+                    var androidUrl =
+                        "whatsapp://send?phone=+55$contact&text=Olá, vi seu anuncio no app da Rodocalc. Tenho interesse no item.";
+                    var iosUrl =
+                        "https://wa.me/+55$contact&text=Olá, vi seu anuncio no app da Rodocalc. Tenho interesse no item.";
+
+                    try {
+                      if (Platform.isIOS) {
+                        await launchUrl(Uri.parse(iosUrl));
+                      } else {
+                        await launchUrl(Uri.parse(androidUrl));
+                      }
+                    } on Exception {
+                      Get.snackbar('Falha', 'Whatsapp não instalado!',
+                          backgroundColor: Colors.red.shade500,
+                          colorText: Colors.white,
+                          snackPosition: SnackPosition.BOTTOM);
+                    }
+                  }
+                },
+                icon: const Icon(
+                  FontAwesomeIcons.whatsapp,
+                  color: Colors.green,
+                ),
+              )
+            : IconButton(onPressed: fnEdit, icon: Icon(Icons.edit)),
         title: RichText(
           text: TextSpan(
             style: const TextStyle(
@@ -53,12 +102,12 @@ class CustomClassifiedCard extends StatelessWidget {
             ),
             children: [
               const TextSpan(
-                text: 'MODELO: ',
+                text: 'DESCRIÇÃO: ',
                 style: TextStyle(
                   fontFamily: 'Inter-Bold',
                 ),
               ),
-              TextSpan(text: modelo),
+              TextSpan(text: classificado!.descricao!),
             ],
           ),
         ),
@@ -80,7 +129,9 @@ class CustomClassifiedCard extends StatelessWidget {
                       fontFamily: 'Inter-Bold',
                     ),
                   ),
-                  TextSpan(text: valor),
+                  TextSpan(
+                      text:
+                          "R\$${FormattedInputers.formatValuePTBR(classificado!.valor.toString())}"),
                 ],
               ),
             ),
@@ -99,7 +150,7 @@ class CustomClassifiedCard extends StatelessWidget {
                       fontFamily: 'Inter-Bold',
                     ),
                   ),
-                  TextSpan(text: anunciante),
+                  TextSpan(text: classificado!.user!.people!.nome),
                 ],
               ),
             ),

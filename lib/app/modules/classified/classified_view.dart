@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/classified_controller.dart';
+import 'package:rodocalc/app/data/models/classifieds_model.dart';
 import 'package:rodocalc/app/global/custom_app_bar.dart';
 import 'package:rodocalc/app/modules/classified/widgets/create_classified_modal.dart';
 import 'package:rodocalc/app/modules/classified/widgets/custom_classified_card.dart';
+import 'package:rodocalc/app/utils/service_storage.dart';
 
 class ClassifiedView extends GetView<ClassifiedController> {
   const ClassifiedView({super.key});
@@ -56,18 +58,116 @@ class ClassifiedView extends GetView<ClassifiedController> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          itemCount: 5,
-                          itemBuilder: (context, index) {
-                            return const CustomClassifiedCard(
-                              modelo: 'FIESTA SEDAN 1.6',
-                              valor: 'R\$ 29.000,00',
-                              anunciante: 'LUIZ GUSTAVO',
+                        Obx(() {
+                          if (controller.isLoading.value) {
+                            return const Column(
+                              children: [
+                                Text('Carregando...'),
+                                SizedBox(height: 20.0),
+                                CircularProgressIndicator(),
+                              ],
                             );
-                          },
-                        ),
+                          } else if (!controller.isLoading.value &&
+                              controller.listClassifieds.isNotEmpty) {
+                            return Expanded(
+                              child: ListView.builder(
+                                padding: EdgeInsets.only(
+                                    bottom: MediaQuery.of(context).size.height *
+                                        .22),
+                                shrinkWrap: true,
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                itemCount: controller.listClassifieds.length,
+                                itemBuilder: (context, index) {
+                                  final Classifieds classificado =
+                                      controller.listClassifieds[index];
+
+                                  return Dismissible(
+                                    key: UniqueKey(),
+                                    direction: ServiceStorage.getUserId() ==
+                                            classificado.user!.id
+                                        ? DismissDirection.endToStart
+                                        : DismissDirection.none,
+                                    confirmDismiss:
+                                        (DismissDirection direction) async {
+                                      if (direction ==
+                                          DismissDirection.endToStart) {
+                                        showDialog(
+                                            context, classificado, controller);
+                                      }
+                                      return false;
+                                    },
+                                    background: Container(
+                                      margin: const EdgeInsets.all(5),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Colors.red,
+                                      ),
+                                      child: const Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Padding(
+                                            padding: EdgeInsets.all(10),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                Icon(
+                                                  Icons.check_rounded,
+                                                  size: 25,
+                                                  color: Colors.white,
+                                                ),
+                                                SizedBox(width: 10),
+                                                Text(
+                                                  'EXCLUIR',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ],
+                                            )),
+                                      ),
+                                    ),
+                                    child: InkWell(
+                                      child: CustomClassifiedCard(
+                                        fnEdit: () {
+                                          if (ServiceStorage.getUserId() ==
+                                              classificado.user!.id!) {
+                                            controller.clearAllFields();
+                                            controller
+                                                .fillInFields(classificado);
+                                            showModalBottomSheet(
+                                              isScrollControlled: true,
+                                              context: context,
+                                              builder: (context) =>
+                                                  CreateClassifiedModal(
+                                                isUpdate: true,
+                                                classificado: classificado,
+                                              ),
+                                            );
+                                          } else {
+                                            Get.snackbar('Falha!',
+                                                "Classificado não foi criado por você!",
+                                                backgroundColor: Colors.red,
+                                                colorText: Colors.white,
+                                                duration:
+                                                    const Duration(seconds: 2),
+                                                snackPosition:
+                                                    SnackPosition.BOTTOM);
+                                          }
+                                        },
+                                        classificado: classificado,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                          } else {
+                            return const Center(
+                              child: Text('Nenhum veículo encontrado!'),
+                            );
+                          }
+                        }),
                       ]),
                     ),
                   ),
@@ -82,6 +182,7 @@ class ClassifiedView extends GetView<ClassifiedController> {
         child: FloatingActionButton(
           backgroundColor: const Color(0xFFFF6B00),
           onPressed: () {
+            controller.clearAllFields();
             showModalBottomSheet(
               isScrollControlled: true,
               context: context,
@@ -98,4 +199,57 @@ class ClassifiedView extends GetView<ClassifiedController> {
       ),
     );
   }
+}
+
+void showDialog(
+    context, Classifieds classificado, ClassifiedController controller) {
+  Get.defaultDialog(
+    titlePadding: const EdgeInsets.all(16),
+    contentPadding: const EdgeInsets.all(16),
+    title: "Confirmação",
+    content: Text(
+      textAlign: TextAlign.center,
+      "Tem certeza que deseja excluir o anúncio ${classificado.descricao}?",
+      style: const TextStyle(
+        fontFamily: 'Inter-Regular',
+        fontSize: 18,
+      ),
+    ),
+    actions: [
+      ElevatedButton(
+        onPressed: () async {
+          Map<String, dynamic> retorno =
+              await controller.deleteClassificado(classificado.id!);
+
+          if (retorno['success'] == true) {
+            Get.back();
+            Get.snackbar('Sucesso!', retorno['message'].join('\n'),
+                backgroundColor: Colors.green,
+                colorText: Colors.white,
+                duration: const Duration(seconds: 2),
+                snackPosition: SnackPosition.BOTTOM);
+          } else {
+            Get.snackbar('Falha!', retorno['message'].join('\n'),
+                backgroundColor: Colors.red,
+                colorText: Colors.white,
+                duration: const Duration(seconds: 2),
+                snackPosition: SnackPosition.BOTTOM);
+          }
+        },
+        child: const Text(
+          "CONFIRMAR",
+          style: TextStyle(fontFamily: 'Poppinss', color: Colors.white),
+        ),
+      ),
+      TextButton(
+        onPressed: () {
+          Get.back();
+        },
+        child: const Text(
+          "CANCELAR",
+          style: TextStyle(fontFamily: 'Poppinss'),
+        ),
+      ),
+    ],
+  );
 }
