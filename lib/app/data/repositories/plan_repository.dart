@@ -1,3 +1,4 @@
+import 'package:rodocalc/app/data/models/credit_card_model.dart';
 import 'package:rodocalc/app/data/models/plan_model.dart';
 import 'package:rodocalc/app/data/models/user_plan_model.dart';
 import 'package:rodocalc/app/data/providers/plan_provider.dart';
@@ -29,9 +30,9 @@ class PlanRepository {
     }
   }
 
-  subscribe(UserPlan userplan) async {
+  subscribe(UserPlan userplan, CreditCard creditCard) async {
     try {
-      var response = await apiClient.subscribe(userplan);
+      var response = await apiClient.subscribe(userplan, creditCard);
       return response;
     } catch (e) {
       Exception(e);

@@ -54,35 +54,41 @@ class CreatePlanModal extends GetView<PlanController> {
                 ),
               ),
               const SizedBox(height: 15.0),
-              TextFormField(
-                controller: controller.numberCardController,
-                decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.credit_card),
-                    labelText: 'NUMERO DO CARTÃO',
-                    counterText: ''),
-                keyboardType: TextInputType.number,
-                maxLength: 19,
-                onChanged: (value) {
-                  controller.numberCardController.text =
-                      controller.formatCardNumber(value);
-                  controller.numberCardController.selection =
-                      TextSelection.fromPosition(TextPosition(
-                          offset: controller.numberCardController.text.length));
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, insira o número do cartão';
-                  }
-                  value =
-                      value.replaceAll(RegExp(r'\s+'), ''); // Remove espaços
-                  if (value.length < 16 || value.length > 19) {
-                    return 'Número do cartão inválido';
-                  }
-                  if (!FormattedInputers.isValidCardNumber(value)) {
-                    return 'Número do cartão inválido';
-                  }
-                  return null;
-                },
+              Obx(
+                () => TextFormField(
+                  controller: controller.numberCardController,
+                  decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.credit_card),
+                      labelText: controller.bandeiraCartao.value,
+                      counterText: ''),
+                  keyboardType: TextInputType.number,
+                  maxLength: 19,
+                  onChanged: (value) {
+                    controller.numberCardController.text =
+                        controller.formatCardNumber(value);
+                    controller.numberCardController.selection =
+                        TextSelection.fromPosition(TextPosition(
+                            offset:
+                                controller.numberCardController.text.length));
+
+                    controller.bandeiraCartao.value =
+                        FormattedInputers.getCardType(value);
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira o número do cartão';
+                    }
+                    value =
+                        value.replaceAll(RegExp(r'\s+'), ''); // Remove espaços
+                    if (value.length < 16 || value.length > 19) {
+                      return 'Número do cartão inválido';
+                    }
+                    if (!FormattedInputers.isValidCardNumber(value)) {
+                      return 'Número do cartão inválido';
+                    }
+                    return null;
+                  },
+                ),
               ),
               const SizedBox(height: 10),
               Row(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rodocalc/app/data/models/credit_card_model.dart';
 import 'package:rodocalc/app/data/models/plan_model.dart';
 import 'package:rodocalc/app/data/models/user_plan_model.dart';
 import 'package:rodocalc/app/data/repositories/plan_repository.dart';
@@ -10,6 +11,8 @@ class PlanController extends GetxController {
   var selectedPlan = Rxn<Plan>();
   var selectedLicenses = 1.obs;
   var calculatedPrice = ''.obs;
+
+  var bandeiraCartao = 'NÚMERO DO CARTÃO'.obs;
 
   final planKey = GlobalKey<FormState>();
   final TextEditingController numberCardController = TextEditingController();
@@ -35,11 +38,19 @@ class PlanController extends GetxController {
 
   Future<Map<String, dynamic>> subscribe() async {
     if (planKey.currentState!.validate()) {
-      mensagem = await repository.subscribe(UserPlan(
-        usuarioId: ServiceStorage.getUserId(),
-        planoId: selectedPlan.value!.id!,
-        quantidadeLicencas: selectedLicenses.value,
-      ));
+      mensagem = await repository.subscribe(
+          UserPlan(
+            usuarioId: ServiceStorage.getUserId(),
+            planoId: selectedPlan.value!.id!,
+            quantidadeLicencas: selectedLicenses.value,
+          ),
+          CreditCard(
+            cardName: nameCardController.text,
+            validate: validateController.text,
+            cpf: cpfController.text,
+            cvv: cvvController.text,
+            cardNumber: numberCardController.text,
+          ));
       if (mensagem != null) {
         retorno = {
           'success': mensagem['success'],

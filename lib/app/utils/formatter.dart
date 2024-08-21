@@ -81,6 +81,35 @@ abstract class FormattedInputers {
     );
   }
 
+  static String getCardType(String cardNumber) {
+    // Remove todos os espaços e traços do número do cartão
+    String cleanedNumber = cardNumber.replaceAll(RegExp(r'\s+|-'), '');
+
+    if (RegExp(r'^4[0-9]{0,}$').hasMatch(cleanedNumber)) {
+      return 'Visa';
+    } else if (RegExp(r'^5[1-5][0-9]{0,}$').hasMatch(cleanedNumber) ||
+        RegExp(r'^2(2[2-9][1-9]|2[3-6][0-9]|7[0-1][0-9]|720)[0-9]{0,}$')
+            .hasMatch(cleanedNumber)) {
+      return 'Mastercard';
+    } else if (RegExp(r'^3[47][0-9]{0,}$').hasMatch(cleanedNumber)) {
+      return 'American Express';
+    } else if (RegExp(r'^(6011|622[1-9]|64[4-9]|65)[0-9]{0,}$')
+        .hasMatch(cleanedNumber)) {
+      return 'Discover';
+    } else if (RegExp(r'^(30[0-5]|36|38)[0-9]{0,}$').hasMatch(cleanedNumber)) {
+      return 'Diners Club';
+    } else if (RegExp(r'^(352[8-9]|35[3-8][0-9])[0-9]{0,}$')
+        .hasMatch(cleanedNumber)) {
+      return 'JCB';
+    } else if (RegExp(
+            r'^(4011|4312|4389|4514|4576|5041|5066|5090|6277|6362|6504|6550)[0-9]{0,}$')
+        .hasMatch(cleanedNumber)) {
+      return 'Elo';
+    }
+
+    return 'Cartão Desconhecido';
+  }
+
   static void onformatValueChangedDecimal(
       String value, TextEditingController textEditingController) {
     textEditingController.value = textEditingController.value.copyWith(
