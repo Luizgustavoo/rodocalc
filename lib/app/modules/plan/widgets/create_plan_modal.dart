@@ -40,7 +40,7 @@ class CreatePlanModal extends GetView<PlanController> {
                 () => DropdownButtonFormField<int>(
                   value: controller.selectedLicenses.value,
                   items: List.generate(
-                    10,
+                    50,
                     (index) => DropdownMenuItem(
                       value: index + 1,
                       child: Text('${index + 1} Licença(s)'),
@@ -204,7 +204,7 @@ class CreatePlanModal extends GetView<PlanController> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Obx(() => Text(
-                        'TOTAL: ${controller.calculatedPrice.value}',
+                        'TOTAL: ${(controller.calculatedPrice.value)}',
                         style: const TextStyle(
                             fontFamily: 'Inter-Black', fontSize: 18),
                       )),

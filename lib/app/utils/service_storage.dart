@@ -42,6 +42,15 @@ class ServiceStorage {
     }
   }
 
+  static Auth getAuth() {
+    if (existUser()) {
+      Map<String, dynamic> authJson = _box.read('auth');
+      Auth auth = Auth.fromJson(authJson);
+      return auth;
+    }
+    return Auth();
+  }
+
   static String getUserName() {
     if (existUser()) {
       Map<String, dynamic> authJson = _box.read('auth');

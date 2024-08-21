@@ -5,15 +5,16 @@ class CreditCard {
   String? cvv;
   String? cardName;
   String? cpf;
+  int? valor;
 
-  CreditCard({
-    this.id,
-    this.cardNumber,
-    this.validate,
-    this.cvv,
-    this.cardName,
-    this.cpf,
-  });
+  CreditCard(
+      {this.id,
+      this.cardNumber,
+      this.validate,
+      this.cvv,
+      this.cardName,
+      this.cpf,
+      this.valor});
 
   CreditCard.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -22,6 +23,7 @@ class CreditCard {
     cvv = json['cvv'];
     cardName = json['nome_cartao'];
     cpf = json['cpf'];
+    valor = json['valor'];
   }
 
   Map<String, dynamic> toJson() {
@@ -32,6 +34,7 @@ class CreditCard {
     data['cvv'] = cvv;
     data['nome_cartao'] = cardName;
     data['cpf'] = cpf;
+    data['valor'] = valor;
     return data;
   }
 }

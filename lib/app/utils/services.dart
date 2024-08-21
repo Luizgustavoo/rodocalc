@@ -93,4 +93,49 @@ class Services {
 
     return regex.hasMatch(email);
   }
+
+  static String limparCPF(String cpf) {
+    return cpf.replaceAll(RegExp(r'\D'), '');
+  }
+
+  static String limparCEP(String cep) {
+    // Remove tudo que não é número
+    return cep.replaceAll(RegExp(r'\D'), '');
+  }
+
+  static Map<String, String> separarDDD(String telefone) {
+    // Remove tudo que não é número
+    String telefoneLimpo = telefone.replaceAll(RegExp(r'\D'), '');
+
+    // O DDD são os dois primeiros dígitos
+    String ddd = telefoneLimpo.substring(0, 2);
+
+    // O restante é o número do telefone
+    String numero = telefoneLimpo.substring(2);
+
+    return {'ddd': ddd, 'numero': numero};
+  }
+
+  static String obterDataHoraAtualISO() {
+    DateTime now = DateTime.now().toUtc();
+    return now.toIso8601String().split('.').first + 'Z';
+  }
+
+  static int reaisParaCentavos(String valorEmReais) {
+    try {
+      // Remove o prefixo "R$" e possíveis espaços
+      String valorLimpo =
+          valorEmReais.replaceAll(RegExp(r'[^\d,]'), '').replaceAll(',', '.');
+
+      // Converte a string limpa para double
+      double valor = double.parse(valorLimpo);
+
+      // Multiplica o valor por 100 e usa o método round() para arredondar para o inteiro mais próximo
+      return (valor * 100).round();
+    } catch (e) {
+      // Retorna 0 se houver um erro na conversão
+      print('Erro na conversão: ${e.toString()}');
+      return 0;
+    }
+  }
 }

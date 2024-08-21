@@ -5,6 +5,7 @@ import 'package:rodocalc/app/data/models/plan_model.dart';
 import 'package:rodocalc/app/data/models/user_plan_model.dart';
 import 'package:rodocalc/app/data/repositories/plan_repository.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
+import 'package:rodocalc/app/utils/services.dart';
 
 class PlanController extends GetxController {
   var licenses = 1.obs;
@@ -58,18 +59,20 @@ class PlanController extends GetxController {
   Future<Map<String, dynamic>> subscribe() async {
     if (planKey.currentState!.validate()) {
       mensagem = await repository.subscribe(
-          UserPlan(
-            usuarioId: ServiceStorage.getUserId(),
-            planoId: selectedPlan.value!.id!,
-            quantidadeLicencas: selectedLicenses.value,
-          ),
-          CreditCard(
-            cardName: nameCardController.text,
-            validate: validateController.text,
-            cpf: cpfController.text,
-            cvv: cvvController.text,
-            cardNumber: numberCardController.text,
-          ));
+        UserPlan(
+          usuarioId: ServiceStorage.getUserId(),
+          planoId: selectedPlan.value!.id!,
+          quantidadeLicencas: selectedLicenses.value,
+        ),
+        CreditCard(
+          cardName: nameCardController.text,
+          validate: validateController.text,
+          cpf: cpfController.text,
+          cvv: cvvController.text,
+          cardNumber: numberCardController.text,
+          valor: Services.reaisParaCentavos(calculatedPrice.value),
+        ),
+      );
       if (mensagem != null) {
         retorno = {
           'success': mensagem['success'],
