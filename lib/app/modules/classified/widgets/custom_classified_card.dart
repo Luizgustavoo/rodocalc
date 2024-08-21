@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -57,26 +56,33 @@ class CustomClassifiedCard extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           classificado!.fotosclassificados!.length == 1
-                              ? Image.network(
-                                  '$urlImagem/storage/fotos/classificados/${classificado!.fotosclassificados!.first.arquivo}',
-                                  fit: BoxFit.contain,
-                                )
-                              : CarouselSlider(
-                                  options: CarouselOptions(
-                                    enableInfiniteScroll: false,
-                                    enlargeCenterPage: true,
+                              ? Container(
+                                  width: MediaQuery.of(context)
+                                      .size
+                                      .width, // Defina a largura desejada
+                                  height: 200.0,
+                                  child: Image.network(
+                                    '$urlImagem/storage/fotos/classificados/${classificado!.fotosclassificados!.first.arquivo}',
+                                    fit: BoxFit.cover,
                                   ),
-                                  items: classificado!.fotosclassificados!
-                                      .map((photo) {
-                                    return Builder(
-                                      builder: (BuildContext context) {
-                                        return Image.network(
+                                )
+                              : SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: classificado!.fotosclassificados!
+                                        .map((photo) {
+                                      return Container(
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal: 5.0),
+                                        width: 250.0,
+                                        height: 200.0,
+                                        child: Image.network(
                                           '$urlImagem/storage/fotos/classificados/${photo.arquivo}',
-                                          fit: BoxFit.contain,
-                                        );
-                                      },
-                                    );
-                                  }).toList(),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
                                 ),
                           const SizedBox(height: 16),
                           Align(
