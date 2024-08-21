@@ -36,18 +36,17 @@ class Plan {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['descricao'] = this.descricao;
-    data['valor'] = this.valor;
-    data['quantidade_cadastros_permitidos'] =
-        this.quantidadeCadastrosPermitidos;
-    data['duracao_plano_dias'] = this.duracaoPlanoDias;
-    data['status'] = this.status;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    data['observacoes'] = this.observacoes;
-    data['gateway_plan_id'] = this.gatewayPlanId;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['descricao'] = descricao;
+    data['valor'] = valor;
+    data['quantidade_cadastros_permitidos'] = quantidadeCadastrosPermitidos;
+    data['duracao_plano_dias'] = duracaoPlanoDias;
+    data['status'] = status;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    data['observacoes'] = observacoes;
+    data['gateway_plan_id'] = gatewayPlanId;
     return data;
   }
 }

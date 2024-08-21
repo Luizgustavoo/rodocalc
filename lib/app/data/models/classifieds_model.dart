@@ -27,7 +27,7 @@ class Classifieds {
   Classifieds.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     descricao = json['descricao'];
-    valor = json['valor'] != null ? json['valor'].toDouble() : null;
+    valor = json['valor']?.toDouble();
     status = json['status'];
     userId = json['user_id'];
     createdAt = json['created_at'];
@@ -35,28 +35,28 @@ class Classifieds {
     if (json['fotosclassificados'] != null) {
       fotosclassificados = <ClassifiedsPhotos>[];
       json['fotosclassificados'].forEach((v) {
-        fotosclassificados!.add(new ClassifiedsPhotos.fromJson(v));
+        fotosclassificados!.add(ClassifiedsPhotos.fromJson(v));
       });
     }
-    user = json['user'] != null ? new User.fromJson(json['user']) : null;
+    user = json['user'] != null ? User.fromJson(json['user']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['descricao'] = this.descricao;
-    data['valor'] = this.valor;
-    data['status'] = this.status;
-    data['user_id'] = this.userId;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    if (this.fotosclassificados != null) {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['descricao'] = descricao;
+    data['valor'] = valor;
+    data['status'] = status;
+    data['user_id'] = userId;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    if (fotosclassificados != null) {
       data['fotosclassificados'] =
-          this.fotosclassificados!.map((v) => v.toJson()).toList();
+          fotosclassificados!.map((v) => v.toJson()).toList();
     }
 
-    if (this.user != null) {
-      data['user'] = this.user!.toJson();
+    if (user != null) {
+      data['user'] = user!.toJson();
     }
     return data;
   }

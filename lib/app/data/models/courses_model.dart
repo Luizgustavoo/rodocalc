@@ -23,22 +23,22 @@ class Courses {
     descricao = json['descricao'];
     link = json['link'];
     duracao = json['duracao'];
-    valor = json['valor'] != null ? json['valor'].toDouble() : null;
+    valor = json['valor']?.toDouble();
     status = json['status'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['descricao'] = this.descricao;
-    data['link'] = this.link;
-    data['duracao'] = this.duracao;
-    data['valor'] = this.valor;
-    data['status'] = this.status;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['descricao'] = descricao;
+    data['link'] = link;
+    data['duracao'] = duracao;
+    data['valor'] = valor;
+    data['status'] = status;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
     return data;
   }
 }

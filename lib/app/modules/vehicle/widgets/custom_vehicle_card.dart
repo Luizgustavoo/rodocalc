@@ -32,7 +32,7 @@ class CustomVehicleCard extends StatelessWidget {
           height: 70,
           decoration: BoxDecoration(
             shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(5),
             image: DecorationImage(
               image: vehicle.foto!.isNotEmpty
                   ? CachedNetworkImageProvider(

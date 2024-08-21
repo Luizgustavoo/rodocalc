@@ -219,12 +219,12 @@ class CreateVehicleModal extends GetView<VehicleController> {
                             constraints:
                                 BoxConstraints(maxWidth: Get.width * .7),
                             child: Text(
-                              "${plan.descricao} ${subtitulo}",
+                              "${plan.descricao} $subtitulo",
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         );
-                      }).toList(),
+                      }),
                     ],
                     onChanged: (newValue) {
                       controller.selectedPlanDropDown.value = newValue!;

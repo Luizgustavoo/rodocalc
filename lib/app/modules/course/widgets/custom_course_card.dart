@@ -40,7 +40,7 @@ class CustomCourseCard extends StatelessWidget {
                 throw 'Could not launch $link';
               }
             },
-            icon: Icon(
+            icon: const Icon(
               FontAwesomeIcons.globe,
               color: Colors.black,
             )),

@@ -172,7 +172,7 @@ class CreateClassifiedModal extends GetView<ClassifiedController> {
                     CustomElevatedButton(
                       onPressed: () async {
                         if (isUpdate == false &&
-                            controller.selectedImagesPaths.value.isEmpty) {
+                            controller.selectedImagesPaths.isEmpty) {
                           Get.snackbar('Atenção!',
                               "Selecione pelo menos uma imagem para o anúncio!",
                               backgroundColor: Colors.orange,

@@ -134,50 +134,99 @@ class DocumentView extends GetView<DocumentController> {
                                           // Exibir imagem
                                           showDialog(
                                             context: context,
-                                            builder: (context) => AlertDialog(
-                                              content: Image.network(
-                                                '$urlImagem/storage/fotos/documentos/${document.arquivo}',
-                                                fit: BoxFit.contain,
+                                            builder: (context) => Dialog(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(
+                                                    0), // Torna o Dialog quadrado
                                               ),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () => Get.back(),
-                                                  child: const Text(
-                                                    'FECHAR',
-                                                    style: TextStyle(
-                                                        fontFamily:
-                                                            'Inter-Bold'),
-                                                  ),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          15), // Borda arredondada do conteúdo
                                                 ),
-                                              ],
+                                                padding: const EdgeInsets.all(
+                                                    16), // Espaçamento interno
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    Image.network(
+                                                      '$urlImagem/storage/fotos/documentos/${document.arquivo}',
+                                                      fit: BoxFit.contain,
+                                                    ),
+                                                    const SizedBox(height: 16),
+                                                    Align(
+                                                      alignment:
+                                                          Alignment.bottomRight,
+                                                      child: TextButton(
+                                                        onPressed: () =>
+                                                            Get.back(),
+                                                        child: const Text(
+                                                          'FECHAR',
+                                                          style: TextStyle(
+                                                            fontFamily:
+                                                                'Inter-Bold',
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
                                             ),
                                           );
                                         } else if (document.imagemPdf ==
                                             'PDF') {
                                           // Exibir PDF
                                           showDialog(
-                                            context: context,
-                                            builder: (context) => AlertDialog(
-                                              content: SizedBox(
-                                                height: 500,
-                                                child: PdfViewPage(
-                                                  pdfUrl:
-                                                      '$urlImagem/storage/fotos/documentos/${document.arquivo}',
-                                                ),
-                                              ),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () => Get.back(),
-                                                  child: const Text(
-                                                    'FECHAR',
-                                                    style: TextStyle(
-                                                        fontFamily:
-                                                            'Inter-Bold'),
+                                              context: context,
+                                              builder: (context) => Dialog(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            0), // Torna o Dialog quadrado
                                                   ),
-                                                ),
-                                              ],
-                                            ),
-                                          );
+                                                  child: Container(
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                                15), // Borda arredondada do conteúdo
+                                                      ),
+                                                      padding: const EdgeInsets
+                                                          .all(
+                                                          16), // Espaçamento interno
+                                                      child: Column(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          SizedBox(
+                                                            height: 500,
+                                                            child: PdfViewPage(
+                                                              pdfUrl:
+                                                                  '$urlImagem/storage/fotos/documentos/${document.arquivo}',
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 16),
+                                                          Align(
+                                                            alignment: Alignment
+                                                                .bottomRight,
+                                                            child: TextButton(
+                                                              onPressed: () =>
+                                                                  Get.back(),
+                                                              child: const Text(
+                                                                'FECHAR',
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontFamily:
+                                                                      'Inter-Bold',
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ))));
                                         }
                                       },
                                     ));

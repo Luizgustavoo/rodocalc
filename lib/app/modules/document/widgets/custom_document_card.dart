@@ -16,7 +16,7 @@ class CustomDocumentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap, // Chama a função de visualização ao clicar no card
+      onTap: onTap,
       child: Card(
         elevation: 2,
         shape: RoundedRectangleBorder(

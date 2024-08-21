@@ -21,12 +21,12 @@ class ClassifiedsPhotos {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['classificados_id'] = this.classificadosId;
-    data['arquivo'] = this.arquivo;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['classificados_id'] = classificadosId;
+    data['arquivo'] = arquivo;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
     return data;
   }
 }
