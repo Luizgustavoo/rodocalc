@@ -24,7 +24,7 @@ class CustomHomeCard extends StatelessWidget {
             height: 75,
             width: 75,
             decoration: BoxDecoration(
-              color: Colors.orange,
+              color: const Color(0xFFFF6B00),
               borderRadius: BorderRadius.circular(5),
             ),
             child: Column(
@@ -33,14 +33,14 @@ class CustomHomeCard extends StatelessWidget {
               children: [
                 Image.asset(
                   imagePath,
-                  height: 30,
-                  width: 30,
+                  height: 35,
+                  width: 35,
                   fit: BoxFit.contain,
                 ),
                 const SizedBox(height: 5),
                 Text(
                   label,
-                  style: const TextStyle(color: Colors.white, fontSize: 11),
+                  style: const TextStyle(color: Colors.white, fontSize: 10),
                 ),
               ],
             ),

@@ -56,7 +56,7 @@ class CustomClassifiedCard extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           classificado!.fotosclassificados!.length == 1
-                              ? Container(
+                              ? SizedBox(
                                   width: MediaQuery.of(context)
                                       .size
                                       .width, // Defina a largura desejada
@@ -72,7 +72,7 @@ class CustomClassifiedCard extends StatelessWidget {
                                     children: classificado!.fotosclassificados!
                                         .map((photo) {
                                       return Container(
-                                        margin: EdgeInsets.symmetric(
+                                        margin: const EdgeInsets.symmetric(
                                             horizontal: 5.0),
                                         width: 250.0,
                                         height: 200.0,

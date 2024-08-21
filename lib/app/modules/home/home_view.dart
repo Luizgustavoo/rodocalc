@@ -306,7 +306,7 @@ class HomeView extends GetView<HomeController> {
                                     ),
                                     const SizedBox(width: 5),
                                     CustomHomeCard(
-                                      imagePath: 'assets/images/plano.png',
+                                      imagePath: 'assets/images/classific.png',
                                       label: 'Classificados',
                                       onTap: () {
                                         classifiedsController.getAll();
@@ -315,7 +315,7 @@ class HomeView extends GetView<HomeController> {
                                     ),
                                     const SizedBox(width: 5),
                                     CustomHomeCard(
-                                      imagePath: 'assets/images/plano.png',
+                                      imagePath: 'assets/images/curso.png',
                                       label: 'Cursos',
                                       onTap: () {
                                         coursesController.getAll();
@@ -433,10 +433,10 @@ class HomeView extends GetView<HomeController> {
                   ),
                 ),
               ),
-              Positioned(
-                child: WidgetPlan(),
+              const Positioned(
                 bottom: 0,
                 left: 0,
+                child: WidgetPlan(),
               )
             ],
           );

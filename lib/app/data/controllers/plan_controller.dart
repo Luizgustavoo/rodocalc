@@ -22,14 +22,14 @@ class PlanController extends GetxController {
   final TextEditingController cpfController = TextEditingController();
 
   List<CardType> cardTypes = [
-    CardType(name: 'Visa', icon: Icons.credit_card),
-    CardType(name: 'Mastercard', icon: Icons.credit_card),
-    CardType(name: 'American Express', icon: Icons.credit_card),
-    CardType(name: 'Discover', icon: Icons.credit_card),
-    CardType(name: 'Elo', icon: Icons.credit_card),
-    CardType(name: 'Hipercard', icon: Icons.credit_card),
-    CardType(name: 'Diners Club', icon: Icons.credit_card),
-    CardType(name: 'JCB', icon: Icons.credit_card),
+    CardType(name: 'American Express', imagePath: 'assets/flags/amex.png'),
+    CardType(name: 'Diner Club', imagePath: 'assets/flags/dinner.png'),
+    CardType(name: 'Discover', imagePath: 'assets/flags/discover.png'),
+    CardType(name: 'Elo', imagePath: 'assets/flags/elo.png'),
+    CardType(name: 'Hipercard', imagePath: 'assets/flags/hipercard.png'),
+    CardType(name: 'Jcb', imagePath: 'assets/flags/jcb.png'),
+    CardType(name: 'Mastercard', imagePath: 'assets/flags/master.png'),
+    CardType(name: 'Visa', imagePath: 'assets/flags/visa.png'),
   ];
 
   var selectedCardType = ''.obs;
@@ -165,7 +165,7 @@ class PlanController extends GetxController {
 
 class CardType {
   final String name;
-  final IconData icon;
+  final String imagePath;
 
-  CardType({required this.name, required this.icon});
+  CardType({required this.name, required this.imagePath});
 }

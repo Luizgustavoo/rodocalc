@@ -56,7 +56,7 @@ class CreatePlanModal extends GetView<PlanController> {
               const SizedBox(height: 15.0),
               TextFormField(
                 controller: controller.numberCardController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     prefixIcon: Icon(Icons.credit_card),
                     labelText: 'NÚMERO DO CARTÃO',
                     counterText: ''),
@@ -98,8 +98,15 @@ class CreatePlanModal extends GetView<PlanController> {
                       value: cardType.name,
                       child: Row(
                         children: [
-                          Icon(cardType.icon),
-                          SizedBox(width: 8),
+                          SizedBox(
+                            width: 30,
+                            height: 25,
+                            child: Image.asset(
+                              cardType.imagePath,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
                           Text(cardType.name),
                         ],
                       ),
@@ -109,7 +116,6 @@ class CreatePlanModal extends GetView<PlanController> {
                     controller.updateCardType(newValue);
                   },
                   decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.credit_card),
                     labelText: 'BANDEIRA DO CARTÃO',
                   ),
                 ),
