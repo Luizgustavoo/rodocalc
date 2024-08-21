@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/plan_controller.dart';
 import 'package:rodocalc/app/data/models/plan_model.dart';
@@ -49,53 +50,74 @@ class PlanView extends GetView<PlanController> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Column(
-                            children: [
-                              const Text(
-                                'Meu plano atual',
-                                style: TextStyle(
-                                  fontFamily: 'Inter-Regular',
-                                  color: Colors.white,
-                                  fontSize: 16.0,
-                                ),
-                              ),
-                              Obx(
-                                () => Text(
-                                  controller.myPlan.value!.plano!.descricao!
-                                      .toUpperCase(),
-                                  style: const TextStyle(
-                                    fontFamily: 'Inter-Black',
+                          Expanded(
+                            child: Column(
+                              children: [
+                                const Text(
+                                  'Meu plano atual',
+                                  style: TextStyle(
+                                    fontFamily: 'Inter-Regular',
                                     color: Colors.white,
-                                    fontSize: 24.0,
-                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16.0,
                                   ),
                                 ),
-                              ),
-                            ],
+                                Obx(
+                                  () {
+                                    final planDescription = controller
+                                        .myPlan.value?.plano?.descricao;
+                                    return Text(
+                                      planDescription != null
+                                          ? planDescription.toUpperCase()
+                                          : 'Descrição não disponível',
+                                      style: const TextStyle(
+                                        fontFamily: 'Inter-Black',
+                                        color: Colors.white,
+                                        fontSize: 24.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    );
+                                  },
+                                )
+                              ],
+                            ),
                           ),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               const SizedBox(height: 20.0),
-                              Obx(() => Text(
-                                    '${controller.myPlan.value!.quantidadeLicencas!} licença(s)',
+                              Obx(
+                                () {
+                                  final quantidadeLicencas = controller
+                                      .myPlan.value?.quantidadeLicencas;
+                                  return Text(
+                                    quantidadeLicencas != null
+                                        ? '$quantidadeLicencas licença(s)'
+                                        : 'Licenças não disponíveis',
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(
                                       fontFamily: 'Inter-Bold',
                                       color: Colors.white,
                                       fontSize: 16.0,
                                     ),
-                                  )),
+                                  );
+                                },
+                              ),
                               const SizedBox(height: 4.0),
                               Obx(
-                                () => Text(
-                                  "Vencimento: ${FormattedInputers.formatApiDate(controller.myPlan.value!.dataVencimentoPlano!)}",
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'Inter_Regular',
-                                    fontSize: 12,
-                                  ),
-                                ),
+                                () {
+                                  final dataVencimentoPlano = controller
+                                      .myPlan.value?.dataVencimentoPlano;
+                                  return Text(
+                                    dataVencimentoPlano != null
+                                        ? "Vencimento: ${FormattedInputers.formatApiDate(dataVencimentoPlano)}"
+                                        : "Data de vencimento não disponível",
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'Inter_Regular',
+                                      fontSize: 12,
+                                    ),
+                                  );
+                                },
                               ),
                               const SizedBox(height: 5.0),
                               InkWell(

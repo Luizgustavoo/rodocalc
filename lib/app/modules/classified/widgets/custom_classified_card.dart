@@ -57,16 +57,12 @@ class CustomClassifiedCard extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           classificado!.fotosclassificados!.length == 1
-                              ? SizedBox(
-                                  height: 400.0,
-                                  child: Image.network(
-                                    '$urlImagem/storage/fotos/classificados/${classificado!.fotosclassificados!.first.arquivo}',
-                                    fit: BoxFit.contain,
-                                  ),
+                              ? Image.network(
+                                  '$urlImagem/storage/fotos/classificados/${classificado!.fotosclassificados!.first.arquivo}',
+                                  fit: BoxFit.contain,
                                 )
                               : CarouselSlider(
                                   options: CarouselOptions(
-                                    height: 400.0,
                                     enableInfiniteScroll: false,
                                     enlargeCenterPage: true,
                                   ),
