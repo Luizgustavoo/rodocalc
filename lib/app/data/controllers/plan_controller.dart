@@ -21,6 +21,25 @@ class PlanController extends GetxController {
   final TextEditingController nameCardController = TextEditingController();
   final TextEditingController cpfController = TextEditingController();
 
+  List<CardType> cardTypes = [
+    CardType(name: 'Visa', icon: Icons.credit_card),
+    CardType(name: 'Mastercard', icon: Icons.credit_card),
+    CardType(name: 'American Express', icon: Icons.credit_card),
+    CardType(name: 'Discover', icon: Icons.credit_card),
+    CardType(name: 'Elo', icon: Icons.credit_card),
+    CardType(name: 'Hipercard', icon: Icons.credit_card),
+    CardType(name: 'Diners Club', icon: Icons.credit_card),
+    CardType(name: 'JCB', icon: Icons.credit_card),
+  ];
+
+  var selectedCardType = ''.obs;
+
+  void updateCardType(String? newType) {
+    if (newType != null) {
+      selectedCardType.value = newType;
+    }
+  }
+
   RxList<Plan> listPlans = RxList<Plan>([]);
   var myPlan = Rxn<UserPlan>();
 
@@ -142,4 +161,11 @@ class PlanController extends GetxController {
     selectedLicenses = 1.obs;
     calculatedPrice = ''.obs;
   }
+}
+
+class CardType {
+  final String name;
+  final IconData icon;
+
+  CardType({required this.name, required this.icon});
 }

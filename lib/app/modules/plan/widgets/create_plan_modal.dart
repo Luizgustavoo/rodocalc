@@ -54,40 +54,64 @@ class CreatePlanModal extends GetView<PlanController> {
                 ),
               ),
               const SizedBox(height: 15.0),
-              Obx(
-                () => TextFormField(
-                  controller: controller.numberCardController,
-                  decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.credit_card),
-                      labelText: controller.bandeiraCartao.value,
-                      counterText: ''),
-                  keyboardType: TextInputType.number,
-                  maxLength: 19,
-                  onChanged: (value) {
-                    controller.numberCardController.text =
-                        controller.formatCardNumber(value);
-                    controller.numberCardController.selection =
-                        TextSelection.fromPosition(TextPosition(
-                            offset:
-                                controller.numberCardController.text.length));
+              TextFormField(
+                controller: controller.numberCardController,
+                decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.credit_card),
+                    labelText: 'NÚMERO DO CARTÃO',
+                    counterText: ''),
+                keyboardType: TextInputType.number,
+                maxLength: 19,
+                onChanged: (value) {
+                  controller.numberCardController.text =
+                      controller.formatCardNumber(value);
+                  controller.numberCardController.selection =
+                      TextSelection.fromPosition(TextPosition(
+                          offset: controller.numberCardController.text.length));
 
-                    controller.bandeiraCartao.value =
-                        FormattedInputers.getCardType(value);
+                  controller.bandeiraCartao.value =
+                      FormattedInputers.getCardType(value);
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, insira o número do cartão';
+                  }
+                  value =
+                      value.replaceAll(RegExp(r'\s+'), ''); // Remove espaços
+                  if (value.length < 16 || value.length > 19) {
+                    return 'Número do cartão inválido';
+                  }
+                  if (!FormattedInputers.isValidCardNumber(value)) {
+                    return 'Número do cartão inválido';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 10),
+              Obx(
+                () => DropdownButtonFormField<String>(
+                  value: controller.selectedCardType.value.isEmpty
+                      ? null
+                      : controller.selectedCardType.value,
+                  items: controller.cardTypes.map((cardType) {
+                    return DropdownMenuItem<String>(
+                      value: cardType.name,
+                      child: Row(
+                        children: [
+                          Icon(cardType.icon),
+                          SizedBox(width: 8),
+                          Text(cardType.name),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (newValue) {
+                    controller.updateCardType(newValue);
                   },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, insira o número do cartão';
-                    }
-                    value =
-                        value.replaceAll(RegExp(r'\s+'), ''); // Remove espaços
-                    if (value.length < 16 || value.length > 19) {
-                      return 'Número do cartão inválido';
-                    }
-                    if (!FormattedInputers.isValidCardNumber(value)) {
-                      return 'Número do cartão inválido';
-                    }
-                    return null;
-                  },
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.credit_card),
+                    labelText: 'BANDEIRA DO CARTÃO',
+                  ),
                 ),
               ),
               const SizedBox(height: 10),
