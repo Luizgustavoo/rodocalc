@@ -4,6 +4,7 @@ class UserPlan {
   int? id;
   int? usuarioId;
   int? planoId;
+  int? valorPlano;
   String? dataAssinaturaPlano;
   String? dataVencimentoPlano;
   String? assignatureId;
@@ -18,6 +19,7 @@ class UserPlan {
       this.dataVencimentoPlano,
       this.quantidadeLicencas,
       this.assignatureId,
+      this.valorPlano,
       this.plano});
 
   UserPlan.fromJson(Map<String, dynamic> json) {
@@ -28,6 +30,7 @@ class UserPlan {
     dataVencimentoPlano = json['data_vencimento_plano'];
     quantidadeLicencas = json['quantidade_licencas'];
     assignatureId = json['assignature_id'];
+    valorPlano = json['valor_plano'];
     plano = json['plano'] != null ? Plan.fromJson(json['plano']) : null;
   }
 
@@ -40,6 +43,7 @@ class UserPlan {
     data['data_vencimento_plano'] = dataVencimentoPlano;
     data['quantidade_licencas'] = quantidadeLicencas;
     data['assignature_id'] = assignatureId;
+    data['valor_plano'] = valorPlano;
     if (plano != null) {
       data['plano'] = plano!.toJson();
     }

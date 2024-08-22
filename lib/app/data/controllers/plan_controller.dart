@@ -63,6 +63,7 @@ class PlanController extends GetxController {
           usuarioId: ServiceStorage.getUserId(),
           planoId: selectedPlan.value!.id!,
           quantidadeLicencas: selectedLicenses.value,
+          valorPlano: Services.converterParaCentavos(calculatedPrice.value),
         ),
         CreditCard(
           cardName: nameCardController.text,
@@ -70,7 +71,7 @@ class PlanController extends GetxController {
           cpf: cpfController.text,
           cvv: cvvController.text,
           cardNumber: numberCardController.text,
-          valor: Services.reaisParaCentavos(calculatedPrice.value),
+          valor: Services.converterParaCentavos(calculatedPrice.value),
         ),
       );
       if (mensagem != null) {
