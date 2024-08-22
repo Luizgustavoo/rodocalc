@@ -81,23 +81,45 @@ class PlanApiClient {
       Map<String, String> telefoneSplit =
           Services.separarDDD(auth.user!.people!.telefone.toString());
 
+      Map<String, String> mesAno =
+          Services.mesAnoValidateCreditCart(creditCard.validate.toString());
+
       String enderecoCompleto =
           "${auth.user!.people!.numeroCasa}, ${auth.user!.people!.endereco}, ${auth.user!.people!.bairro}";
 
       String cpf = Services.limparCPF(creditCard.cpf.toString());
       String cep = Services.limparCEP(auth.user!.people!.cep.toString());
 
-      int valor =
-          Services.converterParaCentavos(userPlan.valorPlano.toString());
+      String cidade = auth.user!.people!.cidade.toString();
+      String uf = auth.user!.people!.uf.toString();
+
+      int valor = userPlan.valorPlano!;
 
       var requestBody = {
         'usuario_id': userPlan.usuarioId.toString(),
         'plano_id': userPlan.planoId.toString(),
         'quantidade_licencas': userPlan.quantidadeLicencas.toString(),
+        /*--------DADOS DO CARTÃO--------*/
+        'number':
+            Services.sanitizarCartaoCredito(creditCard.cardNumber.toString()),
+        'holder_name': creditCard.cardName.toString(),
+        'holder_document': cpf,
+        'exp_month': mesAno['mes'],
+        'exp_year': mesAno['ano'],
+        'cvv': creditCard.cvv.toString(),
+        'brand': creditCard.brand,
+        'label': 'Rodocalc',
+        'billing_address_line_1': enderecoCompleto,
+        'billing_address_line_2': '',
+        'billing_address_zip_code': cep,
+        'billing_address_city': cidade,
+        'billing_address_state': uf,
+        'billing_address_country': 'BR',
+        /*---------FIM DADOS DO CARTÃO-------*/
         "item_id": "123456",
         "item_description": "Item description",
-        "item_amount": valor,
-        "item_quantity": "1",
+        "item_amount": valor.toString(),
+        "item_quantity": userPlan.quantidadeLicencas.toString(),
         "interval": "30",
         "customer_name": creditCard.cardName.toString(),
         "customer_email": auth.user!.email.toString(),
@@ -105,13 +127,13 @@ class PlanApiClient {
         "installments": "1",
         "billing_address_line_1": enderecoCompleto,
         "billing_address_zipcode": cep,
-        "billing_address_city": auth.user!.people!.cidade.toString(),
-        "billing_address_state": auth.user!.people!.uf.toString(),
+        "billing_address_city": cidade,
+        "billing_address_state": uf,
         "billing_address_country": "BR",
         "customer_address_line_1": enderecoCompleto,
         "customer_address_zip_code": cep,
-        "customer_address_city": auth.user!.people!.cidade.toString(),
-        "customer_address_state": auth.user!.people!.uf.toString(),
+        "customer_address_city": cidade,
+        "customer_address_state": uf,
         "customer_address_country": "BR",
         "customer_phone_home_country_code": "55",
         "customer_phone_home_area_code": telefoneSplit['ddd'],
@@ -129,32 +151,30 @@ class PlanApiClient {
           "billing_address": {
             "line_1": enderecoCompleto,
             "zip_code": cep,
-            "city": auth.user!.people!.cidade.toString(),
-            "state": "SP",
+            "city": cidade,
+            "state": uf,
             "country": "BR"
           }
         },
-        "metadata": {"id": "my_subscription_id"}
+        "metadata": {
+          "id": "my_subscription_id",
+          "licenses": userPlan.quantidadeLicencas.toString()
+        }
       };
 
       final response = await http.post(
         indicatorUrl,
         headers: {
           'Accept': 'application/json',
+          'Content-Type': 'application/json',
           'Authorization': token,
         },
-        body: requestBody,
+        body: jsonEncode(requestBody),
       );
 
-      print(json.decode(response.body));
-      if (response.statusCode == 201 ||
-          response.statusCode == 422 ||
-          response.statusCode == 404) {
-        return json.decode(response.body);
-      } else {
-        // Log or handle non-successful responses
-        return null;
-      }
+      print(response.body);
+
+      return json.decode(response.body);
     } catch (err) {
       return null;
     }

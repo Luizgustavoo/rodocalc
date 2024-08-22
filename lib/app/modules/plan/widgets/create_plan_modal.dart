@@ -204,7 +204,7 @@ class CreatePlanModal extends GetView<PlanController> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Obx(() => Text(
-                        'TOTAL: ${(controller.calculatedPrice.value)}',
+                        'TOTAL: ${(FormattedInputers.formatValue(controller.calculatedPrice.value))}',
                         style: const TextStyle(
                             fontFamily: 'Inter-Black', fontSize: 18),
                       )),

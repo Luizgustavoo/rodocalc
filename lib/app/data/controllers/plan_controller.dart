@@ -72,13 +72,22 @@ class PlanController extends GetxController {
           cvv: cvvController.text,
           cardNumber: numberCardController.text,
           valor: Services.converterParaCentavos(calculatedPrice.value),
+          brand: selectedCardType.value.toString(),
         ),
       );
       if (mensagem != null) {
-        retorno = {
-          'success': mensagem['success'],
-          'message': mensagem['message']
-        };
+        if (mensagem['status'] == 'active') {
+          retorno = {
+            'success': true,
+            'message': "Operação realizada com sucesso!"
+          };
+        } else {
+          retorno = {
+            'success': false,
+            'message': mensagem['status'] + " Falha ao realizar a operação!"
+          };
+        }
+
         getMyPlan();
       } else {
         retorno = {

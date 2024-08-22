@@ -126,7 +126,18 @@ class Services {
     valorSanitizado = valorSanitizado.replaceAll(",", ".");
     double valorEmReais = double.parse(valorSanitizado);
     int valorEmCentavos = (valorEmReais * 100).round();
-
     return valorEmCentavos;
+  }
+
+  static Map<String, String> mesAnoValidateCreditCart(String dataValidate) {
+    List<String> partes = dataValidate.split('/');
+    int expMonth = int.parse(partes[0]);
+    int expYear = int.parse(partes[1]);
+    return {'mes': expMonth.toString(), 'ano': expYear.toString()};
+  }
+
+  static String sanitizarCartaoCredito(String numeroCartao) {
+    String cartaoSanitizado = numeroCartao.replaceAll(RegExp(r'\D'), '');
+    return cartaoSanitizado;
   }
 }
