@@ -2,11 +2,9 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:rodocalc/app/data/base_url.dart';
-import 'package:rodocalc/app/data/models/auth_model.dart';
 import 'package:rodocalc/app/data/models/credit_card_model.dart';
 import 'package:rodocalc/app/data/models/user_plan_model.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
-import 'package:rodocalc/app/utils/services.dart';
 
 class PlanApiClient {
   final http.Client httpClient = http.Client();
@@ -68,43 +66,6 @@ class PlanApiClient {
       final token = "Bearer ${ServiceStorage.getToken()}";
       final indicatorUrl = Uri.parse('$baseUrl/v1/planousuario/contratar');
 
-      final Auth auth = ServiceStorage.getAuth();
-
-      if (auth == null) {
-        return {
-          'success': false,
-          'data': null,
-          'message': 'Usuário nao encontrado na sessão ativa!'
-        };
-      }
-
-      Map<String, String> telefoneSplit =
-          Services.separarDDD(auth.user!.people!.telefone.toString());
-
-      String enderecoCompleto =
-          "${auth.user!.people!.numeroCasa}, ${auth.user!.people!.endereco}, ${auth.user!.people!.bairro}";
-
-      String cep = Services.limparCEP(auth.user!.people!.cep.toString());
-      String cpfStorage = Services.limparCPF(auth.user!.people!.cpf.toString());
-      String cpfCredicard = Services.limparCPF(creditCard.cpf.toString());
-      String dataHora = Services.obterDataHoraAtualISO();
-
-      var billing_address = {
-        "line_1": enderecoCompleto.toString(),
-        "zip_code": cep.toString(),
-        "city": auth.user!.people!.cidade.toString(),
-        "state": auth.user!.people!.uf.toString(),
-        "country": "BR"
-      };
-
-      var credit_card = {
-        "installments": "1",
-        "statement_descriptor": "RODOCALC",
-        "billing_address": billing_address
-      };
-
-      var meta_data = {"id": "my_subscription_id"};
-
       var requestBody = {
         'usuario_id': userPlan.usuarioId.toString(),
         'plano_id': userPlan.planoId.toString(),
@@ -112,36 +73,45 @@ class PlanApiClient {
 
         "item_id": "123456",
         "item_description": "Item description",
-        "item_amount": creditCard.valor.toString(),
-        // Valor em centavos, dependendo da API
-        "item_quantity": "1",
-        "interval": "30",
-        "customer_name": creditCard.cardName.toString(),
-        "customer_email": auth.user!.email.toString(),
-        "customer_document": cpfCredicard.toString(),
-        "installments": "1",
-        "billing_address_line_1": enderecoCompleto.toString(),
-        "billing_address_zipcode": cep.toString(),
-        "billing_address_city": auth.user!.people!.cidade.toString(),
-        "billing_address_state": auth.user!.people!.uf.toString(),
+        "item_amount": 1000, // Valor em centavos, dependendo da API
+        "item_quantity": 1,
+        "interval": 30,
+        "customer_name": "Tony Stark",
+        "customer_email": "avengerstark@ligadajustica.com.br",
+        "customer_document": "03154435026",
+        "installments": 1,
+        "billing_address_line_1": "7221, Avenida Dra Ruth Cardoso, Pinheiro",
+        "billing_address_zipcode": "05425070",
+        "billing_address_city": "São Paulo",
+        "billing_address_state": "SP",
         "billing_address_country": "BR",
-        "customer_address_line_1": enderecoCompleto.toString(),
-        "customer_address_zip_code": cep.toString(),
-        "customer_address_city": auth.user!.people!.cidade.toString(),
-        "customer_address_state": auth.user!.people!.uf.toString(),
+        "customer_address_line_1": "7221, Avenida Dra Ruth Cardoso, Pinheiro",
+        "customer_address_zip_code": "05425070",
+        "customer_address_city": "São Paulo",
+        "customer_address_state": "SP",
         "customer_address_country": "BR",
         "customer_phone_home_country_code": "55",
-        "customer_phone_home_area_code": telefoneSplit['ddd'].toString(),
-        "customer_phone_home_number": telefoneSplit['numero'].toString(),
+        "customer_phone_home_area_code": "11",
+        "customer_phone_home_number": "000000000",
         "customer_phone_mobile_country_code": "55",
-        "customer_phone_mobile_area_code": telefoneSplit['ddd'].toString(),
-        "customer_phone_mobile_number": telefoneSplit['numero'].toString(),
+        "customer_phone_mobile_area_code": "11",
+        "customer_phone_mobile_number": "000000000",
         "plan_id": "plan_pV0yebkI72CBvZ85",
         "payment_method": "credit_card",
         "card_token": "token_RYV93LKFvFPpq6nX",
-        "start_at": dataHora.toString(),
-        "credit_card": credit_card,
-        "metadata": meta_data
+        "start_at": "2024-08-16T00:00:00Z",
+        "credit_card": {
+          "installments": 1,
+          "statement_descriptor": "AVENGERS",
+          "billing_address": {
+            "line_1": "7221, Avenida Dra Ruth Cardoso, Pinheiro",
+            "zip_code": "05425070",
+            "city": "São Paulo",
+            "state": "SP",
+            "country": "BR"
+          }
+        },
+        "metadata": {"id": "my_subscription_id"}
       };
 
       final response = await http.post(
@@ -149,9 +119,8 @@ class PlanApiClient {
         headers: {
           'Accept': 'application/json',
           'Authorization': token,
-          'Content-Type': 'application/json',
         },
-        body: jsonEncode(requestBody),
+        body: requestBody,
       );
 
       print(json.decode(response.body));
