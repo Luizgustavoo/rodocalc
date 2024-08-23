@@ -25,7 +25,6 @@ class PlanApiClient {
           "Authorization": token,
         },
       );
-      print(json.decode(response.body));
       if (response.statusCode == 200) {
         return json.decode(response.body);
       } else {
@@ -37,7 +36,7 @@ class PlanApiClient {
     return null;
   }
 
-  getMyplan() async {
+  getMyPlans() async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
@@ -52,7 +51,34 @@ class PlanApiClient {
         },
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return json.decode(response.body);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      Exception(e);
+    }
+    return null;
+  }
+
+  getAllPlansAlterPlanDropDown(int plano) async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+
+      Uri plansUrl;
+      String url =
+          '$baseUrl/v1/plano/myupdatevehicles/${ServiceStorage.getUserId()}/$plano';
+      plansUrl = Uri.parse(url);
+      var response = await httpClient.get(
+        plansUrl,
+        headers: {
+          "Accept": "application/json",
+          "Authorization": token,
+        },
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
         return json.decode(response.body);
       } else {
         return null;
@@ -173,6 +199,30 @@ class PlanApiClient {
       );
 
       print(response.body);
+
+      return json.decode(response.body);
+    } catch (err) {
+      return null;
+    }
+  }
+
+  cancelSubscribe(String idSubscription) async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+      final indicatorUrl = Uri.parse('$baseUrl/v1/pagarme/cancelsignature');
+
+      var requestBody = {
+        'assignature': idSubscription.toString(),
+      };
+
+      final response = await http.post(
+        indicatorUrl,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': token,
+        },
+        body: jsonEncode(requestBody),
+      );
 
       return json.decode(response.body);
     } catch (err) {

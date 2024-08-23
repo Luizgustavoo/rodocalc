@@ -5,6 +5,7 @@ import 'package:rodocalc/app/data/models/plan_model.dart';
 import 'package:rodocalc/app/global/custom_app_bar.dart';
 import 'package:rodocalc/app/modules/plan/widgets/create_plan_modal.dart';
 import 'package:rodocalc/app/modules/plan/widgets/custom_plan_card.dart';
+import 'package:rodocalc/app/routes/app_routes.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 
 class PlanView extends GetView<PlanController> {
@@ -50,24 +51,25 @@ class PlanView extends GetView<PlanController> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Expanded(
+                            flex: 2,
                             child: Column(
                               children: [
-                                const Text(
-                                  'Meu plano atual',
-                                  style: TextStyle(
-                                    fontFamily: 'Inter-Regular',
-                                    color: Colors.white,
-                                    fontSize: 16.0,
+                                Obx(
+                                  () => Text(
+                                    controller.myPlans.length <= 1
+                                        ? 'Meu Plano Ativo'
+                                        : 'Meus Planos Ativos',
+                                    style: TextStyle(
+                                      fontFamily: 'Inter-Regular',
+                                      color: Colors.black,
+                                      fontSize: 16.0,
+                                    ),
                                   ),
                                 ),
-                                Obx(
-                                  () {
-                                    final planDescription = controller
-                                        .myPlan.value?.plano?.descricao;
+                                Obx(() {
+                                  if (controller.myPlans.isEmpty) {
                                     return Text(
-                                      planDescription != null
-                                          ? planDescription.toUpperCase()
-                                          : 'Descrição não disponível',
+                                      'Nenhum plano disponível',
                                       style: const TextStyle(
                                         fontFamily: 'Inter-Black',
                                         color: Colors.white,
@@ -75,66 +77,66 @@ class PlanView extends GetView<PlanController> {
                                         fontWeight: FontWeight.bold,
                                       ),
                                     );
-                                  },
-                                )
+                                  }
+
+                                  return Column(
+                                    children: controller.myPlans.map((plan) {
+                                      final planDescription =
+                                          plan.plano?.descricao;
+                                      final dataVencimentoPlano =
+                                          plan.dataVencimentoPlano;
+
+                                      return Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            planDescription != null
+                                                ? planDescription.toUpperCase()
+                                                : 'Descrição não disponível',
+                                            style: const TextStyle(
+                                              fontFamily: 'Inter-Black',
+                                              color: Colors.white,
+                                              fontSize: 24.0,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          Text(
+                                            dataVencimentoPlano != null
+                                                ? "Vencimento: ${FormattedInputers.formatApiDate(dataVencimentoPlano)}"
+                                                : "Data de vencimento não disponível",
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: 'Inter_Regular',
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 8.0),
+                                          // Espaçamento entre os planos
+                                        ],
+                                      );
+                                    }).toList(),
+                                  );
+                                }),
                               ],
                             ),
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const SizedBox(height: 20.0),
-                              Obx(
-                                () {
-                                  final quantidadeLicencas = controller
-                                      .myPlan.value?.quantidadeLicencas;
-                                  return Text(
-                                    quantidadeLicencas != null
-                                        ? '$quantidadeLicencas licença(s)'
-                                        : 'Licenças não disponíveis',
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      fontFamily: 'Inter-Bold',
-                                      color: Colors.white,
-                                      fontSize: 16.0,
-                                    ),
-                                  );
-                                },
-                              ),
-                              const SizedBox(height: 4.0),
-                              Obx(
-                                () {
-                                  final dataVencimentoPlano = controller
-                                      .myPlan.value?.dataVencimentoPlano;
-                                  return Text(
-                                    dataVencimentoPlano != null
-                                        ? "Vencimento: ${FormattedInputers.formatApiDate(dataVencimentoPlano)}"
-                                        : "Data de vencimento não disponível",
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: 'Inter_Regular',
-                                      fontSize: 12,
-                                    ),
-                                  );
-                                },
-                              ),
-                              const SizedBox(height: 5.0),
-                              InkWell(
-                                onTap: () {
-                                  // Adicione aqui a lógica para cancelar a assinatura
+                          Expanded(
+                              flex: 1,
+                              child: TextButton(
+                                onPressed: () {
+                                  Get.toNamed(Routes.manageplan,
+                                      arguments: controller.myPlans);
                                 },
                                 child: const Text(
-                                  'Cancelar assinatura',
+                                  'GERENCIAR',
                                   style: TextStyle(
-                                    fontFamily: 'Inter_Regular',
-                                    color: Colors.white,
-                                    decoration: TextDecoration.underline,
-                                    fontSize: 14.0,
-                                  ),
+                                      color: Colors.black,
+                                      decoration: TextDecoration.underline,
+                                      fontWeight: FontWeight.bold),
                                 ),
-                              ),
-                            ],
-                          ),
+                              ))
                         ],
                       ),
                     ],

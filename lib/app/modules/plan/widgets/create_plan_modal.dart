@@ -209,33 +209,40 @@ class CreatePlanModal extends GetView<PlanController> {
                             fontFamily: 'Inter-Black', fontSize: 18),
                       )),
                   CustomElevatedButton(
-                      onPressed: () async {
-                        Map<String, dynamic> retorno =
-                            await controller.subscribe();
+                    onPressed: () async {
+                      Map<String, dynamic> retorno =
+                          await controller.subscribe();
 
-                        if (retorno['success'] == true) {
-                          Get.back();
-                          controller.clearAllFields();
+                      if (retorno['success'] == true) {
+                        Get.back();
+                        controller.clearAllFields();
 
-                          Get.snackbar(
-                              'Sucesso!', retorno['message'].join('\n'),
-                              backgroundColor: Colors.green,
-                              colorText: Colors.white,
-                              duration: const Duration(seconds: 2),
-                              snackPosition: SnackPosition.BOTTOM);
-                        } else {
-                          Get.snackbar('Falha!', retorno['message'].join('\n'),
-                              backgroundColor: Colors.red,
-                              colorText: Colors.white,
-                              duration: const Duration(seconds: 2),
-                              snackPosition: SnackPosition.BOTTOM);
-                        }
-                      },
-                      child: const Text(
+                        Get.snackbar('Sucesso!', retorno['message'].join('\n'),
+                            backgroundColor: Colors.green,
+                            colorText: Colors.white,
+                            duration: const Duration(seconds: 2),
+                            snackPosition: SnackPosition.BOTTOM);
+                      } else {
+                        Get.snackbar('Falha!', retorno['message'].join('\n'),
+                            backgroundColor: Colors.red,
+                            colorText: Colors.white,
+                            duration: const Duration(seconds: 2),
+                            snackPosition: SnackPosition.BOTTOM);
+                      }
+                    },
+                    child: Obx(() {
+                      if (controller.isLoadingSubscrible.value) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      return const Text(
                         'CONTRATAR',
                         style: TextStyle(
                             color: Colors.white, fontFamily: 'InterBold'),
-                      ))
+                      );
+                    }),
+                  )
                 ],
               )
             ],

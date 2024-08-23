@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/models/credit_card_model.dart';
 import 'package:rodocalc/app/data/models/plan_model.dart';
+import 'package:rodocalc/app/data/models/planos_alter_drop_down_model.dart';
 import 'package:rodocalc/app/data/models/user_plan_model.dart';
 import 'package:rodocalc/app/data/repositories/plan_repository.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
@@ -42,7 +43,9 @@ class PlanController extends GetxController {
   }
 
   RxList<Plan> listPlans = RxList<Plan>([]);
-  var myPlan = Rxn<UserPlan>();
+  RxList<UserPlan> myPlans = RxList<UserPlan>([]);
+  RxList<AlterPlanDropDown> myPlansDropDownUpdate =
+      RxList<AlterPlanDropDown>([]);
 
   final repository = Get.put(PlanRepository());
 
@@ -55,9 +58,11 @@ class PlanController extends GetxController {
   dynamic mensagem;
   RxBool isLoading = true.obs;
   RxBool isLoadingMyPlan = true.obs;
+  RxBool isLoadingSubscrible = false.obs;
 
   Future<Map<String, dynamic>> subscribe() async {
     if (planKey.currentState!.validate()) {
+      isLoadingSubscrible.value = true;
       mensagem = await repository.subscribe(
         UserPlan(
           usuarioId: ServiceStorage.getUserId(),
@@ -75,20 +80,16 @@ class PlanController extends GetxController {
           brand: selectedCardType.value.toString(),
         ),
       );
-      if (mensagem != null) {
-        if (mensagem['status'] == 'active') {
-          retorno = {
-            'success': true,
-            'message': "Operação realizada com sucesso!"
-          };
-        } else {
-          retorno = {
-            'success': false,
-            'message': mensagem['status'] + " Falha ao realizar a operação!"
-          };
-        }
 
-        getMyPlan();
+      isLoadingSubscrible.value = false;
+
+      if (mensagem != null) {
+        retorno = {
+          'success': mensagem['success'],
+          'message': mensagem['message']
+        };
+
+        getMyPlans();
       } else {
         retorno = {
           'success': false,
@@ -96,6 +97,31 @@ class PlanController extends GetxController {
         };
       }
     }
+    isLoadingSubscrible.value = false;
+    return retorno;
+  }
+
+  Future<Map<String, dynamic>> cancelSubscribe(String idSubscription) async {
+    if (idSubscription.isNotEmpty) {
+      isLoadingSubscrible.value = true;
+      mensagem = await repository.cancelSubscribe(idSubscription);
+      isLoadingSubscrible.value = false;
+
+      if (mensagem != null) {
+        retorno = {
+          'success': mensagem['success'],
+          'message': mensagem['message']
+        };
+
+        getMyPlans();
+      } else {
+        retorno = {
+          'success': false,
+          'message': ['Falha ao realizar a operação!']
+        };
+      }
+    }
+    isLoadingSubscrible.value = false;
     return retorno;
   }
 
@@ -111,11 +137,21 @@ class PlanController extends GetxController {
     isLoading.value = false;
   }
 
-  Future<void> getMyPlan() async {
+  Future<void> getMyPlans() async {
     isLoadingMyPlan.value = true;
     try {
-      myPlan.value = await repository.getMyplan();
-      print(myPlan.value);
+      myPlans.value = await repository.getMyPlans();
+    } catch (e) {
+      Exception(e);
+    }
+    isLoadingMyPlan.value = false;
+  }
+
+  Future<void> getAllPlansAlterPlanDropDown(int plano) async {
+    isLoadingMyPlan.value = true;
+    try {
+      myPlansDropDownUpdate.value =
+          await repository.getAllPlansAlterPlanDropDown(plano);
     } catch (e) {
       Exception(e);
     }
@@ -173,6 +209,8 @@ class PlanController extends GetxController {
     selectedPlan = Rxn<Plan>();
     selectedLicenses = 1.obs;
     calculatedPrice = ''.obs;
+    selectedPlan.value = null;
+    selectedCardType = ''.obs;
   }
 }
 

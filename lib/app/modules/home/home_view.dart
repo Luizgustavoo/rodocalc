@@ -300,7 +300,7 @@ class HomeView extends GetView<HomeController> {
                                       label: 'Planos',
                                       onTap: () {
                                         planController.getAll();
-                                        planController.getMyPlan();
+                                        planController.getMyPlans();
                                         Get.toNamed(Routes.plan);
                                       },
                                     ),

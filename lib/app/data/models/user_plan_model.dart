@@ -1,4 +1,5 @@
 import 'package:rodocalc/app/data/models/plan_model.dart';
+import 'package:rodocalc/app/data/models/vehicle_model.dart';
 
 class UserPlan {
   int? id;
@@ -10,6 +11,7 @@ class UserPlan {
   String? assignatureId;
   int? quantidadeLicencas;
   Plan? plano;
+  List<Vehicle>? veiculos;
 
   UserPlan(
       {this.id,
@@ -20,6 +22,7 @@ class UserPlan {
       this.quantidadeLicencas,
       this.assignatureId,
       this.valorPlano,
+      this.veiculos,
       this.plano});
 
   UserPlan.fromJson(Map<String, dynamic> json) {
@@ -30,8 +33,14 @@ class UserPlan {
     dataVencimentoPlano = json['data_vencimento_plano'];
     quantidadeLicencas = json['quantidade_licencas'];
     assignatureId = json['assignature_id'];
-    valorPlano = json['valor_plano'];
+    valorPlano = (json['valor_plano'] * 100).toInt();
     plano = json['plano'] != null ? Plan.fromJson(json['plano']) : null;
+    if (json['veiculos'] != null) {
+      veiculos = <Vehicle>[];
+      json['veiculos'].forEach((v) {
+        veiculos!.add(Vehicle.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -46,6 +55,9 @@ class UserPlan {
     data['valor_plano'] = valorPlano;
     if (plano != null) {
       data['plano'] = plano!.toJson();
+    }
+    if (veiculos != null) {
+      data['veiculos'] = veiculos!.map((v) => v.toJson()).toList();
     }
     return data;
   }

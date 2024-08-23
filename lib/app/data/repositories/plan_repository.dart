@@ -1,5 +1,6 @@
 import 'package:rodocalc/app/data/models/credit_card_model.dart';
 import 'package:rodocalc/app/data/models/plan_model.dart';
+import 'package:rodocalc/app/data/models/planos_alter_drop_down_model.dart';
 import 'package:rodocalc/app/data/models/user_plan_model.dart';
 import 'package:rodocalc/app/data/providers/plan_provider.dart';
 
@@ -21,18 +22,54 @@ class PlanRepository {
     return list;
   }
 
-  getMyplan() async {
-    var response = await apiClient.getMyplan();
-    if (response != null) {
-      return UserPlan.fromJson(response['data']);
-    } else {
-      return null;
+  getMyPlans() async {
+    List<UserPlan> list = <UserPlan>[];
+    try {
+      var response = await apiClient.getMyPlans();
+      if (response != null) {
+        response['data'].forEach((e) {
+          list.add(UserPlan.fromJson(e));
+        });
+      } else {
+        return null;
+      }
+    } catch (e) {
+      Exception(e);
     }
+    print(list);
+    return list;
+  }
+
+  getAllPlansAlterPlanDropDown(int plano) async {
+    List<AlterPlanDropDown> list = <AlterPlanDropDown>[];
+    try {
+      var response = await apiClient.getAllPlansAlterPlanDropDown(plano);
+      if (response != null) {
+        response['data'].forEach((e) {
+          list.add(AlterPlanDropDown.fromJson(e));
+        });
+      } else {
+        return null;
+      }
+    } catch (e) {
+      Exception(e);
+    }
+    print(list);
+    return list;
   }
 
   subscribe(UserPlan userplan, CreditCard creditCard) async {
     try {
       var response = await apiClient.subscribe(userplan, creditCard);
+      return response;
+    } catch (e) {
+      Exception(e);
+    }
+  }
+
+  cancelSubscribe(String idSubscription) async {
+    try {
+      var response = await apiClient.cancelSubscribe(idSubscription);
       return response;
     } catch (e) {
       Exception(e);
