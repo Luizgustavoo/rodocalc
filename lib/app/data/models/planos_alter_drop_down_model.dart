@@ -1,4 +1,5 @@
 class AlterPlanDropDown {
+  int? id;
   int? planoId;
   String? plano;
   int? quantidadeLicencas;
@@ -6,11 +7,13 @@ class AlterPlanDropDown {
 
   AlterPlanDropDown(
       {this.planoId,
+      this.id,
       this.plano,
       this.quantidadeLicencas,
       this.quantidadeVeiculos});
 
   AlterPlanDropDown.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
     planoId = json['plano_id'];
     plano = json['plano'];
     quantidadeLicencas = json['quantidade_licencas'];
@@ -19,6 +22,7 @@ class AlterPlanDropDown {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
     data['plano_id'] = this.planoId;
     data['plano'] = this.plano;
     data['quantidade_licencas'] = this.quantidadeLicencas;

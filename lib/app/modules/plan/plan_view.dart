@@ -126,8 +126,8 @@ class PlanView extends GetView<PlanController> {
                               flex: 1,
                               child: TextButton(
                                 onPressed: () {
-                                  Get.toNamed(Routes.manageplan,
-                                      arguments: controller.myPlans);
+                                  controller.getMyPlans();
+                                  Get.toNamed(Routes.manageplan);
                                 },
                                 child: const Text(
                                   'GERENCIAR',

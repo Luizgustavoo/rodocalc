@@ -4,18 +4,12 @@ import 'package:rodocalc/app/data/controllers/plan_controller.dart';
 import 'package:rodocalc/app/data/models/user_plan_model.dart';
 import 'package:rodocalc/app/global/custom_app_bar.dart';
 import 'package:rodocalc/app/modules/plan/widgets/manage_plan_card.dart';
-import 'package:rodocalc/app/utils/formatter.dart';
 
 class ManagePlanView extends GetView<PlanController> {
   const ManagePlanView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    RxList<UserPlan> myPlans = <UserPlan>[].obs;
-    if (Get.arguments != null && Get.arguments is List<UserPlan>) {
-      myPlans.value = Get.arguments as List<UserPlan>;
-    }
-
     return Scaffold(
       appBar: const CustomAppBar(title: 'MEUS PLANOS'),
       body: Stack(
@@ -53,7 +47,7 @@ class ManagePlanView extends GetView<PlanController> {
                       child: Column(children: [
                         const SizedBox(height: 5),
                         Obx(() {
-                          if (myPlans.isEmpty) {
+                          if (controller.myPlans.isEmpty) {
                             return const Expanded(
                                 child: Center(
                               child: Text(
@@ -64,20 +58,12 @@ class ManagePlanView extends GetView<PlanController> {
                             child: ListView.builder(
                               shrinkWrap: true,
                               physics: const AlwaysScrollableScrollPhysics(),
-                              itemCount: myPlans.length,
+                              itemCount: controller.myPlans.length,
                               itemBuilder: (context, index) {
-                                final UserPlan plan = myPlans[index];
+                                final UserPlan plan = controller.myPlans[index];
                                 return ManagePlanCard(
-                                  plano: plan.id!,
+                                  userPlan: plan,
                                   controller: controller,
-                                  titulo:
-                                      "PLANO ${plan.plano!.descricao.toString()}",
-                                  descricao:
-                                      "${plan.quantidadeLicencas.toString()} licença(s) ativas",
-                                  vencimento:
-                                      "${FormattedInputers.formatApiDate(plan.dataVencimentoPlano.toString())}",
-                                  valor: 'R\$250,00',
-                                  vehicles: plan.veiculos!,
                                 );
                               },
                             ),

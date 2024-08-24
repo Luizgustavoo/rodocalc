@@ -221,8 +221,38 @@ class PlanApiClient {
           'Accept': 'application/json',
           'Authorization': token,
         },
-        body: jsonEncode(requestBody),
+        body: requestBody,
       );
+
+      print(json.decode(response.body));
+
+      return json.decode(response.body);
+    } catch (err) {
+      return null;
+    }
+  }
+
+  updatePlanVehicle(int vehicle, int plan) async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+      final indicatorUrl =
+          Uri.parse('$baseUrl/v1/planousuario/alterarplanoveiculo');
+
+      var requestBody = {
+        'veiculo': vehicle.toString(),
+        'plano': plan.toString(),
+      };
+
+      final response = await http.post(
+        indicatorUrl,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': token,
+        },
+        body: requestBody,
+      );
+
+      print(json.decode(response.body));
 
       return json.decode(response.body);
     } catch (err) {

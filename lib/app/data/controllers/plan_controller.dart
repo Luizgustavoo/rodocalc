@@ -13,6 +13,7 @@ class PlanController extends GetxController {
   var selectedPlan = Rxn<Plan>();
   var selectedLicenses = 1.obs;
   var calculatedPrice = ''.obs;
+  var selectedPlanDropDown = 0.obs;
 
   var bandeiraCartao = 'NÚMERO DO CARTÃO'.obs;
 
@@ -59,6 +60,7 @@ class PlanController extends GetxController {
   RxBool isLoading = true.obs;
   RxBool isLoadingMyPlan = true.obs;
   RxBool isLoadingSubscrible = false.obs;
+  RxBool isLoadingUpdateVehiclePlan = false.obs;
 
   Future<Map<String, dynamic>> subscribe() async {
     if (planKey.currentState!.validate()) {
@@ -122,6 +124,29 @@ class PlanController extends GetxController {
       }
     }
     isLoadingSubscrible.value = false;
+    return retorno;
+  }
+
+  Future<Map<String, dynamic>> updatePlanVehicle(int vehicle, int plan) async {
+    if (vehicle > 0 && plan > 0) {
+      isLoadingUpdateVehiclePlan.value = true;
+      mensagem = await repository.updatePlanVehicle(vehicle, plan);
+      isLoadingUpdateVehiclePlan.value = false;
+
+      if (mensagem != null) {
+        retorno = {
+          'success': mensagem['success'],
+          'message': mensagem['message']
+        };
+      } else {
+        retorno = {
+          'success': false,
+          'message': ['Falha ao realizar a operação!']
+        };
+      }
+    }
+    getMyPlans();
+    isLoadingUpdateVehiclePlan.value = false;
     return retorno;
   }
 

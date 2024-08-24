@@ -75,4 +75,13 @@ class PlanRepository {
       Exception(e);
     }
   }
+
+  updatePlanVehicle(int vehicle, int plan) async {
+    try {
+      var response = await apiClient.updatePlanVehicle(vehicle, plan);
+      return response;
+    } catch (e) {
+      Exception(e);
+    }
+  }
 }

@@ -2,27 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/plan_controller.dart';
 import 'package:rodocalc/app/data/models/planos_alter_drop_down_model.dart';
-import 'package:rodocalc/app/data/models/vehicle_model.dart';
+
+import '../../../data/models/user_plan_model.dart';
+import '../../../utils/formatter.dart';
 
 class ManagePlanCard extends StatelessWidget {
   const ManagePlanCard({
     super.key,
-    required this.titulo,
-    required this.descricao,
-    required this.vencimento,
-    required this.valor,
-    required this.vehicles,
     required this.controller,
-    required this.plano,
+    required this.userPlan,
   });
 
-  final int plano;
-  final String titulo;
-  final String descricao;
-  final String valor;
-  final String vencimento;
-  final List<Vehicle>? vehicles;
   final PlanController controller;
+  final UserPlan userPlan;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +26,19 @@ class ManagePlanCard extends StatelessWidget {
       ),
       margin: const EdgeInsets.only(bottom: 10),
       child: ExpansionTile(
+        leading: IconButton(
+          padding: EdgeInsets.zero,
+          onPressed: () {
+            showDialogCancelSubscription(
+                context, userPlan.assignatureId.toString(), controller);
+          },
+          icon: Obx(() => controller.isLoadingSubscrible.value
+              ? CircularProgressIndicator()
+              : const Icon(
+                  Icons.delete,
+                  color: Colors.red,
+                )),
+        ),
         tilePadding: const EdgeInsets.all(12),
         childrenPadding: const EdgeInsets.all(10),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -49,7 +54,7 @@ class ManagePlanCard extends StatelessWidget {
                 ),
                 children: [
                   TextSpan(
-                    text: titulo,
+                    text: "PLANO ${userPlan.plano!.descricao!}",
                     style: const TextStyle(
                       fontFamily: 'Inter-Bold',
                     ),
@@ -70,7 +75,9 @@ class ManagePlanCard extends StatelessWidget {
                       fontFamily: 'Inter-Bold',
                     ),
                   ),
-                  TextSpan(text: descricao),
+                  TextSpan(
+                      text:
+                          "${userPlan.quantidadeLicencas.toString()} licença(s) ativas"),
                 ],
               ),
             ),
@@ -94,21 +101,23 @@ class ManagePlanCard extends StatelessWidget {
                       fontFamily: 'Inter-Bold',
                     ),
                   ),
-                  TextSpan(text: vencimento),
+                  TextSpan(
+                      text:
+                          "${FormattedInputers.formatApiDate(userPlan.dataVencimentoPlano.toString())}"),
                 ],
               ),
             ),
           ],
         ),
-        children: vehicles != null && vehicles!.isNotEmpty
-            ? vehicles!.map((vehicle) {
+        children: userPlan.veiculos != null && userPlan.veiculos!.isNotEmpty
+            ? userPlan.veiculos!.map((vehicle) {
                 return Card(
                   color: Colors.white,
                   child: ListTile(
                     title: Text(vehicle!.modelo!),
                     trailing: IconButton(
                       onPressed: () {
-                        controller.getAllPlansAlterPlanDropDown(plano);
+                        controller.getAllPlansAlterPlanDropDown(userPlan.id!);
 
                         showDialog(
                           context: context,
@@ -139,7 +148,7 @@ class ManagePlanCard extends StatelessWidget {
                                         ...controller.myPlansDropDownUpdate
                                             .map((AlterPlanDropDown plan) {
                                           // Verifique se plan.id é nulo e use um valor padrão se necessário
-                                          if (plan.planoId == null) {
+                                          if (plan.id == null) {
                                             return DropdownMenuItem<int?>(
                                               value: null,
                                               // Ou qualquer outro valor que não conflite
@@ -149,7 +158,7 @@ class ManagePlanCard extends StatelessWidget {
                                           }
 
                                           return DropdownMenuItem<int?>(
-                                            value: plan.planoId,
+                                            value: plan.id,
                                             child: Container(
                                               constraints: BoxConstraints(
                                                   maxWidth: Get.width * .7),
@@ -162,8 +171,8 @@ class ManagePlanCard extends StatelessWidget {
                                         }),
                                       ],
                                       onChanged: (newValue) {
-                                        // controller.selectedPlanDropDown.value =
-                                        //     newValue!;
+                                        controller.selectedPlanDropDown.value =
+                                            newValue!;
                                       },
                                       value: null,
                                       validator: (value) {
@@ -183,6 +192,52 @@ class ManagePlanCard extends StatelessWidget {
                                         .pop(); // Fecha o diálogo
                                   },
                                   child: Text('Cancelar'),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    if (controller.selectedPlanDropDown.value >
+                                        0) {
+                                      Map<String, dynamic> retorno =
+                                          await controller.updatePlanVehicle(
+                                              vehicle.id!,
+                                              controller
+                                                  .selectedPlanDropDown.value);
+
+                                      if (retorno['success'] == true) {
+                                        Get.back();
+                                        Get.snackbar('Sucesso!',
+                                            retorno['message'].join('\n'),
+                                            backgroundColor: Colors.green,
+                                            colorText: Colors.white,
+                                            duration:
+                                                const Duration(seconds: 2),
+                                            snackPosition:
+                                                SnackPosition.BOTTOM);
+                                      } else {
+                                        Get.snackbar('Falha!',
+                                            retorno['message'].join('\n'),
+                                            backgroundColor: Colors.red,
+                                            colorText: Colors.white,
+                                            duration:
+                                                const Duration(seconds: 2),
+                                            snackPosition:
+                                                SnackPosition.BOTTOM);
+                                      }
+                                    } else {
+                                      Get.snackbar(
+                                          'Falha!', "Selecione um plano!",
+                                          backgroundColor: Colors.red,
+                                          colorText: Colors.white,
+                                          duration: const Duration(seconds: 2),
+                                          snackPosition: SnackPosition.BOTTOM);
+                                    }
+                                  },
+                                  child: const Text(
+                                    "CONFIRMAR",
+                                    style: TextStyle(
+                                        fontFamily: 'Poppinss',
+                                        color: Colors.white),
+                                  ),
                                 ),
                               ],
                             );
@@ -205,4 +260,57 @@ class ManagePlanCard extends StatelessWidget {
       ),
     );
   }
+}
+
+void showDialogCancelSubscription(
+    context, String idSubscription, PlanController controller) {
+  Get.defaultDialog(
+    titlePadding: const EdgeInsets.all(16),
+    contentPadding: const EdgeInsets.all(16),
+    title: "Confirmação",
+    content: const Text(
+      textAlign: TextAlign.center,
+      "Tem certeza que deseja cancelar o plano selecionado?",
+      style: TextStyle(
+        fontFamily: 'Poppins',
+        fontSize: 18,
+      ),
+    ),
+    actions: [
+      ElevatedButton(
+        onPressed: () async {
+          Map<String, dynamic> retorno =
+              await controller.cancelSubscribe(idSubscription);
+
+          if (retorno['success'] == true) {
+            Get.back();
+            Get.snackbar('Sucesso!', retorno['message'].join('\n'),
+                backgroundColor: Colors.green,
+                colorText: Colors.white,
+                duration: const Duration(seconds: 2),
+                snackPosition: SnackPosition.BOTTOM);
+          } else {
+            Get.snackbar('Falha!', retorno['message'].join('\n'),
+                backgroundColor: Colors.red,
+                colorText: Colors.white,
+                duration: const Duration(seconds: 2),
+                snackPosition: SnackPosition.BOTTOM);
+          }
+        },
+        child: const Text(
+          "CONFIRMAR",
+          style: TextStyle(fontFamily: 'Poppinss', color: Colors.white),
+        ),
+      ),
+      TextButton(
+        onPressed: () {
+          Get.back();
+        },
+        child: const Text(
+          "CANCELAR",
+          style: TextStyle(fontFamily: 'Poppinss'),
+        ),
+      ),
+    ],
+  );
 }
