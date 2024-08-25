@@ -72,7 +72,7 @@ class AppPages {
     ),
     GetPage(
       name: Routes.indicator,
-      page: () => const IndicatorView(),
+      page: () => IndicatorView(),
       binding: IndicatorBinding(),
     ),
     GetPage(

@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rodocalc/app/data/controllers/comission_indicator_controller.dart';
 import 'package:rodocalc/app/data/controllers/indicator_controller.dart';
 import 'package:rodocalc/app/data/models/indication_model.dart';
 import 'package:rodocalc/app/global/custom_app_bar.dart';
 import 'package:rodocalc/app/modules/indicator/widgets/create_indicator_modal.dart';
 import 'package:rodocalc/app/modules/indicator/widgets/custom_indicator_card.dart';
+import 'package:rodocalc/app/modules/indicator/widgets/withdrawal_request_modal.dart';
+import 'package:rodocalc/app/utils/formatter.dart';
 
 class IndicatorView extends GetView<IndicationController> {
-  const IndicatorView({super.key});
+  IndicatorView({super.key});
+
+  final comissionIndicatorController = Get.put(ComissionIndicatorController());
 
   @override
   Widget build(BuildContext context) {
@@ -61,12 +66,25 @@ class IndicatorView extends GetView<IndicationController> {
                                           fontSize: 16,
                                           fontFamily: 'Inter-Bold')),
                                   const SizedBox(width: 3),
-                                  const Text(
-                                    'R\$ 200,00',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontFamily: 'Inter-Black',
-                                    ),
+                                  Obx(
+                                    () {
+                                      String valor = "R\$ 0,00";
+
+                                      if (comissionIndicatorController!
+                                              .sumComissions!.value >
+                                          0) {
+                                        valor =
+                                            "R\$ ${FormattedInputers.formatValuePTBR(comissionIndicatorController!.sumComissions!.value / 100)}";
+                                      }
+
+                                      return Text(
+                                        valor,
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontFamily: 'Inter-Black',
+                                        ),
+                                      );
+                                    },
                                   ),
                                   const SizedBox(width: 5),
                                   Container(
@@ -77,21 +95,50 @@ class IndicatorView extends GetView<IndicationController> {
                                       ]),
                                       borderRadius: BorderRadius.circular(50),
                                     ),
-                                    child: ElevatedButton(
-                                      onPressed: () {},
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.transparent,
-                                        shadowColor: Colors.transparent,
-                                      ),
-                                      child: const Text(
-                                        'SOLICITAR\nSAQUE',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontFamily: 'Inter-Bold',
-                                            color: Colors.white,
-                                            fontSize: 12),
-                                      ),
-                                    ),
+                                    child: Obx(() {
+                                      if (comissionIndicatorController!
+                                              .sumComissions!.value <
+                                          25000) {
+                                        return SizedBox();
+                                      }
+
+                                      return ElevatedButton(
+                                        onPressed: comissionIndicatorController
+                                                    .totalPedidoSaque.value >
+                                                0
+                                            ? null
+                                            : () {
+                                                showModalBottomSheet(
+                                                  isScrollControlled: true,
+                                                  context: context,
+                                                  builder: (context) =>
+                                                      const WithdrawalRequestModal(
+                                                    isUpdate: false,
+                                                  ),
+                                                );
+                                              },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.transparent,
+                                          shadowColor: Colors.transparent,
+                                        ),
+                                        child: Obx(() {
+                                          String tTitulo = "SOLICITAR\nSAQUE";
+                                          if (comissionIndicatorController
+                                                  .totalPedidoSaque.value >
+                                              0) {
+                                            tTitulo = "SAQUE\nSOLICITADO";
+                                          }
+                                          return Text(
+                                            tTitulo,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontFamily: 'Inter-Bold',
+                                                color: Colors.white,
+                                                fontSize: 12),
+                                          );
+                                        }),
+                                      );
+                                    }),
                                   ),
                                 ],
                               ),

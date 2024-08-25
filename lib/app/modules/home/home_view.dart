@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/controllers/classified_controller.dart';
+import 'package:rodocalc/app/data/controllers/comission_indicator_controller.dart';
 import 'package:rodocalc/app/data/controllers/course_controller.dart';
 import 'package:rodocalc/app/data/controllers/document_controller.dart';
 import 'package:rodocalc/app/data/controllers/freight_controller.dart';
@@ -31,6 +32,7 @@ class HomeView extends GetView<HomeController> {
   final planController = Get.put(PlanController());
   final coursesController = Get.put(CourseController());
   final classifiedsController = Get.put(ClassifiedController());
+  final comissionIndicatorController = Get.put(ComissionIndicatorController());
 
   @override
   Widget build(BuildContext context) {
@@ -290,6 +292,10 @@ class HomeView extends GetView<HomeController> {
                                       imagePath: 'assets/images/indicador.png',
                                       label: 'Indicador',
                                       onTap: () {
+                                        comissionIndicatorController
+                                            .getAllToReceive();
+                                        comissionIndicatorController
+                                            .getExistsPedidoSaque();
                                         indicationController.getAll();
                                         Get.toNamed(Routes.indicator);
                                       },
@@ -433,11 +439,20 @@ class HomeView extends GetView<HomeController> {
                   ),
                 ),
               ),
-              const Positioned(
-                bottom: 0,
-                left: 0,
-                child: WidgetPlan(),
-              )
+              Obx(() {
+                return Positioned(
+                  bottom: 0,
+                  left: 0,
+                  child: controller.diasRestantes.value <= 5 &&
+                          controller.diasRestantes.value >= 0
+                      ? WidgetPlan(
+                          titulo:
+                              "${controller.diasRestantes.value} dia(s) restante(s) para o vencimento!",
+                          data: "${controller.dataVencimento.value}",
+                        )
+                      : SizedBox(),
+                );
+              })
             ],
           );
         },

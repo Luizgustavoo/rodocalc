@@ -22,6 +22,11 @@ class PlanRepository {
     return list;
   }
 
+  getExistsPlanActive() async {
+    var response = await apiClient.getExistsPlanActive();
+    return response["data"];
+  }
+
   getMyPlans() async {
     List<UserPlan> list = <UserPlan>[];
     try {

@@ -3,7 +3,10 @@ import 'package:get/get.dart';
 import 'package:rodocalc/app/routes/app_routes.dart';
 
 class WidgetPlan extends StatelessWidget {
-  const WidgetPlan({super.key});
+  WidgetPlan({super.key, required this.titulo, required this.data});
+
+  String titulo;
+  String data;
 
   @override
   Widget build(BuildContext context) {
@@ -14,13 +17,13 @@ class WidgetPlan extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Column(
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'PLANO ATUAL: AVALIAÇÃO',
-                style: TextStyle(
+                titulo,
+                style: const TextStyle(
                   color: Colors.white,
                   fontFamily: 'Inter-Bold',
                   fontSize: 12,
@@ -28,8 +31,8 @@ class WidgetPlan extends StatelessWidget {
               ),
               SizedBox(height: 4),
               Text(
-                'EXPIRA DIA 27/08/2024',
-                style: TextStyle(
+                data,
+                style: const TextStyle(
                   color: Colors.white,
                   fontFamily: 'Inter-Regular',
                   fontSize: 10,

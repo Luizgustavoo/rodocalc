@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/models/transactions_model.dart';
+import 'package:rodocalc/app/data/repositories/plan_repository.dart';
 import 'package:rodocalc/app/data/repositories/transaction_repository.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 
@@ -18,13 +19,32 @@ class HomeController extends GetxController {
   RxList<Transacoes> listLastTransactions = RxList<Transacoes>([]);
 
   final repositoryTransaction = Get.put(TransactionRepository());
+  final repositoryPlan = Get.put(PlanRepository());
 
   RxBool isLoadingLast = true.obs;
+  RxBool isLoadingDias = true.obs;
+
+  RxInt diasRestantes = 0.obs;
+  RxString dataVencimento = "".obs;
 
   @override
-  void onInit() {
-    getLast();
+  void onInit() async {
+    await getLast();
+    await getExistsPlanActive();
     super.onInit();
+  }
+
+  getExistsPlanActive() async {
+    isLoadingDias.value = true;
+    try {
+      var response = await repositoryPlan.getExistsPlanActive();
+      diasRestantes.value = response["dias_restantes"];
+      dataVencimento.value = response["data_vencimento"];
+      update();
+    } catch (e) {
+      Exception(e);
+    }
+    isLoadingDias.value = false;
   }
 
   getLast() async {
