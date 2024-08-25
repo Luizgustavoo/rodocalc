@@ -24,6 +24,8 @@ class ComissionIndicatorController extends GetxController {
   };
   dynamic mensagem;
 
+  /*teste*/
+
   Future<void> getExistsPedidoSaque() async {
     isLoading.value = true;
     try {
