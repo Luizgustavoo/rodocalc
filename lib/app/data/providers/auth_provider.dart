@@ -54,7 +54,7 @@ class AuthApiClient {
 
   insertUser(People people, User user) async {
     try {
-      //final token = "Bearer ${ServiceStorage.getToken()}";         
+      //final token = "Bearer ${ServiceStorage.getToken()}";
 
       var companyUrl = Uri.parse('$baseUrl/register');
 

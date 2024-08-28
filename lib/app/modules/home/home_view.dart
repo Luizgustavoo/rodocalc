@@ -128,6 +128,9 @@ class HomeView extends GetView<HomeController> {
                                                 perfilController.fillInFields();
                                                 Get.toNamed(Routes.perfil);
                                                 break;
+                                              case 'Adicionar usuário':
+                                                Get.toNamed(Routes.user);
+                                                break;
                                               case 'Sair':
                                                 final loginController =
                                                     Get.put(LoginController());
@@ -136,8 +139,11 @@ class HomeView extends GetView<HomeController> {
                                             }
                                           },
                                           itemBuilder: (BuildContext context) {
-                                            return {'Perfil', 'Sair'}
-                                                .map((String choice) {
+                                            return {
+                                              'Perfil',
+                                              'Adicionar usuário',
+                                              'Sair'
+                                            }.map((String choice) {
                                               return PopupMenuItem<String>(
                                                 value: choice,
                                                 child: Text(
@@ -448,9 +454,9 @@ class HomeView extends GetView<HomeController> {
                       ? WidgetPlan(
                           titulo:
                               "${controller.diasRestantes.value} dia(s) restante(s) para o vencimento!",
-                          data: "${controller.dataVencimento.value}",
+                          data: controller.dataVencimento.value,
                         )
-                      : SizedBox(),
+                      : const SizedBox(),
                 );
               })
             ],

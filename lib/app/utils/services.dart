@@ -118,7 +118,7 @@ class Services {
 
   static String obterDataHoraAtualISO() {
     DateTime now = DateTime.now().toUtc();
-    return now.toIso8601String().split('.').first + 'Z';
+    return '${now.toIso8601String().split('.').first}Z';
   }
 
   static int converterParaCentavos(String valor) {

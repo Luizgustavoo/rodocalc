@@ -70,16 +70,16 @@ class IndicatorView extends GetView<IndicationController> {
                                     () {
                                       String valor = "R\$ 0,00";
 
-                                      if (comissionIndicatorController!
-                                              .sumComissions!.value >
+                                      if (comissionIndicatorController
+                                              .sumComissions.value >
                                           0) {
                                         valor =
-                                            "R\$ ${FormattedInputers.formatValuePTBR(comissionIndicatorController!.sumComissions!.value / 100)}";
+                                            "R\$ ${FormattedInputers.formatValuePTBR(comissionIndicatorController.sumComissions.value / 100)}";
                                       }
 
                                       return Text(
                                         valor,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 18,
                                           fontFamily: 'Inter-Black',
                                         ),
@@ -96,10 +96,10 @@ class IndicatorView extends GetView<IndicationController> {
                                       borderRadius: BorderRadius.circular(50),
                                     ),
                                     child: Obx(() {
-                                      if (comissionIndicatorController!
-                                              .sumComissions!.value <
+                                      if (comissionIndicatorController
+                                              .sumComissions.value <
                                           25000) {
-                                        return SizedBox();
+                                        return const SizedBox();
                                       }
 
                                       return ElevatedButton(
@@ -131,7 +131,7 @@ class IndicatorView extends GetView<IndicationController> {
                                           return Text(
                                             tTitulo,
                                             textAlign: TextAlign.center,
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                                 fontFamily: 'Inter-Bold',
                                                 color: Colors.white,
                                                 fontSize: 12),

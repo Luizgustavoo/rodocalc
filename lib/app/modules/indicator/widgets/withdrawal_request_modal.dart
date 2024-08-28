@@ -31,7 +31,7 @@ class WithdrawalRequestModal extends GetView<ComissionIndicatorController> {
                   padding: EdgeInsets.only(top: 10, bottom: 5),
                   child: Text(
                     'SOLICITAR SAQUE',
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontFamily: 'Inter-Bold',
                         fontSize: 17,
                         color: Color(0xFFFF6B00)),

@@ -3,10 +3,10 @@ import 'package:get/get.dart';
 import 'package:rodocalc/app/routes/app_routes.dart';
 
 class WidgetPlan extends StatelessWidget {
-  WidgetPlan({super.key, required this.titulo, required this.data});
+  const WidgetPlan({super.key, required this.titulo, required this.data});
 
-  String titulo;
-  String data;
+  final String titulo;
+  final String data;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class WidgetPlan extends StatelessWidget {
                   fontSize: 12,
                 ),
               ),
-              SizedBox(height: 4),
+              const SizedBox(height: 4),
               Text(
                 data,
                 style: const TextStyle(

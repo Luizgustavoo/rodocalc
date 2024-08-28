@@ -1,3 +1,5 @@
+// ignore_for_file: equal_keys_in_map
+
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
@@ -122,14 +124,6 @@ class PlanApiClient {
       final indicatorUrl = Uri.parse('$baseUrl/v1/planousuario/contratar');
 
       final Auth auth = ServiceStorage.getAuth();
-
-      if (auth == null) {
-        return {
-          'success': false,
-          'data': null,
-          'message': 'Usuário nao encontrado na sessão ativa!'
-        };
-      }
 
       Map<String, String> telefoneSplit =
           Services.separarDDD(auth.user!.people!.telefone.toString());

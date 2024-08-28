@@ -33,7 +33,7 @@ class ManagePlanCard extends StatelessWidget {
                 context, userPlan.assignatureId.toString(), controller);
           },
           icon: Obx(() => controller.isLoadingSubscrible.value
-              ? CircularProgressIndicator()
+              ? const CircularProgressIndicator()
               : const Icon(
                   Icons.delete,
                   color: Colors.red,
@@ -102,8 +102,8 @@ class ManagePlanCard extends StatelessWidget {
                     ),
                   ),
                   TextSpan(
-                      text:
-                          "${FormattedInputers.formatApiDate(userPlan.dataVencimentoPlano.toString())}"),
+                      text: FormattedInputers.formatApiDate(
+                          userPlan.dataVencimentoPlano.toString())),
                 ],
               ),
             ),
@@ -114,7 +114,7 @@ class ManagePlanCard extends StatelessWidget {
                 return Card(
                   color: Colors.white,
                   child: ListTile(
-                    title: Text(vehicle!.modelo!),
+                    title: Text(vehicle.modelo!),
                     trailing: IconButton(
                       onPressed: () {
                         controller.getAllPlansAlterPlanDropDown(userPlan.id!);
@@ -191,7 +191,7 @@ class ManagePlanCard extends StatelessWidget {
                                     Navigator.of(context)
                                         .pop(); // Fecha o diálogo
                                   },
-                                  child: Text('Cancelar'),
+                                  child: const Text('Cancelar'),
                                 ),
                                 ElevatedButton(
                                   onPressed: () async {
@@ -253,7 +253,7 @@ class ManagePlanCard extends StatelessWidget {
                 );
               }).toList()
             : [
-                ListTile(
+                const ListTile(
                   title: Text('Nenhum veículo disponível'),
                 ),
               ],

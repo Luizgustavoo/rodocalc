@@ -13,4 +13,5 @@ abstract class Routes {
   static const classified = '/classified';
   static const course = '/course';
   static const manageplan = '/manageplan';
+  static const user = '/user';
 }

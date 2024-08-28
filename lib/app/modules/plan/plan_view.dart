@@ -59,7 +59,8 @@ class PlanView extends GetView<PlanController> {
                                     controller.myPlans.length <= 1
                                         ? 'Meu Plano Ativo'
                                         : 'Meus Planos Ativos',
-                                    style: TextStyle(
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
                                       fontFamily: 'Inter-Regular',
                                       color: Colors.black,
                                       fontSize: 16.0,
@@ -68,9 +69,10 @@ class PlanView extends GetView<PlanController> {
                                 ),
                                 Obx(() {
                                   if (controller.myPlans.isEmpty) {
-                                    return Text(
+                                    return const Text(
+                                      textAlign: TextAlign.center,
                                       'Nenhum plano disponível',
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontFamily: 'Inter-Black',
                                         color: Colors.white,
                                         fontSize: 24.0,
