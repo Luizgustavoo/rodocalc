@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/user_controller.dart';
 import 'package:rodocalc/app/data/controllers/vehicle_controller.dart';
+import 'package:rodocalc/app/data/models/user_model.dart';
 import 'package:rodocalc/app/global/custom_app_bar.dart';
 import 'package:rodocalc/app/modules/user/widgets/create_user_modal.dart';
 import 'package:rodocalc/app/modules/user/widgets/custom_user_card.dart';
@@ -57,17 +58,36 @@ class UserView extends GetView<UserController> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          itemCount: 5,
-                          itemBuilder: (context, index) {
-                            return const CustomFleetOwnerCard(
-                                nome: 'LUIZ GUSTAVO DA SILVA',
-                                telefone: '(43)99928-9380',
-                                caminhao: 'SCANIA XF56G');
-                          },
-                        )
+                        Obx(() {
+                          if (controller.isLoading.value) {
+                            return const Column(
+                              children: [
+                                Text('Carregando...'),
+                                SizedBox(height: 20.0),
+                                CircularProgressIndicator(),
+                              ],
+                            );
+                          } else if (!controller.isLoading.value &&
+                              controller.listUsers.isNotEmpty) {
+                            return Expanded(
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                itemCount: controller.listUsers.length,
+                                itemBuilder: (context, index) {
+                                  final User user = controller.listUsers[index];
+                                  return CustomFleetOwnerCard(
+                                    user: user,
+                                  );
+                                },
+                              ),
+                            );
+                          } else {
+                            return const Center(
+                              child: Text('Nenhum veículo encontrado!'),
+                            );
+                          }
+                        })
                       ]),
                     ),
                   ),

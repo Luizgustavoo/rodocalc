@@ -12,6 +12,29 @@ import 'package:rodocalc/app/utils/service_storage.dart';
 class UserApiClient {
   final http.Client httpClient = http.Client();
 
+  getMyEmployees() async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+
+      Uri documentUrl;
+      String url =
+          '$baseUrl/v1/usuario/funcionarios/${ServiceStorage.getUserId().toString()}';
+      documentUrl = Uri.parse(url);
+      var response = await httpClient.get(
+        documentUrl,
+        headers: {
+          "Accept": "application/json",
+          "Authorization": token,
+        },
+      );
+
+      return json.decode(response.body);
+    } catch (e) {
+      Exception(e);
+    }
+    return null;
+  }
+
   insertUser(People people, User user, int vehicleId) async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
@@ -165,5 +188,31 @@ class UserApiClient {
       Exception('Error: $err');
       return null;
     }
+  }
+
+  gettAll() async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+
+      Uri documentUrl;
+      String url =
+          '$baseUrl/v1/documento/${ServiceStorage.getUserId().toString()}';
+      documentUrl = Uri.parse(url);
+      var response = await httpClient.get(
+        documentUrl,
+        headers: {
+          "Accept": "application/json",
+          "Authorization": token,
+        },
+      );
+      if (response.statusCode == 201) {
+        return json.decode(response.body);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      Exception(e);
+    }
+    return null;
   }
 }

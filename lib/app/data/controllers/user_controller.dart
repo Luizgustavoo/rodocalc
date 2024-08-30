@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/models/people_model.dart';
 import 'package:rodocalc/app/data/models/user_model.dart';
 import 'package:rodocalc/app/data/repositories/cep_repository.dart';
@@ -136,6 +137,19 @@ class UserController extends GetxController {
   };
   dynamic mensagem;
 
+  RxBool isLoading = true.obs;
+  RxList<User> listUsers = RxList<User>([]);
+
+  Future<void> getMyEmployees() async {
+    isLoading.value = true;
+    try {
+      listUsers.value = await repository.getMyEmployees();
+    } catch (e) {
+      Exception(e);
+    }
+    isLoading.value = false;
+  }
+
   Future<Map<String, dynamic>> insertUser() async {
     if (formUserKey.currentState!.validate()) {
       People people = People(
@@ -170,5 +184,34 @@ class UserController extends GetxController {
       };
     }
     return retorno;
+  }
+
+  void fillInFields(User user) {
+    txtNomeController.text = user.people!.nome ?? '';
+    FormattedInputers.onContactChanged(
+        user.people!.telefone ?? '', txtTelefoneController);
+    txtDDDController.text = user.people!.ddd ?? '';
+    txtCidadeController.text = user.people!.cidade ?? '';
+    txtUfController.text = user.people!.uf ?? '';
+    txtCpfController.text = user.people!.cpf ?? '';
+    txtApelidoController.text = user.people!.apelido ?? '';
+    txtEmailController.text = user.email ?? '';
+    txtSenhaController.text = "";
+    txtConfirmaSenhaController.text = "";
+
+    cepController.text = user.people!.cep ?? '';
+    addressController.text = user.people!.endereco ?? '';
+    neighborhoodController.text = user.people!.bairro ?? '';
+    houseNumberController.text = user.people!.numeroCasa ?? '';
+
+    if (user.people!.foto != null && user.people!.foto!.isNotEmpty) {
+      String imageUrl = user.people!.foto!;
+
+      if (!imageUrl.startsWith('http')) {
+        imageUrl = '$urlImagem/storage/fotos/users/$imageUrl';
+      }
+
+      selectedImagePath.value = imageUrl;
+    }
   }
 }

@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:rodocalc/app/data/models/user_model.dart';
 
 class CustomFleetOwnerCard extends StatelessWidget {
-  const CustomFleetOwnerCard({
-    super.key,
-    required this.nome,
-    required this.telefone,
-    required this.caminhao,
-  });
+  const CustomFleetOwnerCard({super.key, required this.user});
 
-  final String nome;
-  final String caminhao;
-  final String telefone;
+  final User user;
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +36,7 @@ class CustomFleetOwnerCard extends StatelessWidget {
                   fontFamily: 'Inter-Bold',
                 ),
               ),
-              TextSpan(text: nome),
+              TextSpan(text: user.people!.nome.toString()),
             ],
           ),
         ),
@@ -64,7 +58,7 @@ class CustomFleetOwnerCard extends StatelessWidget {
                       fontFamily: 'Inter-Bold',
                     ),
                   ),
-                  TextSpan(text: telefone),
+                  TextSpan(text: user.people!.telefone),
                 ],
               ),
             ),
@@ -83,7 +77,10 @@ class CustomFleetOwnerCard extends StatelessWidget {
                       fontFamily: 'Inter-Bold',
                     ),
                   ),
-                  TextSpan(text: caminhao),
+                  TextSpan(
+                      text: user.vehicles!
+                          .map((e) => "${e.marca}/${e.modelo}")
+                          .join(', ')),
                 ],
               ),
             ),
