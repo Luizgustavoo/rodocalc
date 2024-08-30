@@ -1,10 +1,7 @@
 import 'dart:convert';
 
-import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:rodocalc/app/data/base_url.dart';
-import 'package:rodocalc/app/data/controllers/home_controller.dart';
 import 'package:rodocalc/app/data/models/people_model.dart';
 import 'package:rodocalc/app/data/models/user_model.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
@@ -87,10 +84,12 @@ class UserApiClient {
     return null;
   }
 
-  Future<Map<String, dynamic>?> updateUser(People people, User user) async {
+  Future<Map<String, dynamic>?> updateUser(
+      People people, User user, int vehicleId) async {
     try {
       var token = ServiceStorage.getToken();
-      var companyUrl = Uri.parse('$baseUrl/v1/usuario/update/${user.id}');
+      var companyUrl =
+          Uri.parse('$baseUrl/v1/usuario/updateuserfrotista/${user.id}');
 
       var request = http.MultipartRequest('POST', companyUrl);
 
@@ -151,8 +150,6 @@ class UserApiClient {
         request.fields['cep'] = people.cep!.toString();
       }
 
-      request.fields['usertype_id'] = "2";
-
       request.headers.addAll({
         'Authorization': 'Bearer $token',
         'Accept': 'application/json',
@@ -162,27 +159,6 @@ class UserApiClient {
 
       var responseStream = await response.stream.bytesToString();
       var httpResponse = http.Response(responseStream, response.statusCode);
-
-      if (httpResponse.statusCode == 200 || httpResponse.statusCode == 201) {
-        final box = GetStorage('rodocalc');
-        Map<String, dynamic> responseData = json.decode(httpResponse.body);
-        Map<String, dynamic> oldAuth = box.read('auth');
-
-        Map<String, dynamic> newAuth = {};
-
-        newAuth["user"] = responseData["user"];
-        newAuth["access_token"] = responseData["access_token"];
-        newAuth["token_type"] = responseData["token_type"];
-        newAuth["expires_in"] = responseData["expires_in"];
-
-        print("user antigo:${oldAuth['user']}");
-        print("user novo:${newAuth['user']}");
-
-        box.write('auth', newAuth);
-
-        Get.find<HomeController>().updateUserPhoto();
-      }
-
       return json.decode(httpResponse.body);
     } catch (err) {
       Exception('Error: $err');

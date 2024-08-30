@@ -186,6 +186,44 @@ class UserController extends GetxController {
     return retorno;
   }
 
+  Future<Map<String, dynamic>> updateUser(int id) async {
+    if (formUserKey.currentState!.validate()) {
+      People people = People(
+        id: id,
+        nome: txtNomeController.text,
+        foto: selectedImagePath.value,
+        ddd: txtDDDController.text,
+        telefone: txtTelefoneController.text,
+        cpf: txtCpfController.text,
+        apelido: txtApelidoController.text,
+        cidade: txtCidadeController.text,
+        uf: selectedState.value,
+        status: 1,
+        cupomParaIndicar: "",
+        bairro: neighborhoodController.text,
+        cep: cepController.text,
+        endereco: addressController.text,
+        numeroCasa: houseNumberController.text,
+      );
+
+      User user = User(
+        id: id,
+        email: txtEmailController.text,
+        password: txtSenhaController.text,
+        status: 1,
+        cupomRecebido: null,
+      );
+
+      mensagem = await repository.updateUser(
+          people, user, selectedVehicleDropDown.value);
+      retorno = {
+        'success': mensagem['success'],
+        'message': mensagem['message']
+      };
+    }
+    return retorno;
+  }
+
   void fillInFields(User user) {
     txtNomeController.text = user.people!.nome ?? '';
     FormattedInputers.onContactChanged(
@@ -193,11 +231,14 @@ class UserController extends GetxController {
     txtDDDController.text = user.people!.ddd ?? '';
     txtCidadeController.text = user.people!.cidade ?? '';
     txtUfController.text = user.people!.uf ?? '';
+    selectedState.value = user.people!.uf ?? '';
     txtCpfController.text = user.people!.cpf ?? '';
     txtApelidoController.text = user.people!.apelido ?? '';
     txtEmailController.text = user.email ?? '';
     txtSenhaController.text = "";
     txtConfirmaSenhaController.text = "";
+
+    selectedVehicleDropDown.value = user.vehicles!.first.id!;
 
     cepController.text = user.people!.cep ?? '';
     addressController.text = user.people!.endereco ?? '';
@@ -213,5 +254,33 @@ class UserController extends GetxController {
 
       selectedImagePath.value = imageUrl;
     }
+  }
+
+  void clearAllFields() {
+    final textControllers = [
+      txtNomeController,
+      txtTelefoneController,
+      txtDDDController,
+      txtCidadeController,
+      txtUfController,
+      txtCpfController,
+      txtApelidoController,
+      txtEmailController,
+      txtSenhaController,
+      txtConfirmaSenhaController,
+      cepController,
+      addressController,
+      neighborhoodController,
+      houseNumberController,
+    ];
+
+    for (final controller in textControllers) {
+      controller.clear();
+    }
+
+    selectedImagePath = ''.obs;
+    selectedState = ''.obs;
+
+    selectedVehicleDropDown = 0.obs;
   }
 }

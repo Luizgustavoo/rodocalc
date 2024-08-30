@@ -77,6 +77,21 @@ class UserView extends GetView<UserController> {
                                 itemBuilder: (context, index) {
                                   final User user = controller.listUsers[index];
                                   return CustomFleetOwnerCard(
+                                    fnEdit: () {
+                                      controller.fillInFields(user);
+
+                                      VehicleController vehicleController =
+                                          Get.put(VehicleController());
+                                      vehicleController.getAllDropDown();
+                                      showModalBottomSheet(
+                                        isScrollControlled: true,
+                                        context: context,
+                                        builder: (context) => CreateUserModal(
+                                          vehicleController: vehicleController,
+                                          isUpdate: true,
+                                        ),
+                                      );
+                                    },
                                     user: user,
                                   );
                                 },
@@ -104,12 +119,13 @@ class UserView extends GetView<UserController> {
           onPressed: () {
             VehicleController vehicleController = Get.put(VehicleController());
             vehicleController.getAllDropDown();
+            controller.clearAllFields();
             showModalBottomSheet(
               isScrollControlled: true,
               context: context,
               builder: (context) => CreateUserModal(
                 vehicleController: vehicleController,
-                update: false,
+                isUpdate: false,
               ),
             );
           },

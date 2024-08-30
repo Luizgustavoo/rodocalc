@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:rodocalc/app/data/models/user_model.dart';
 
 class CustomFleetOwnerCard extends StatelessWidget {
-  const CustomFleetOwnerCard({super.key, required this.user});
+  const CustomFleetOwnerCard(
+      {super.key, required this.user, required this.fnEdit});
 
   final User user;
+
+  final VoidCallback? fnEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +20,7 @@ class CustomFleetOwnerCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 10),
       child: ListTile(
         trailing:
-            IconButton(onPressed: () {}, icon: const Icon(Icons.edit_rounded)),
+            IconButton(onPressed: fnEdit, icon: const Icon(Icons.edit_rounded)),
         horizontalTitleGap: 10,
         dense: true,
         contentPadding:

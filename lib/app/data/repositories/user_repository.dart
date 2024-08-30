@@ -26,4 +26,13 @@ class UserRepository {
       Exception(e);
     }
   }
+
+  updateUser(People people, User user, int vehicleId) async {
+    try {
+      var response = await apiClient.updateUser(people, user, vehicleId);
+      return response;
+    } catch (e) {
+      Exception(e);
+    }
+  }
 }
