@@ -199,15 +199,6 @@ class CreateVehicleModal extends GetView<VehicleController> {
                         child: Text('Selecione um plano'),
                       ),
                       ...controller.listMyPlans.map((UserPlanDropdown plan) {
-                        // Verifique se plan.id é nulo e use um valor padrão se necessário
-                        if (plan.id == null) {
-                          return DropdownMenuItem<int?>(
-                            value: null,
-                            // Ou qualquer outro valor que não conflite
-                            child: Text(
-                                plan.descricao ?? 'Descrição não disponível'),
-                          );
-                        }
                         String subtitulo = "";
                         if (plan.totalVeiculosAtivos! > 0) {
                           subtitulo =
@@ -227,11 +218,14 @@ class CreateVehicleModal extends GetView<VehicleController> {
                       }),
                     ],
                     onChanged: (newValue) {
-                      controller.selectedPlanDropDown.value = newValue!;
+                      controller.selectedPlanDropDown.value = newValue ?? 0;
                     },
-                    value: controller.selectedPlanDropDown.value,
+                    value: controller.listMyPlans.any((plan) =>
+                            plan.id == controller.selectedPlanDropDown.value)
+                        ? controller.selectedPlanDropDown.value
+                        : 0,
                     validator: (value) {
-                      if (value == null) {
+                      if (value == null || value == 0) {
                         return 'Por favor, selecione um plano';
                       }
                       return null;

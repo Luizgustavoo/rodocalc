@@ -7,6 +7,7 @@ import 'package:rodocalc/app/global/custom_app_bar.dart';
 import 'package:rodocalc/app/modules/vehicle/widgets/create_vehicle_modal.dart';
 import 'package:rodocalc/app/modules/vehicle/widgets/custom_vehicle_card.dart';
 import 'package:rodocalc/app/routes/app_routes.dart';
+import 'package:rodocalc/app/utils/service_storage.dart';
 
 class VehiclesView extends GetView<VehicleController> {
   const VehiclesView({super.key});
@@ -132,7 +133,9 @@ class VehiclesView extends GetView<VehicleController> {
                                       },
                                       child: CustomVehicleCard(
                                         editVehicle: () {
+                                          controller.isLoading.value = true;
                                           controller.selectedVehicle = vehicle;
+                                          controller.getAllUserPlans();
                                           controller.fillInFields();
                                           controller.isLoading.value = false;
                                           controller.setImage.value = true;
@@ -168,28 +171,30 @@ class VehiclesView extends GetView<VehicleController> {
           ),
         ],
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(right: 8, bottom: 8),
-        child: FloatingActionButton(
-          backgroundColor: const Color(0xFFFF6B00),
-          onPressed: () {
-            controller.isLoading.value = false;
-            controller.clearAllFields();
-            controller.getAllUserPlans();
-            showModalBottomSheet(
-              isScrollControlled: true,
-              context: context,
-              builder: (context) => const CreateVehicleModal(
-                update: false,
+      floatingActionButton: ServiceStorage.getUserTypeId() == 4
+          ? const SizedBox()
+          : Padding(
+              padding: const EdgeInsets.only(right: 8, bottom: 8),
+              child: FloatingActionButton(
+                backgroundColor: const Color(0xFFFF6B00),
+                onPressed: () {
+                  controller.isLoading.value = false;
+                  controller.clearAllFields();
+                  controller.getAllUserPlans();
+                  showModalBottomSheet(
+                    isScrollControlled: true,
+                    context: context,
+                    builder: (context) => const CreateVehicleModal(
+                      update: false,
+                    ),
+                  );
+                },
+                child: const Icon(
+                  Icons.add_rounded,
+                  color: Colors.white,
+                ),
               ),
-            );
-          },
-          child: const Icon(
-            Icons.add_rounded,
-            color: Colors.white,
-          ),
-        ),
-      ),
+            ),
     );
   }
 }

@@ -177,26 +177,28 @@ class ClassifiedView extends GetView<ClassifiedController> {
           ),
         ],
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(right: 8, bottom: 8),
-        child: FloatingActionButton(
-          backgroundColor: const Color(0xFFFF6B00),
-          onPressed: () {
-            controller.clearAllFields();
-            showModalBottomSheet(
-              isScrollControlled: true,
-              context: context,
-              builder: (context) => const CreateClassifiedModal(
-                isUpdate: false,
+      floatingActionButton: ServiceStorage.getUserTypeId() == 4
+          ? const SizedBox()
+          : Padding(
+              padding: const EdgeInsets.only(right: 8, bottom: 8),
+              child: FloatingActionButton(
+                backgroundColor: const Color(0xFFFF6B00),
+                onPressed: () {
+                  controller.clearAllFields();
+                  showModalBottomSheet(
+                    isScrollControlled: true,
+                    context: context,
+                    builder: (context) => const CreateClassifiedModal(
+                      isUpdate: false,
+                    ),
+                  );
+                },
+                child: const Icon(
+                  Icons.add_rounded,
+                  color: Colors.white,
+                ),
               ),
-            );
-          },
-          child: const Icon(
-            Icons.add_rounded,
-            color: Colors.white,
-          ),
-        ),
-      ),
+            ),
     );
   }
 }

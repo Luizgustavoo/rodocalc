@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -110,9 +112,12 @@ class HomeView extends GetView<HomeController> {
                                         Obx(() => CircleAvatar(
                                               radius: 30,
                                               backgroundImage: controller
-                                                      .userPhoto
-                                                      .value
-                                                      .isNotEmpty
+                                                          .userPhoto
+                                                          .value
+                                                          .isNotEmpty ||
+                                                      controller.userPhoto
+                                                              .value ==
+                                                          null
                                                   ? CachedNetworkImageProvider(
                                                           "$urlImagem/storage/fotos/users/${controller.userPhoto.value}")
                                                       as ImageProvider
@@ -120,6 +125,8 @@ class HomeView extends GetView<HomeController> {
                                                       'https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133352156-stock-illustration-default-placeholder-profile-icon.jpg'),
                                             )),
                                         PopupMenuButton<String>(
+                                          color: Colors.white,
+                                          surfaceTintColor: Colors.white,
                                           padding: EdgeInsets.zero,
                                           iconColor: Colors.white,
                                           onSelected: (String value) {
@@ -139,17 +146,39 @@ class HomeView extends GetView<HomeController> {
                                             }
                                           },
                                           itemBuilder: (BuildContext context) {
-                                            return {
-                                              'Perfil',
-                                              'Adicionar usuário',
-                                              'Sair'
-                                            }.map((String choice) {
+                                            List<Map<String, dynamic>> choices =
+                                                [
+                                              {
+                                                'text': 'Perfil',
+                                                'icon': Icons.person
+                                              },
+                                              {
+                                                'text': 'Sair',
+                                                'icon': Icons.logout
+                                              },
+                                            ];
+
+                                            // Adiciona 'Adicionar usuário' apenas se o tipo de usuário não for 4
+                                            if (ServiceStorage
+                                                    .getUserTypeId() !=
+                                                4) {
+                                              choices.insert(1, {
+                                                'text': 'Adicionar usuário',
+                                                'icon': Icons.add
+                                              });
+                                            }
+
+                                            return choices.map((choice) {
                                               return PopupMenuItem<String>(
-                                                value: choice,
-                                                child: Text(
-                                                  choice,
-                                                  style: const TextStyle(
-                                                      fontFamily: 'Poppins'),
+                                                value: choice['text'],
+                                                child: ListTile(
+                                                  leading: Icon(choice['icon'],
+                                                      color: Colors.black),
+                                                  title: Text(
+                                                    choice['text'],
+                                                    style: const TextStyle(
+                                                        fontFamily: 'Poppins'),
+                                                  ),
                                                 ),
                                               );
                                             }).toList();
