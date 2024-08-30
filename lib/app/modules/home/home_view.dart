@@ -15,6 +15,7 @@ import 'package:rodocalc/app/data/controllers/login_controller.dart';
 import 'package:rodocalc/app/data/controllers/perfil_controller.dart';
 import 'package:rodocalc/app/data/controllers/plan_controller.dart';
 import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
+import 'package:rodocalc/app/data/controllers/user_controller.dart';
 import 'package:rodocalc/app/data/controllers/vehicle_controller.dart';
 import 'package:rodocalc/app/modules/global/bottom_navigation.dart';
 import 'package:rodocalc/app/modules/home/widgets/custom_home_card.dart';
@@ -35,6 +36,7 @@ class HomeView extends GetView<HomeController> {
   final coursesController = Get.put(CourseController());
   final classifiedsController = Get.put(ClassifiedController());
   final comissionIndicatorController = Get.put(ComissionIndicatorController());
+  final userController = Get.put(UserController());
 
   @override
   Widget build(BuildContext context) {
@@ -136,6 +138,7 @@ class HomeView extends GetView<HomeController> {
                                                 Get.toNamed(Routes.perfil);
                                                 break;
                                               case 'Adicionar usuário':
+                                                userController.getMyEmployees();
                                                 Get.toNamed(Routes.user);
                                                 break;
                                               case 'Sair':

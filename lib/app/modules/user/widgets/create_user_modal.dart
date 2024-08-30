@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/controllers/user_controller.dart';
 import 'package:rodocalc/app/data/controllers/vehicle_controller.dart';
+import 'package:rodocalc/app/data/models/user_model.dart';
 import 'package:rodocalc/app/data/models/vehicle_model.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
@@ -12,10 +13,14 @@ import 'package:rodocalc/app/utils/services.dart';
 
 class CreateUserModal extends GetView<UserController> {
   const CreateUserModal(
-      {super.key, required this.update, required this.vehicleController});
+      {super.key,
+      required this.isUpdate,
+      required this.vehicleController,
+      this.user});
 
-  final bool update;
+  final bool isUpdate;
   final VehicleController vehicleController;
+  final User? user;
 
   @override
   Widget build(BuildContext context) {
@@ -39,11 +44,11 @@ class CreateUserModal extends GetView<UserController> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const Padding(
+                      Padding(
                         padding: EdgeInsets.only(top: 10, bottom: 5),
                         child: Text(
-                          'CADASTRO DE USUÁRIO',
-                          style: TextStyle(
+                          isUpdate ? 'EDITAR USUÁRIO' : 'CADASTRO DE USUÁRIO',
+                          style: const TextStyle(
                               fontFamily: 'Inter-Bold',
                               fontSize: 17,
                               color: Color(0xFFFF6B00)),
@@ -409,30 +414,30 @@ class CreateUserModal extends GetView<UserController> {
                           const SizedBox(width: 10),
                           CustomElevatedButton(
                             onPressed: () async {
-                              print('Clicou');
-                              Map<String, dynamic> retorno =
-                                  await controller.insertUser();
-                              //
-                              // if (retorno['success'] == true) {
-                              //   Get.back();
-                              //   Get.snackbar(
-                              //       'Sucesso!', retorno['message'].join('\n'),
-                              //       backgroundColor: Colors.green,
-                              //       colorText: Colors.white,
-                              //       duration: const Duration(seconds: 2),
-                              //       snackPosition: SnackPosition.BOTTOM);
-                              // } else {
-                              //   Get.snackbar(
-                              //       'Falha!', retorno['message'].join('\n'),
-                              //       backgroundColor: Colors.red,
-                              //       colorText: Colors.white,
-                              //       duration: const Duration(seconds: 2),
-                              //       snackPosition: SnackPosition.BOTTOM);
-                              // }
+                              Map<String, dynamic> retorno = isUpdate
+                                  ? await controller.updateUser(user!.id!)
+                                  : await controller.insertUser();
+                              if (retorno['success'] == true) {
+                                controller.clearAllFields();
+                                Get.back();
+                                Get.snackbar(
+                                    'Sucesso!', retorno['message'].join('\n'),
+                                    backgroundColor: Colors.green,
+                                    colorText: Colors.white,
+                                    duration: const Duration(seconds: 2),
+                                    snackPosition: SnackPosition.BOTTOM);
+                              } else {
+                                Get.snackbar(
+                                    'Falha!', retorno['message'].join('\n'),
+                                    backgroundColor: Colors.red,
+                                    colorText: Colors.white,
+                                    duration: const Duration(seconds: 2),
+                                    snackPosition: SnackPosition.BOTTOM);
+                              }
                             },
-                            child: const Text(
-                              'CADASTRAR',
-                              style: TextStyle(
+                            child: Text(
+                              isUpdate ? 'ALTERAR' : 'CADASTRAR',
+                              style: const TextStyle(
                                   fontFamily: 'Inter-Bold',
                                   color: Colors.white),
                             ),
