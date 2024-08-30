@@ -37,6 +37,21 @@ class VehicleRepository {
     return list;
   }
 
+  getAllDropDown() async {
+    List<Vehicle> list = <Vehicle>[];
+
+    var response = await apiClient.getAllDropDown();
+
+    if (response != null) {
+      response['data'].forEach((e) {
+        list.add(Vehicle.fromJson(e));
+      });
+    } else {
+      return null;
+    }
+    return list;
+  }
+
   insert(Vehicle vehicle) async {
     try {
       var response = await apiClient.insert(vehicle);

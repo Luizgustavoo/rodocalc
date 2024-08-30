@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/user_controller.dart';
+import 'package:rodocalc/app/data/controllers/vehicle_controller.dart';
 import 'package:rodocalc/app/global/custom_app_bar.dart';
 import 'package:rodocalc/app/modules/user/widgets/create_user_modal.dart';
 import 'package:rodocalc/app/modules/user/widgets/custom_user_card.dart';
@@ -81,10 +82,13 @@ class UserView extends GetView<UserController> {
         child: FloatingActionButton(
           backgroundColor: const Color(0xFFFF6B00),
           onPressed: () {
+            VehicleController vehicleController = Get.put(VehicleController());
+            vehicleController.getAllDropDown();
             showModalBottomSheet(
               isScrollControlled: true,
               context: context,
-              builder: (context) => const CreateUserModal(
+              builder: (context) => CreateUserModal(
+                vehicleController: vehicleController,
                 update: false,
               ),
             );

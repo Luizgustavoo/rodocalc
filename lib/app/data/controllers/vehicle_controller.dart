@@ -37,6 +37,7 @@ class VehicleController extends GetxController {
   RxBool isLoadingDropDown = true.obs;
 
   RxList<Vehicle> listVehicles = RxList<Vehicle>([]);
+  RxList<Vehicle> listVehiclesDropDown = RxList<Vehicle>([]);
   RxList<UserPlanDropdown> listMyPlans = RxList<UserPlanDropdown>([]);
 
   final repository = Get.put(VehicleRepository());
@@ -104,6 +105,16 @@ class VehicleController extends GetxController {
       Exception(e);
     }
     isLoading.value = false;
+  }
+
+  Future<void> getAllDropDown() async {
+    isLoadingDropDown.value = true;
+    try {
+      listVehiclesDropDown.value = await repository.getAllDropDown();
+    } catch (e) {
+      Exception(e);
+    }
+    isLoadingDropDown.value = false;
   }
 
   Future<void> getAllUserPlans() async {

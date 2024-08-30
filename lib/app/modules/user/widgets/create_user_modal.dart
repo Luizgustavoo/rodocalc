@@ -4,14 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/controllers/user_controller.dart';
+import 'package:rodocalc/app/data/controllers/vehicle_controller.dart';
+import 'package:rodocalc/app/data/models/vehicle_model.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/services.dart';
 
 class CreateUserModal extends GetView<UserController> {
-  const CreateUserModal({super.key, required this.update});
+  const CreateUserModal(
+      {super.key, required this.update, required this.vehicleController});
 
   final bool update;
+  final VehicleController vehicleController;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +23,6 @@ class CreateUserModal extends GetView<UserController> {
       padding: MediaQuery.of(context).viewInsets,
       child: Form(
         key: controller.formUserKey,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -338,6 +341,55 @@ class CreateUserModal extends GetView<UserController> {
                         },
                       ),
                       const SizedBox(height: 16),
+                      Obx(
+                        () => DropdownButtonFormField<int?>(
+                          decoration: const InputDecoration(
+                            labelText: 'VEÍCULO',
+                          ),
+                          items: [
+                            const DropdownMenuItem<int?>(
+                              value: 0,
+                              child: Text('Selecione um Veículo'),
+                            ),
+                            ...vehicleController.listVehiclesDropDown
+                                .map((Vehicle vehicle) {
+                              // Verifique se plan.id é nulo e use um valor padrão se necessário
+                              if (vehicle.id == null) {
+                                return DropdownMenuItem<int?>(
+                                  value: null,
+                                  // Ou qualquer outro valor que não conflite
+                                  child: Text(vehicle.modelo ??
+                                      'Descrição não disponível'),
+                                );
+                              }
+
+                              return DropdownMenuItem<int?>(
+                                value: vehicle.id,
+                                child: Container(
+                                  constraints:
+                                      BoxConstraints(maxWidth: Get.width * .7),
+                                  child: Text(
+                                    "${vehicle.modelo}",
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              );
+                            }),
+                          ],
+                          onChanged: (newValue) {
+                            controller.selectedVehicleDropDown.value =
+                                newValue!;
+                          },
+                          value: controller.selectedVehicleDropDown.value,
+                          validator: (value) {
+                            if (value == null) {
+                              return 'Por favor, selecione um veículo';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 16),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -356,7 +408,28 @@ class CreateUserModal extends GetView<UserController> {
                           ),
                           const SizedBox(width: 10),
                           CustomElevatedButton(
-                            onPressed: () async {},
+                            onPressed: () async {
+                              print('Clicou');
+                              Map<String, dynamic> retorno =
+                                  await controller.insertUser();
+                              //
+                              // if (retorno['success'] == true) {
+                              //   Get.back();
+                              //   Get.snackbar(
+                              //       'Sucesso!', retorno['message'].join('\n'),
+                              //       backgroundColor: Colors.green,
+                              //       colorText: Colors.white,
+                              //       duration: const Duration(seconds: 2),
+                              //       snackPosition: SnackPosition.BOTTOM);
+                              // } else {
+                              //   Get.snackbar(
+                              //       'Falha!', retorno['message'].join('\n'),
+                              //       backgroundColor: Colors.red,
+                              //       colorText: Colors.white,
+                              //       duration: const Duration(seconds: 2),
+                              //       snackPosition: SnackPosition.BOTTOM);
+                              // }
+                            },
                             child: const Text(
                               'CADASTRAR',
                               style: TextStyle(
