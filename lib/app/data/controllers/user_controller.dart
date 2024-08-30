@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:rodocalc/app/data/models/people_model.dart';
+import 'package:rodocalc/app/data/models/user_model.dart';
 import 'package:rodocalc/app/data/repositories/cep_repository.dart';
 import 'package:rodocalc/app/data/repositories/user_repository.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
+import 'package:rodocalc/app/utils/service_storage.dart';
 
 class UserController extends GetxController {
   var selectedImagePath = ''.obs;
@@ -135,39 +138,36 @@ class UserController extends GetxController {
 
   Future<Map<String, dynamic>> insertUser() async {
     if (formUserKey.currentState!.validate()) {
-      print('validado');
-      // People people = People(
-      //   nome: txtNomeController.text,
-      //   foto: selectedImagePath.value,
-      //   ddd: txtDDDController.text,
-      //   telefone: txtTelefoneController.text,
-      //   cpf: txtCpfController.text,
-      //   apelido: txtApelidoController.text,
-      //   cidade: txtCidadeController.text,
-      //   uf: selectedState.value,
-      //   status: 1,
-      //   cupomParaIndicar: "",
-      //   bairro: neighborhoodController.text,
-      //   cep: cepController.text,
-      //   endereco: addressController.text,
-      //   numeroCasa: houseNumberController.text,
-      // );
-      //
-      // User user = User(
-      //   email: txtEmailController.text,
-      //   password: txtSenhaController.text,
-      //   status: 1,
-      //   cupomRecebido: ServiceStorage.getCodeIndicator(),
-      // );
+      People people = People(
+        nome: txtNomeController.text,
+        foto: selectedImagePath.value,
+        ddd: txtDDDController.text,
+        telefone: txtTelefoneController.text,
+        cpf: txtCpfController.text,
+        apelido: txtApelidoController.text,
+        cidade: txtCidadeController.text,
+        uf: selectedState.value,
+        status: 1,
+        cupomParaIndicar: "",
+        bairro: neighborhoodController.text,
+        cep: cepController.text,
+        endereco: addressController.text,
+        numeroCasa: houseNumberController.text,
+      );
 
-      // mensagem = await repository.insertUser(
-      //     people, user, selectedVehicleDropDown.value);
-      // retorno = {
-      //   'success': mensagem['success'],
-      //   'message': mensagem['message']
-      // };
-    } else {
-      print('não validado');
+      User user = User(
+        email: txtEmailController.text,
+        password: txtSenhaController.text,
+        status: 1,
+        cupomRecebido: ServiceStorage.getCodeIndicator(),
+      );
+
+      mensagem = await repository.insertUser(
+          people, user, selectedVehicleDropDown.value);
+      retorno = {
+        'success': mensagem['success'],
+        'message': mensagem['message']
+      };
     }
     return retorno;
   }

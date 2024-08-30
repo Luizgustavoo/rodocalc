@@ -34,6 +34,21 @@ class AuthApiClient {
     return null;
   }
 
+  Future<Map<String, dynamic>?> getUserTypes() async {
+    var loginUrl = Uri.parse('$baseUrl/usertypes');
+    try {
+      var response = await httpClient.get(loginUrl, headers: {
+        "Accept": "application/json",
+      });
+
+      print(json.decode(response.body));
+      return json.decode(response.body);
+    } catch (e) {
+      Exception(e);
+    }
+    return null;
+  }
+
   Future<Map<String, dynamic>?> getLogout() async {
     var loginUrl = Uri.parse('$baseUrl/v1/logout');
     try {
@@ -82,7 +97,7 @@ class AuthApiClient {
         "bairro": people.bairro.toString(),
         "numero_casa": people.numeroCasa.toString(),
         "cep": people.cep.toString(),
-        "usertype_id": "2"
+        "usertype_id": user.userTypeId.toString()
       });
 
       request.headers.addAll({

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/controllers/signup_controller.dart';
+import 'package:rodocalc/app/data/models/user_type_model.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/services.dart';
@@ -363,6 +364,54 @@ class SignUpView extends GetView<SignUpController> {
                               }
                               return null;
                             },
+                          ),
+                          const SizedBox(height: 16),
+                          Obx(
+                            () => DropdownButtonFormField<int?>(
+                              decoration: const InputDecoration(
+                                labelText: 'TIPO DE REGISTRO',
+                              ),
+                              items: [
+                                const DropdownMenuItem<int?>(
+                                  value: 0,
+                                  child: Text('Selecione um tipo'),
+                                ),
+                                ...controller.listUserTypes
+                                    .map((UserType type) {
+                                  // Verifique se plan.id é nulo e use um valor padrão se necessário
+                                  if (type.id == null) {
+                                    return DropdownMenuItem<int?>(
+                                      value: null,
+                                      // Ou qualquer outro valor que não conflite
+                                      child: Text(type.descricao ??
+                                          'Descrição não disponível'),
+                                    );
+                                  }
+
+                                  return DropdownMenuItem<int?>(
+                                    value: type.id,
+                                    child: Container(
+                                      constraints: BoxConstraints(
+                                          maxWidth: Get.width * .7),
+                                      child: Text(
+                                        "${type.descricao}",
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  );
+                                }),
+                              ],
+                              onChanged: (newValue) {
+                                controller.selectedUserType.value = newValue!;
+                              },
+                              value: controller.selectedUserType.value,
+                              validator: (value) {
+                                if (value == null) {
+                                  return 'Por favor, selecione um tipo de registro';
+                                }
+                                return null;
+                              },
+                            ),
                           ),
                           const SizedBox(height: 20),
                           CustomElevatedButton(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/login_controller.dart';
+import 'package:rodocalc/app/data/controllers/signup_controller.dart';
 
 class LoginView extends GetView<LoginController> {
   const LoginView({super.key});
@@ -171,6 +172,9 @@ class LoginView extends GetView<LoginController> {
                             ),
                             TextButton(
                               onPressed: () {
+                                final signupController =
+                                    Get.put(SignUpController());
+                                signupController.getUserTypes();
                                 Get.toNamed('/signup');
                               },
                               child: const Text(

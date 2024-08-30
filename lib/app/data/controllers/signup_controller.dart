@@ -4,6 +4,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/models/people_model.dart';
 import 'package:rodocalc/app/data/models/user_model.dart';
+import 'package:rodocalc/app/data/models/user_type_model.dart';
 import 'package:rodocalc/app/data/repositories/auth_repository.dart';
 import 'package:rodocalc/app/data/repositories/cep_repository.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
@@ -12,6 +13,10 @@ import 'package:rodocalc/app/utils/service_storage.dart';
 class SignUpController extends GetxController {
   var selectedImagePath = ''.obs;
   var selectedState = ''.obs;
+
+  RxList<UserType> listUserTypes = RxList<UserType>([]);
+  var isLoading = false.obs;
+  var selectedUserType = 0.obs;
 
   final TextEditingController txtNomeController = TextEditingController();
   final TextEditingController txtTelefoneController = TextEditingController();
@@ -159,6 +164,7 @@ class SignUpController extends GetxController {
         password: txtSenhaController.text,
         status: 1,
         cupomRecebido: ServiceStorage.getCodeIndicator(),
+        userTypeId: selectedUserType.value,
       );
 
       mensagem = await repository.insertUser(people, user);
@@ -168,5 +174,15 @@ class SignUpController extends GetxController {
       };
     }
     return retorno;
+  }
+
+  Future<void> getUserTypes() async {
+    isLoading.value = true;
+    try {
+      listUserTypes.value = await repository.getUserTypes();
+    } catch (e) {
+      Exception(e);
+    }
+    isLoading.value = false;
   }
 }

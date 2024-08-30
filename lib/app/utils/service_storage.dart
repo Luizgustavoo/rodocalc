@@ -34,6 +34,13 @@ class ServiceStorage {
     return 0;
   }
 
+  static int getUserTypeId() {
+    if (existUser()) {
+      return _box.read('auth')['user']['usertype_id'];
+    }
+    return 0;
+  }
+
   static String getCodeIndicator() {
     if (_box.read('indicador') != null) {
       return _box.read('indicador');

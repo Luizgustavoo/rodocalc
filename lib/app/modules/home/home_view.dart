@@ -306,16 +306,19 @@ class HomeView extends GetView<HomeController> {
                                         Get.toNamed(Routes.indicator);
                                       },
                                     ),
-                                    const SizedBox(width: 5),
-                                    CustomHomeCard(
-                                      imagePath: 'assets/images/plano.png',
-                                      label: 'Planos',
-                                      onTap: () {
-                                        planController.getAll();
-                                        planController.getMyPlans();
-                                        Get.toNamed(Routes.plan);
-                                      },
-                                    ),
+                                    if (ServiceStorage.getUserTypeId() !=
+                                        4) ...[
+                                      const SizedBox(width: 5),
+                                      CustomHomeCard(
+                                        imagePath: 'assets/images/plano.png',
+                                        label: 'Planos',
+                                        onTap: () {
+                                          planController.getAll();
+                                          planController.getMyPlans();
+                                          Get.toNamed(Routes.plan);
+                                        },
+                                      ),
+                                    ],
                                     const SizedBox(width: 5),
                                     CustomHomeCard(
                                       imagePath: 'assets/images/classific.png',
