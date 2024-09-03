@@ -74,7 +74,8 @@ class VehiclesView extends GetView<VehicleController> {
                               );
                             } else if (!controller.isLoading.value &&
                                 controller.listVehicles.isNotEmpty) {
-                              return ListView.builder(
+                              return Expanded(
+                                  child: ListView.builder(
                                 shrinkWrap: true,
                                 physics: const AlwaysScrollableScrollPhysics(),
                                 itemCount: controller.listVehicles.length,
@@ -154,7 +155,7 @@ class VehiclesView extends GetView<VehicleController> {
                                     ),
                                   );
                                 },
-                              );
+                              ));
                             } else {
                               return const Center(
                                 child: Text('Nenhum veículo encontrado!'),

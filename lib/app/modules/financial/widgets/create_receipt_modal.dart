@@ -117,6 +117,13 @@ class CreateReceiptModal extends GetView<TransactionController> {
                     ),
                     labelText: 'DESCRIÇÃO',
                   ),
+                  onChanged: (text) {
+                    controller.txtDescriptionController.value =
+                        TextEditingValue(
+                      text: text.toUpperCase(),
+                      selection: controller.txtDescriptionController.selection,
+                    );
+                  },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Por favor, insira a descrição';
@@ -158,6 +165,12 @@ class CreateReceiptModal extends GetView<TransactionController> {
                     ),
                     labelText: 'ORIGEM',
                   ),
+                  onChanged: (text) {
+                    controller.txtOriginController.value = TextEditingValue(
+                      text: text.toUpperCase(),
+                      selection: controller.txtOriginController.selection,
+                    );
+                  },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Por favor, insira a origem';
@@ -174,6 +187,12 @@ class CreateReceiptModal extends GetView<TransactionController> {
                     ),
                     labelText: 'DESTINO',
                   ),
+                  onChanged: (text) {
+                    controller.txtDestinyController.value = TextEditingValue(
+                      text: text.toUpperCase(),
+                      selection: controller.txtDestinyController.selection,
+                    );
+                  },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Por favor, insira o destino';
