@@ -35,4 +35,9 @@ class UserRepository {
       Exception(e);
     }
   }
+
+  getQuantityLicences() async {
+    var response = await apiClient.getQuantityLicences();
+    return response['data'];
+  }
 }

@@ -37,6 +37,11 @@ class VehicleRepository {
     return list;
   }
 
+  getQuantityLicences() async {
+    var response = await apiClient.getQuantityLicences();
+    return response['data'];
+  }
+
   getAllDropDown() async {
     List<Vehicle> list = <Vehicle>[];
 

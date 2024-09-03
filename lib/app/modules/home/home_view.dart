@@ -161,10 +161,10 @@ class HomeView extends GetView<HomeController> {
                                               },
                                             ];
 
-                                            // Adiciona 'Adicionar usuário' apenas se o tipo de usuário não for 4
+                                            // Adiciona 'Adicionar usuário' apenas se o tipo de usuário for 3
                                             if (ServiceStorage
-                                                    .getUserTypeId() !=
-                                                4) {
+                                                    .getUserTypeId() ==
+                                                3) {
                                               choices.insert(1, {
                                                 'text': 'Adicionar usuário',
                                                 'icon': Icons.add

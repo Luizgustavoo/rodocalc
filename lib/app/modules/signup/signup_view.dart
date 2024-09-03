@@ -142,14 +142,14 @@ class SignUpView extends GetView<SignUpController> {
                           const SizedBox(height: 10),
                           TextFormField(
                             controller: controller.txtCpfController,
-                            maxLength: 14,
+                            maxLength: 18,
                             keyboardType: TextInputType.number,
                             decoration: const InputDecoration(
                                 prefixIcon: Icon(Icons.contacts_rounded),
-                                labelText: 'CPF',
+                                labelText: 'CPF/CNPJ',
                                 counterText: ''),
                             onChanged: (value) {
-                              FormattedInputers.onCpfChanged(
+                              FormattedInputers.onCPFCNPJChanged(
                                   value, controller.txtCpfController);
                             },
                             validator: (value) {

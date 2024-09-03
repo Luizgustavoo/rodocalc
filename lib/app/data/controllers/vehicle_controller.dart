@@ -33,8 +33,12 @@ class VehicleController extends GetxController {
   final searchController = TextEditingController();
 
   RxBool isLoading = true.obs;
+  RxBool isLoadingQuantityLicences = true.obs;
   RxBool isLoadingInitial = true.obs;
   RxBool isLoadingDropDown = true.obs;
+
+  RxInt licences = 0.obs;
+  RxInt vehiclesRegistered = 0.obs;
 
   RxList<Vehicle> listVehicles = RxList<Vehicle>([]);
   RxList<Vehicle> listVehiclesDropDown = RxList<Vehicle>([]);
@@ -105,6 +109,18 @@ class VehicleController extends GetxController {
       Exception(e);
     }
     isLoading.value = false;
+  }
+
+  Future<void> getQuantityLicences() async {
+    isLoadingQuantityLicences.value = true;
+    try {
+      var data = await repository.getQuantityLicences();
+      licences.value = data['licencas'];
+      vehiclesRegistered.value = data['veiculos'];
+    } catch (e) {
+      Exception(e);
+    }
+    isLoadingQuantityLicences.value = false;
   }
 
   Future<void> getAllDropDown() async {

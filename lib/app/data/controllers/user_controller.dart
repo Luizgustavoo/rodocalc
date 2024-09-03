@@ -14,6 +14,10 @@ class UserController extends GetxController {
   var selectedState = ''.obs;
   RxBool setImage = false.obs;
 
+  RxBool isLoadingQuantityLicences = true.obs;
+  RxInt licences = 0.obs;
+  RxInt usersRegistered = 0.obs;
+
   var selectedVehicleDropDown = 0.obs;
 
   final formUserKey = GlobalKey<FormState>();
@@ -149,6 +153,18 @@ class UserController extends GetxController {
       Exception(e);
     }
     isLoading.value = false;
+  }
+
+  Future<void> getQuantityLicences() async {
+    isLoadingQuantityLicences.value = true;
+    try {
+      var data = await repository.getQuantityLicences();
+      licences.value = data['licencas'];
+      usersRegistered.value = data['usuarios'];
+    } catch (e) {
+      Exception(e);
+    }
+    isLoadingQuantityLicences.value = false;
   }
 
   Future<Map<String, dynamic>> insertUser() async {

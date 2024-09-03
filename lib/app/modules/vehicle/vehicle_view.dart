@@ -178,16 +178,27 @@ class VehiclesView extends GetView<VehicleController> {
               child: FloatingActionButton(
                 backgroundColor: const Color(0xFFFF6B00),
                 onPressed: () {
-                  controller.isLoading.value = false;
-                  controller.clearAllFields();
-                  controller.getAllUserPlans();
-                  showModalBottomSheet(
-                    isScrollControlled: true,
-                    context: context,
-                    builder: (context) => const CreateVehicleModal(
-                      update: false,
-                    ),
-                  );
+                  controller.getQuantityLicences();
+                  if (controller.vehiclesRegistered.value >=
+                      controller.licences.value) {
+                    Get.snackbar('Atenção!',
+                        'A quantidade de licenças do seu plano estourou!',
+                        backgroundColor: Colors.orange,
+                        colorText: Colors.black,
+                        duration: const Duration(seconds: 2),
+                        snackPosition: SnackPosition.BOTTOM);
+                  } else {
+                    controller.isLoading.value = false;
+                    controller.clearAllFields();
+                    controller.getAllUserPlans();
+                    showModalBottomSheet(
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (context) => const CreateVehicleModal(
+                        update: false,
+                      ),
+                    );
+                  }
                 },
                 child: const Icon(
                   Icons.add_rounded,

@@ -29,6 +29,28 @@ abstract class FormattedInputers {
     );
   }
 
+  static void onCPFCNPJChanged(
+      String value, TextEditingController textEditingController) {
+    textEditingController.value = textEditingController.value.copyWith(
+      text: FormattedInputers.formatCpfCnpj2(value),
+      selection: TextSelection.collapsed(
+          offset: FormattedInputers.formatCpfCnpj2(value).length),
+    );
+  }
+
+  static String formatCpfCnpj2(String value) {
+    value = value.replaceAll(RegExp(r'\D'), '');
+
+    if (value.length <= 11) {
+      return value.replaceAllMapped(RegExp(r'(\d{3})(\d{3})(\d{3})(\d{2})'),
+          (Match m) => "${m[1]}.${m[2]}.${m[3]}-${m[4]}");
+    } else {
+      return value.replaceAllMapped(
+          RegExp(r'(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})'),
+          (Match m) => "${m[1]}.${m[2]}.${m[3]}/${m[4]}-${m[5]}");
+    }
+  }
+
   static void onDateChanged(
       String value, TextEditingController textEditingController) {
     textEditingController.value = textEditingController.value.copyWith(

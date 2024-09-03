@@ -23,7 +23,34 @@ class VehicleApiClient {
           "Authorization": token,
         },
       );
+      print(json.decode(response.body));
       if (response.statusCode == 201) {
+        return json.decode(response.body);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      Exception(e);
+    }
+    return null;
+  }
+
+  getQuantityLicences() async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+
+      Uri vehicleUrl;
+      String url =
+          '$baseUrl/v1/planousuario/licencasdisponiveis/${ServiceStorage.getUserId().toString()}';
+      vehicleUrl = Uri.parse(url);
+      var response = await httpClient.get(
+        vehicleUrl,
+        headers: {
+          "Accept": "application/json",
+          "Authorization": token,
+        },
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
         return json.decode(response.body);
       } else {
         return null;
@@ -119,6 +146,8 @@ class VehicleApiClient {
 
       var responseStream = await response.stream.bytesToString();
       var httpResponse = http.Response(responseStream, response.statusCode);
+
+      print(json.decode(httpResponse.body));
 
       if (httpResponse.statusCode == 201 ||
           httpResponse.statusCode == 422 ||

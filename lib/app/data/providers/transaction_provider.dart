@@ -26,6 +26,7 @@ class TransactionApiClient {
           "Authorization": token,
         },
       );
+
       if (response.statusCode == 201) {
         return json.decode(response.body);
       } else if (response.statusCode == 401 &&
@@ -163,6 +164,7 @@ class TransactionApiClient {
       var responseStream = await response.stream.bytesToString();
       var httpResponse = http.Response(responseStream, response.statusCode);
 
+      print(json.decode(httpResponse.body));
       if (httpResponse.statusCode == 201 ||
           httpResponse.statusCode == 422 ||
           httpResponse.statusCode == 404) {
@@ -234,6 +236,7 @@ class TransactionApiClient {
           "Authorization": token,
         },
       );
+      print(json.decode(response.body));
       if (response.statusCode == 201) {
         return json.decode(response.body);
       } else if (response.statusCode == 401 &&

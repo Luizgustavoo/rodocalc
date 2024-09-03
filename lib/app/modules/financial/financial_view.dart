@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
 import 'package:rodocalc/app/data/models/transactions_model.dart';
+import 'package:rodocalc/app/data/models/vehicle_model.dart';
 import 'package:rodocalc/app/modules/financial/widgets/create_expense_modal.dart';
 import 'package:rodocalc/app/modules/financial/widgets/create_receipt_modal.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
@@ -130,15 +131,24 @@ class FinancialView extends GetView<TransactionController> {
                 label: 'ADICIONAR RECEBIMENTO',
                 labelStyle: const TextStyle(fontFamily: "Inter-Black"),
                 onTap: () {
-                  controller.clearAllFields();
-                  controller.getMyChargeTypes();
-                  showModalBottomSheet(
-                    isScrollControlled: true,
-                    context: context,
-                    builder: (context) => const CreateReceiptModal(
-                      isUpdate: false,
-                    ),
-                  );
+                  Vehicle v = ServiceStorage.getVehicleStorage();
+                  if (v.isEmpty()) {
+                    Get.snackbar('Atenção!', 'Selecione um veículo antes!',
+                        backgroundColor: Colors.orange,
+                        colorText: Colors.black,
+                        duration: const Duration(seconds: 2),
+                        snackPosition: SnackPosition.BOTTOM);
+                  } else {
+                    controller.clearAllFields();
+                    controller.getMyChargeTypes();
+                    showModalBottomSheet(
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (context) => const CreateReceiptModal(
+                        isUpdate: false,
+                      ),
+                    );
+                  }
                 },
               ),
               SpeedDialChild(
@@ -154,20 +164,29 @@ class FinancialView extends GetView<TransactionController> {
                 label: 'ADICIONAR DESPESA',
                 labelStyle: const TextStyle(fontFamily: "Inter-Black"),
                 onTap: () {
-                  controller.clearAllFields();
-                  final transactionController =
-                      Get.put(TransactionController());
+                  Vehicle v = ServiceStorage.getVehicleStorage();
+                  if (v.isEmpty()) {
+                    Get.snackbar('Atenção!', 'Selecione um veículo antes!',
+                        backgroundColor: Colors.orange,
+                        colorText: Colors.black,
+                        duration: const Duration(seconds: 2),
+                        snackPosition: SnackPosition.BOTTOM);
+                  } else {
+                    controller.clearAllFields();
+                    final transactionController =
+                        Get.put(TransactionController());
 
-                  transactionController.getMyCategories();
-                  transactionController.getMySpecifics();
+                    transactionController.getMyCategories();
+                    transactionController.getMySpecifics();
 
-                  showModalBottomSheet(
-                    isScrollControlled: true,
-                    context: context,
-                    builder: (context) => const CreateExpenseModal(
-                      isUpdate: false,
-                    ),
-                  );
+                    showModalBottomSheet(
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (context) => const CreateExpenseModal(
+                        isUpdate: false,
+                      ),
+                    );
+                  }
                 },
               ),
             ],

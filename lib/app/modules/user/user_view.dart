@@ -100,7 +100,7 @@ class UserView extends GetView<UserController> {
                             );
                           } else {
                             return const Center(
-                              child: Text('Nenhum veículo encontrado!'),
+                              child: Text('Nenhum usuário encontrado!'),
                             );
                           }
                         })
@@ -118,17 +118,29 @@ class UserView extends GetView<UserController> {
         child: FloatingActionButton(
           backgroundColor: const Color(0xFFFF6B00),
           onPressed: () {
-            VehicleController vehicleController = Get.put(VehicleController());
-            vehicleController.getAllDropDown();
-            controller.clearAllFields();
-            showModalBottomSheet(
-              isScrollControlled: true,
-              context: context,
-              builder: (context) => CreateUserModal(
-                vehicleController: vehicleController,
-                isUpdate: false,
-              ),
-            );
+            controller.getQuantityLicences();
+
+            if (controller.usersRegistered.value >= controller.licences.value) {
+              Get.snackbar(
+                  'Atenção!', 'A quantidade de licenças do seu plano estourou!',
+                  backgroundColor: Colors.orange,
+                  colorText: Colors.black,
+                  duration: const Duration(seconds: 2),
+                  snackPosition: SnackPosition.BOTTOM);
+            } else {
+              VehicleController vehicleController =
+                  Get.put(VehicleController());
+              vehicleController.getAllDropDown();
+              controller.clearAllFields();
+              showModalBottomSheet(
+                isScrollControlled: true,
+                context: context,
+                builder: (context) => CreateUserModal(
+                  vehicleController: vehicleController,
+                  isUpdate: false,
+                ),
+              );
+            }
           },
           child: const Icon(
             Icons.add_rounded,

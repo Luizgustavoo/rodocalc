@@ -290,7 +290,7 @@ class TransactionController extends GetxController {
         };
         getAll();
         getSaldo();
-        clearAllFields();
+        //clearAllFields();
       } else {
         retorno = {
           'success': false,

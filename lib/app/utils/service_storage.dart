@@ -87,10 +87,13 @@ class ServiceStorage {
     if (existUser()) {
       Map<String, dynamic> authJson = _box.read('auth');
       Auth auth = Auth.fromJson(authJson);
-      return auth.user!.people!.foto!;
-    } else {
-      return "";
+
+      // Verifica se user, people, e foto não são nulos
+      if (auth.user?.people?.foto != null) {
+        return auth.user!.people!.foto!;
+      }
     }
+    return ""; // Retorna uma string vazia se alguma verificação falhar
   }
 
   static bool existsSelectedVehicle() {
