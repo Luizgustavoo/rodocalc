@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/models/people_model.dart';
 import 'package:rodocalc/app/data/models/user_model.dart';
 import 'package:rodocalc/app/data/repositories/cep_repository.dart';
@@ -13,6 +12,7 @@ import 'package:rodocalc/app/utils/service_storage.dart';
 class UserController extends GetxController {
   var selectedImagePath = ''.obs;
   var selectedState = ''.obs;
+  RxBool setImage = false.obs;
 
   var selectedVehicleDropDown = 0.obs;
 
@@ -122,6 +122,7 @@ class UserController extends GetxController {
       );
       if (croppedFile != null) {
         selectedImagePath.value = croppedFile.path;
+        setImage(false);
       }
     } else {
       Get.snackbar('Erro', 'Nenhuma imagem selecionada');
@@ -182,6 +183,7 @@ class UserController extends GetxController {
         'success': mensagem['success'],
         'message': mensagem['message']
       };
+      getMyEmployees();
     }
     return retorno;
   }
@@ -220,6 +222,8 @@ class UserController extends GetxController {
         'success': mensagem['success'],
         'message': mensagem['message']
       };
+
+      getMyEmployees();
     }
     return retorno;
   }
@@ -238,7 +242,11 @@ class UserController extends GetxController {
     txtSenhaController.text = "";
     txtConfirmaSenhaController.text = "";
 
-    selectedVehicleDropDown.value = user.vehicles!.first.id!;
+    if (user.vehicles!.isNotEmpty) {
+      selectedVehicleDropDown.value = user.vehicles!.first.id!;
+    } else {
+      selectedVehicleDropDown.value = 0;
+    }
 
     cepController.text = user.people!.cep ?? '';
     addressController.text = user.people!.endereco ?? '';
@@ -247,12 +255,8 @@ class UserController extends GetxController {
 
     if (user.people!.foto != null && user.people!.foto!.isNotEmpty) {
       String imageUrl = user.people!.foto!;
-
-      if (!imageUrl.startsWith('http')) {
-        imageUrl = '$urlImagem/storage/fotos/users/$imageUrl';
-      }
-
       selectedImagePath.value = imageUrl;
+      setImage(true);
     }
   }
 
@@ -282,5 +286,6 @@ class UserController extends GetxController {
     selectedState = ''.obs;
 
     selectedVehicleDropDown = 0.obs;
+    setImage(false);
   }
 }

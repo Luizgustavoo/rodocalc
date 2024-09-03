@@ -196,7 +196,7 @@ class CreateVehicleModal extends GetView<VehicleController> {
                     items: [
                       const DropdownMenuItem<int?>(
                         value: 0,
-                        child: Text('Selecione um plano'),
+                        child: Text('Selecione um veículo'),
                       ),
                       ...controller.listMyPlans.map((UserPlanDropdown plan) {
                         String subtitulo = "";
@@ -226,7 +226,7 @@ class CreateVehicleModal extends GetView<VehicleController> {
                         : 0,
                     validator: (value) {
                       if (value == null || value == 0) {
-                        return 'Por favor, selecione um plano';
+                        return 'Por favor, selecione um veículo';
                       }
                       return null;
                     },

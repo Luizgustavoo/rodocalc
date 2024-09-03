@@ -11,6 +11,8 @@ import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/services.dart';
 
+import '../../../data/base_url.dart';
+
 class CreateUserModal extends GetView<UserController> {
   const CreateUserModal(
       {super.key,
@@ -70,17 +72,20 @@ class CreateUserModal extends GetView<UserController> {
                                 width: 100,
                                 height: 100,
                                 color: Colors.grey,
-                                child: controller.selectedImagePath.value != ''
-                                    ? Image.file(
-                                        File(
-                                            controller.selectedImagePath.value),
-                                        fit: BoxFit.cover,
-                                      )
-                                    : const Icon(
-                                        Icons.camera_alt,
-                                        size: 50,
-                                        color: Colors.white,
-                                      ),
+                                child: controller.setImage.value == true
+                                    ? Image.network(
+                                        "$urlImagem/storage/fotos/users/${controller.selectedImagePath.value}")
+                                    : controller.selectedImagePath.value != ''
+                                        ? Image.file(
+                                            File(controller
+                                                .selectedImagePath.value),
+                                            fit: BoxFit.cover,
+                                          )
+                                        : const Icon(
+                                            Icons.camera_alt,
+                                            size: 50,
+                                            color: Colors.white,
+                                          ),
                               ),
                             )),
                       ),
@@ -318,6 +323,9 @@ class CreateUserModal extends GetView<UserController> {
                           labelText: 'SENHA',
                         ),
                         validator: (value) {
+                          if (isUpdate) {
+                            return null;
+                          }
                           if (value == null || value.isEmpty) {
                             return 'Por favor, insira sua senha';
                           }
@@ -336,6 +344,9 @@ class CreateUserModal extends GetView<UserController> {
                           labelText: 'CONFIRME SUA SENHA',
                         ),
                         validator: (value) {
+                          if (isUpdate) {
+                            return null;
+                          }
                           if (value == null || value.isEmpty) {
                             return 'Por favor, confirme sua senha';
                           }

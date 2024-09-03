@@ -78,17 +78,18 @@ class UserView extends GetView<UserController> {
                                   final User user = controller.listUsers[index];
                                   return CustomFleetOwnerCard(
                                     fnEdit: () {
-                                      controller.fillInFields(user);
-
                                       VehicleController vehicleController =
                                           Get.put(VehicleController());
                                       vehicleController.getAllDropDown();
+
+                                      controller.fillInFields(user);
                                       showModalBottomSheet(
                                         isScrollControlled: true,
                                         context: context,
                                         builder: (context) => CreateUserModal(
                                           vehicleController: vehicleController,
                                           isUpdate: true,
+                                          user: user,
                                         ),
                                       );
                                     },
