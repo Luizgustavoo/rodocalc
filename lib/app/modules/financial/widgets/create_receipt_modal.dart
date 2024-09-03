@@ -236,13 +236,20 @@ class CreateReceiptModal extends GetView<TransactionController> {
                           child: Text('Carregando...'),
                         ),
                       ],
-                      onChanged: null, // Disable changes while loading
+                      onChanged: null, // Desabilitar mudanças enquanto carrega
                     );
                   } else if (controller.listChargeTypes.isNotEmpty) {
                     return DropdownButtonFormField<int>(
-                      decoration: const InputDecoration(
-                        prefixIcon: Icon(
-                          Icons.sort_by_alpha_rounded,
+                      decoration: InputDecoration(
+                        prefixIcon: IconButton(
+                          onPressed: () {
+                            // Ação ao clicar no botão
+                            controller.clearDescriptionModal();
+                            showSpecificTypeModal(context);
+                          },
+                          icon: const Icon(
+                            Icons.add_rounded,
+                          ),
                         ),
                         labelText: 'TIPO DE CARGA',
                       ),
@@ -286,7 +293,8 @@ class CreateReceiptModal extends GetView<TransactionController> {
                           child: Text('Nenhum tipo encontrado!'),
                         ),
                       ],
-                      onChanged: null, // Disable changes if no types available
+                      onChanged:
+                          null, // Desabilitar mudanças se nenhum tipo estiver disponível
                     );
                   }
                 }),
@@ -391,6 +399,92 @@ class CreateReceiptModal extends GetView<TransactionController> {
               ),
             ],
           ),
+        );
+      },
+    );
+  }
+
+  void showSpecificTypeModal(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.grey.shade300,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+                8.0), // Aqui você pode ajustar o valor para o raio desejado
+          ),
+          title: const Column(
+            children: [
+              Text(
+                'CADASTRAR TIPO DE CARGA',
+                style: TextStyle(
+                  fontFamily: 'Inter-bold',
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFFFF6B00),
+                ),
+              ),
+              Divider(
+                endIndent: 10,
+                indent: 10,
+                height: 5,
+                thickness: 2,
+                color: Colors.black45,
+              ),
+              SizedBox(height: 10),
+            ],
+          ),
+          content: Form(
+            key: controller.formkeyChargeType,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            child: TextFormField(
+              controller: controller.txtChargeTypeController,
+              decoration: const InputDecoration(
+                prefixIcon: Icon(Icons.message_outlined),
+                labelText: 'DESCRIÇÃO',
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Por favor, insira a descrição';
+                }
+                return null;
+              },
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () async {
+                Map<String, dynamic> retorno =
+                    await controller.insertChargeType();
+
+                if (retorno['success'] == true) {
+                  Get.back();
+                  Get.snackbar('Sucesso!', retorno['message'].join('\n'),
+                      backgroundColor: Colors.green,
+                      colorText: Colors.white,
+                      duration: const Duration(seconds: 2),
+                      snackPosition: SnackPosition.BOTTOM);
+                } else {
+                  Get.snackbar('Falha!', retorno['message'].join('\n'),
+                      backgroundColor: Colors.red,
+                      colorText: Colors.white,
+                      duration: const Duration(seconds: 2),
+                      snackPosition: SnackPosition.BOTTOM);
+                }
+              },
+              child: const Text(
+                'SALVAR',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('CANCELAR'),
+            ),
+          ],
         );
       },
     );

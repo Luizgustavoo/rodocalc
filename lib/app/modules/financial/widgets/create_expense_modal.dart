@@ -455,7 +455,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
               Text(
                 titulo,
                 style: const TextStyle(
-                  fontFamily: 'Inter_bold',
+                  fontFamily: 'Inter-bold',
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFFFF6B00),

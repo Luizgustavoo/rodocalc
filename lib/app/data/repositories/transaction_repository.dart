@@ -105,6 +105,15 @@ class TransactionRepository {
     }
   }
 
+  insertChargeType(ChargeType chargeType) async {
+    try {
+      var response = await apiClient.insertChargeType(chargeType);
+      return response;
+    } catch (e) {
+      Exception(e);
+    }
+  }
+
   update(Transacoes transaction, List<String> photosRemove) async {
     try {
       var response = await apiClient.update(transaction, photosRemove);

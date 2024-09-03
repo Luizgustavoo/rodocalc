@@ -37,6 +37,10 @@ class TransactionController extends GetxController {
   final txtDestinyController = TextEditingController();
   final txtTonController = TextEditingController();
 
+  //tipo de carga
+  final formkeyChargeType = GlobalKey<FormState>();
+  final txtChargeTypeController = TextEditingController();
+
   RxBool isLoading = true.obs;
 
   RxBool isLoadingChargeTypes = true.obs;
@@ -379,6 +383,27 @@ class TransactionController extends GetxController {
     return retorno;
   }
 
+  Future<Map<String, dynamic>> insertChargeType() async {
+    if (formkeyChargeType.currentState!.validate()) {
+      mensagem = await repository.insertChargeType(
+        ChargeType(descricao: txtChargeTypeController.text, status: 1),
+      );
+      if (mensagem != null) {
+        retorno = {
+          'success': mensagem['success'],
+          'message': mensagem['message']
+        };
+        getMyChargeTypes();
+      } else {
+        retorno = {
+          'success': false,
+          'message': ['Falha ao realizar a operação!']
+        };
+      }
+    }
+    return retorno;
+  }
+
   Future<Map<String, dynamic>> deleteTransaction(int id) async {
     if (id > 0) {
       mensagem = await repository.delete(Transacoes(id: id));
@@ -461,6 +486,7 @@ class TransactionController extends GetxController {
   void clearDescriptionModal() {
     final textControllers = [
       txtDescriptionExpenseCategoryController,
+      txtChargeTypeController,
     ];
     for (final controller in textControllers) {
       controller.clear();
