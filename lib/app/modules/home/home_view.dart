@@ -410,7 +410,10 @@ class HomeView extends GetView<HomeController> {
                             ),
                             IconButton(
                                 onPressed: () {
+                                  transactionController.getAll();
+                                  transactionController.getSaldo();
                                   controller.getLast();
+                                  Get.toNamed(Routes.financial);
                                 },
                                 icon: const Icon(Icons.arrow_circle_right))
                           ],
