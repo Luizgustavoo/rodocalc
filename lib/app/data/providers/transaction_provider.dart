@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:rodocalc/app/data/base_url.dart';
+import 'package:rodocalc/app/data/models/charge_type_model.dart';
 import 'package:rodocalc/app/data/models/expense_category_model.dart';
 import 'package:rodocalc/app/data/models/transactions_model.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
@@ -253,6 +254,37 @@ class TransactionApiClient {
       }
     } catch (e) {
       Exception(e);
+    }
+    return null;
+  }
+
+  insertChargeType(ChargeType charge) async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+
+      var specificTypeExpenseUrl = Uri.parse('$baseUrl/v1/tipocarga/create');
+
+      var request = http.MultipartRequest('POST', specificTypeExpenseUrl);
+
+      request.fields.addAll({
+        "descricao": charge.descricao.toString(),
+        "status": charge.status.toString(),
+        "user_id": ServiceStorage.getUserId().toString(),
+      });
+
+      request.headers.addAll({
+        'Accept': 'application/json',
+        'Authorization': token,
+      });
+
+      var response = await request.send();
+
+      var responseStream = await response.stream.bytesToString();
+      var httpResponse = http.Response(responseStream, response.statusCode);
+
+      return json.decode(httpResponse.body);
+    } catch (err) {
+      Exception(err);
     }
     return null;
   }
