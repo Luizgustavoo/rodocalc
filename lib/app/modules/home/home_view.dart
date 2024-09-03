@@ -484,6 +484,8 @@ class HomeView extends GetView<HomeController> {
                 ),
               ),
               Obx(() {
+                Future.delayed(const Duration(seconds: 3), () {});
+
                 return Positioned(
                   bottom: 0,
                   left: 0,

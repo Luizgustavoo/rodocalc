@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/plan_controller.dart';
+import 'package:rodocalc/app/routes/app_routes.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/services.dart';
@@ -214,9 +215,8 @@ class CreatePlanModal extends GetView<PlanController> {
                           await controller.subscribe();
 
                       if (retorno['success'] == true) {
-                        Get.back();
                         controller.clearAllFields();
-
+                        Get.offAllNamed(Routes.home);
                         Get.snackbar('Sucesso!', retorno['message'].join('\n'),
                             backgroundColor: Colors.green,
                             colorText: Colors.white,
