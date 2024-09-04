@@ -1,10 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:rodocalc/app/data/controllers/document_controller.dart';
 import 'package:rodocalc/app/data/models/document_model.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
@@ -128,6 +129,12 @@ class CreateDocumentModal extends GetView<DocumentController> {
                     ),
                     labelText: 'DESCRIÇÃO',
                   ),
+                  onChanged: (text) {
+                    controller.descriptionController.value = TextEditingValue(
+                      text: text.toUpperCase(),
+                      selection: controller.descriptionController.selection,
+                    );
+                  },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Por favor, insira a placa';

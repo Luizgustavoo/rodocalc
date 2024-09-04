@@ -84,6 +84,14 @@ class CreateFreightModal extends GetView<FreightController> {
                                       Icons.pin_drop,
                                     ),
                                     hintText: 'ORIGEM'),
+                                onChanged: (text) {
+                                  controller.originController.value =
+                                      TextEditingValue(
+                                    text: text.toUpperCase(),
+                                    selection:
+                                        controller.originController.selection,
+                                  );
+                                },
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Por favor, insira a origem';
@@ -137,6 +145,14 @@ class CreateFreightModal extends GetView<FreightController> {
                                       Icons.pin_drop,
                                     ),
                                     hintText: 'DESTINO'),
+                                onChanged: (text) {
+                                  controller.destinyController.value =
+                                      TextEditingValue(
+                                    text: text.toUpperCase(),
+                                    selection:
+                                        controller.destinyController.selection,
+                                  );
+                                },
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Por favor, insira o destino';

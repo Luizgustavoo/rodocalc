@@ -119,6 +119,12 @@ class CreateExpenseModal extends GetView<TransactionController> {
                   ),
                   labelText: 'DESCRIÇÃO',
                 ),
+                onChanged: (text) {
+                  controller.txtDescriptionController.value = TextEditingValue(
+                    text: text.toUpperCase(),
+                    selection: controller.txtDescriptionController.selection,
+                  );
+                },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, insira a descrição';
@@ -277,6 +283,12 @@ class CreateExpenseModal extends GetView<TransactionController> {
                   ),
                   labelText: 'CIDADE',
                 ),
+                onChanged: (text) {
+                  controller.txtCityController.value = TextEditingValue(
+                    text: text.toUpperCase(),
+                    selection: controller.txtCityController.selection,
+                  );
+                },
               ),
 
               const SizedBox(height: 10),
@@ -312,6 +324,12 @@ class CreateExpenseModal extends GetView<TransactionController> {
                   ),
                   labelText: 'EMPRESA',
                 ),
+                onChanged: (text) {
+                  controller.txtCompanyController.value = TextEditingValue(
+                    text: text.toUpperCase(),
+                    selection: controller.txtCompanyController.selection,
+                  );
+                },
               ),
               const SizedBox(height: 10),
               TextFormField(
