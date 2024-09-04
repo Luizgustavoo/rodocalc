@@ -286,6 +286,27 @@ abstract class FormattedInputers {
     return 0;
   }
 
+  static int convertForCents(String valorString) {
+    try {
+      // Remove o símbolo de moeda e os espaços
+      String valorSemMoeda = valorString.replaceAll("R\$ ", "").trim();
+
+      // Remove os pontos de separação de milhares
+      valorSemMoeda = valorSemMoeda.replaceAll('.', '');
+
+      // Substitui a vírgula por ponto para transformar em número decimal
+      valorSemMoeda = valorSemMoeda.replaceAll(',', '.');
+
+      // Converte para double e multiplica por 100 para obter os centavos
+      double valorDouble = double.parse(valorSemMoeda) * 100;
+
+      // Converte para int, que representa os centavos
+      return valorDouble.round();
+    } catch (e) {
+      throw Exception("Erro ao converter o valor: $e");
+    }
+  }
+
   static String formatApiDate(String dateString) {
     try {
       DateTime dateTime = DateTime.parse(dateString);

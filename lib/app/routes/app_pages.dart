@@ -3,7 +3,6 @@ import 'package:rodocalc/app/data/bindings/classified_binding.dart';
 import 'package:rodocalc/app/data/bindings/course_binding.dart';
 import 'package:rodocalc/app/data/bindings/document_binding.dart';
 import 'package:rodocalc/app/data/bindings/financial_binding.dart';
-import 'package:rodocalc/app/data/bindings/user_binding.dart';
 import 'package:rodocalc/app/data/bindings/freight_binding.dart';
 import 'package:rodocalc/app/data/bindings/home_binding.dart';
 import 'package:rodocalc/app/data/bindings/indicator_binding.dart';
@@ -12,12 +11,13 @@ import 'package:rodocalc/app/data/bindings/login_binding.dart';
 import 'package:rodocalc/app/data/bindings/perfil_binding.dart';
 import 'package:rodocalc/app/data/bindings/plan_binding.dart';
 import 'package:rodocalc/app/data/bindings/signup_binding.dart';
+import 'package:rodocalc/app/data/bindings/trip_binding.dart';
+import 'package:rodocalc/app/data/bindings/user_binding.dart';
 import 'package:rodocalc/app/data/bindings/vehicle_binding.dart';
 import 'package:rodocalc/app/modules/classified/classified_view.dart';
 import 'package:rodocalc/app/modules/course/course_view.dart';
 import 'package:rodocalc/app/modules/document/document_view.dart';
 import 'package:rodocalc/app/modules/financial/financial_view.dart';
-import 'package:rodocalc/app/modules/user/user_view.dart';
 import 'package:rodocalc/app/modules/freight/freight_view.dart';
 import 'package:rodocalc/app/modules/home/home_view.dart';
 import 'package:rodocalc/app/modules/indicator/indicator_view.dart';
@@ -27,6 +27,8 @@ import 'package:rodocalc/app/modules/perfil/perfil_view.dart';
 import 'package:rodocalc/app/modules/plan/manage_plan_view.dart';
 import 'package:rodocalc/app/modules/plan/plan_view.dart';
 import 'package:rodocalc/app/modules/signup/signup_view.dart';
+import 'package:rodocalc/app/modules/trip/trip_view.dart';
+import 'package:rodocalc/app/modules/user/user_view.dart';
 import 'package:rodocalc/app/modules/vehicle/vehicle_view.dart';
 import 'package:rodocalc/app/routes/app_routes.dart';
 
@@ -106,6 +108,11 @@ class AppPages {
       name: Routes.user,
       page: () => const UserView(),
       binding: UserBinding(),
+    ),
+    GetPage(
+      name: Routes.trip,
+      page: () => const TripView(),
+      binding: TripBinding(),
     ),
   ];
 }

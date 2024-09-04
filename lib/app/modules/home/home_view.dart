@@ -15,6 +15,7 @@ import 'package:rodocalc/app/data/controllers/login_controller.dart';
 import 'package:rodocalc/app/data/controllers/perfil_controller.dart';
 import 'package:rodocalc/app/data/controllers/plan_controller.dart';
 import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
+import 'package:rodocalc/app/data/controllers/trip_controller.dart';
 import 'package:rodocalc/app/data/controllers/user_controller.dart';
 import 'package:rodocalc/app/data/controllers/vehicle_controller.dart';
 import 'package:rodocalc/app/modules/global/bottom_navigation.dart';
@@ -37,6 +38,7 @@ class HomeView extends GetView<HomeController> {
   final classifiedsController = Get.put(ClassifiedController());
   final comissionIndicatorController = Get.put(ComissionIndicatorController());
   final userController = Get.put(UserController());
+  final tripController = Get.put(TripController());
 
   @override
   Widget build(BuildContext context) {
@@ -312,8 +314,14 @@ class HomeView extends GetView<HomeController> {
                                       imagePath: 'assets/images/estrada.png',
                                       label: 'Fretes',
                                       onTap: () {
-                                        freightController.getAll();
-                                        Get.toNamed(Routes.freight);
+                                        if (ServiceStorage.getUserTypeId() ==
+                                            4) {
+                                          tripController.getAll();
+                                          Get.toNamed(Routes.trip);
+                                        } else {
+                                          freightController.getAll();
+                                          Get.toNamed(Routes.freight);
+                                        }
                                       },
                                     ),
                                     const SizedBox(width: 5),
