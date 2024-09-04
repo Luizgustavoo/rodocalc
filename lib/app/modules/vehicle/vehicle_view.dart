@@ -178,8 +178,8 @@ class VehiclesView extends GetView<VehicleController> {
               padding: const EdgeInsets.only(right: 8, bottom: 8),
               child: FloatingActionButton(
                 backgroundColor: const Color(0xFFFF6B00),
-                onPressed: () {
-                  controller.getQuantityLicences();
+                onPressed: () async {
+                  await controller.getQuantityLicences();
                   if (controller.vehiclesRegistered.value >=
                       controller.licences.value) {
                     Get.snackbar('Atenção!',

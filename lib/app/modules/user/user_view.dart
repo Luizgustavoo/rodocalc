@@ -117,8 +117,8 @@ class UserView extends GetView<UserController> {
         padding: const EdgeInsets.only(right: 8, bottom: 8),
         child: FloatingActionButton(
           backgroundColor: const Color(0xFFFF6B00),
-          onPressed: () {
-            controller.getQuantityLicences();
+          onPressed: () async {
+            await controller.getQuantityLicences();
 
             if (controller.usersRegistered.value >= controller.licences.value) {
               Get.snackbar(
