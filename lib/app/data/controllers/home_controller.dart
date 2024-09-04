@@ -11,6 +11,8 @@ class HomeController extends GetxController {
   var truckInfo = 'Scania Bitrem FCF-0827'.obs;
   var truckBalance = 10307.00.obs;
 
+  var isLoading = true.obs;
+
   void updateUserPhoto() {
     userPhoto.value = ServiceStorage.getUserPhoto();
     nomeUser.value = ServiceStorage.getUserName();
@@ -45,6 +47,7 @@ class HomeController extends GetxController {
       Exception(e);
     }
     isLoadingDias.value = false;
+    isLoading.value = false;
   }
 
   getLast() async {

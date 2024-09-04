@@ -430,52 +430,53 @@ class HomeView extends GetView<HomeController> {
                                       "+R\$ ${FormattedInputers.formatValuePTBR(transaction.valor)}";
                                 }
                                 return Card(
-                                    surfaceTintColor: Colors.white,
-                                    color: Colors.white,
-                                    elevation: 0,
-                                    margin: const EdgeInsets.symmetric(
-                                        vertical: 8.0),
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(transaction.descricao!),
-                                                Text(transaction
-                                                    .expenseCategory!
-                                                    .descricao!)
-                                              ],
-                                            ),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                              children: [
-                                                Text(
-                                                  stringValor,
-                                                  style: TextStyle(
-                                                      color: transaction
-                                                                  .tipoTransacao ==
-                                                              'saida'
-                                                          ? Colors.red
-                                                          : Colors.green),
-                                                ),
-                                                Text(
-                                                    FormattedInputers
-                                                        .formatApiDate(
-                                                            transaction.data!),
-                                                    style: const TextStyle(
-                                                        color: Colors.grey)),
-                                              ],
-                                            )
-                                          ],
-                                        )
-                                      ],
-                                    ));
+                                  surfaceTintColor: Colors.white,
+                                  color: Colors.white,
+                                  elevation: 0,
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(transaction.descricao!),
+                                              Text(transaction
+                                                  .expenseCategory!.descricao!)
+                                            ],
+                                          ),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              Text(
+                                                stringValor,
+                                                style: TextStyle(
+                                                    color: transaction
+                                                                .tipoTransacao ==
+                                                            'saida'
+                                                        ? Colors.red
+                                                        : Colors.green),
+                                              ),
+                                              Text(
+                                                  FormattedInputers
+                                                      .formatApiDate(
+                                                          transaction.data!),
+                                                  style: const TextStyle(
+                                                      color: Colors.grey)),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                      const Divider(),
+                                    ],
+                                  ),
+                                );
                               }).toList(),
                             )),
                       ],
@@ -484,21 +485,30 @@ class HomeView extends GetView<HomeController> {
                 ),
               ),
               Obx(() {
-                Future.delayed(const Duration(seconds: 3), () {});
-
-                return Positioned(
-                  bottom: 0,
-                  left: 0,
-                  child: controller.diasRestantes.value <= 5 &&
-                          controller.diasRestantes.value >= 0
-                      ? WidgetPlan(
-                          titulo:
-                              "${controller.diasRestantes.value} dia(s) restante(s) para o vencimento!",
-                          data: controller.dataVencimento.value,
-                        )
-                      : const SizedBox(),
-                );
-              })
+                if (controller.isLoading.value) {
+                  return const Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                } else if (controller.diasRestantes.value <= 5 &&
+                    controller.diasRestantes.value >= 0) {
+                  return Positioned(
+                    bottom: 0,
+                    left: 0,
+                    child: WidgetPlan(
+                      titulo:
+                          "${controller.diasRestantes.value} dia(s) restante(s) para o vencimento!",
+                      data: controller.dataVencimento.value,
+                    ),
+                  );
+                } else {
+                  return Container(); // Retorna um widget vazio
+                }
+              }),
             ],
           );
         },
