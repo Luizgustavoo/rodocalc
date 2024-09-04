@@ -118,39 +118,41 @@ class FinancialView extends GetView<TransactionController> {
             animatedIcon: AnimatedIcons.menu_close,
             buttonSize: const Size(50, 50),
             children: [
-              SpeedDialChild(
-                backgroundColor: Colors.green.shade600,
-                child: const SizedBox(
-                  width: 40,
-                  height: 40,
-                  child: Icon(
-                    Icons.attach_money_rounded,
-                    color: Colors.white,
+              if (ServiceStorage.getUserTypeId() != 4) ...[
+                SpeedDialChild(
+                  backgroundColor: Colors.green.shade600,
+                  child: const SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: Icon(
+                      Icons.attach_money_rounded,
+                      color: Colors.white,
+                    ),
                   ),
+                  label: 'ADICIONAR RECEBIMENTO',
+                  labelStyle: const TextStyle(fontFamily: "Inter-Black"),
+                  onTap: () {
+                    Vehicle v = ServiceStorage.getVehicleStorage();
+                    if (v.isEmpty()) {
+                      Get.snackbar('Atenção!', 'Selecione um veículo antes!',
+                          backgroundColor: Colors.orange,
+                          colorText: Colors.black,
+                          duration: const Duration(seconds: 2),
+                          snackPosition: SnackPosition.BOTTOM);
+                    } else {
+                      controller.clearAllFields();
+                      controller.getMyChargeTypes();
+                      showModalBottomSheet(
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (context) => const CreateReceiptModal(
+                          isUpdate: false,
+                        ),
+                      );
+                    }
+                  },
                 ),
-                label: 'ADICIONAR RECEBIMENTO',
-                labelStyle: const TextStyle(fontFamily: "Inter-Black"),
-                onTap: () {
-                  Vehicle v = ServiceStorage.getVehicleStorage();
-                  if (v.isEmpty()) {
-                    Get.snackbar('Atenção!', 'Selecione um veículo antes!',
-                        backgroundColor: Colors.orange,
-                        colorText: Colors.black,
-                        duration: const Duration(seconds: 2),
-                        snackPosition: SnackPosition.BOTTOM);
-                  } else {
-                    controller.clearAllFields();
-                    controller.getMyChargeTypes();
-                    showModalBottomSheet(
-                      isScrollControlled: true,
-                      context: context,
-                      builder: (context) => const CreateReceiptModal(
-                        isUpdate: false,
-                      ),
-                    );
-                  }
-                },
-              ),
+              ],
               SpeedDialChild(
                 backgroundColor: Colors.red.shade600,
                 child: const SizedBox(
@@ -231,15 +233,146 @@ class FinancialView extends GetView<TransactionController> {
   Widget _buildSearchBar(TransactionController controller) {
     return Padding(
       padding: const EdgeInsets.only(top: 5, left: 12, right: 12, bottom: 10),
-      child: SizedBox(
-        height: 40,
-        child: TextFormField(
-          onChanged: (value) => controller.filterTransactions(value),
-          decoration: const InputDecoration(
-            labelText: 'Pesquisar',
-            prefixIcon: Icon(Icons.search),
+      child: Column(
+        children: [
+          //INICIA AQUI
+
+          Row(
+            children: [
+              Expanded(
+                child: TextFormField(
+                  controller: controller.startDateController,
+                  decoration: const InputDecoration(
+                    labelText: 'Data Inicial',
+                    prefixIcon: Icon(Icons.date_range),
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
+                    filled: true,
+                    fillColor: Colors.transparent,
+                    // Altere para a cor desejada
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Colors.grey), // Cor da borda inferior
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Colors.grey,
+                          width: 1.5), // Cor da borda quando focado
+                    ),
+                  ),
+                  readOnly: true,
+                  onTap: () async {
+                    DateTime? pickedDate = await showDatePicker(
+                      context: Get.context!,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime.now(),
+                    );
+                    if (pickedDate != null) {
+                      controller.startDateController.text =
+                          FormattedInputers.formatDate2(pickedDate);
+                      if (controller.endDateController.text.isNotEmpty) {
+                        DateTime endDate = FormattedInputers.parseDate(
+                            controller.endDateController.text);
+                        if (pickedDate.isAfter(endDate)) {
+                          Get.snackbar('Erro',
+                              'A data inicial não pode ser maior que a data final',
+                              backgroundColor: Colors.red,
+                              colorText: Colors.white);
+                          controller.startDateController.clear();
+                        }
+                      }
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: TextFormField(
+                  controller: controller.endDateController,
+                  decoration: const InputDecoration(
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
+                    filled: true,
+                    labelText: 'Data Final',
+                    prefixIcon: Icon(Icons.date_range),
+                    fillColor: Colors.transparent,
+                    // Altere para a cor desejada
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Colors.grey), // Cor da borda inferior
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Colors.grey,
+                          width: 1.5), // Cor da borda quando focado
+                    ),
+                  ),
+                  readOnly: true,
+                  onTap: () async {
+                    DateTime? pickedDate = await showDatePicker(
+                      context: Get.context!,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime.now(),
+                    );
+                    if (pickedDate != null) {
+                      if (controller.startDateController.text.isNotEmpty) {
+                        DateTime startDate = FormattedInputers.parseDate(
+                            controller.startDateController.text);
+                        if (pickedDate.isBefore(startDate)) {
+                          Get.snackbar('Erro',
+                              'A data final não pode ser menor que a data inicial',
+                              backgroundColor: Colors.red,
+                              colorText: Colors.white);
+                          controller.endDateController.clear();
+                        } else {
+                          controller.endDateController.text =
+                              FormattedInputers.formatDate2(pickedDate);
+                        }
+                      } else {
+                        controller.endDateController.text =
+                            FormattedInputers.formatDate2(pickedDate);
+                      }
+                    }
+                  },
+                ),
+              ),
+            ],
           ),
-        ),
+
+          //FINALIZA AQUI
+
+          const SizedBox(
+            height: 20,
+          ),
+
+          SizedBox(
+            height: 40,
+            child: TextFormField(
+              controller: controller.txtDescriptionFilterController,
+              decoration: InputDecoration(
+                  labelText: 'Pesquisar',
+                  suffixIcon: IconButton(
+                      onPressed: () {
+                        if ((controller.startDateController.text.isNotEmpty &&
+                                controller.endDateController.text.isNotEmpty) ||
+                            controller.txtDescriptionFilterController.text
+                                .isNotEmpty) {
+                          controller.getTransactionsWithFilter();
+                        } else {
+                          Get.snackbar('Atenção!',
+                              'Selecione data inicial e final, ou uma descrição!',
+                              backgroundColor: Colors.orange,
+                              colorText: Colors.black,
+                              duration: const Duration(seconds: 2),
+                              snackPosition: SnackPosition.BOTTOM);
+                        }
+                      },
+                      icon: Icon(Icons.search))),
+            ),
+          )
+        ],
       ),
     );
   }
@@ -309,12 +442,19 @@ class FinancialView extends GetView<TransactionController> {
           ),
         );
       } else {
-        return const Center(
-          child: Text(
-            'NÃO HÁ TRANSAÇÕES PARA O VEÍCULO SELECIONADO!',
-            style: TextStyle(fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
-          ),
+        return const Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(
+              height: 40,
+            ),
+            Text(
+              'NÃO HÁ TRANSAÇÕES PARA O VEÍCULO SELECIONADO!',
+              style: TextStyle(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            )
+          ],
         );
       }
     });

@@ -31,6 +31,9 @@ class TransactionController extends GetxController {
   final txtPhoneController = TextEditingController();
   final txtValueController = TextEditingController();
   final txtDateController = TextEditingController();
+  final startDateController = TextEditingController();
+  final endDateController = TextEditingController();
+  final txtDescriptionFilterController = TextEditingController();
 
 //RECEBIMENTO
   final txtOriginController = TextEditingController();
@@ -113,6 +116,28 @@ class TransactionController extends GetxController {
     isLoading.value = true;
     try {
       listTransactions.value = await repository.getAll();
+      filteredTransactions.value = listTransactions;
+    } catch (e) {
+      Exception(e);
+    }
+    isLoading.value = false;
+  }
+
+  Future<void> getTransactionsWithFilter() async {
+    isLoading.value = true;
+    try {
+      String inicio = startDateController.text.isNotEmpty
+          ? "${FormattedInputers.parseDateForApi(startDateController.text)} 00:00:00"
+          : "";
+      String fim = endDateController.text.isNotEmpty
+          ? "${FormattedInputers.parseDateForApi(endDateController.text).toString()} 00:00:00"
+          : "";
+
+      listTransactions.value = await repository.getTransactionsWithFilter(
+        inicio,
+        fim,
+        txtDescriptionFilterController.text,
+      );
       filteredTransactions.value = listTransactions;
     } catch (e) {
       Exception(e);
@@ -294,7 +319,7 @@ class TransactionController extends GetxController {
         };
         getAll();
         getSaldo();
-        //clearAllFields();
+        clearAllFields();
       } else {
         retorno = {
           'success': false,
@@ -473,6 +498,8 @@ class TransactionController extends GetxController {
       txtOriginController,
       txtDestinyController,
       txtTonController,
+      startDateController,
+      endDateController,
     ];
 
     for (final controller in textControllers) {

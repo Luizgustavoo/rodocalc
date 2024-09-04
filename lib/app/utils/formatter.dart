@@ -410,4 +410,24 @@ abstract class FormattedInputers {
 
     return null;
   }
+
+  static String formatDate2(DateTime date) {
+    return DateFormat('dd/MM/yyyy').format(date);
+  }
+
+  static DateTime parseDate(String date) {
+    return DateFormat('dd/MM/yyyy').parse(date);
+  }
+
+  static String parseDateForApi(String date) {
+    List<String> dateParts = date.split('/');
+    if (dateParts.length == 3) {
+      String day = dateParts[0];
+      String month = dateParts[1];
+      String year = dateParts[2];
+      return '$year-$month-$day';
+    } else {
+      throw FormatException('Formato de data inválido. Use dd/mm/yyyy.');
+    }
+  }
 }

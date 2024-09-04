@@ -22,6 +22,22 @@ class TransactionRepository {
     return list;
   }
 
+  getTransactionsWithFilter(
+      String? dataInicial, String? dataFinal, String? descricao) async {
+    List<Transacoes> list = <Transacoes>[];
+    var response = await apiClient.getTransactionsWithFilter(
+        dataInicial, dataFinal, descricao);
+
+    if (response != null &&
+        response['data'] != null &&
+        response['data'] != "null") {
+      response['data'].forEach((e) {
+        list.add(Transacoes.fromJson(e));
+      });
+    }
+    return list;
+  }
+
   getLast() async {
     List<Transacoes> list = <Transacoes>[];
 
