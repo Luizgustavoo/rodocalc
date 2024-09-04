@@ -89,6 +89,7 @@ class PerfilController extends GetxController {
         }
 
         selectedImagePath.value = imageUrl;
+        selectedState.value = auth.user!.people!.uf ?? '';
       }
     }
   }

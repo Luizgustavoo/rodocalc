@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -124,8 +125,11 @@ class AuthApiClient {
       var request = http.MultipartRequest('POST', companyUrl);
 
       if (people.foto != null && people.foto!.isNotEmpty) {
-        request.files
-            .add(await http.MultipartFile.fromPath('foto', people.foto!));
+        final file = File(people.foto!);
+        if (await file.exists()) {
+          request.files
+              .add(await http.MultipartFile.fromPath('foto', people.foto!));
+        }
       }
 
       if (people.nome != null && people.nome!.isNotEmpty) {
