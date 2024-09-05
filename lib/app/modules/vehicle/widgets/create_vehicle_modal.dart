@@ -205,7 +205,7 @@ class CreateVehicleModal extends GetView<VehicleController> {
                               "- ${plan.totalVeiculosAtivos} veículo(s) cadastrado(s)";
                         }
                         return DropdownMenuItem<int?>(
-                          value: plan.id,
+                          value: plan.planousuarioId,
                           child: Container(
                             constraints:
                                 BoxConstraints(maxWidth: Get.width * .7),
@@ -221,7 +221,8 @@ class CreateVehicleModal extends GetView<VehicleController> {
                       controller.selectedPlanDropDown.value = newValue ?? 0;
                     },
                     value: controller.listMyPlans.any((plan) =>
-                            plan.id == controller.selectedPlanDropDown.value)
+                            plan.planousuarioId ==
+                            controller.selectedPlanDropDown.value)
                         ? controller.selectedPlanDropDown.value
                         : 0,
                     validator: (value) {
