@@ -10,6 +10,7 @@ class Vehicle {
   String? foto;
   String? createdAt;
   String? updatedAt;
+  String? motorista;
   int? planoUsuarioId;
   int? status;
   dynamic saldo;
@@ -26,6 +27,7 @@ class Vehicle {
     this.foto,
     this.createdAt,
     this.updatedAt,
+    this.motorista,
     this.status,
     this.saldo,
     this.planoUsuarioId,
@@ -43,6 +45,7 @@ class Vehicle {
     foto = json['foto'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    motorista = json['motorista'];
     status = json['status'];
     planoUsuarioId = json['planousuario_id'];
     saldo = (json['saldo'] is int
@@ -63,6 +66,7 @@ class Vehicle {
     data['foto'] = foto;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
+    data['motorista'] = motorista;
     data['status'] = status;
     data['saldo'] = saldo;
     data['planousuario_id'] = planoUsuarioId;

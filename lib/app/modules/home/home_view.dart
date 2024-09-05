@@ -300,28 +300,37 @@ class HomeView extends GetView<HomeController> {
                                       },
                                     ),
                                     const SizedBox(width: 5),
-                                    CustomHomeCard(
-                                      imagePath: 'assets/images/frete.png',
-                                      label: 'Financeiro',
-                                      onTap: () {
-                                        transactionController.getAll();
-                                        transactionController.getSaldo();
-                                        Get.toNamed(Routes.financial);
-                                      },
-                                    ),
-                                    const SizedBox(width: 5),
-                                    CustomHomeCard(
-                                      imagePath: 'assets/images/estrada.png',
-                                      label: 'Fretes',
-                                      onTap: () {
-                                        if (ServiceStorage.getUserTypeId() ==
-                                            4) {
-                                          tripController.getAll();
-                                          Get.toNamed(Routes.trip);
-                                        } else {
+                                    if (ServiceStorage.getUserTypeId() !=
+                                        4) ...[
+                                      CustomHomeCard(
+                                        imagePath: 'assets/images/frete.png',
+                                        label: 'Financeiro',
+                                        onTap: () {
+                                          transactionController.getAll();
+                                          transactionController.getSaldo();
+                                          Get.toNamed(Routes.financial);
+                                        },
+                                      ),
+                                      const SizedBox(width: 5),
+                                    ],
+                                    if (ServiceStorage.getUserTypeId() !=
+                                        4) ...[
+                                      CustomHomeCard(
+                                        imagePath: 'assets/images/estrada.png',
+                                        label: 'Fretes',
+                                        onTap: () {
                                           freightController.getAll();
                                           Get.toNamed(Routes.freight);
-                                        }
+                                        },
+                                      ),
+                                      const SizedBox(width: 5),
+                                    ],
+                                    CustomHomeCard(
+                                      imagePath: 'assets/images/trecho.png',
+                                      label: 'Trechos',
+                                      onTap: () {
+                                        tripController.getAll();
+                                        Get.toNamed(Routes.trip);
                                       },
                                     ),
                                     const SizedBox(width: 5),

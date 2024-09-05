@@ -79,6 +79,14 @@ class CreateExpenseTripModal extends GetView<TripController> {
                     ),
                     labelText: 'DESCRIÇÃO',
                   ),
+                  onChanged: (text) {
+                    controller.txtDescriptionExpenseTripController.value =
+                        TextEditingValue(
+                      text: text.toUpperCase(),
+                      selection: controller
+                          .txtDescriptionExpenseTripController.selection,
+                    );
+                  },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Por favor, insira a descrição da despesa';

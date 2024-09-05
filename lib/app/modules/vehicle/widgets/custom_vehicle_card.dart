@@ -124,6 +124,25 @@ class CustomVehicleCard extends StatelessWidget {
                 ],
               ),
             ),
+            const SizedBox(height: 5),
+            RichText(
+              text: TextSpan(
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.black,
+                  fontFamily: 'Inter-Regular',
+                ),
+                children: [
+                  const TextSpan(
+                    text: 'MOTORISTA: ',
+                    style: TextStyle(
+                      fontFamily: 'Inter-Bold',
+                    ),
+                  ),
+                  TextSpan(text: vehicle.motorista!.toUpperCase()),
+                ],
+              ),
+            ),
           ],
         ),
       ),

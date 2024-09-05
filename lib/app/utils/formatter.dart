@@ -316,6 +316,15 @@ abstract class FormattedInputers {
     }
   }
 
+  static String formatApiDateHour(String dateString) {
+    try {
+      DateTime dateTime = DateTime.parse(dateString);
+      return DateFormat('dd/MM/yyyy HH:mm').format(dateTime);
+    } catch (e) {
+      return 'Data inválida';
+    }
+  }
+
   static bool validateDate(String value) {
     // Verifica se o valor não está vazio
     if (value.isEmpty) {

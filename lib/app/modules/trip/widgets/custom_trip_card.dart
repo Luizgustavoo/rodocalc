@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rodocalc/app/data/models/trip_model.dart';
+import 'package:rodocalc/app/utils/formatter.dart';
 
 class CustomTripCard extends StatelessWidget {
   final Trip trip;
@@ -84,7 +85,9 @@ class CustomTripCard extends StatelessWidget {
                       fontFamily: 'Inter-Bold',
                     ),
                   ),
-                  TextSpan(text: 'R\$ ${trip.totalDespesas}'),
+                  TextSpan(
+                      text:
+                          'R\$ ${FormattedInputers.formatValuePTBR((trip.totalDespesas / 100).toString())}'),
                 ],
               ),
             ),

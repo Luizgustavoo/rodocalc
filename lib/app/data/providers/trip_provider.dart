@@ -13,9 +13,10 @@ class TripApiClient {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
+      String veiculoId = ServiceStorage.idSelectedVehicle().toString();
+
       Uri tripUrl;
-      String url =
-          '$baseUrl/v1/trechopercorrido/${ServiceStorage.getUserId().toString()}';
+      String url = '$baseUrl/v1/trechopercorrido/$veiculoId';
       tripUrl = Uri.parse(url);
       var response = await httpClient.get(
         tripUrl,
@@ -25,7 +26,6 @@ class TripApiClient {
         },
       );
 
-      print(json.decode(response.body));
       if (response.statusCode == 200 || response.statusCode == 201) {
         return json.decode(response.body);
       } else {
@@ -141,6 +141,7 @@ class TripApiClient {
         },
       );
 
+      print(json.decode(response.body));
       return json.decode(response.body);
     } catch (err) {
       Exception(err);

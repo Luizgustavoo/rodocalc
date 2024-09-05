@@ -6,6 +6,7 @@ import 'package:rodocalc/app/data/models/trip_model.dart';
 import 'package:rodocalc/app/modules/trip/widgets/create_expense_trip_modal.dart';
 import 'package:rodocalc/app/modules/trip/widgets/create_trip_modal.dart';
 import 'package:rodocalc/app/modules/trip/widgets/custom_trip_card.dart';
+import 'package:rodocalc/app/modules/trip/widgets/view_list_expense_trip_modal.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 
 class TripView extends GetView<TripController> {
@@ -207,19 +208,31 @@ class TripView extends GetView<TripController> {
                                     )),
                               ),
                             ),
-                            child: CustomTripCard(
-                              trip: trip,
-                              functionEdit: () {
-                                controller.fillInFields(trip);
+                            child: InkWell(
+                              onTap: () {
                                 showModalBottomSheet(
                                   isScrollControlled: true,
                                   context: context,
-                                  builder: (context) => CreateTripModal(
-                                    isUpdate: true,
+                                  builder: (context) =>
+                                      ViewListExpenseTripModal(
                                     trip: trip,
                                   ),
                                 );
                               },
+                              child: CustomTripCard(
+                                trip: trip,
+                                functionEdit: () {
+                                  controller.fillInFields(trip);
+                                  showModalBottomSheet(
+                                    isScrollControlled: true,
+                                    context: context,
+                                    builder: (context) => CreateTripModal(
+                                      isUpdate: true,
+                                      trip: trip,
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
                           );
                         },
