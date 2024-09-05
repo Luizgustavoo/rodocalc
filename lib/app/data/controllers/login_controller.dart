@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:rodocalc/app/data/controllers/vehicle_controller.dart';
 import 'package:rodocalc/app/data/models/auth_model.dart';
 import 'package:rodocalc/app/data/repositories/auth_repository.dart';
 
@@ -41,6 +42,12 @@ class LoginController extends GetxController {
       if (auth != null) {
         box.write('auth', auth?.toJson());
         Get.offAllNamed('/home');
+
+        final vehicleController = Get.put(VehicleController());
+        vehicleController.getAll();
+        if (vehicleController.listVehicles.isNotEmpty) {
+          box.write('vehicle', vehicleController.listVehicles.first.toJson());
+        }
       } else {
         showErrorSnackbar.value = true;
         showErrorMessage();
