@@ -194,7 +194,7 @@ class HomeView extends GetView<HomeController> {
                               ),
                               const SizedBox(height: 40),
                               Text(
-                                ServiceStorage.titleSelectedVehicle(),
+                                "Veículo: ${ServiceStorage.titleSelectedVehicle()} - Motorista: ${ServiceStorage.motoristaSelectedVehicle()}",
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                     color: Colors.white, fontSize: 16),

@@ -14,15 +14,19 @@ class FreightView extends GetView<FreightController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Column(
+        title: Column(
           children: [
             Text('FRETES',
                 style: TextStyle(
                   fontFamily: 'Inter-Black',
                 )),
             Text(
-              'SCANIA - P360 BITRUCK - CARROCERIA 9MTS',
-              style: TextStyle(fontFamily: 'Inter-Regular', fontSize: 14),
+              ServiceStorage.titleSelectedVehicle(),
+              style: const TextStyle(fontFamily: 'Inter-Regular', fontSize: 14),
+            ),
+            Text(
+              "Motorista: ${ServiceStorage.motoristaSelectedVehicle()}",
+              style: const TextStyle(fontFamily: 'Inter-Regular', fontSize: 14),
             )
           ],
         ),
