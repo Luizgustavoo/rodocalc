@@ -25,6 +25,10 @@ class TripView extends GetView<TripController> {
             Text(
               ServiceStorage.titleSelectedVehicle(),
               style: const TextStyle(fontFamily: 'Inter-Regular', fontSize: 14),
+            ),
+            Text(
+              "Motorista: ${ServiceStorage.motoristaSelectedVehicle()}",
+              style: const TextStyle(fontFamily: 'Inter-Regular', fontSize: 14),
             )
           ],
         ),

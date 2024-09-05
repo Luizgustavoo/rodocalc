@@ -139,6 +139,15 @@ class ServiceStorage {
     return id;
   }
 
+  static String motoristaSelectedVehicle() {
+    String motorista = "Sem motorista";
+    Vehicle v = getVehicleStorage();
+    if (!v.isEmpty()) {
+      motorista = v.motorista!;
+    }
+    return motorista;
+  }
+
   static double balanceSelectedVehicle() {
     dynamic saldo = 0.0;
     Vehicle v = getVehicleStorage();
