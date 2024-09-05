@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CustomCourseCard extends StatelessWidget {
@@ -26,18 +27,35 @@ class CustomCourseCard extends StatelessWidget {
       ),
       margin: const EdgeInsets.only(bottom: 10),
       child: ListTile(
+        onTap: () async {
+          if (link.isEmpty) {
+            Get.snackbar(
+              'Atenção',
+              'Link do curso não disponível!',
+              backgroundColor: Colors.orange,
+              colorText: Colors.white,
+              snackPosition: SnackPosition.BOTTOM,
+            );
+          } else {
+            await launchUrl(Uri.parse(link));
+          }
+        },
         horizontalTitleGap: 10,
         dense: true,
         contentPadding:
             const EdgeInsets.only(bottom: 5, top: 5, left: 10, right: 10),
         leading: IconButton(
             onPressed: () async {
-              final Uri url =
-                  Uri.parse(link.startsWith('http') ? link : 'https://$link');
-              if (await canLaunchUrl(url)) {
-                await launchUrl(url, mode: LaunchMode.externalApplication);
+              if (link.isEmpty) {
+                Get.snackbar(
+                  'Atenção',
+                  'Link do curso não disponível!',
+                  backgroundColor: Colors.orange,
+                  colorText: Colors.white,
+                  snackPosition: SnackPosition.BOTTOM,
+                );
               } else {
-                throw 'Could not launch $link';
+                await launchUrl(Uri.parse(link));
               }
             },
             icon: const Icon(
