@@ -15,6 +15,7 @@ import 'package:rodocalc/app/data/controllers/login_controller.dart';
 import 'package:rodocalc/app/data/controllers/perfil_controller.dart';
 import 'package:rodocalc/app/data/controllers/plan_controller.dart';
 import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
+import 'package:rodocalc/app/data/controllers/trip_controller.dart';
 import 'package:rodocalc/app/data/controllers/user_controller.dart';
 import 'package:rodocalc/app/data/controllers/vehicle_controller.dart';
 import 'package:rodocalc/app/modules/global/bottom_navigation.dart';
@@ -37,6 +38,7 @@ class HomeView extends GetView<HomeController> {
   final classifiedsController = Get.put(ClassifiedController());
   final comissionIndicatorController = Get.put(ComissionIndicatorController());
   final userController = Get.put(UserController());
+  final tripController = Get.put(TripController());
 
   @override
   Widget build(BuildContext context) {
@@ -298,22 +300,37 @@ class HomeView extends GetView<HomeController> {
                                       },
                                     ),
                                     const SizedBox(width: 5),
+                                    if (ServiceStorage.getUserTypeId() !=
+                                        4) ...[
+                                      CustomHomeCard(
+                                        imagePath: 'assets/images/frete.png',
+                                        label: 'Financeiro',
+                                        onTap: () {
+                                          transactionController.getAll();
+                                          transactionController.getSaldo();
+                                          Get.toNamed(Routes.financial);
+                                        },
+                                      ),
+                                      const SizedBox(width: 5),
+                                    ],
+                                    if (ServiceStorage.getUserTypeId() !=
+                                        4) ...[
+                                      CustomHomeCard(
+                                        imagePath: 'assets/images/estrada.png',
+                                        label: 'Fretes',
+                                        onTap: () {
+                                          freightController.getAll();
+                                          Get.toNamed(Routes.freight);
+                                        },
+                                      ),
+                                      const SizedBox(width: 5),
+                                    ],
                                     CustomHomeCard(
-                                      imagePath: 'assets/images/frete.png',
-                                      label: 'Financeiro',
+                                      imagePath: 'assets/images/trecho.png',
+                                      label: 'Trechos',
                                       onTap: () {
-                                        transactionController.getAll();
-                                        transactionController.getSaldo();
-                                        Get.toNamed(Routes.financial);
-                                      },
-                                    ),
-                                    const SizedBox(width: 5),
-                                    CustomHomeCard(
-                                      imagePath: 'assets/images/estrada.png',
-                                      label: 'Fretes',
-                                      onTap: () {
-                                        freightController.getAll();
-                                        Get.toNamed(Routes.freight);
+                                        tripController.getAll();
+                                        Get.toNamed(Routes.trip);
                                       },
                                     ),
                                     const SizedBox(width: 5),
