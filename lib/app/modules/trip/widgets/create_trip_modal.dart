@@ -90,46 +90,54 @@ class CreateTripModal extends GetView<TripController> {
                   },
                 ),
                 const SizedBox(height: 10),
-                SearchField<String>(
-                  controller: controller.originController,
-                  suggestions: cityController.listCities
-                      .map((city) =>
-                          SearchFieldListItem<String>(city.cidadeEstado!))
-                      .toList(),
-                  searchInputDecoration: const InputDecoration(
-                    labelText: "ORIGEM",
-                    hintText: "Digite o nome da cidade",
+                Obx(
+                  () => SearchField<String>(
+                    controller: controller.originController,
+                    suggestions: cityController.listCities
+                        .map((city) =>
+                            SearchFieldListItem<String>(city.cidadeEstado!))
+                        .toList(),
+                    searchInputDecoration: InputDecoration(
+                      labelText: cityController.isLoading.value
+                          ? "CARREGANDO..."
+                          : "ORIGEM",
+                      hintText: "Digite o nome da cidade",
+                    ),
+                    onSuggestionTap: (suggestion) {
+                      controller.originController.text = suggestion.searchKey;
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, selecione a cidade';
+                      }
+                      return null;
+                    },
                   ),
-                  onSuggestionTap: (suggestion) {
-                    controller.originController.text = suggestion.searchKey;
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, selecione a cidade';
-                    }
-                    return null;
-                  },
                 ),
                 const SizedBox(height: 10),
-                SearchField<String>(
-                  controller: controller.destinyController,
-                  suggestions: cityController.listCities
-                      .map((city) =>
-                          SearchFieldListItem<String>(city.cidadeEstado!))
-                      .toList(),
-                  searchInputDecoration: const InputDecoration(
-                    labelText: "DESTINO",
-                    hintText: "Digite o nome da cidade",
+                Obx(
+                  () => SearchField<String>(
+                    controller: controller.destinyController,
+                    suggestions: cityController.listCities
+                        .map((city) =>
+                            SearchFieldListItem<String>(city.cidadeEstado!))
+                        .toList(),
+                    searchInputDecoration: InputDecoration(
+                      labelText: cityController.isLoading.value
+                          ? "CARREGANDO..."
+                          : "DESTINO",
+                      hintText: "Digite o nome da cidade",
+                    ),
+                    onSuggestionTap: (suggestion) {
+                      controller.destinyController.text = suggestion.searchKey;
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, selecione a cidade';
+                      }
+                      return null;
+                    },
                   ),
-                  onSuggestionTap: (suggestion) {
-                    controller.destinyController.text = suggestion.searchKey;
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, selecione a cidade';
-                    }
-                    return null;
-                  },
                 ),
                 const SizedBox(height: 10),
                 TextFormField(

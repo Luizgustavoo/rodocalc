@@ -278,25 +278,29 @@ class CreateExpenseModal extends GetView<TransactionController> {
               ),
 
               const SizedBox(height: 10),
-              SearchField<String>(
-                controller: controller.txtCityController,
-                suggestions: cityController.listCities
-                    .map((city) =>
-                        SearchFieldListItem<String>(city.cidadeEstado!))
-                    .toList(),
-                searchInputDecoration: const InputDecoration(
-                  labelText: "CIDADE",
-                  hintText: "Digite o nome da cidade",
+              Obx(
+                () => SearchField<String>(
+                  controller: controller.txtCityController,
+                  suggestions: cityController.listCities
+                      .map((city) =>
+                          SearchFieldListItem<String>(city.cidadeEstado!))
+                      .toList(),
+                  searchInputDecoration: InputDecoration(
+                    labelText: cityController.isLoading.value
+                        ? "CARREGANDO..."
+                        : "CIDADE",
+                    hintText: "Digite o nome da cidade",
+                  ),
+                  onSuggestionTap: (suggestion) {
+                    controller.txtCityController.text = suggestion.searchKey;
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, selecione a cidade';
+                    }
+                    return null;
+                  },
                 ),
-                onSuggestionTap: (suggestion) {
-                  controller.txtCityController.text = suggestion.searchKey;
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, selecione a cidade';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 10),
               TextFormField(
