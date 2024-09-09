@@ -171,10 +171,10 @@ class TripController extends GetxController {
       txtDateController.clear();
     }
 
-    originController.text = trip.origem.toString();
-    selectedStateOrigin.value = trip.ufOrigem.toString();
-    destinyController.text = trip.destino.toString();
-    selectedStateDestiny.value = trip.ufDestino.toString();
+    originController.text =
+        "${trip.origem.toString()}-${trip.ufOrigem.toString()}";
+    destinyController.text =
+        "${trip.destino.toString()}-${trip.ufDestino.toString()}";
     distanceController.text =
         FormattedInputers.formatDoubleForDecimal(trip.distancia!);
   }
@@ -208,15 +208,49 @@ class TripController extends GetxController {
 
   Future<Map<String, dynamic>> insertTrip() async {
     if (tripFormKey.currentState!.validate()) {
+      // Define a expressão regular para validar o formato "Cidade-UF"
+      final RegExp cidadeUfRegex = RegExp(r'^[A-Za-zÀ-ÿ\s]+-[A-Z]{2}$');
+
+      // Valida e separa as strings de origem e destino
+      if (!cidadeUfRegex.hasMatch(originController.text) ||
+          !cidadeUfRegex.hasMatch(destinyController.text)) {
+        return {
+          'success': false,
+          'message': ['Formato de cidade e UF inválido! Use "Cidade-UF".']
+        };
+      }
+
+      // Separa a cidade e UF de origem
+      final origemPartes = originController.text.split('-');
+      if (origemPartes.length != 2) {
+        return {
+          'success': false,
+          'message': ['Formato de origem inválido!']
+        };
+      }
+      final cidadeOrigem = origemPartes[0];
+      final ufOrigem = origemPartes[1];
+
+      // Separa a cidade e UF de destino
+      final destinoPartes = destinyController.text.split('-');
+      if (destinoPartes.length != 2) {
+        return {
+          'success': false,
+          'message': ['Formato de destino inválido!']
+        };
+      }
+      final cidadeDestino = destinoPartes[0];
+      final ufDestino = destinoPartes[1];
+
       mensagem = await repository.insert(Trip(
         userId: ServiceStorage.getUserId(),
         veiculoId: ServiceStorage.idSelectedVehicle(),
         dataHora: txtDateController.text,
         tipoSaidaChegada: selectedOption.value,
-        origem: originController.text,
-        ufOrigem: selectedStateOrigin.value,
-        destino: destinyController.text,
-        ufDestino: selectedStateDestiny.value,
+        origem: cidadeOrigem,
+        ufOrigem: ufOrigem,
+        destino: cidadeDestino,
+        ufDestino: ufDestino,
         distancia: FormattedInputers.convertToDouble(distanceController.text),
         status: 1,
       ));

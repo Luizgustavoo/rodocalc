@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:rodocalc/app/data/controllers/city_state_controller.dart';
 import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
 import 'package:rodocalc/app/data/models/expense_category_model.dart';
 import 'package:rodocalc/app/data/models/specific_type_expense_model.dart';
@@ -9,13 +10,15 @@ import 'package:rodocalc/app/modules/vehicle/widgets/photo_item_network.dart';
 import 'package:rodocalc/app/routes/app_routes.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
+import 'package:searchfield/searchfield.dart';
 
 class CreateExpenseModal extends GetView<TransactionController> {
-  const CreateExpenseModal(
-      {super.key, required this.isUpdate, this.idTransaction});
+  CreateExpenseModal({super.key, required this.isUpdate, this.idTransaction});
 
   final bool isUpdate;
   final int? idTransaction;
+
+  final cityController = Get.put(CityStateController());
 
   @override
   Widget build(BuildContext context) {
@@ -275,46 +278,26 @@ class CreateExpenseModal extends GetView<TransactionController> {
               ),
 
               const SizedBox(height: 10),
-              TextFormField(
+              SearchField<String>(
                 controller: controller.txtCityController,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(
-                    Icons.location_city_outlined,
-                  ),
-                  labelText: 'CIDADE',
+                suggestions: cityController.listCities
+                    .map((city) =>
+                        SearchFieldListItem<String>(city.cidadeEstado!))
+                    .toList(),
+                searchInputDecoration: const InputDecoration(
+                  labelText: "CIDADE",
+                  hintText: "Digite o nome da cidade",
                 ),
-                onChanged: (text) {
-                  controller.txtCityController.value = TextEditingValue(
-                    text: text.toUpperCase(),
-                    selection: controller.txtCityController.selection,
-                  );
+                onSuggestionTap: (suggestion) {
+                  controller.txtCityController.text = suggestion.searchKey;
                 },
-              ),
-
-              const SizedBox(height: 10),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.map),
-                  labelText: 'UF',
-                ),
-                items: controller.ufs.map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (newValue) {
-                  controller.selectedUf.value = newValue!;
-                },
-                value: controller.selectedUf.value,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Selecione a UF';
+                    return 'Por favor, selecione a cidade';
                   }
                   return null;
                 },
               ),
-
               const SizedBox(height: 10),
               TextFormField(
                 controller: controller.txtCompanyController,

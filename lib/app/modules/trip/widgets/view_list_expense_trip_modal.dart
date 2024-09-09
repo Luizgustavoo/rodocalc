@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/trip_controller.dart';
 import 'package:rodocalc/app/data/models/expense_trip_model.dart';
 import 'package:rodocalc/app/data/models/trip_model.dart';
+import 'package:rodocalc/app/modules/trip/widgets/create_expense_trip_modal.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 
 class ViewListExpenseTripModal extends GetView<TripController> {
@@ -23,14 +24,32 @@ class ViewListExpenseTripModal extends GetView<TripController> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Padding(
+                Padding(
                   padding: EdgeInsets.only(top: 10, bottom: 5),
-                  child: Text(
-                    'DESPESAS DO TRECHO',
-                    style: TextStyle(
-                        fontFamily: 'Inter-Bold',
-                        fontSize: 17,
-                        color: Color(0xFFFF6B00)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'DESPESAS DO TRECHO',
+                        style: TextStyle(
+                            fontFamily: 'Inter-Bold',
+                            fontSize: 17,
+                            color: Color(0xFFFF6B00)),
+                      ),
+                      IconButton(
+                          onPressed: () {
+                            showModalBottomSheet(
+                              isScrollControlled: true,
+                              context: context,
+                              builder: (context) => CreateExpenseTripModal(
+                                isUpdate: false,
+                                trip: trip,
+                              ),
+                            );
+                          },
+                          icon: Icon(Icons.add))
+                    ],
                   ),
                 ),
                 const Divider(

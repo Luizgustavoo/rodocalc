@@ -283,6 +283,25 @@ class TransactionController extends GetxController {
 
   Future<Map<String, dynamic>> insertTransaction(String typeTransaction) async {
     if (formKeyTransaction.currentState!.validate()) {
+      final RegExp cidadeUfRegex = RegExp(r'^[A-Za-zÀ-ÿ\s]+-[A-Z]{2}$');
+
+      if (!cidadeUfRegex.hasMatch(txtCityController.text)) {
+        return {
+          'success': false,
+          'message': ['Formato de cidade e UF inválido! Use "Cidade-UF".']
+        };
+      }
+
+      final cidadePartes = txtCityController.text.split('-');
+      if (cidadePartes.length != 2) {
+        return {
+          'success': false,
+          'message': ['Formato de cidade inválido!']
+        };
+      }
+      final cidadeOrigem = cidadePartes[0];
+      final ufOrigem = cidadePartes[1];
+
       List<TransactionsPhotos>? photos = [];
       if (selectedImagesPaths.isNotEmpty) {
         for (var element in selectedImagesPaths) {
@@ -297,8 +316,8 @@ class TransactionController extends GetxController {
         tipoEspecificoDespesaId: 1,
         valor: FormattedInputers.convertToDouble(txtValueController.text),
         empresa: txtCompanyController.text,
-        cidade: txtCityController.text,
-        uf: selectedUf.value,
+        cidade: cidadeOrigem,
+        uf: ufOrigem,
         ddd: txtDDDController.text,
         telefone: txtPhoneController.text,
         status: 1,
@@ -464,10 +483,13 @@ class TransactionController extends GetxController {
     txtDDDController.text = selected.ddd != null ? selected.ddd.toString() : "";
     txtPhoneController.text =
         selected.telefone != null ? selected.telefone.toString() : "";
-    txtOriginController.text =
-        selected.origem != null ? selected.origem.toString() : "";
+
+    txtOriginController.text = selected.origem != null
+        ? "${selected.origem.toString()}-${selected.uf.toString()}"
+        : "";
     txtDestinyController.text =
         selected.destino != null ? selected.destino.toString() : "";
+
     txtTonController.text = selected.quantidadeTonelada != null
         ? selected.quantidadeTonelada.toString()
         : "";
