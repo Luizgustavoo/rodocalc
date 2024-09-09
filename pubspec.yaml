@@ -58,6 +58,8 @@ dependencies:
   flutter_cached_pdfview: ^0.4.2
   app_links: ^6.2.0
   font_awesome_flutter: ^10.7.0
+  searchfield: ^1.0.9
+
 
 
 dev_dependencies:

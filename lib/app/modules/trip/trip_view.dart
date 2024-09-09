@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/base_url.dart';
+import 'package:rodocalc/app/data/controllers/city_state_controller.dart';
 import 'package:rodocalc/app/data/controllers/trip_controller.dart';
 import 'package:rodocalc/app/data/models/trip_model.dart';
-import 'package:rodocalc/app/modules/trip/widgets/create_expense_trip_modal.dart';
 import 'package:rodocalc/app/modules/trip/widgets/create_trip_modal.dart';
 import 'package:rodocalc/app/modules/trip/widgets/custom_trip_card.dart';
 import 'package:rodocalc/app/modules/trip/widgets/view_list_expense_trip_modal.dart';
@@ -135,25 +135,16 @@ class TripView extends GetView<TripController> {
                           Trip trip = controller.listTrip[index];
                           return Dismissible(
                             key: UniqueKey(),
-                            direction: DismissDirection.horizontal,
+                            direction: DismissDirection.endToStart,
                             confirmDismiss: (DismissDirection direction) async {
                               controller.clearAllFields();
                               if (direction == DismissDirection.endToStart) {
                                 showDialog(context, trip, controller);
                               }
-                              if (direction == DismissDirection.startToEnd) {
-                                showModalBottomSheet(
-                                  isScrollControlled: true,
-                                  context: context,
-                                  builder: (context) => CreateExpenseTripModal(
-                                    isUpdate: false,
-                                    trip: trip,
-                                  ),
-                                );
-                              }
+
                               return false;
                             },
-                            secondaryBackground: Container(
+                            background: Container(
                               margin: const EdgeInsets.all(5),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
@@ -174,36 +165,6 @@ class TripView extends GetView<TripController> {
                                         SizedBox(width: 10),
                                         Text(
                                           'EXCLUIR',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    )),
-                              ),
-                            ),
-                            background: Container(
-                              margin: const EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.green,
-                              ),
-                              child: const Align(
-                                alignment: Alignment.centerRight,
-                                child: Padding(
-                                    padding: EdgeInsets.all(10),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Icon(
-                                          Icons.check_rounded,
-                                          size: 25,
-                                          color: Colors.white,
-                                        ),
-                                        SizedBox(width: 10),
-                                        Text(
-                                          'LANÇAR DESPESA',
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontWeight: FontWeight.bold),
@@ -266,10 +227,13 @@ class TripView extends GetView<TripController> {
                   duration: const Duration(seconds: 2),
                   snackPosition: SnackPosition.BOTTOM);
             } else {
+              final cityController = Get.put(CityStateController());
+              cityController.getCities();
+
               showModalBottomSheet(
                 isScrollControlled: true,
                 context: context,
-                builder: (context) => const CreateTripModal(isUpdate: false),
+                builder: (context) => CreateTripModal(isUpdate: false),
               );
             }
           },

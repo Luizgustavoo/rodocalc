@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/base_url.dart';
+import 'package:rodocalc/app/data/controllers/city_state_controller.dart';
 import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
 import 'package:rodocalc/app/data/models/transactions_model.dart';
 import 'package:rodocalc/app/data/models/vehicle_model.dart';
@@ -145,12 +146,14 @@ class FinancialView extends GetView<TransactionController> {
                           duration: const Duration(seconds: 2),
                           snackPosition: SnackPosition.BOTTOM);
                     } else {
+                      final cityController = Get.put(CityStateController());
+                      cityController.getCities();
                       controller.clearAllFields();
                       controller.getMyChargeTypes();
                       showModalBottomSheet(
                         isScrollControlled: true,
                         context: context,
-                        builder: (context) => const CreateReceiptModal(
+                        builder: (context) => CreateReceiptModal(
                           isUpdate: false,
                         ),
                       );
@@ -179,6 +182,8 @@ class FinancialView extends GetView<TransactionController> {
                         duration: const Duration(seconds: 2),
                         snackPosition: SnackPosition.BOTTOM);
                   } else {
+                    final cityController = Get.put(CityStateController());
+                    cityController.getCities();
                     controller.clearAllFields();
                     final transactionController =
                         Get.put(TransactionController());
@@ -189,7 +194,7 @@ class FinancialView extends GetView<TransactionController> {
                     showModalBottomSheet(
                       isScrollControlled: true,
                       context: context,
-                      builder: (context) => const CreateExpenseModal(
+                      builder: (context) => CreateExpenseModal(
                         isUpdate: false,
                       ),
                     );

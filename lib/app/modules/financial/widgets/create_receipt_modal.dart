@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:rodocalc/app/data/controllers/city_state_controller.dart';
 import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
 import 'package:rodocalc/app/data/models/charge_type_model.dart';
 import 'package:rodocalc/app/modules/vehicle/widgets/photo_item.dart';
@@ -8,13 +9,15 @@ import 'package:rodocalc/app/modules/vehicle/widgets/photo_item_network.dart';
 import 'package:rodocalc/app/routes/app_routes.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
+import 'package:searchfield/searchfield.dart';
 
 class CreateReceiptModal extends GetView<TransactionController> {
-  const CreateReceiptModal(
-      {super.key, required this.isUpdate, this.idTransaction});
+  CreateReceiptModal({super.key, required this.isUpdate, this.idTransaction});
 
   final bool isUpdate;
   final int? idTransaction;
+
+  final cityController = Get.put(CityStateController());
 
   @override
   Widget build(BuildContext context) {
@@ -157,48 +160,54 @@ class CreateReceiptModal extends GetView<TransactionController> {
                   },
                 ),
                 const SizedBox(height: 10),
-                TextFormField(
-                  controller: controller.txtOriginController,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.pin_drop,
+                Obx(
+                  () => SearchField<String>(
+                    controller: controller.txtOriginController,
+                    suggestions: cityController.listCities
+                        .map((city) =>
+                            SearchFieldListItem<String>(city.cidadeEstado!))
+                        .toList(),
+                    searchInputDecoration: InputDecoration(
+                      labelText: cityController.isLoading.value
+                          ? "CARREGANDO"
+                          : "ORIGEM",
+                      hintText: "Digite o nome da cidade de origem",
                     ),
-                    labelText: 'ORIGEM',
+                    onSuggestionTap: (suggestion) {
+                      controller.txtOriginController.text =
+                          suggestion.searchKey;
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, selecione a origem';
+                      }
+                      return null;
+                    },
                   ),
-                  onChanged: (text) {
-                    controller.txtOriginController.value = TextEditingValue(
-                      text: text.toUpperCase(),
-                      selection: controller.txtOriginController.selection,
-                    );
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, insira a origem';
-                    }
-                    return null;
-                  },
                 ),
                 const SizedBox(height: 10),
-                TextFormField(
-                  controller: controller.txtDestinyController,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.pin_drop,
+                Obx(
+                  () => SearchField<String>(
+                    controller: controller.txtDestinyController,
+                    suggestions: cityController.listCities
+                        .map((city) =>
+                            SearchFieldListItem<String>(city.cidadeEstado!))
+                        .toList(),
+                    searchInputDecoration: const InputDecoration(
+                      labelText: "DESTINO",
+                      hintText: "Digite o nome da cidade de destino",
                     ),
-                    labelText: 'DESTINO',
+                    onSuggestionTap: (suggestion) {
+                      controller.txtDestinyController.text =
+                          suggestion.searchKey;
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, selecione o destino';
+                      }
+                      return null;
+                    },
                   ),
-                  onChanged: (text) {
-                    controller.txtDestinyController.value = TextEditingValue(
-                      text: text.toUpperCase(),
-                      selection: controller.txtDestinyController.selection,
-                    );
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, insira o destino';
-                    }
-                    return null;
-                  },
                 ),
                 const SizedBox(height: 10),
                 TextFormField(

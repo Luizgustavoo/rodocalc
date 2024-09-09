@@ -1,5 +1,6 @@
 class UserPlanDropdown {
   int? id;
+  int? planousuarioId;
   String? descricao;
   double? valor;
   int? quantidadeCadastrosPermitidos;
@@ -17,6 +18,7 @@ class UserPlanDropdown {
 
   UserPlanDropdown({
     this.id,
+    this.planousuarioId,
     this.descricao,
     this.valor,
     this.quantidadeCadastrosPermitidos,
@@ -35,6 +37,7 @@ class UserPlanDropdown {
 
   UserPlanDropdown.fromJson(Map<String, dynamic> json) {
     id = json['id'];
+    planousuarioId = json['planousuario_id'];
     descricao = json['descricao'];
     valor = _convertToDouble(json['valor']);
     quantidadeCadastrosPermitidos = json['quantidade_cadastros_permitidos'];
@@ -54,6 +57,7 @@ class UserPlanDropdown {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
+    data['planousuario_id'] = planousuarioId;
     data['descricao'] = descricao;
     data['valor'] = valor;
     data['quantidade_cadastros_permitidos'] = quantidadeCadastrosPermitidos;

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:rodocalc/app/data/base_url.dart';
@@ -171,8 +172,11 @@ class VehicleApiClient {
       var request = http.MultipartRequest('POST', vehicleUrl);
 
       if (vehicle.foto!.isNotEmpty) {
-        request.files
-            .add(await http.MultipartFile.fromPath('foto', vehicle.foto!));
+        File file = File(vehicle.foto!);
+        if (await file.exists()) {
+          request.files
+              .add(await http.MultipartFile.fromPath('foto', vehicle.foto!));
+        }
       }
 
       request.fields.addAll({
@@ -183,7 +187,6 @@ class VehicleApiClient {
         "placa": vehicle.placa.toString(),
         "fipe": vehicle.fipe.toString(),
         "reboque": vehicle.reboque.toString(),
-        "foto": vehicle.foto.toString(),
         "user_id": ServiceStorage.getUserId().toString(),
         "status": "1",
         "planousuario_id": vehicle.planoUsuarioId.toString(),
@@ -199,6 +202,7 @@ class VehicleApiClient {
       var responseStream = await response.stream.bytesToString();
       var httpResponse = http.Response(responseStream, response.statusCode);
 
+      print(json.decode(httpResponse.body));
       return json.decode(httpResponse.body);
     } catch (err) {
       Exception(err);
