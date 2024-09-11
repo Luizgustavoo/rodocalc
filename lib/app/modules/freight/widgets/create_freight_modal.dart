@@ -2,16 +2,20 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rodocalc/app/data/controllers/city_state_controller.dart';
 import 'package:rodocalc/app/data/controllers/freight_controller.dart';
 import 'package:rodocalc/app/data/models/freight_model.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
+import 'package:searchfield/searchfield.dart';
 
 class CreateFreightModal extends GetView<FreightController> {
-  const CreateFreightModal({super.key, required this.isUpdate, this.freight});
+  CreateFreightModal({super.key, required this.isUpdate, this.freight});
 
   final bool isUpdate;
   final Freight? freight;
+
+  final cityController = Get.put(CityStateController());
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +23,7 @@ class CreateFreightModal extends GetView<FreightController> {
       padding: MediaQuery.of(context).viewInsets,
       child: Form(
           key: controller.freightKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             padding: const EdgeInsets.all(12.0),
@@ -65,167 +70,67 @@ class CreateFreightModal extends GetView<FreightController> {
                   },
                 ),
                 const SizedBox(height: 20),
-                Card(
-                  color: Colors.grey.shade400,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        top: 15, bottom: 15, left: 8, right: 8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: TextFormField(
-                                controller: controller.originController,
-                                decoration: const InputDecoration(
-                                    prefixIcon: Icon(
-                                      Icons.pin_drop,
-                                    ),
-                                    hintText: 'ORIGEM'),
-                                onChanged: (text) {
-                                  controller.originController.value =
-                                      TextEditingValue(
-                                    text: text.toUpperCase(),
-                                    selection:
-                                        controller.originController.selection,
-                                  );
-                                },
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Por favor, insira a origem';
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Obx(() {
-                                return DropdownButtonFormField<String>(
-                                  decoration:
-                                      const InputDecoration(hintText: 'UF'),
-                                  value: controller
-                                          .selectedStateOrigin.value.isEmpty
-                                      ? null
-                                      : controller.selectedStateOrigin.value,
-                                  items: controller.states.map((String state) {
-                                    return DropdownMenuItem<String>(
-                                      value: state,
-                                      child: Text(state.toUpperCase(),
-                                          style: const TextStyle(
-                                              fontFamily: 'Poppins')),
-                                    );
-                                  }).toList(),
-                                  onChanged: (value) {
-                                    controller.selectedStateOrigin.value =
-                                        value!;
-                                  },
-                                  validator: (value) {
-                                    if (value == null) {
-                                      return 'Por favor, selecione um estado';
-                                    }
-                                    return null;
-                                  },
-                                );
-                              }),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 15),
-                        Row(
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: TextFormField(
-                                controller: controller.destinyController,
-                                decoration: const InputDecoration(
-                                    prefixIcon: Icon(
-                                      Icons.pin_drop,
-                                    ),
-                                    hintText: 'DESTINO'),
-                                onChanged: (text) {
-                                  controller.destinyController.value =
-                                      TextEditingValue(
-                                    text: text.toUpperCase(),
-                                    selection:
-                                        controller.destinyController.selection,
-                                  );
-                                },
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Por favor, insira o destino';
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Obx(() {
-                                return DropdownButtonFormField<String>(
-                                  decoration:
-                                      const InputDecoration(hintText: 'UF'),
-                                  value: controller
-                                          .selectedStateDestiny.value.isEmpty
-                                      ? null
-                                      : controller.selectedStateDestiny.value,
-                                  items: controller.states.map((String state) {
-                                    return DropdownMenuItem<String>(
-                                      value: state,
-                                      child: Text(state.toUpperCase(),
-                                          style: const TextStyle(
-                                              fontFamily: 'Poppins')),
-                                    );
-                                  }).toList(),
-                                  onChanged: (value) {
-                                    controller.selectedStateDestiny.value =
-                                        value!;
-                                  },
-                                  validator: (value) {
-                                    if (value == null) {
-                                      return 'Por favor, selecione um estado';
-                                    }
-                                    return null;
-                                  },
-                                );
-                              }),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        SizedBox(
-                          width: Get.width * .7,
-                          height: 35,
-                          child: ElevatedButton.icon(
-                              onPressed: () async {
-                                if (controller
-                                        .destinyController.text.isNotEmpty &&
-                                    controller
-                                        .originController.text.isNotEmpty &&
-                                    controller
-                                        .selectedStateOrigin.value.isNotEmpty &&
-                                    controller.selectedStateDestiny.value
-                                        .isNotEmpty) {
-                                  await controller.getTripData();
-                                }
-                              },
-                              icon: const Icon(
-                                Icons.search,
-                                color: Colors.white,
-                              ),
-                              label: const Text(
-                                'DISTÂNCIA E PEDÁGIOS',
-                                style: TextStyle(
-                                    fontFamily: 'Inter-Bold',
-                                    color: Colors.white),
-                              )),
-                        ),
-                      ],
+                Obx(
+                  () => SearchField<String>(
+                    controller: controller.originController,
+                    suggestions: cityController.listCities
+                        .map((city) =>
+                            SearchFieldListItem<String>(city.cidadeEstado!))
+                        .toList(),
+                    searchInputDecoration: InputDecoration(
+                      prefixIcon: Icon(Icons.search),
+                      labelText: cityController.isLoading.value
+                          ? "CARREGANDO"
+                          : "ORIGEM",
+                      hintText: "Digite o nome da cidade de origem",
                     ),
+                    onSuggestionTap: (suggestion) {
+                      controller.originController.text = suggestion.searchKey;
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, selecione a origem';
+                      }
+                      // Verifica se a cidade está na lista de sugestões
+                      bool isValidCity = cityController.listCities
+                          .any((city) => city.cidadeEstado == value);
+                      if (!isValidCity) {
+                        return 'Cidade não encontrada na lista';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Obx(
+                  () => SearchField<String>(
+                    controller: controller.destinyController,
+                    suggestions: cityController.listCities
+                        .map((city) =>
+                            SearchFieldListItem<String>(city.cidadeEstado!))
+                        .toList(),
+                    searchInputDecoration: InputDecoration(
+                      prefixIcon: Icon(Icons.search),
+                      labelText: cityController.isLoading.value
+                          ? "CARREGANDO"
+                          : "DESTINO",
+                      hintText: "Digite o nome da cidade de destino",
+                    ),
+                    onSuggestionTap: (suggestion) {
+                      controller.destinyController.text = suggestion.searchKey;
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, selecione o destino';
+                      }
+                      // Verifica se a cidade está na lista de sugestões
+                      bool isValidCity = cityController.listCities
+                          .any((city) => city.cidadeEstado == value);
+                      if (!isValidCity) {
+                        return 'Cidade não encontrada na lista';
+                      }
+                      return null;
+                    },
                   ),
                 ),
                 const SizedBox(height: 20),

@@ -182,12 +182,8 @@ class TransactionApiClient {
               .add(await http.MultipartFile.fromPath('fotos[]', foto.arquivo!));
         }
       }
-
-      request.fields.addAll({
+      final requestBody = {
         "descricao": transacoes.descricao.toString(),
-        "categoriadespesa_id": transacoes.categoriaDespesaId.toString(),
-        "tipoespecificodespesa_id":
-            transacoes.tipoEspecificoDespesaId.toString(),
         "valor": transacoes.valor.toString(),
         "empresa": transacoes.empresa.toString(),
         "cidade": transacoes.cidade.toString(),
@@ -200,10 +196,23 @@ class TransactionApiClient {
         "data": transacoes.data.toString(),
         "origem": transacoes.origem.toString(),
         "destino": transacoes.destino.toString(),
-        "quantidade_tonelada": transacoes.quantidadeTonelada.toString(),
-        "tipocarga_id": transacoes.tipoCargaId.toString(),
         "tipo_transacao": transacoes.tipoTransacao.toString(),
-      });
+      };
+
+      if (transacoes.quantidadeTonelada != null) {
+        requestBody["quantidade_tonelada"] =
+            transacoes.quantidadeTonelada.toString();
+      }
+      if (transacoes.tipoCargaId != null) {
+        requestBody["tipocarga_id"] = transacoes.tipoCargaId.toString();
+      }
+
+      if (transacoes.tipoEspecificoDespesaId != null) {
+        requestBody["tipoespecificodespesa_id"] =
+            transacoes.tipoEspecificoDespesaId.toString();
+      }
+
+      request.fields.addAll(requestBody);
 
       request.headers.addAll({
         'Accept': 'application/json',

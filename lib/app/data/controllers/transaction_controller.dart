@@ -341,28 +341,38 @@ class TransactionController extends GetxController {
         }
       }
 
-      mensagem = await repository.insert(Transacoes(
-        descricao: txtDescriptionController.text,
-        data: txtDateController.text,
-        categoriaDespesaId: 1,
-        tipoEspecificoDespesaId: 1,
-        valor: FormattedInputers.convertToDouble(txtValueController.text),
-        empresa: txtCompanyController.text,
-        cidade: cidade,
-        uf: uf,
-        ddd: txtDDDController.text,
-        telefone: txtPhoneController.text,
-        status: 1,
-        pessoaId: ServiceStorage.getUserId(),
-        veiculoId: ServiceStorage.idSelectedVehicle(),
-        origem: txtOriginController.text,
-        destino: txtDestinyController.text,
-        quantidadeTonelada:
-            FormattedInputers.convertToDouble(txtTonController.text),
-        tipoCargaId: 1,
-        tipoTransacao: typeTransaction,
-        photos: photos,
-      ));
+      Transacoes transaction = Transacoes();
+
+      transaction.descricao = txtDescriptionController.text;
+      transaction.data = txtDateController.text;
+
+      if (typeTransaction == "saida") {
+        transaction.categoriaDespesaId = selectedCategory.value;
+        transaction.tipoEspecificoDespesaId = selectedSpecificType.value;
+        transaction.cidade = cidade;
+        transaction.uf = uf;
+        transaction.ddd = txtDDDController.text;
+        transaction.telefone = txtPhoneController.text;
+        transaction.empresa = txtCompanyController.text;
+      } else if (typeTransaction == "entrada") {
+        transaction.quantidadeTonelada =
+            FormattedInputers.convertToDouble(txtTonController.text);
+        transaction.origem = txtOriginController.text;
+        transaction.destino = txtDestinyController.text;
+        transaction.tipoCargaId = selectedCargoType.value;
+      }
+
+      transaction.valor =
+          FormattedInputers.convertToDouble(txtValueController.text);
+      transaction.status = 1;
+      transaction.pessoaId = ServiceStorage.getUserId();
+      transaction.veiculoId = ServiceStorage.idSelectedVehicle();
+
+      transaction.tipoTransacao = typeTransaction;
+      transaction.photos = photos;
+
+      mensagem = await repository.insert(transaction);
+
       if (mensagem != null) {
         retorno = {
           'success': mensagem['success'],
@@ -398,8 +408,8 @@ class TransactionController extends GetxController {
             id: $id,
             descricao: txtDescriptionController.text,
             data: txtDateController.text,
-            categoriaDespesaId: 1,
-            tipoEspecificoDespesaId: 1,
+            categoriaDespesaId: selectedCategory.value,
+            tipoEspecificoDespesaId: selectedSpecificType.value,
             valor: FormattedInputers.convertToDouble(txtValueController.text),
             empresa: txtCompanyController.text,
             cidade: txtCityController.text,
@@ -413,7 +423,7 @@ class TransactionController extends GetxController {
             destino: txtDestinyController.text,
             quantidadeTonelada:
                 FormattedInputers.convertToDouble(txtTonController.text),
-            tipoCargaId: 1,
+            tipoCargaId: selectedCargoType.value,
             tipoTransacao: typeTransaction,
             photos: photos,
           ),

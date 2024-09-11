@@ -277,6 +277,7 @@ class FinancialView extends GetView<TransactionController> {
                       initialDate: DateTime.now(),
                       firstDate: DateTime(2000),
                       lastDate: DateTime.now(),
+                      locale: const Locale('pt', 'BR'),
                     );
                     if (pickedDate != null) {
                       controller.startDateController.text =

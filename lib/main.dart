@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:rodocalc/app/data/bindings/initial_binding.dart';
@@ -23,6 +24,16 @@ void main() async {
       systemNavigationBarIconBrightness: Brightness.dark));
 
   runApp(GetMaterialApp(
+    locale: const Locale('pt', 'BR'),
+    supportedLocales: const [
+      Locale('pt', 'BR'), // Suporte para pt-BR
+      Locale('en', 'US'), // Suporte para en-US (padrão)
+    ],
+    localizationsDelegates: const [
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate,
+    ],
     title: 'RodoCalc',
     debugShowCheckedModeBanner: false,
     theme: appThemeData,

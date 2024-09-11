@@ -137,6 +137,7 @@ class VehiclesView extends GetView<VehicleController> {
                                           controller.isLoading.value = true;
                                           controller.selectedVehicle = vehicle;
                                           controller.getAllUserPlans();
+
                                           controller.fillInFields();
                                           controller.isLoading.value = false;
                                           controller.setImage.value = true;

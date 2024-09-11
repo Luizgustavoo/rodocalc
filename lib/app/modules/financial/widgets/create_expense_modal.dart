@@ -242,7 +242,10 @@ class CreateExpenseModal extends GetView<TransactionController> {
                   onChanged: (newValue) {
                     controller.selectedCategory.value = newValue!;
                   },
-                  value: controller.selectedCategory.value,
+                  value: controller.expenseCategories.any((specific) =>
+                          specific.id == controller.selectedCategory.value)
+                      ? controller.selectedCategory.value
+                      : null,
                   validator: (value) {
                     if (value == null) {
                       return 'Por favor, selecione a categoria';
@@ -309,7 +312,10 @@ class CreateExpenseModal extends GetView<TransactionController> {
                   onChanged: (newValue) {
                     controller.selectedSpecificType.value = newValue!;
                   },
-                  value: controller.selectedSpecificType.value,
+                  value: controller.specificTypes.any((specific) =>
+                          specific.id == controller.selectedSpecificType.value)
+                      ? controller.selectedSpecificType.value
+                      : null,
                   validator: (value) {
                     if (value == null) {
                       return 'Por favor, selecione o tipo específico';
