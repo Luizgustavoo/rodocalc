@@ -393,35 +393,42 @@ class CreateReceiptModal extends GetView<TransactionController> {
                       ),
                     ),
                     const SizedBox(width: 10),
-                    CustomElevatedButton(
-                      onPressed: () async {
-                        Map<String, dynamic> retorno = isUpdate
-                            ? await controller.updateTransaction(
-                                "entrada", idTransaction!)
-                            : await controller.insertTransaction("entrada");
+                    Obx(
+                      () => controller.isLoadingInsertUpdate.value
+                          ? CircularProgressIndicator()
+                          : CustomElevatedButton(
+                              onPressed: () async {
+                                Map<String, dynamic> retorno = isUpdate
+                                    ? await controller.updateTransaction(
+                                        "entrada", idTransaction!)
+                                    : await controller
+                                        .insertTransaction("entrada");
 
-                        if (retorno['success'] == true) {
-                          Get.back();
-                          Get.snackbar(
-                              'Sucesso!', retorno['message'].join('\n'),
-                              backgroundColor: Colors.green,
-                              colorText: Colors.white,
-                              duration: const Duration(seconds: 2),
-                              snackPosition: SnackPosition.BOTTOM);
-                        } else {
-                          Get.snackbar('Falha!', retorno['message'].join('\n'),
-                              backgroundColor: Colors.red,
-                              colorText: Colors.white,
-                              duration: const Duration(seconds: 2),
-                              snackPosition: SnackPosition.BOTTOM);
-                        }
-                      },
-                      child: Text(
-                        isUpdate ? 'ALTERAR' : 'CADASTRAR',
-                        style: const TextStyle(
-                            fontFamily: 'Inter-Bold', color: Colors.white),
-                      ),
-                    ),
+                                if (retorno['success'] == true) {
+                                  Get.back();
+                                  Get.snackbar(
+                                      'Sucesso!', retorno['message'].join('\n'),
+                                      backgroundColor: Colors.green,
+                                      colorText: Colors.white,
+                                      duration: const Duration(seconds: 2),
+                                      snackPosition: SnackPosition.BOTTOM);
+                                } else {
+                                  Get.snackbar(
+                                      'Falha!', retorno['message'].join('\n'),
+                                      backgroundColor: Colors.red,
+                                      colorText: Colors.white,
+                                      duration: const Duration(seconds: 2),
+                                      snackPosition: SnackPosition.BOTTOM);
+                                }
+                              },
+                              child: Text(
+                                isUpdate ? 'ALTERAR' : 'CADASTRAR',
+                                style: const TextStyle(
+                                    fontFamily: 'Inter-Bold',
+                                    color: Colors.white),
+                              ),
+                            ),
+                    )
                   ],
                 ),
               ],

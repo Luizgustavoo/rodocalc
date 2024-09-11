@@ -192,9 +192,15 @@ class CreateExpenseModal extends GetView<TransactionController> {
                     labelText: 'CATEGORIA',
                   ),
                   items: [
-                    const DropdownMenuItem<int>(
+                    DropdownMenuItem<int>(
                       value: null,
-                      child: Text('Selecione ou cadastre uma categoria'),
+                      child: SizedBox(
+                        width: Get.width * 0.7,
+                        child: const Text(
+                          'Selecione ou cadastre uma categoria',
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
                     ),
                     ...controller.expenseCategories
                         .map((ExpenseCategory category) {
@@ -258,7 +264,10 @@ class CreateExpenseModal extends GetView<TransactionController> {
                   items: [
                     const DropdownMenuItem<int>(
                       value: null,
-                      child: Text('Selecione ou cadastre um tipo específico'),
+                      child: Text(
+                        'Selecione ou cadastre um tipo',
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                     ...controller.specificTypes
                         .map((SpecificTypeExpense specific) {

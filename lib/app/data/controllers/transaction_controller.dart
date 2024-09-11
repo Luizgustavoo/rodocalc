@@ -45,6 +45,7 @@ class TransactionController extends GetxController {
   final txtChargeTypeController = TextEditingController();
 
   RxBool isLoading = true.obs;
+  RxBool isLoadingInsertUpdate = false.obs;
 
   RxBool isLoadingChargeTypes = true.obs;
   RxBool isLoadingBalance = true.obs;
@@ -282,6 +283,7 @@ class TransactionController extends GetxController {
   }
 
   Future<Map<String, dynamic>> insertTransaction(String typeTransaction) async {
+    isLoadingInsertUpdate.value = true;
     if (formKeyTransaction.currentState!.validate()) {
       final RegExp cidadeUfRegex = RegExp(r'^[A-Za-zÀ-ÿ\s]+-[A-Z]{2}$');
 
@@ -376,11 +378,13 @@ class TransactionController extends GetxController {
         };
       }
     }
+    isLoadingInsertUpdate.value = false;
     return retorno;
   }
 
   Future<Map<String, dynamic>> updateTransaction(
       String typeTransaction, int $id) async {
+    isLoadingInsertUpdate.value = true;
     if (formKeyTransaction.currentState!.validate()) {
       List<TransactionsPhotos>? photos = [];
       if (selectedImagesPaths.isNotEmpty) {
@@ -428,6 +432,7 @@ class TransactionController extends GetxController {
         };
       }
     }
+    isLoadingInsertUpdate.value = false;
     return retorno;
   }
 
