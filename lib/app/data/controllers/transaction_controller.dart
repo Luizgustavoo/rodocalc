@@ -285,22 +285,52 @@ class TransactionController extends GetxController {
     if (formKeyTransaction.currentState!.validate()) {
       final RegExp cidadeUfRegex = RegExp(r'^[A-Za-zÀ-ÿ\s]+-[A-Z]{2}$');
 
-      if (!cidadeUfRegex.hasMatch(txtCityController.text)) {
-        return {
-          'success': false,
-          'message': ['Formato de cidade e UF inválido! Use "Cidade-UF".']
-        };
-      }
+      dynamic cidadePartes;
+      dynamic cidade = "";
+      dynamic uf = "";
 
-      final cidadePartes = txtCityController.text.split('-');
-      if (cidadePartes.length != 2) {
-        return {
-          'success': false,
-          'message': ['Formato de cidade inválido!']
-        };
+      dynamic cidadeOrigem = "";
+      dynamic cidadeDestino = "";
+
+      if (typeTransaction == "saida" && txtCityController.text.isNotEmpty) {
+        if (!cidadeUfRegex.hasMatch(txtCityController.text)) {
+          return {
+            'success': false,
+            'message': ['Formato de cidade e UF inválido! Use "Cidade-UF".']
+          };
+        }
+
+        cidadePartes = txtCityController.text.split('-');
+        if (cidadePartes.length != 2) {
+          return {
+            'success': false,
+            'message': ['Formato de cidade inválido!']
+          };
+        }
+        cidade = cidadePartes[0];
+        uf = cidadePartes[1];
+      } else {
+        if (txtOriginController.text.isNotEmpty &&
+            txtDestinyController.text.isNotEmpty) {
+          if (!cidadeUfRegex.hasMatch(txtOriginController.text)) {
+            return {
+              'success': false,
+              'message': [
+                'Formato de cidade (origem) e UF inválido! Use "Cidade-UF".'
+              ]
+            };
+          }
+
+          if (!cidadeUfRegex.hasMatch(txtDestinyController.text)) {
+            return {
+              'success': false,
+              'message': [
+                'Formato de cidade (destino) e UF inválido! Use "Cidade-UF".'
+              ]
+            };
+          }
+        }
       }
-      final cidadeOrigem = cidadePartes[0];
-      final ufOrigem = cidadePartes[1];
 
       List<TransactionsPhotos>? photos = [];
       if (selectedImagesPaths.isNotEmpty) {
@@ -316,8 +346,8 @@ class TransactionController extends GetxController {
         tipoEspecificoDespesaId: 1,
         valor: FormattedInputers.convertToDouble(txtValueController.text),
         empresa: txtCompanyController.text,
-        cidade: cidadeOrigem,
-        uf: ufOrigem,
+        cidade: cidade,
+        uf: uf,
         ddd: txtDDDController.text,
         telefone: txtPhoneController.text,
         status: 1,
@@ -484,9 +514,8 @@ class TransactionController extends GetxController {
     txtPhoneController.text =
         selected.telefone != null ? selected.telefone.toString() : "";
 
-    txtOriginController.text = selected.origem != null
-        ? "${selected.origem.toString()}-${selected.uf.toString()}"
-        : "";
+    txtOriginController.text =
+        selected.origem != null ? "${selected.origem.toString()}" : "";
     txtDestinyController.text =
         selected.destino != null ? selected.destino.toString() : "";
 

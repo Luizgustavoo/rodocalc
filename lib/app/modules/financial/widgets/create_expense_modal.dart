@@ -26,6 +26,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
       padding: MediaQuery.of(context).viewInsets,
       child: Form(
         key: controller.formKeyTransaction,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           padding: const EdgeInsets.all(12.0),
@@ -186,22 +187,14 @@ class CreateExpenseModal extends GetView<TransactionController> {
 
               Obx(
                 () => DropdownButtonFormField<int>(
-                  decoration: InputDecoration(
-                    prefixIcon: IconButton(
-                      onPressed: () {
-                        controller.clearDescriptionModal();
-                        showSpecificTypeModal(context, 'categoriadespesa');
-                      },
-                      icon: const Icon(
-                        Icons.add_rounded,
-                      ),
-                    ),
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.search_rounded),
                     labelText: 'CATEGORIA',
                   ),
                   items: [
                     const DropdownMenuItem<int>(
                       value: null,
-                      child: Text('Selecione uma categoria'),
+                      child: Text('Selecione ou cadastre uma categoria'),
                     ),
                     ...controller.expenseCategories
                         .map((ExpenseCategory category) {
@@ -216,6 +209,29 @@ class CreateExpenseModal extends GetView<TransactionController> {
                         ),
                       );
                     }),
+                    DropdownMenuItem<int>(
+                      value: 0,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: SizedBox(
+                          child: TextButton(
+                            onPressed: () {
+                              controller.selectedCategory.value = null;
+                              controller.clearDescriptionModal();
+                              Get.back();
+                              showSpecificTypeModal(
+                                  context, 'categoriadespesa');
+                            },
+                            child: const Text(
+                              "CADASTRAR NOVA CATEGORIA...",
+                              style: TextStyle(
+                                  color: Color(0xFFFF6B00),
+                                  fontWeight: FontWeight.w900),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                   onChanged: (newValue) {
                     controller.selectedCategory.value = newValue!;
@@ -234,21 +250,15 @@ class CreateExpenseModal extends GetView<TransactionController> {
               Obx(
                 () => DropdownButtonFormField<int>(
                   decoration: InputDecoration(
-                    prefixIcon: IconButton(
-                      onPressed: () {
-                        controller.clearDescriptionModal();
-                        showSpecificTypeModal(context, 'tipoespecificodespesa');
-                      },
-                      icon: const Icon(
-                        Icons.add_rounded,
-                      ),
+                    prefixIcon: const Icon(
+                      Icons.search_rounded,
                     ),
                     labelText: 'TIPO ESPECÍFICO',
                   ),
                   items: [
                     const DropdownMenuItem<int>(
                       value: null,
-                      child: Text('Selecione um tipo específico'),
+                      child: Text('Selecione ou cadastre um tipo específico'),
                     ),
                     ...controller.specificTypes
                         .map((SpecificTypeExpense specific) {
@@ -263,6 +273,29 @@ class CreateExpenseModal extends GetView<TransactionController> {
                         ),
                       );
                     }),
+                    DropdownMenuItem<int>(
+                      value: 0,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: SizedBox(
+                          child: TextButton(
+                            onPressed: () {
+                              Get.back();
+                              controller.selectedSpecificType.value = null;
+                              controller.clearDescriptionModal();
+                              showSpecificTypeModal(
+                                  context, 'tipoespecificodespesa');
+                            },
+                            child: const Text(
+                              "CADASTRAR NOVO TIPO...",
+                              style: TextStyle(
+                                  color: Color(0xFFFF6B00),
+                                  fontWeight: FontWeight.w900),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                   onChanged: (newValue) {
                     controller.selectedSpecificType.value = newValue!;
@@ -297,6 +330,12 @@ class CreateExpenseModal extends GetView<TransactionController> {
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Por favor, selecione a cidade';
+                    }
+                    // Verifica se a cidade está na lista de sugestões
+                    bool isValidCity = cityController.listCities
+                        .any((city) => city.cidadeEstado == value);
+                    if (!isValidCity) {
+                      return 'Cidade não encontrada na lista';
                     }
                     return null;
                   },
@@ -495,6 +534,12 @@ class CreateExpenseModal extends GetView<TransactionController> {
           ),
           actions: <Widget>[
             TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('CANCELAR'),
+            ),
+            TextButton(
               onPressed: () async {
                 Map<String, dynamic> retorno =
                     await controller.insertExpenseCategory(type);
@@ -518,12 +563,6 @@ class CreateExpenseModal extends GetView<TransactionController> {
                 'SALVAR',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('CANCELAR'),
             ),
           ],
         );

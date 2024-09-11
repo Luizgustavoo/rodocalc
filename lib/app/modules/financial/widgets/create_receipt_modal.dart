@@ -181,6 +181,12 @@ class CreateReceiptModal extends GetView<TransactionController> {
                       if (value == null || value.isEmpty) {
                         return 'Por favor, selecione a origem';
                       }
+                      // Verifica se a cidade está na lista de sugestões
+                      bool isValidCity = cityController.listCities
+                          .any((city) => city.cidadeEstado == value);
+                      if (!isValidCity) {
+                        return 'Cidade não encontrada na lista';
+                      }
                       return null;
                     },
                   ),
@@ -204,6 +210,13 @@ class CreateReceiptModal extends GetView<TransactionController> {
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Por favor, selecione o destino';
+                      }
+
+                      // Verifica se a cidade está na lista de sugestões
+                      bool isValidCity = cityController.listCities
+                          .any((city) => city.cidadeEstado == value);
+                      if (!isValidCity) {
+                        return 'Cidade não encontrada na lista';
                       }
                       return null;
                     },
@@ -269,22 +282,15 @@ class CreateReceiptModal extends GetView<TransactionController> {
                   } else if (controller.listChargeTypes.isNotEmpty) {
                     return DropdownButtonFormField<int>(
                       decoration: InputDecoration(
-                        prefixIcon: IconButton(
-                          onPressed: () {
-                            // Ação ao clicar no botão
-                            controller.clearDescriptionModal();
-                            showSpecificTypeModal(context);
-                          },
-                          icon: const Icon(
-                            Icons.add_rounded,
-                          ),
+                        prefixIcon: Icon(
+                          Icons.search_rounded,
                         ),
                         labelText: 'TIPO DE CARGA',
                       ),
                       items: [
                         const DropdownMenuItem<int>(
                           value: null,
-                          child: Text('Selecione um tipo'),
+                          child: Text('Selecione ou cadastre um tipo'),
                         ),
                         ...controller.listChargeTypes.map((ChargeType charge) {
                           return DropdownMenuItem<int>(
@@ -295,6 +301,28 @@ class CreateReceiptModal extends GetView<TransactionController> {
                             ),
                           );
                         }),
+                        DropdownMenuItem<int>(
+                          value: 0,
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: SizedBox(
+                              child: TextButton(
+                                onPressed: () {
+                                  controller.selectedCategory.value = null;
+                                  controller.clearDescriptionModal();
+                                  Get.back();
+                                  showSpecificTypeModal(context);
+                                },
+                                child: const Text(
+                                  "CADASTRAR NOVO TIPO...",
+                                  style: TextStyle(
+                                      color: Color(0xFFFF6B00),
+                                      fontWeight: FontWeight.w900),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                       onChanged: (newValue) {
                         controller.selectedCargoType.value = newValue;
