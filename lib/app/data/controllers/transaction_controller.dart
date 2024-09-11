@@ -447,6 +447,7 @@ class TransactionController extends GetxController {
         };
         getMyCategories();
         getMySpecifics();
+        //getMySpecifics();
       } else {
         retorno = {
           'success': false,
