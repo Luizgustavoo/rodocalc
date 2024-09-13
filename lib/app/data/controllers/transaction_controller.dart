@@ -538,9 +538,12 @@ class TransactionController extends GetxController {
         ? selected.quantidadeTonelada.toString()
         : "";
 
-    selectedCategory.value = selected.categoriaDespesaId!;
-    selectedCargoType.value = selected.tipoCargaId;
-    selectedSpecificType.value = selected.tipoEspecificoDespesaId;
+    if (selected.tipoTransacao == 'saida') {
+      selectedCategory.value = selected.categoriaDespesaId!;
+      selectedSpecificType.value = selected.tipoEspecificoDespesaId;
+    } else {
+      selectedCargoType.value = selected.tipoCargaId;
+    }
 
     if (selected.photos!.isNotEmpty) {
       selectedImagesPathsApiRemove.clear();

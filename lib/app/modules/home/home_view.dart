@@ -436,65 +436,111 @@ class HomeView extends GetView<HomeController> {
                           ],
                         ),
                         Obx(() => Column(
-                              children: controller.listLastTransactions
-                                  .map((transaction) {
-                                String stringValor = "";
-                                if (transaction.tipoTransacao == 'saida') {
-                                  stringValor =
-                                      "-R\$ ${FormattedInputers.formatValuePTBR(transaction.valor)}";
-                                } else {
-                                  stringValor =
-                                      "+R\$ ${FormattedInputers.formatValuePTBR(transaction.valor)}";
-                                }
-                                return Card(
-                                  surfaceTintColor: Colors.white,
-                                  color: Colors.white,
-                                  elevation: 0,
-                                  margin:
-                                      const EdgeInsets.symmetric(vertical: 8.0),
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(transaction.descricao!),
-                                              Text(transaction
-                                                  .expenseCategory!.descricao!)
-                                            ],
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.end,
-                                            children: [
-                                              Text(
-                                                stringValor,
-                                                style: TextStyle(
-                                                    color: transaction
-                                                                .tipoTransacao ==
-                                                            'saida'
-                                                        ? Colors.red
-                                                        : Colors.green),
-                                              ),
-                                              Text(
-                                                  FormattedInputers
-                                                      .formatApiDate(
-                                                          transaction.data!),
-                                                  style: const TextStyle(
-                                                      color: Colors.grey)),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                      const Divider(),
-                                    ],
-                                  ),
-                                );
-                              }).toList(),
+                              children: controller
+                                      .listLastTransactions.isNotEmpty
+                                  ? controller.listLastTransactions
+                                      .map((transaction) {
+                                      String stringValor = "";
+                                      String subtitulo = "";
+                                      if (transaction.tipoTransacao ==
+                                          'saida') {
+                                        stringValor =
+                                            "-R\$ ${FormattedInputers.formatValuePTBR(transaction.valor)}";
+                                        subtitulo =
+                                            "${transaction.expenseCategory?.descricao}";
+                                      } else {
+                                        stringValor =
+                                            "+R\$ ${FormattedInputers.formatValuePTBR(transaction.valor)}";
+                                        subtitulo =
+                                            "${transaction.origem}/${transaction.destino}";
+                                      }
+
+                                      return Card(
+                                        surfaceTintColor: Colors.white,
+                                        color: Colors.white,
+                                        elevation: 0,
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 8.0),
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                // Primeira coluna
+                                                Expanded(
+                                                  flex: 2,
+                                                  // Controla a proporção de espaço ocupado
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        transaction.descricao ??
+                                                            "",
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        // Usa "..." no final do texto
+                                                        maxLines: 1,
+                                                        // Limita o texto a uma linha
+                                                        style: TextStyle(
+                                                            fontSize:
+                                                                16), // Ajusta o tamanho da fonte, se necessário
+                                                      ),
+                                                      Text(
+                                                        subtitulo,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        // Usa "..." no final do texto, se necessário
+                                                        maxLines: 1,
+                                                        // Limita o texto a uma linha
+                                                        style: TextStyle(
+                                                            color: Colors
+                                                                .grey), // Estilo para subtítulo
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+
+                                                // Segunda coluna (lado direito)
+                                                Expanded(
+                                                  flex: 1,
+                                                  // Controla a proporção de espaço ocupado
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.end,
+                                                    children: [
+                                                      Text(
+                                                        stringValor,
+                                                        style: TextStyle(
+                                                          color: transaction
+                                                                      .tipoTransacao ==
+                                                                  'saida'
+                                                              ? Colors.red
+                                                              : Colors.green,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        FormattedInputers
+                                                            .formatApiDate(
+                                                                transaction
+                                                                    .data!),
+                                                        style: const TextStyle(
+                                                            color: Colors.grey),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            const Divider(),
+                                          ],
+                                        ),
+                                      );
+                                    }).toList()
+                                  : [],
                             )),
                       ],
                     ),

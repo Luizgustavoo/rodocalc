@@ -184,7 +184,8 @@ class CreateReceiptModal extends GetView<TransactionController> {
                       // Verifica se a cidade está na lista de sugestões
                       bool isValidCity = cityController.listCities
                           .any((city) => city.cidadeEstado == value);
-                      if (!isValidCity) {
+                      if (cityController.listCities.isNotEmpty &&
+                          !isValidCity) {
                         return 'Cidade não encontrada na lista';
                       }
                       return null;
@@ -215,7 +216,8 @@ class CreateReceiptModal extends GetView<TransactionController> {
                       // Verifica se a cidade está na lista de sugestões
                       bool isValidCity = cityController.listCities
                           .any((city) => city.cidadeEstado == value);
-                      if (!isValidCity) {
+                      if (cityController.listCities.isNotEmpty &&
+                          !isValidCity) {
                         return 'Cidade não encontrada na lista';
                       }
                       return null;

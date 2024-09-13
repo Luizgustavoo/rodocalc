@@ -518,8 +518,9 @@ class FinancialView extends GetView<TransactionController> {
                   ),
                   Text(
                     stringTitulo,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                        fontFamily: 'Inter-Bold', fontSize: 12, color: cor),
+                        fontFamily: 'Inter-Bold', fontSize: 10, color: cor),
                   ),
                   Text(
                     "CÓDIGO",

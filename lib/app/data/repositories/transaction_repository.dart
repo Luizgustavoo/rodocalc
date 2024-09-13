@@ -41,12 +41,16 @@ class TransactionRepository {
   getLast() async {
     List<Transacoes> list = <Transacoes>[];
 
-    var response = await apiClient.getLast();
+    try {
+      var response = await apiClient.getLast();
 
-    if (response != null) {
-      response['data'].forEach((e) {
-        list.add(Transacoes.fromJson(e));
-      });
+      if (response != null) {
+        response['data'].forEach((e) {
+          list.add(Transacoes.fromJson(e));
+        });
+      }
+    } catch (e) {
+      Exception(e);
     }
 
     return list;
