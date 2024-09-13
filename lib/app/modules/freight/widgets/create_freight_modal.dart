@@ -94,7 +94,8 @@ class CreateFreightModal extends GetView<FreightController> {
                       // Verifica se a cidade está na lista de sugestões
                       bool isValidCity = cityController.listCities
                           .any((city) => city.cidadeEstado == value);
-                      if (!isValidCity) {
+                      if (cityController.listCities.isNotEmpty &&
+                          !isValidCity) {
                         return 'Cidade não encontrada na lista';
                       }
                       return null;
@@ -126,7 +127,8 @@ class CreateFreightModal extends GetView<FreightController> {
                       // Verifica se a cidade está na lista de sugestões
                       bool isValidCity = cityController.listCities
                           .any((city) => city.cidadeEstado == value);
-                      if (!isValidCity) {
+                      if (cityController.listCities.isNotEmpty &&
+                          !isValidCity) {
                         return 'Cidade não encontrada na lista';
                       }
                       return null;
@@ -315,6 +317,7 @@ class CreateFreightModal extends GetView<FreightController> {
                                       child: const Text('OK'),
                                       onPressed: () {
                                         controller.clearAllFields();
+                                        Navigator.of(context).pop();
                                         Navigator.of(context).pop();
                                       },
                                     ),

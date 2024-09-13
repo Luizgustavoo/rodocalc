@@ -10,6 +10,7 @@ import 'package:rodocalc/app/modules/financial/widgets/create_expense_modal.dart
 import 'package:rodocalc/app/modules/financial/widgets/create_receipt_modal.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
+import 'package:rodocalc/app/utils/services.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 class FinancialView extends GetView<TransactionController> {
@@ -110,6 +111,8 @@ class FinancialView extends GetView<TransactionController> {
                 ],
               ),
             ),
+            Positioned(
+                bottom: 0, left: 0, right: 0, child: _buildReceiveAndExpense()),
           ],
         ),
         floatingActionButton: Padding(
@@ -204,6 +207,55 @@ class FinancialView extends GetView<TransactionController> {
             ],
           ),
         ));
+  }
+
+  Widget _buildReceiveAndExpense() {
+    return Container(
+      padding: const EdgeInsets.only(left: 0, right: 0),
+      child: Card(
+        color: Colors.black,
+        elevation: 5,
+        child: Padding(
+          padding: EdgeInsets.all(15),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Column(
+                children: [
+                  const Text(
+                    "Entradas",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.green),
+                  ),
+                  Obx(() {
+                    return Text(
+                        "R\$${FormattedInputers.formatValuePTBR(Services.totalRecebimentos.value)}",
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.green));
+                  }),
+                ],
+              ),
+              Column(
+                children: [
+                  Text(
+                    "Saídas",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.red),
+                  ),
+                  Obx(() {
+                    return Text(
+                      "R\$${FormattedInputers.formatValuePTBR(Services.totalGastos.value)}",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.red),
+                    );
+                  }),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _buildHeader() {
@@ -382,7 +434,19 @@ class FinancialView extends GetView<TransactionController> {
                       },
                       icon: Icon(Icons.search))),
             ),
-          )
+          ),
+
+          Obx(() {
+            return controller.tituloSearchTransactions.value.isNotEmpty
+                ? Column(
+                    children: [
+                      SizedBox(height: 10),
+                      Text(controller.tituloSearchTransactions.value,
+                          style: TextStyle(fontWeight: FontWeight.bold))
+                    ],
+                  )
+                : SizedBox();
+          })
         ],
       ),
     );
@@ -461,7 +525,7 @@ class FinancialView extends GetView<TransactionController> {
               height: 40,
             ),
             Text(
-              'NÃO HÁ TRANSAÇÕES PARA O VEÍCULO SELECIONADO!',
+              'NÃO HÁ TRANSAÇÕES!',
               style: TextStyle(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             )

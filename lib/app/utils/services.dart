@@ -1,7 +1,12 @@
 // ignore_for_file: unnecessary_null_comparison
 
+import 'package:get/get.dart';
+
 class Services {
   static String _route = '/home';
+
+  static RxDouble totalRecebimentos = 0.0.obs;
+  static RxDouble totalGastos = 0.0.obs;
 
   static String getRoute() {
     return _route;

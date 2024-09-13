@@ -349,16 +349,50 @@ class TripController extends GetxController {
 
   Future<Map<String, dynamic>> updateTrip(int id) async {
     if (tripFormKey.currentState!.validate()) {
+      // Define a expressão regular para validar o formato "Cidade-UF"
+      final RegExp cidadeUfRegex = RegExp(r'^[A-Za-zÀ-ÿ\s]+-[A-Z]{2}$');
+
+      // Valida e separa as strings de origem e destino
+      if (!cidadeUfRegex.hasMatch(originController.text) ||
+          !cidadeUfRegex.hasMatch(destinyController.text)) {
+        return {
+          'success': false,
+          'message': ['Formato de cidade e UF inválido! Use "Cidade-UF".']
+        };
+      }
+
+      // Separa a cidade e UF de origem
+      final origemPartes = originController.text.split('-');
+      if (origemPartes.length != 2) {
+        return {
+          'success': false,
+          'message': ['Formato de origem inválido!']
+        };
+      }
+      final cidadeOrigem = origemPartes[0];
+      final ufOrigem = origemPartes[1];
+
+      // Separa a cidade e UF de destino
+      final destinoPartes = destinyController.text.split('-');
+      if (destinoPartes.length != 2) {
+        return {
+          'success': false,
+          'message': ['Formato de destino inválido!']
+        };
+      }
+      final cidadeDestino = destinoPartes[0];
+      final ufDestino = destinoPartes[1];
+
       mensagem = await repository.update(Trip(
         id: id,
         userId: ServiceStorage.getUserId(),
         veiculoId: ServiceStorage.idSelectedVehicle(),
         dataHora: txtDateController.text,
         tipoSaidaChegada: selectedOption.value,
-        origem: originController.text,
-        ufOrigem: selectedStateOrigin.value,
-        destino: destinyController.text,
-        ufDestino: selectedStateDestiny.value,
+        origem: cidadeOrigem,
+        ufOrigem: ufOrigem,
+        destino: cidadeDestino,
+        ufDestino: ufDestino,
         distancia: FormattedInputers.convertToDouble(distanceController.text),
         status: 1,
       ));

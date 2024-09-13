@@ -77,7 +77,6 @@ class TransactionApiClient {
         body: body,
       );
 
-      print(json.decode(response.body));
       if (response.statusCode == 201) {
         return json.decode(response.body);
       } else if (response.statusCode == 401 &&
@@ -198,6 +197,24 @@ class TransactionApiClient {
         "destino": transacoes.destino.toString(),
         "tipo_transacao": transacoes.tipoTransacao.toString(),
       };
+
+      if (transacoes.quantidadeTonelada != null) {
+        requestBody["quantidade_tonelada"] =
+            transacoes.quantidadeTonelada.toString();
+      }
+      if (transacoes.tipoCargaId != null) {
+        requestBody["tipocarga_id"] = transacoes.tipoCargaId.toString();
+      }
+
+      if (transacoes.tipoEspecificoDespesaId != null) {
+        requestBody["tipoespecificodespesa_id"] =
+            transacoes.tipoEspecificoDespesaId.toString();
+      }
+
+      if (transacoes.categoriaDespesaId != null) {
+        requestBody["categoriadespesa_id"] =
+            transacoes.categoriaDespesaId.toString();
+      }
 
       request.fields.addAll(requestBody);
 

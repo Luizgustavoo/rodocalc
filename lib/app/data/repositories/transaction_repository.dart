@@ -4,6 +4,7 @@ import 'package:rodocalc/app/data/models/specific_type_expense_model.dart';
 import 'package:rodocalc/app/data/models/transactions_model.dart';
 import 'package:rodocalc/app/data/models/vehicle_balance_model.dart';
 import 'package:rodocalc/app/data/providers/transaction_provider.dart';
+import 'package:rodocalc/app/utils/services.dart';
 
 class TransactionRepository {
   final TransactionApiClient apiClient = TransactionApiClient();
@@ -17,6 +18,25 @@ class TransactionRepository {
       response['data'].forEach((e) {
         list.add(Transacoes.fromJson(e));
       });
+
+      if (response['data'] != null) {
+        // Converte os valores para double e usa zero se nulo
+        Services.totalRecebimentos.value = 0;
+        Services.totalGastos.value = 0;
+        double totalRecebimentosValue = response['total_recebimentos'] != null
+            ? double.tryParse(response['total_recebimentos'].toString()) ?? 0.0
+            : 0.0;
+
+        double totalGastosValue = response['total_gastos'] != null
+            ? double.tryParse(response['total_gastos'].toString()) ?? 0.0
+            : 0.0;
+
+        Services.totalRecebimentos.value = totalRecebimentosValue;
+        Services.totalGastos.value = totalGastosValue;
+      } else {
+        Services.totalRecebimentos.value = 0;
+        Services.totalGastos.value = 0;
+      }
     }
 
     return list;
@@ -25,15 +45,36 @@ class TransactionRepository {
   getTransactionsWithFilter(
       String? dataInicial, String? dataFinal, String? descricao) async {
     List<Transacoes> list = <Transacoes>[];
-    var response = await apiClient.getTransactionsWithFilter(
-        dataInicial, dataFinal, descricao);
+    try {
+      var response = await apiClient.getTransactionsWithFilter(
+          dataInicial, dataFinal, descricao);
 
-    if (response != null &&
-        response['data'] != null &&
-        response['data'] != "null") {
-      response['data'].forEach((e) {
-        list.add(Transacoes.fromJson(e));
-      });
+      if (response != null &&
+          response['data'] != null &&
+          response['data'] != "null") {
+        response['data'].forEach((e) {
+          list.add(Transacoes.fromJson(e));
+        });
+
+        // Converte os valores para double e usa zero se nulo
+        Services.totalRecebimentos.value = 0;
+        Services.totalGastos.value = 0;
+        double totalRecebimentosValue = response['total_recebimentos'] != null
+            ? double.tryParse(response['total_recebimentos'].toString()) ?? 0.0
+            : 0.0;
+
+        double totalGastosValue = response['total_gastos'] != null
+            ? double.tryParse(response['total_gastos'].toString()) ?? 0.0
+            : 0.0;
+
+        Services.totalRecebimentos.value = totalRecebimentosValue;
+        Services.totalGastos.value = totalGastosValue;
+      } else {
+        Services.totalRecebimentos.value = 0;
+        Services.totalGastos.value = 0;
+      }
+    } catch (e) {
+      Exception(e);
     }
     return list;
   }

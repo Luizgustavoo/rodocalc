@@ -145,6 +145,7 @@ class CreateDocumentModal extends GetView<DocumentController> {
                 const SizedBox(height: 15),
                 Obx(
                   () => DropdownButtonFormField<int>(
+                    menuMaxHeight: Get.height / 2,
                     value: controller.selectedTipoDocumento.value,
                     onChanged: (value) {
                       controller.selectedTipoDocumento.value = value!;
@@ -153,7 +154,20 @@ class CreateDocumentModal extends GetView<DocumentController> {
                         .map<DropdownMenuItem<int>>((item) {
                       return DropdownMenuItem<int>(
                         value: item.id,
-                        child: Text(item.descricao ?? ''.toUpperCase()),
+                        child: SizedBox(
+                          width: Get.width * .7,
+                          child: ListView(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            children: [
+                              Text(
+                                item.descricao.toString().toUpperCase() ?? '',
+                                overflow: TextOverflow.clip,
+                              ),
+                              Divider()
+                            ],
+                          ),
+                        ),
                       );
                     }).toList(),
                     decoration: InputDecoration(

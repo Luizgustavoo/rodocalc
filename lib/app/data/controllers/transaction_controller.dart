@@ -18,6 +18,7 @@ class TransactionController extends GetxController {
   var selectedImagesPaths = <String>[].obs;
   var selectedImagesPathsApi = <String>[].obs;
   var selectedImagesPathsApiRemove = <String>[].obs;
+  final tituloSearchTransactions = "".obs;
 
   //CONTROLLER E KEY DESPESA
 
@@ -114,6 +115,7 @@ class TransactionController extends GetxController {
   var searchQuery = ''.obs;
 
   Future<void> getAll() async {
+    tituloSearchTransactions.value = "";
     isLoading.value = true;
     try {
       listTransactions.value = await repository.getAll();
@@ -125,6 +127,7 @@ class TransactionController extends GetxController {
   }
 
   Future<void> getTransactionsWithFilter() async {
+    tituloSearchTransactions.value = "";
     isLoading.value = true;
     try {
       String inicio = startDateController.text.isNotEmpty
@@ -133,6 +136,19 @@ class TransactionController extends GetxController {
       String fim = endDateController.text.isNotEmpty
           ? "${FormattedInputers.parseDateForApi(endDateController.text).toString()} 00:00:00"
           : "";
+
+      String dataInicio =
+          startDateController.text.isNotEmpty ? startDateController.text : "";
+      String dataFim =
+          endDateController.text.isNotEmpty ? endDateController.text : "";
+
+      if (dataInicio.isNotEmpty && dataFim.isNotEmpty) {
+        tituloSearchTransactions.value += "${dataInicio} - ${dataFim}";
+      }
+      if (txtDescriptionFilterController.text.isNotEmpty) {
+        tituloSearchTransactions.value +=
+            " ${txtDescriptionFilterController.text}";
+      }
 
       listTransactions.value = await repository.getTransactionsWithFilter(
         inicio,
@@ -569,6 +585,7 @@ class TransactionController extends GetxController {
       txtTonController,
       startDateController,
       endDateController,
+      txtDescriptionFilterController
     ];
 
     for (final controller in textControllers) {
