@@ -186,7 +186,7 @@ class DocumentController extends GetxController {
         arquivo = selectedPdfPath.value;
       }
 
-      mensagem = await repository.insert(DocumentModel(
+      mensagem = await repository.update(DocumentModel(
         id: id,
         descricao: descriptionController.text,
         status: 1,

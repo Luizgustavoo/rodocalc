@@ -199,6 +199,24 @@ class TransactionApiClient {
         "tipo_transacao": transacoes.tipoTransacao.toString(),
       };
 
+      if (transacoes.quantidadeTonelada != null) {
+        requestBody["quantidade_tonelada"] =
+            transacoes.quantidadeTonelada.toString();
+      }
+      if (transacoes.tipoCargaId != null) {
+        requestBody["tipocarga_id"] = transacoes.tipoCargaId.toString();
+      }
+
+      if (transacoes.tipoEspecificoDespesaId != null) {
+        requestBody["tipoespecificodespesa_id"] =
+            transacoes.tipoEspecificoDespesaId.toString();
+      }
+
+      if (transacoes.categoriaDespesaId != null) {
+        requestBody["categoriadespesa_id"] =
+            transacoes.categoriaDespesaId.toString();
+      }
+
       request.fields.addAll(requestBody);
 
       request.headers.addAll({

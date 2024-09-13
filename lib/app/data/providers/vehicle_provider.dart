@@ -114,6 +114,32 @@ class VehicleApiClient {
     return null;
   }
 
+  getAllUserPlansEdit() async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+
+      Uri vehicleUrl;
+      String url =
+          '$baseUrl/v1/planousuario/my/${ServiceStorage.getUserId().toString()}';
+      vehicleUrl = Uri.parse(url);
+      var response = await httpClient.get(
+        vehicleUrl,
+        headers: {
+          "Accept": "application/json",
+          "Authorization": token,
+        },
+      );
+      if (response.statusCode == 201) {
+        return json.decode(response.body);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      Exception(e);
+    }
+    return null;
+  }
+
   insert(Vehicle vehicle) async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";

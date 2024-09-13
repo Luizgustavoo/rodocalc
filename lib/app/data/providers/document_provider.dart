@@ -1,6 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
@@ -118,31 +119,38 @@ class DocumentApiClient {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
-      var documentUrl = Uri.parse('$baseUrl/v1/documento/${document.id}');
+      var documentUrl =
+          Uri.parse('$baseUrl/v1/documento/update/${document.id}');
 
-      var request = http.MultipartRequest('PUT', documentUrl);
+      var request = http.MultipartRequest('POST', documentUrl);
 
       if (document.arquivo!.isNotEmpty) {
-        String fileExtension = path.extension(document.arquivo!).toLowerCase();
+        File file = File(document.arquivo!);
+        if (await file.exists()) {
+          String fileExtension =
+              path.extension(document.arquivo!).toLowerCase();
 
-        if (fileExtension == '.pdf') {
-          request.files.add(await http.MultipartFile.fromPath(
-              'arquivo', document.arquivo!,
-              contentType: MediaType('application', 'pdf')));
-        } else if (fileExtension == '.jpg' ||
-            fileExtension == '.jpeg' ||
-            fileExtension == '.png') {
-          request.files.add(
-              await http.MultipartFile.fromPath('arquivo', document.arquivo!));
+          if (fileExtension == '.pdf') {
+            request.files.add(await http.MultipartFile.fromPath(
+                'arquivo', document.arquivo!,
+                contentType: MediaType('application', 'pdf')));
+          } else if (fileExtension == '.jpg' ||
+              fileExtension == '.jpeg' ||
+              fileExtension == '.png') {
+            request.files.add(await http.MultipartFile.fromPath(
+                'arquivo', document.arquivo!));
+          }
         }
       }
 
-      request.fields.addAll({
+      var requestBody = {
         "descricao": document.descricao.toString(),
         "tipodocumento_id": document.tipoDocumentoId.toString(),
         "pessoa_id": ServiceStorage.getUserId().toString(),
         "status": "1"
-      });
+      };
+
+      request.fields.addAll(requestBody);
 
       request.headers.addAll({
         'Accept': 'application/json',
@@ -154,6 +162,7 @@ class DocumentApiClient {
       var responseStream = await response.stream.bytesToString();
       var httpResponse = http.Response(responseStream, response.statusCode);
 
+      print(json.decode(httpResponse.body));
       return json.decode(httpResponse.body);
     } catch (err) {
       Exception(err);
