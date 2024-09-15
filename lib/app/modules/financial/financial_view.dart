@@ -80,40 +80,48 @@ class FinancialView extends GetView<TransactionController> {
             ),
           ),
         ),
-        body: Stack(
-          children: [
-            SizedBox(
-              height: double.infinity,
-              width: double.infinity,
-              child: ColorFiltered(
-                colorFilter: ColorFilter.mode(
-                  Colors.black.withOpacity(0.3),
-                  BlendMode.darken,
+        body: RefreshIndicator(
+          onRefresh: () async {
+            return await controller.getAll();
+          },
+          child: Stack(
+            children: [
+              SizedBox(
+                height: double.infinity,
+                width: double.infinity,
+                child: ColorFiltered(
+                  colorFilter: ColorFilter.mode(
+                    Colors.black.withOpacity(0.3),
+                    BlendMode.darken,
+                  ),
+                  child: Image.asset(
+                    'assets/images/signup.jpg',
+                    fit: BoxFit.cover,
+                  ),
                 ),
-                child: Image.asset(
-                  'assets/images/signup.jpg',
-                  fit: BoxFit.cover,
+              ),
+              Card(
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                elevation: 5,
+                margin: const EdgeInsets.all(12.0),
+                child: Column(
+                  children: [
+                    _buildHeader(),
+                    _buildSearchBar(controller),
+                    _buildTransactionList(controller),
+                  ],
                 ),
               ),
-            ),
-            Card(
-              color: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              elevation: 5,
-              margin: const EdgeInsets.all(12.0),
-              child: Column(
-                children: [
-                  _buildHeader(),
-                  _buildSearchBar(controller),
-                  _buildTransactionList(controller),
-                ],
-              ),
-            ),
-            Positioned(
-                bottom: 0, left: 0, right: 0, child: _buildReceiveAndExpense()),
-          ],
+              Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: _buildReceiveAndExpense()),
+            ],
+          ),
         ),
         floatingActionButton: Padding(
           padding: const EdgeInsets.only(right: 8, bottom: 8),

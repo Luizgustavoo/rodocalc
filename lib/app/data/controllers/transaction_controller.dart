@@ -160,6 +160,9 @@ class TransactionController extends GetxController {
       Exception(e);
     }
     isLoading.value = false;
+    txtDescriptionFilterController.text = "";
+    startDateController.text = "";
+    endDateController.text = "";
   }
 
   Future<void> getSaldo() async {
