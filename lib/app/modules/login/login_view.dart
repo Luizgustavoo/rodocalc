@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/login_controller.dart';
 import 'package:rodocalc/app/data/controllers/signup_controller.dart';
+import 'package:rodocalc/app/modules/login/widgets/forgot_password_modal.dart';
 
 class LoginView extends GetView<LoginController> {
   const LoginView({super.key});
@@ -124,7 +125,13 @@ class LoginView extends GetView<LoginController> {
                             Align(
                               alignment: Alignment.centerRight,
                               child: TextButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                    isScrollControlled: true,
+                                    context: context,
+                                    builder: (context) => ForgotPasswordModal(),
+                                  );
+                                },
                                 child: const Text(
                                   'ESQUECEU A SENHA?',
                                   style: TextStyle(color: Colors.black),

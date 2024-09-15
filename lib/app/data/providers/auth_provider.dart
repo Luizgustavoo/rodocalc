@@ -218,4 +218,20 @@ class AuthApiClient {
       return null;
     }
   }
+
+  forgotPassword(String email) async {
+    var loginUrl = Uri.parse('$baseUrl/forgot-password');
+    try {
+      var response = await httpClient.post(loginUrl, headers: {
+        "Accept": "application/json",
+      }, body: {
+        'email': email,
+      });
+
+      return json.decode(response.body);
+    } catch (e) {
+      Exception(e);
+    }
+    return null;
+  }
 }

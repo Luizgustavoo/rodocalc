@@ -9,6 +9,7 @@ class LoginController extends GetxController {
   var isLoading = false.obs;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final forgotPasswordEmailController = TextEditingController();
   final loginKey = GlobalKey<FormState>();
   final RxBool isImageLoaded = false.obs;
   var isPasswordHidden = true.obs;
@@ -16,9 +17,17 @@ class LoginController extends GetxController {
   final repository = Get.put(AuthRepository());
   final box = GetStorage('rodocalc');
   RxBool loading = false.obs;
+  RxBool isLoadingForgot = false.obs;
 
   Auth? auth;
   RxBool showErrorSnackbar = false.obs;
+
+  Map<String, dynamic> retorno = {
+    "success": false,
+    "data": null,
+    "message": ["Preencha todos os campos!"]
+  };
+  dynamic mensagem;
 
   @override
   void onInit() {
@@ -55,6 +64,25 @@ class LoginController extends GetxController {
 
       loading.value = false;
     }
+  }
+
+  void forgotPassword() async {
+    isLoadingForgot(true);
+    mensagem =
+        await repository.forgotPassword(forgotPasswordEmailController.text);
+    if (mensagem != null) {
+      retorno = {
+        'success': mensagem['success'],
+        'message': mensagem['message']
+      };
+    } else {
+      retorno = {
+        'success': false,
+        'message': ['Falha ao realizar a operação!']
+      };
+    }
+    isLoadingForgot(false);
+    return retorno;
   }
 
   void showErrorMessage() {
