@@ -554,7 +554,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
               },
               child: const Text('CANCELAR'),
             ),
-            TextButton(
+            CustomElevatedButton(
               onPressed: () async {
                 Map<String, dynamic> retorno =
                     await controller.insertExpenseCategory(type);
@@ -576,7 +576,8 @@ class CreateExpenseModal extends GetView<TransactionController> {
               },
               child: const Text(
                 'SALVAR',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
               ),
             ),
           ],

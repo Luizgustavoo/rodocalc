@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/base_url.dart';
+import 'package:rodocalc/app/data/controllers/city_state_controller.dart';
 import 'package:rodocalc/app/data/controllers/classified_controller.dart';
 import 'package:rodocalc/app/data/controllers/comission_indicator_controller.dart';
 import 'package:rodocalc/app/data/controllers/course_controller.dart';
@@ -39,6 +40,7 @@ class HomeView extends GetView<HomeController> {
   final comissionIndicatorController = Get.put(ComissionIndicatorController());
   final userController = Get.put(UserController());
   final tripController = Get.put(TripController());
+  final cityController = Get.put(CityStateController());
 
   @override
   Widget build(BuildContext context) {
@@ -136,6 +138,7 @@ class HomeView extends GetView<HomeController> {
                                           onSelected: (String value) {
                                             switch (value) {
                                               case 'Perfil':
+                                                cityController.getCities();
                                                 perfilController.fillInFields();
                                                 Get.toNamed(Routes.perfil);
                                                 break;

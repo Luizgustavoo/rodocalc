@@ -519,6 +519,12 @@ class CreateReceiptModal extends GetView<TransactionController> {
           ),
           actions: <Widget>[
             TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('CANCELAR'),
+            ),
+            CustomElevatedButton(
               onPressed: () async {
                 Map<String, dynamic> retorno =
                     await controller.insertChargeType();
@@ -538,16 +544,11 @@ class CreateReceiptModal extends GetView<TransactionController> {
                       snackPosition: SnackPosition.BOTTOM);
                 }
               },
-              child: const Text(
+              child: Text(
                 'SALVAR',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
               ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('CANCELAR'),
             ),
           ],
         );

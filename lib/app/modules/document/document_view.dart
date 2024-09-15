@@ -301,38 +301,43 @@ class DocumentView extends GetView<DocumentController> {
       title: "Confirmação",
       content: Text(
         textAlign: TextAlign.center,
-        "Tem certeza que deseja excluir o veículo ${document.descricao}?",
+        "Tem certeza que deseja excluir o registro ${document.descricao}?",
         style: const TextStyle(
           fontFamily: 'Inter-Regular',
           fontSize: 18,
         ),
       ),
       actions: [
-        ElevatedButton(
-          onPressed: () async {
-            Map<String, dynamic> retorno =
-                await controller.deleteDocument(document.id!);
+        Obx(() {
+          return controller.isLoadingCRUD.value
+              ? const CircularProgressIndicator()
+              : ElevatedButton(
+                  onPressed: () async {
+                    Map<String, dynamic> retorno =
+                        await controller.deleteDocument(document.id!);
 
-            if (retorno['success'] == true) {
-              Get.back();
-              Get.snackbar('Sucesso!', retorno['message'].join('\n'),
-                  backgroundColor: Colors.green,
-                  colorText: Colors.white,
-                  duration: const Duration(seconds: 2),
-                  snackPosition: SnackPosition.BOTTOM);
-            } else {
-              Get.snackbar('Falha!', retorno['message'].join('\n'),
-                  backgroundColor: Colors.red,
-                  colorText: Colors.white,
-                  duration: const Duration(seconds: 2),
-                  snackPosition: SnackPosition.BOTTOM);
-            }
-          },
-          child: const Text(
-            "CONFIRMAR",
-            style: TextStyle(fontFamily: 'Poppinss', color: Colors.white),
-          ),
-        ),
+                    if (retorno['success'] == true) {
+                      Get.back();
+                      Get.snackbar('Sucesso!', retorno['message'].join('\n'),
+                          backgroundColor: Colors.green,
+                          colorText: Colors.white,
+                          duration: const Duration(seconds: 2),
+                          snackPosition: SnackPosition.BOTTOM);
+                    } else {
+                      Get.snackbar('Falha!', retorno['message'].join('\n'),
+                          backgroundColor: Colors.red,
+                          colorText: Colors.white,
+                          duration: const Duration(seconds: 2),
+                          snackPosition: SnackPosition.BOTTOM);
+                    }
+                  },
+                  child: const Text(
+                    "CONFIRMAR",
+                    style:
+                        TextStyle(fontFamily: 'Poppinss', color: Colors.white),
+                  ),
+                );
+        }),
         TextButton(
           onPressed: () {
             Get.back();
