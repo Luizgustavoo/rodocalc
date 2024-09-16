@@ -363,7 +363,9 @@ class PerfilView extends GetView<PerfilController> {
                               Colors.redAccent.shade100
                             ]),
                             width: double.infinity,
-                            onPressed: () {},
+                            onPressed: () {
+                              showDeleteDialog(context, controller);
+                            },
                             child: const Text(
                               'DELETAR CONTA',
                               style: TextStyle(
@@ -409,6 +411,99 @@ class PerfilView extends GetView<PerfilController> {
                 },
               ),
             ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> showDeleteDialog(
+      BuildContext context, PerfilController controller) async {
+    await showGeneralDialog(
+      context: context,
+      pageBuilder: (BuildContext buildContext, Animation<double> animation,
+          Animation<double> secondaryAnimation) {
+        return Center(
+          child: Container(
+            width: MediaQuery.of(context).size.width - 40,
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Material(
+              type: MaterialType.transparency,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    'Atenção',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontFamily: 'Inter-Bold',
+                        fontSize: 20,
+                        color: Colors.deepOrange),
+                  ),
+                  const Divider(),
+                  const SizedBox(height: 10),
+                  const Text(
+                    'Tem certeza que deseja excluir sua conta?',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'Inter-Regular',
+                      fontSize: 20,
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      SizedBox(
+                        width: 110,
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            var retorno = await controller.deleteAccount();
+
+                            if (retorno['success'] == true) {
+                              Get.back();
+                              Get.snackbar(
+                                  'Sucesso!', retorno['message'].join('\n'),
+                                  backgroundColor: Colors.green,
+                                  colorText: Colors.white,
+                                  duration: const Duration(seconds: 2),
+                                  snackPosition: SnackPosition.BOTTOM);
+                            } else {
+                              Get.snackbar(
+                                  'Falha!', retorno['message'].join('\n'),
+                                  backgroundColor: Colors.red,
+                                  colorText: Colors.white,
+                                  duration: const Duration(seconds: 2),
+                                  snackPosition: SnackPosition.BOTTOM);
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                          ),
+                          child: const Text(
+                            'EXCLUIR',
+                            style: TextStyle(
+                                fontFamily: 'Poppins', color: Colors.white),
+                          ),
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        child: const Text('CANCELAR',
+                            style: TextStyle(
+                                fontFamily: 'Poppins', color: Colors.white)),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ),
         );
       },

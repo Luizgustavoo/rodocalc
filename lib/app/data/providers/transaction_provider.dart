@@ -53,9 +53,9 @@ class TransactionApiClient {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
-      Uri companyUrl;
+      Uri transactionUrl;
       String url = '$baseUrl/v1/transacao/filter';
-      companyUrl = Uri.parse(url);
+      transactionUrl = Uri.parse(url);
 
       var body = {'veiculo_id': ServiceStorage.idSelectedVehicle().toString()};
 
@@ -69,7 +69,7 @@ class TransactionApiClient {
       }
 
       var response = await httpClient.post(
-        companyUrl,
+        transactionUrl,
         headers: {
           "Accept": "application/json",
           "Authorization": token,

@@ -13,4 +13,14 @@ class PerfilRepository {
       Exception(e);
     }
   }
+
+  deleteUser() async {
+    try {
+      var response = await apiClient.deleteUser();
+
+      return response;
+    } catch (e) {
+      Exception(e);
+    }
+  }
 }

@@ -10,12 +10,11 @@ import 'package:rodocalc/app/utils/formatter.dart';
 
 class CreateExpenseTripModal extends GetView<TripController> {
   CreateExpenseTripModal({
-    Key? key,
+    super.key,
     required this.isUpdate,
     this.trip,
     this.expenseTrip,
-  })  : formKey = GlobalKey<FormState>(),
-        super(key: key);
+  }) : formKey = GlobalKey<FormState>();
 
   final bool isUpdate;
   final Trip? trip;
@@ -27,7 +26,7 @@ class CreateExpenseTripModal extends GetView<TripController> {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Form(
-          key: formKey,
+          key: controller.viewTripFormKey,
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             padding: const EdgeInsets.all(12.0),
@@ -141,7 +140,8 @@ class CreateExpenseTripModal extends GetView<TripController> {
                     const SizedBox(width: 10),
                     CustomElevatedButton(
                       onPressed: () async {
-                        if (formKey.currentState!.validate()) {
+                        if (controller.viewTripFormKey.currentState!
+                            .validate()) {
                           Map<String, dynamic> retorno = isUpdate
                               ? await controller.updateExpenseTrip(
                                   trip!.id!, expenseTrip!.id!)

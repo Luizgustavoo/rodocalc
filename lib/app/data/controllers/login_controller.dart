@@ -35,6 +35,17 @@ class LoginController extends GetxController {
     super.onInit();
   }
 
+  void clearAllFields() {
+    final textControllers = [
+      emailController,
+      passwordController,
+    ];
+
+    for (final controller in textControllers) {
+      controller.clear();
+    }
+  }
+
   Future<void> preloadImage() async {
     await precacheImage(
         const AssetImage('assets/images/background.jpg'), Get.context!);
@@ -50,6 +61,7 @@ class LoginController extends GetxController {
 
       if (auth != null) {
         box.write('auth', auth?.toJson());
+        clearAllFields();
         Get.offAllNamed('/home');
 
         final vehicleController = Get.put(VehicleController());

@@ -26,10 +26,12 @@ class TripView extends GetView<TripController> {
               ServiceStorage.titleSelectedVehicle(),
               style: const TextStyle(fontFamily: 'Inter-Regular', fontSize: 14),
             ),
+            const SizedBox(height: 5),
             Text(
-              "Motorista: ${ServiceStorage.motoristaSelectedVehicle()}",
+              "MOTORISTA: ${ServiceStorage.motoristaSelectedVehicle()}"
+                  .toUpperCase(),
               style: const TextStyle(fontFamily: 'Inter-Regular', fontSize: 14),
-            )
+            ),
           ],
         ),
         actions: [
@@ -204,7 +206,7 @@ class TripView extends GetView<TripController> {
                       );
                     } else {
                       return const Center(
-                        child: Text('Nenhum veículo encontrado!'),
+                        child: Text('NENHUM TRECHO ENCONTRADO!'),
                       );
                     }
                   }),
@@ -219,8 +221,7 @@ class TripView extends GetView<TripController> {
         child: FloatingActionButton(
           backgroundColor: const Color(0xFFFF6B00),
           onPressed: () {
-            if (ServiceStorage.idSelectedVehicle() == null ||
-                ServiceStorage.idSelectedVehicle() <= 0) {
+            if (ServiceStorage.idSelectedVehicle() <= 0) {
               Get.snackbar('Atenção', 'Selecione um veículo antes!',
                   backgroundColor: Colors.red,
                   colorText: Colors.white,

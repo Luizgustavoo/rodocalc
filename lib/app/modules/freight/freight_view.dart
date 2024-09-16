@@ -17,7 +17,7 @@ class FreightView extends GetView<FreightController> {
       appBar: AppBar(
         title: Column(
           children: [
-            Text('FRETES',
+            const Text('FRETES',
                 style: TextStyle(
                   fontFamily: 'Inter-Black',
                 )),
@@ -25,10 +25,12 @@ class FreightView extends GetView<FreightController> {
               ServiceStorage.titleSelectedVehicle(),
               style: const TextStyle(fontFamily: 'Inter-Regular', fontSize: 14),
             ),
+            const SizedBox(height: 5),
             Text(
-              "Motorista: ${ServiceStorage.motoristaSelectedVehicle()}",
+              "MOTORISTA: ${ServiceStorage.motoristaSelectedVehicle()}"
+                  .toUpperCase(),
               style: const TextStyle(fontFamily: 'Inter-Regular', fontSize: 14),
-            )
+            ),
           ],
         ),
         actions: [
@@ -193,7 +195,7 @@ class FreightView extends GetView<FreightController> {
                       );
                     } else {
                       return const Center(
-                        child: Text('Nenhum veículo encontrado!'),
+                        child: Text('NENHUM FRETE ENCONTRADO!'),
                       );
                     }
                   }),

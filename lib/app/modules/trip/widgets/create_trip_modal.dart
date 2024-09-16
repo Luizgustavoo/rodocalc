@@ -61,7 +61,7 @@ class CreateTripModal extends GetView<TripController> {
 
                   return DropdownButtonFormField<String>(
                     value: controller.selectedOption.value,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Selecione uma opção',
                     ),
                     onChanged: (String? newValue) {

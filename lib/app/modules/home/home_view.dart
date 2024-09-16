@@ -197,7 +197,8 @@ class HomeView extends GetView<HomeController> {
                               ),
                               const SizedBox(height: 40),
                               Text(
-                                "Veículo: ${ServiceStorage.titleSelectedVehicle()} - Motorista: ${ServiceStorage.motoristaSelectedVehicle()}",
+                                "VEICÚLO: ${ServiceStorage.titleSelectedVehicle()} - MOTORISTA: ${ServiceStorage.motoristaSelectedVehicle()}"
+                                    .toUpperCase(),
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                     color: Colors.white, fontSize: 16),
@@ -493,7 +494,7 @@ class HomeView extends GetView<HomeController> {
                                                           // Usa "..." no final do texto
                                                           maxLines: 1,
                                                           // Limita o texto a uma linha
-                                                          style: TextStyle(
+                                                          style: const TextStyle(
                                                               fontSize:
                                                                   16), // Ajusta o tamanho da fonte, se necessário
                                                         ),
@@ -504,7 +505,7 @@ class HomeView extends GetView<HomeController> {
                                                           // Usa "..." no final do texto, se necessário
                                                           maxLines: 1,
                                                           // Limita o texto a uma linha
-                                                          style: TextStyle(
+                                                          style: const TextStyle(
                                                               color: Colors
                                                                   .grey), // Estilo para subtítulo
                                                         ),

@@ -15,75 +15,100 @@ class ViewListExpenseTripModal extends GetView<TripController> {
   Widget build(BuildContext context) {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
-      child: Form(
-          key: controller.tripFormKey,
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 10, bottom: 5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'DESPESAS DO TRECHO',
-                        style: TextStyle(
-                            fontFamily: 'Inter-Bold',
-                            fontSize: 17,
-                            color: Color(0xFFFF6B00)),
-                      ),
-                      IconButton(
-                          onPressed: () {
-                            Get.back();
-                            controller.clearAllFieldsExpense();
-                            showModalBottomSheet(
-                              isScrollControlled: true,
-                              context: context,
-                              builder: (context) => CreateExpenseTripModal(
-                                isUpdate: false,
-                                trip: trip,
-                              ),
-                            );
-                          },
-                          icon: Icon(Icons.add))
-                    ],
+      child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 10, bottom: 5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Text(
+                    'DESPESAS DO TRECHO',
+                    style: TextStyle(
+                        fontFamily: 'Inter-Bold',
+                        fontSize: 17,
+                        color: Color(0xFFFF6B00)),
                   ),
-                ),
-                const Divider(
-                  endIndent: 20,
-                  indent: 20,
-                  height: 5,
-                  thickness: 2,
-                  color: Colors.black,
-                ),
-                const SizedBox(height: 15),
-                SizedBox(
-                  height: 200, // Defina a altura manualmente
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    itemCount: trip.expenseTrip!.length,
-                    itemBuilder: (ctx, index) {
-                      final ExpenseTrip expense = trip.expenseTrip![index];
-                      return Card(
-                        elevation: 1,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        margin: const EdgeInsets.only(bottom: 10),
-                        child: ListTile(
-                          trailing: IconButton(
-                            onPressed: () {
-                              showDialog(context, expense, controller);
-                            },
-                            icon: Icon(Icons.delete),
+                  IconButton(
+                      onPressed: () {
+                        Get.back();
+                        controller.clearAllFieldsExpense();
+                        showModalBottomSheet(
+                          isScrollControlled: true,
+                          context: context,
+                          builder: (context) => CreateExpenseTripModal(
+                            isUpdate: false,
+                            trip: trip,
                           ),
-                          title: RichText(
+                        );
+                      },
+                      icon: const Icon(Icons.add))
+                ],
+              ),
+            ),
+            const Divider(
+              endIndent: 20,
+              indent: 20,
+              height: 5,
+              thickness: 2,
+              color: Colors.black,
+            ),
+            const SizedBox(height: 15),
+            SizedBox(
+              height: 200, // Defina a altura manualmente
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: const AlwaysScrollableScrollPhysics(),
+                itemCount: trip.expenseTrip!.length,
+                itemBuilder: (ctx, index) {
+                  final ExpenseTrip expense = trip.expenseTrip![index];
+                  return Card(
+                    elevation: 1,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    margin: const EdgeInsets.only(bottom: 10),
+                    child: ListTile(
+                      trailing: IconButton(
+                        onPressed: () {
+                          showDialog(context, expense, controller);
+                        },
+                        icon: const Icon(Icons.delete),
+                      ),
+                      title: RichText(
+                        text: TextSpan(
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.black,
+                            fontFamily: 'Inter-Regular',
+                          ),
+                          children: [
+                            const TextSpan(
+                              text: 'DESCRIÇÃO: ',
+                              style: TextStyle(
+                                fontFamily: 'Inter-Bold',
+                              ),
+                            ),
+                            TextSpan(
+                              text: expense.descricao,
+                              style: const TextStyle(
+                                fontFamily: 'Inter',
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 5),
+                          RichText(
                             text: TextSpan(
                               style: const TextStyle(
                                 fontSize: 14,
@@ -92,13 +117,14 @@ class ViewListExpenseTripModal extends GetView<TripController> {
                               ),
                               children: [
                                 const TextSpan(
-                                  text: 'DESCRIÇÃO: ',
+                                  text: 'DATA: ',
                                   style: TextStyle(
                                     fontFamily: 'Inter-Bold',
                                   ),
                                 ),
                                 TextSpan(
-                                  text: expense.descricao,
+                                  text: FormattedInputers.formatApiDateHour(
+                                      expense.dataHora!),
                                   style: const TextStyle(
                                     fontFamily: 'Inter',
                                   ),
@@ -106,70 +132,42 @@ class ViewListExpenseTripModal extends GetView<TripController> {
                               ],
                             ),
                           ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 5),
-                              RichText(
-                                text: TextSpan(
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black,
-                                    fontFamily: 'Inter-Regular',
-                                  ),
-                                  children: [
-                                    const TextSpan(
-                                      text: 'DATA: ',
-                                      style: TextStyle(
-                                        fontFamily: 'Inter-Bold',
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text: FormattedInputers.formatApiDateHour(
-                                          expense.dataHora!),
-                                      style: const TextStyle(
-                                        fontFamily: 'Inter',
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                          const SizedBox(height: 5),
+                          RichText(
+                            text: TextSpan(
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.black,
+                                fontFamily: 'Inter-Regular',
                               ),
-                              const SizedBox(height: 5),
-                              RichText(
-                                text: TextSpan(
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black,
-                                    fontFamily: 'Inter-Regular',
+                              children: [
+                                const TextSpan(
+                                  text: 'VALOR: ',
+                                  style: TextStyle(
+                                    fontFamily: 'Inter-Bold',
                                   ),
-                                  children: [
-                                    const TextSpan(
-                                      text: 'VALOR: ',
-                                      style: TextStyle(
-                                        fontFamily: 'Inter-Bold',
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text:
-                                          "R\$${FormattedInputers.formatValuePTBR((expense.valorDespesa! / 100).toString())}",
-                                      style: const TextStyle(
-                                        fontFamily: 'Inter',
-                                      ),
-                                    ),
-                                  ],
                                 ),
-                              )
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                const SizedBox(height: 15),
-              ],
+                                TextSpan(
+                                  text:
+                                      "R\$${FormattedInputers.formatValuePTBR((expense.valorDespesa! / 100).toString())}",
+                                  style: const TextStyle(
+                                    fontFamily: 'Inter',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
-          )),
+            const SizedBox(height: 15),
+          ],
+        ),
+      ),
     );
   }
 }

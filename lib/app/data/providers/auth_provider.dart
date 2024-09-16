@@ -223,15 +223,36 @@ class AuthApiClient {
     }
   }
 
-  forgotPassword(String email) async {
+  forgotPassword(String username) async {
     var loginUrl = Uri.parse('$baseUrl/forgot-password');
     try {
       var response = await httpClient.post(loginUrl, headers: {
         "Accept": "application/json",
       }, body: {
-        'email': email,
+        'username': username,
       });
 
+      return json.decode(response.body);
+    } catch (e) {
+      Exception(e);
+    }
+    return null;
+  }
+
+  deleteUser() async {
+    try {
+      var token = ServiceStorage.getToken();
+      var userUrl = Uri.parse(
+          '$baseUrl/v1/usuario/destroy/${ServiceStorage.getUserId().toString()}');
+
+      var response = await httpClient.delete(
+        userUrl,
+        headers: {
+          "Accept": "application/json",
+          'Authorization': 'Bearer $token',
+        },
+      );
+      print(response.body);
       return json.decode(response.body);
     } catch (e) {
       Exception(e);

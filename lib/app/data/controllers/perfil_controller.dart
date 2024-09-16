@@ -3,11 +3,13 @@ import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/base_url.dart';
+import 'package:rodocalc/app/data/controllers/login_controller.dart';
 import 'package:rodocalc/app/data/models/auth_model.dart';
 import 'package:rodocalc/app/data/models/people_model.dart';
 import 'package:rodocalc/app/data/models/user_model.dart';
 import 'package:rodocalc/app/data/repositories/cep_repository.dart';
 import 'package:rodocalc/app/data/repositories/perfil_repository.dart';
+import 'package:rodocalc/app/routes/app_routes.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 
@@ -16,6 +18,7 @@ class PerfilController extends GetxController {
   var selectedState = ''.obs;
 
   final perfilKey = GlobalKey<FormState>();
+
   final TextEditingController txtNomeController = TextEditingController();
   final TextEditingController txtTelefoneController = TextEditingController();
   final TextEditingController txtDDDController = TextEditingController();
@@ -32,6 +35,7 @@ class PerfilController extends GetxController {
   final TextEditingController addressController = TextEditingController();
   final TextEditingController neighborhoodController = TextEditingController();
   final TextEditingController houseNumberController = TextEditingController();
+
   final cepRepository = Get.put(CepRepository());
 
   void fetchAddressFromCep(String cep) async {
@@ -201,6 +205,29 @@ class PerfilController extends GetxController {
         };
       }
     }
+    return retorno;
+  }
+
+  deleteAccount() async {
+    mensagem = await repository.deleteUser();
+    if (mensagem != null) {
+      retorno = {
+        'success': mensagem['success'],
+        'message': mensagem['message']
+      };
+      final loginController = Get.put(LoginController());
+      loginController.loginKey.currentState?.dispose();
+      loginController.logout();
+      Future.delayed(const Duration(seconds: 1), () {
+        Get.offNamed(Routes.login); // Testa com delay ou usando `offNamed`
+      });
+    } else {
+      retorno = {
+        'success': false,
+        'message': ['Falha ao realizar a operação!']
+      };
+    }
+
     return retorno;
   }
 }

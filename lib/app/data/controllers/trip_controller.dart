@@ -9,6 +9,7 @@ import 'package:rodocalc/app/utils/service_storage.dart';
 
 class TripController extends GetxController {
   final tripFormKey = GlobalKey<FormState>();
+  final viewTripFormKey = GlobalKey<FormState>();
   final originController = TextEditingController();
   final destinyController = TextEditingController();
   final valueReceiveController = TextEditingController();
@@ -32,7 +33,7 @@ class TripController extends GetxController {
 
   var selectedOption = ''.obs;
 
-  final options = ['Saída', 'Chegada'].toSet().toList();
+  final options = {'Saída', 'Chegada'}.toList();
 
   Map<String, dynamic> retorno = {
     "success": false,

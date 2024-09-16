@@ -455,6 +455,7 @@ class TransactionController extends GetxController {
           'message': mensagem['message']
         };
         getAll();
+        getSaldo();
         clearAllFields();
       } else {
         retorno = {

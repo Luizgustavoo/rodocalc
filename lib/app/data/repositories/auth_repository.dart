@@ -18,8 +18,8 @@ class AuthRepository {
     }
   }
 
-  forgotPassword(String email) async {
-    var response = await apiClient.forgotPassword(email);
+  forgotPassword(String username) async {
+    var response = await apiClient.forgotPassword(username);
     return response;
   }
 

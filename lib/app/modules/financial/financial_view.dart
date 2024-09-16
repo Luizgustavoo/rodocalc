@@ -31,11 +31,13 @@ class FinancialView extends GetView<TransactionController> {
                 style:
                     const TextStyle(fontFamily: 'Inter-Regular', fontSize: 14),
               ),
+              const SizedBox(height: 5),
               Text(
-                "Motorista: ${ServiceStorage.motoristaSelectedVehicle()}",
+                "MOTORISTA: ${ServiceStorage.motoristaSelectedVehicle()}"
+                    .toUpperCase(),
                 style:
                     const TextStyle(fontFamily: 'Inter-Regular', fontSize: 14),
-              )
+              ),
             ],
           ),
           actions: [
@@ -224,7 +226,7 @@ class FinancialView extends GetView<TransactionController> {
         color: Colors.black,
         elevation: 5,
         child: Padding(
-          padding: EdgeInsets.all(15),
+          padding: const EdgeInsets.all(15),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -245,7 +247,7 @@ class FinancialView extends GetView<TransactionController> {
               ),
               Column(
                 children: [
-                  Text(
+                  const Text(
                     "Saídas",
                     style: TextStyle(
                         fontWeight: FontWeight.bold, color: Colors.red),
@@ -253,7 +255,7 @@ class FinancialView extends GetView<TransactionController> {
                   Obx(() {
                     return Text(
                       "R\$${FormattedInputers.formatValuePTBR(Services.totalGastos.value)}",
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontWeight: FontWeight.bold, color: Colors.red),
                     );
                   }),
@@ -313,7 +315,7 @@ class FinancialView extends GetView<TransactionController> {
                 child: TextFormField(
                   controller: controller.startDateController,
                   decoration: const InputDecoration(
-                    labelText: 'Data Inicial',
+                    labelText: 'DATA INICIAL',
                     prefixIcon: Icon(Icons.date_range),
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
@@ -365,7 +367,7 @@ class FinancialView extends GetView<TransactionController> {
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
                     filled: true,
-                    labelText: 'Data Final',
+                    labelText: 'DATA FINAL',
                     prefixIcon: Icon(Icons.date_range),
                     fillColor: Colors.transparent,
                     // Altere para a cor desejada
@@ -419,7 +421,7 @@ class FinancialView extends GetView<TransactionController> {
           ),
 
           SizedBox(
-            height: 40,
+            height: 45,
             child: TextFormField(
               controller: controller.txtDescriptionFilterController,
               decoration: InputDecoration(
@@ -440,7 +442,7 @@ class FinancialView extends GetView<TransactionController> {
                               snackPosition: SnackPosition.BOTTOM);
                         }
                       },
-                      icon: Icon(Icons.search))),
+                      icon: const Icon(Icons.search))),
             ),
           ),
 
@@ -448,12 +450,12 @@ class FinancialView extends GetView<TransactionController> {
             return controller.tituloSearchTransactions.value.isNotEmpty
                 ? Column(
                     children: [
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Text(controller.tituloSearchTransactions.value,
-                          style: TextStyle(fontWeight: FontWeight.bold))
+                          style: const TextStyle(fontWeight: FontWeight.bold))
                     ],
                   )
-                : SizedBox();
+                : const SizedBox();
           })
         ],
       ),
