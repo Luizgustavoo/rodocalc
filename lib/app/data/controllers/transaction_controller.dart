@@ -143,7 +143,7 @@ class TransactionController extends GetxController {
           endDateController.text.isNotEmpty ? endDateController.text : "";
 
       if (dataInicio.isNotEmpty && dataFim.isNotEmpty) {
-        tituloSearchTransactions.value += "${dataInicio} - ${dataFim}";
+        tituloSearchTransactions.value += "$dataInicio - $dataFim";
       }
       if (txtDescriptionFilterController.text.isNotEmpty) {
         tituloSearchTransactions.value +=
@@ -549,7 +549,7 @@ class TransactionController extends GetxController {
         selected.telefone != null ? selected.telefone.toString() : "";
 
     txtOriginController.text =
-        selected.origem != null ? "${selected.origem.toString()}" : "";
+        selected.origem != null ? selected.origem.toString() : "";
     txtDestinyController.text =
         selected.destino != null ? selected.destino.toString() : "";
 

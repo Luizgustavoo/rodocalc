@@ -258,8 +258,8 @@ class CreateExpenseModal extends GetView<TransactionController> {
               const SizedBox(height: 15),
               Obx(
                 () => DropdownButtonFormField<int>(
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(
                       Icons.search_rounded,
                     ),
                     labelText: 'TIPO ESPECÍFICO',

@@ -173,6 +173,8 @@ class PerfilController extends GetxController {
         telefone: txtTelefoneController.text,
         cpf: txtCpfController.text,
         apelido: txtApelidoController.text,
+        cep: cepController.text,
+        numeroCasa: houseNumberController.text,
         cidade: txtCidadeController.text,
         uf: selectedState.value,
         status: 1,
