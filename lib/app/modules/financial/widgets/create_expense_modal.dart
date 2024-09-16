@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/controllers/city_state_controller.dart';
@@ -140,7 +141,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
               TextFormField(
                 controller: controller.txtDateController,
                 decoration: const InputDecoration(
-                  labelText: 'Data',
+                  labelText: 'DATA',
                   prefixIcon: Icon(Icons.date_range),
                   contentPadding:
                       EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
@@ -210,6 +211,9 @@ class CreateExpenseModal extends GetView<TransactionController> {
                           child: Text(
                             category.descricao!,
                             overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                                fontFamily: 'Inter-Bold',
+                                color: Colors.black54),
                           ),
                         ),
                       );
@@ -231,7 +235,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
                               "CADASTRAR NOVA CATEGORIA...",
                               style: TextStyle(
                                   color: Color(0xFFFF6B00),
-                                  fontWeight: FontWeight.w900),
+                                  fontFamily: 'Inter-Bold'),
                             ),
                           ),
                         ),
@@ -280,6 +284,9 @@ class CreateExpenseModal extends GetView<TransactionController> {
                           child: Text(
                             specific.descricao!,
                             overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                                fontFamily: 'Inter-Bold',
+                                color: Colors.black54),
                           ),
                         ),
                       );
@@ -301,7 +308,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
                               "CADASTRAR NOVO TIPO...",
                               style: TextStyle(
                                   color: Color(0xFFFF6B00),
-                                  fontWeight: FontWeight.w900),
+                                  fontFamily: 'Inter-Bold'),
                             ),
                           ),
                         ),
@@ -333,11 +340,11 @@ class CreateExpenseModal extends GetView<TransactionController> {
                           SearchFieldListItem<String>(city.cidadeEstado!))
                       .toList(),
                   searchInputDecoration: InputDecoration(
-                    labelText: cityController.isLoading.value
-                        ? "CARREGANDO..."
-                        : "CIDADE",
-                    hintText: "Digite o nome da cidade",
-                  ),
+                      labelText: cityController.isLoading.value
+                          ? "CARREGANDO..."
+                          : "CIDADE",
+                      hintText: "Digite o nome da cidade",
+                      prefixIcon: const Icon(FontAwesomeIcons.city)),
                   onSuggestionTap: (suggestion) {
                     controller.txtCityController.text = suggestion.searchKey;
                   },

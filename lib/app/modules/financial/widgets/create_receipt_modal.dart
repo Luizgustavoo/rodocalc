@@ -139,7 +139,7 @@ class CreateReceiptModal extends GetView<TransactionController> {
                 TextFormField(
                   controller: controller.txtDateController,
                   decoration: const InputDecoration(
-                    labelText: 'Data',
+                    labelText: 'DATA',
                     prefixIcon: Icon(Icons.date_range),
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
@@ -284,7 +284,7 @@ class CreateReceiptModal extends GetView<TransactionController> {
                     );
                   } else if (controller.listChargeTypes.isNotEmpty) {
                     return DropdownButtonFormField<int>(
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         prefixIcon: Icon(
                           Icons.search_rounded,
                         ),
@@ -301,6 +301,9 @@ class CreateReceiptModal extends GetView<TransactionController> {
                             child: Text(
                               charge.descricao!,
                               overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                  fontFamily: 'Inter-Bold',
+                                  color: Colors.black54),
                             ),
                           );
                         }),
@@ -398,7 +401,7 @@ class CreateReceiptModal extends GetView<TransactionController> {
                     const SizedBox(width: 10),
                     Obx(
                       () => controller.isLoadingInsertUpdate.value
-                          ? CircularProgressIndicator()
+                          ? const CircularProgressIndicator()
                           : CustomElevatedButton(
                               onPressed: () async {
                                 Map<String, dynamic> retorno = isUpdate
@@ -545,7 +548,7 @@ class CreateReceiptModal extends GetView<TransactionController> {
                       snackPosition: SnackPosition.BOTTOM);
                 }
               },
-              child: Text(
+              child: const Text(
                 'SALVAR',
                 style:
                     TextStyle(fontWeight: FontWeight.bold, color: Colors.white),

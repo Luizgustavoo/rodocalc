@@ -137,7 +137,7 @@ class CreateDocumentModal extends GetView<DocumentController> {
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Por favor, insira a placa';
+                      return 'Por favor, insira a descrição do documento';
                     }
                     return null;
                   },
@@ -158,13 +158,13 @@ class CreateDocumentModal extends GetView<DocumentController> {
                           width: Get.width * .7,
                           child: ListView(
                             shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
+                            physics: const NeverScrollableScrollPhysics(),
                             children: [
                               Text(
                                 item.descricao.toString().toUpperCase() ?? '',
                                 overflow: TextOverflow.clip,
                               ),
-                              Divider()
+                              const Divider()
                             ],
                           ),
                         ),
