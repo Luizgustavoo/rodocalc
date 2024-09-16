@@ -110,6 +110,10 @@ class PerfilController extends GetxController {
       txtCpfController.text = auth.user!.people!.cpf ?? '';
       txtApelidoController.text = auth.user!.people!.apelido ?? '';
       txtEmailController.text = auth.user!.email ?? '';
+      cepController.text = auth.user!.people!.cep ?? '';
+      neighborhoodController.text = auth.user!.people!.bairro ?? '';
+      addressController.text = auth.user!.people!.endereco ?? '';
+      houseNumberController.text = auth.user!.people!.numeroCasa ?? '';
 
       if (auth.user!.people!.foto != null &&
           auth.user!.people!.foto!.isNotEmpty) {
@@ -189,10 +193,7 @@ class PerfilController extends GetxController {
 
       mensagem = await repository.updateUser(people, user);
       if (mensagem != null) {
-        retorno = {
-          'success': mensagem['success'],
-          'message': mensagem['message']
-        };
+        retorno = {'success': mensagem['success'], 'message': mensagem['data']};
       } else {
         retorno = {
           'success': false,
