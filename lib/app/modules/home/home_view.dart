@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/base_url.dart';
+import 'package:rodocalc/app/data/controllers/city_state_controller.dart';
 import 'package:rodocalc/app/data/controllers/classified_controller.dart';
 import 'package:rodocalc/app/data/controllers/comission_indicator_controller.dart';
 import 'package:rodocalc/app/data/controllers/course_controller.dart';
@@ -39,6 +40,7 @@ class HomeView extends GetView<HomeController> {
   final comissionIndicatorController = Get.put(ComissionIndicatorController());
   final userController = Get.put(UserController());
   final tripController = Get.put(TripController());
+  final cityController = Get.put(CityStateController());
 
   @override
   Widget build(BuildContext context) {
@@ -136,6 +138,7 @@ class HomeView extends GetView<HomeController> {
                                           onSelected: (String value) {
                                             switch (value) {
                                               case 'Perfil':
+                                                cityController.getCities();
                                                 perfilController.fillInFields();
                                                 Get.toNamed(Routes.perfil);
                                                 break;
@@ -397,106 +400,161 @@ class HomeView extends GetView<HomeController> {
                   ),
                 ),
               ),
-              Positioned(
-                top: topPosition,
-                left: 16,
-                right: 16,
-                bottom: 0,
-                child: Card(
-                  surfaceTintColor: Colors.white,
-                  color: Colors.white,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
+              RefreshIndicator(
+                onRefresh: () async {
+                  return await controller.getLast();
+                },
+                child: Positioned(
+                  top: topPosition,
+                  left: 16,
+                  right: 16,
+                  bottom: 0,
+                  child: Card(
+                    surfaceTintColor: Colors.white,
+                    color: Colors.white,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      ),
                     ),
-                  ),
-                  elevation: 8,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: ListView(
+                    elevation: 8,
+                    child: Padding(
                       padding: const EdgeInsets.all(16.0),
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Últimas movimentações',
-                              style: TextStyle(
-                                  fontSize: 18.0, fontFamily: 'Inter-Bold'),
-                            ),
-                            IconButton(
-                                onPressed: () {
-                                  transactionController.getAll();
-                                  transactionController.getSaldo();
-                                  controller.getLast();
-                                  Get.toNamed(Routes.financial);
-                                },
-                                icon: const Icon(Icons.arrow_circle_right))
-                          ],
-                        ),
-                        Obx(() => Column(
-                              children: controller.listLastTransactions
-                                  .map((transaction) {
-                                String stringValor = "";
-                                if (transaction.tipoTransacao == 'saida') {
-                                  stringValor =
-                                      "-R\$ ${FormattedInputers.formatValuePTBR(transaction.valor)}";
-                                } else {
-                                  stringValor =
-                                      "+R\$ ${FormattedInputers.formatValuePTBR(transaction.valor)}";
-                                }
-                                return Card(
-                                  surfaceTintColor: Colors.white,
-                                  color: Colors.white,
-                                  elevation: 0,
-                                  margin:
-                                      const EdgeInsets.symmetric(vertical: 8.0),
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                      child: ListView(
+                        padding: const EdgeInsets.all(16.0),
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                'Últimas movimentações',
+                                style: TextStyle(
+                                    fontSize: 18.0, fontFamily: 'Inter-Bold'),
+                              ),
+                              IconButton(
+                                  onPressed: () {
+                                    transactionController.getAll();
+                                    transactionController.getSaldo();
+                                    controller.getLast();
+                                    Get.toNamed(Routes.financial);
+                                  },
+                                  icon: const Icon(Icons.arrow_circle_right))
+                            ],
+                          ),
+                          Obx(() => Column(
+                                children: controller
+                                        .listLastTransactions.isNotEmpty
+                                    ? controller.listLastTransactions
+                                        .map((transaction) {
+                                        String stringValor = "";
+                                        String subtitulo = "";
+                                        if (transaction.tipoTransacao ==
+                                            'saida') {
+                                          stringValor =
+                                              "-R\$ ${FormattedInputers.formatValuePTBR(transaction.valor)}";
+                                          subtitulo =
+                                              "${transaction.expenseCategory?.descricao}";
+                                        } else {
+                                          stringValor =
+                                              "+R\$ ${FormattedInputers.formatValuePTBR(transaction.valor)}";
+                                          subtitulo =
+                                              "${transaction.origem}/${transaction.destino}";
+                                        }
+
+                                        return Card(
+                                          surfaceTintColor: Colors.white,
+                                          color: Colors.white,
+                                          elevation: 0,
+                                          margin: const EdgeInsets.symmetric(
+                                              vertical: 8.0),
+                                          child: Column(
                                             children: [
-                                              Text(transaction.descricao!),
-                                              Text(transaction
-                                                  .expenseCategory!.descricao!)
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  // Primeira coluna
+                                                  Expanded(
+                                                    flex: 2,
+                                                    // Controla a proporção de espaço ocupado
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          transaction
+                                                                  .descricao ??
+                                                              "",
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          // Usa "..." no final do texto
+                                                          maxLines: 1,
+                                                          // Limita o texto a uma linha
+                                                          style: TextStyle(
+                                                              fontSize:
+                                                                  16), // Ajusta o tamanho da fonte, se necessário
+                                                        ),
+                                                        Text(
+                                                          subtitulo,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          // Usa "..." no final do texto, se necessário
+                                                          maxLines: 1,
+                                                          // Limita o texto a uma linha
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                  .grey), // Estilo para subtítulo
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+
+                                                  // Segunda coluna (lado direito)
+                                                  Expanded(
+                                                    flex: 1,
+                                                    // Controla a proporção de espaço ocupado
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .end,
+                                                      children: [
+                                                        Text(
+                                                          stringValor,
+                                                          style: TextStyle(
+                                                            color: transaction
+                                                                        .tipoTransacao ==
+                                                                    'saida'
+                                                                ? Colors.red
+                                                                : Colors.green,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          FormattedInputers
+                                                              .formatApiDate(
+                                                                  transaction
+                                                                      .data!),
+                                                          style:
+                                                              const TextStyle(
+                                                                  color: Colors
+                                                                      .grey),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const Divider(),
                                             ],
                                           ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.end,
-                                            children: [
-                                              Text(
-                                                stringValor,
-                                                style: TextStyle(
-                                                    color: transaction
-                                                                .tipoTransacao ==
-                                                            'saida'
-                                                        ? Colors.red
-                                                        : Colors.green),
-                                              ),
-                                              Text(
-                                                  FormattedInputers
-                                                      .formatApiDate(
-                                                          transaction.data!),
-                                                  style: const TextStyle(
-                                                      color: Colors.grey)),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                      const Divider(),
-                                    ],
-                                  ),
-                                );
-                              }).toList(),
-                            )),
-                      ],
+                                        );
+                                      }).toList()
+                                    : [],
+                              )),
+                        ],
+                      ),
                     ),
                   ),
                 ),

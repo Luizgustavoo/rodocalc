@@ -3,13 +3,17 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:rodocalc/app/data/controllers/city_state_controller.dart';
 import 'package:rodocalc/app/data/controllers/perfil_controller.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/services.dart';
+import 'package:searchfield/searchfield.dart';
 
 class PerfilView extends GetView<PerfilController> {
-  const PerfilView({super.key});
+  PerfilView({super.key});
+
+  final cityController = Get.put(CityStateController());
 
   String? _validateSenha(String? value) {
     if (value == null || value.isEmpty) {
@@ -80,6 +84,7 @@ class PerfilView extends GetView<PerfilController> {
           SingleChildScrollView(
             padding: const EdgeInsets.all(12.0),
             child: Form(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               key: controller.perfilKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -165,73 +170,49 @@ class PerfilView extends GetView<PerfilController> {
                             },
                           ),
                           const SizedBox(height: 10),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              TextFormField(
-                                controller: controller.txtCidadeController,
-                                decoration: const InputDecoration(
-                                  prefixIcon: Icon(Icons.location_city),
-                                  labelText: 'CIDADE',
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return "Digite a sua cidade natal";
-                                  }
-                                  return null;
-                                },
-                              ),
-                              const SizedBox(height: 10),
-                              Obx(() {
-                                return DropdownButtonFormField<String>(
-                                  value: controller.selectedState.value == ''
-                                      ? null
-                                      : controller.selectedState.value,
-                                  decoration: const InputDecoration(
-                                    prefixIcon: Icon(Icons.map),
-                                    labelText: 'UF',
-                                  ),
-                                  items: [
-                                    const DropdownMenuItem<String>(
-                                      value: null,
-                                      child: Text(
-                                        'SELECIONE',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.grey),
-                                      ),
-                                    ),
-                                    ...controller.states.map((String state) {
-                                      return DropdownMenuItem<String>(
-                                        value: state,
-                                        child: Text(state),
-                                      );
-                                    }),
-                                  ],
-                                  onChanged: (newValue) {
-                                    controller.selectedState.value = newValue!;
-                                  },
-                                  validator: (value) {
-                                    if (value == null) {
-                                      return "Selecione uma UF";
-                                    }
-                                    return null;
-                                  },
-                                );
-                              }),
-                            ],
+                          Obx(
+                            () => SearchField<String>(
+                              controller: controller.txtCidadeController,
+                              suggestions: cityController.listCities
+                                  .map((city) => SearchFieldListItem<String>(
+                                      city.cidadeEstado!))
+                                  .toList(),
+                              searchInputDecoration: InputDecoration(
+                                  labelText: cityController.isLoading.value
+                                      ? "CARREGANDO"
+                                      : "CIDADE",
+                                  hintText: "Digite o nome da cidade",
+                                  prefixIcon: Icon(Icons.location_city)),
+                              onSuggestionTap: (suggestion) {
+                                controller.txtCidadeController.text =
+                                    suggestion.searchKey;
+                              },
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Por favor, selecione a origem';
+                                }
+                                // Verifica se a cidade está na lista de sugestões
+                                bool isValidCity = cityController.listCities
+                                    .any((city) => city.cidadeEstado == value);
+                                if (cityController.listCities.isNotEmpty &&
+                                    !isValidCity) {
+                                  return 'Cidade não encontrada na lista';
+                                }
+                                return null;
+                              },
+                            ),
                           ),
                           const SizedBox(height: 10),
                           TextFormField(
                             controller: controller.txtCpfController,
-                            maxLength: 14,
+                            maxLength: 18,
                             keyboardType: TextInputType.number,
                             decoration: const InputDecoration(
                                 prefixIcon: Icon(Icons.credit_card),
-                                labelText: 'CPF',
+                                labelText: 'CPF/CNPJ',
                                 counterText: ''),
                             onChanged: (value) {
-                              FormattedInputers.onCpfChanged(
+                              FormattedInputers.onCPFCNPJChanged(
                                   value, controller.txtCpfController);
                             },
                             validator: (value) {

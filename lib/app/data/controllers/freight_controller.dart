@@ -101,6 +101,53 @@ class FreightController extends GetxController {
   calculateFreight() async {
     //print(states_map[selectedStateOrigin]);
 
+    final RegExp cidadeUfRegex = RegExp(r'^[A-Za-zÀ-ÿ\s]+-[A-Z]{2}$');
+
+    dynamic cidadeOrigemPartes;
+    dynamic cidadeOrigem = "";
+    dynamic ufOrigem = "";
+    dynamic cidadeDestinoPartes;
+    dynamic cidadeDestino = "";
+    dynamic ufDestino = "";
+
+    if (!cidadeUfRegex.hasMatch(originController.text)) {
+      return {
+        'success': false,
+        'message': [
+          'Formato de cidade (Origem) e UF inválido! Use "Cidade-UF".'
+        ]
+      };
+    }
+
+    cidadeOrigemPartes = originController.text.split('-');
+    if (cidadeOrigemPartes.length != 2) {
+      return {
+        'success': false,
+        'message': ['Formato de cidade inválido!']
+      };
+    }
+    cidadeOrigem = cidadeOrigemPartes[0];
+    ufOrigem = cidadeOrigemPartes[1];
+
+    if (!cidadeUfRegex.hasMatch(destinyController.text)) {
+      return {
+        'success': false,
+        'message': [
+          'Formato de cidade (Destino) e UF inválido! Use "Cidade-UF".'
+        ]
+      };
+    }
+
+    cidadeDestinoPartes = destinyController.text.split('-');
+    if (cidadeDestinoPartes.length != 2) {
+      return {
+        'success': false,
+        'message': ['Formato de cidade inválido!']
+      };
+    }
+    cidadeDestino = cidadeDestinoPartes[0];
+    ufDestino = cidadeDestinoPartes[1];
+
     final double valueReceive =
         double.parse(cleanValue(valueReceiveController.text));
 
@@ -117,9 +164,10 @@ class FreightController extends GetxController {
         double.parse(cleanValue(priceTiresController.text)); // preco dos pneus
 
     double tolls = double.parse(cleanValue(priceTollsController.text));
-
-    double otherExpenses =
-        double.parse(cleanValue(othersExpensesController.text));
+    double otherExpenses = 0;
+    if (othersExpensesController.text.isNotEmpty) {
+      otherExpenses = double.parse(cleanValue(othersExpensesController.text));
+    }
 
     final double f1 = (D / M) * P;
     final double f2 = (((pn * D) / 800) / 100) * T;
@@ -129,10 +177,10 @@ class FreightController extends GetxController {
     final double profit = valueReceive - totalExpenses - tolls;
 
     mensagem = await repository.insert(Freight(
-      origem: originController.text,
-      ufOrigem: selectedStateOrigin.value,
-      destino: destinyController.text,
-      ufDestino: selectedStateDestiny.value,
+      origem: cidadeOrigem,
+      ufOrigem: ufOrigem,
+      destino: cidadeDestino,
+      ufDestino: ufDestino,
       valorPedagio: tolls,
       distanciaKm: D,
       mediaKmL: M,
@@ -167,6 +215,53 @@ class FreightController extends GetxController {
   calculateFreightUpdate(Freight freight) async {
     //print(states_map[selectedStateOrigin]);
 
+    final RegExp cidadeUfRegex = RegExp(r'^[A-Za-zÀ-ÿ\s]+-[A-Z]{2}$');
+
+    dynamic cidadeOrigemPartes;
+    dynamic cidadeOrigem = "";
+    dynamic ufOrigem = "";
+    dynamic cidadeDestinoPartes;
+    dynamic cidadeDestino = "";
+    dynamic ufDestino = "";
+
+    if (!cidadeUfRegex.hasMatch(originController.text)) {
+      return {
+        'success': false,
+        'message': [
+          'Formato de cidade (Origem) e UF inválido! Use "Cidade-UF".'
+        ]
+      };
+    }
+
+    cidadeOrigemPartes = originController.text.split('-');
+    if (cidadeOrigemPartes.length != 2) {
+      return {
+        'success': false,
+        'message': ['Formato de cidade inválido!']
+      };
+    }
+    cidadeOrigem = cidadeOrigemPartes[0];
+    ufOrigem = cidadeOrigemPartes[1];
+
+    if (!cidadeUfRegex.hasMatch(destinyController.text)) {
+      return {
+        'success': false,
+        'message': [
+          'Formato de cidade (Destino) e UF inválido! Use "Cidade-UF".'
+        ]
+      };
+    }
+
+    cidadeDestinoPartes = destinyController.text.split('-');
+    if (cidadeDestinoPartes.length != 2) {
+      return {
+        'success': false,
+        'message': ['Formato de cidade inválido!']
+      };
+    }
+    cidadeDestino = cidadeDestinoPartes[0];
+    ufDestino = cidadeDestinoPartes[1];
+
     final double valueReceive =
         double.parse(cleanValue(valueReceiveController.text));
 
@@ -196,10 +291,10 @@ class FreightController extends GetxController {
 
     mensagem = await repository.update(Freight(
       id: freight.id,
-      origem: originController.text,
-      ufOrigem: selectedStateOrigin.value,
-      destino: destinyController.text,
-      ufDestino: selectedStateDestiny.value,
+      origem: cidadeOrigem,
+      ufOrigem: ufOrigem,
+      destino: cidadeDestino,
+      ufDestino: ufDestino,
       valorPedagio: tolls,
       distanciaKm: D,
       mediaKmL: M,
@@ -271,8 +366,8 @@ class FreightController extends GetxController {
   }
 
   void fillInFields(Freight freight) {
-    originController.text = freight.origem!;
-    destinyController.text = freight.destino!;
+    originController.text = "${freight.origem!}-${freight.ufOrigem!}";
+    destinyController.text = "${freight.destino!}-${freight.ufDestino!}";
     valueReceiveController.text =
         "R\$ ${FormattedInputers.formatValuePTBR(freight.valorRecebido!.toString())}";
     distanceController.text =

@@ -18,6 +18,11 @@ class AuthRepository {
     }
   }
 
+  forgotPassword(String email) async {
+    var response = await apiClient.forgotPassword(email);
+    return response;
+  }
+
   getUserTypes() async {
     List<UserType> list = <UserType>[];
     try {

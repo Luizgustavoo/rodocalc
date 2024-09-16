@@ -9,19 +9,25 @@ import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 
 class CreateExpenseTripModal extends GetView<TripController> {
-  const CreateExpenseTripModal(
-      {super.key, required this.isUpdate, this.trip, this.expenseTrip});
+  CreateExpenseTripModal({
+    Key? key,
+    required this.isUpdate,
+    this.trip,
+    this.expenseTrip,
+  })  : formKey = GlobalKey<FormState>(),
+        super(key: key);
 
   final bool isUpdate;
   final Trip? trip;
   final ExpenseTrip? expenseTrip;
+  final GlobalKey<FormState> formKey;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Form(
-          key: controller.tripFormKey,
+          key: formKey,
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             padding: const EdgeInsets.all(12.0),
@@ -135,7 +141,7 @@ class CreateExpenseTripModal extends GetView<TripController> {
                     const SizedBox(width: 10),
                     CustomElevatedButton(
                       onPressed: () async {
-                        if (controller.tripFormKey.currentState!.validate()) {
+                        if (formKey.currentState!.validate()) {
                           Map<String, dynamic> retorno = isUpdate
                               ? await controller.updateExpenseTrip(
                                   trip!.id!, expenseTrip!.id!)

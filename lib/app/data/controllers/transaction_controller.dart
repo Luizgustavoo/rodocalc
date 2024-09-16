@@ -18,6 +18,7 @@ class TransactionController extends GetxController {
   var selectedImagesPaths = <String>[].obs;
   var selectedImagesPathsApi = <String>[].obs;
   var selectedImagesPathsApiRemove = <String>[].obs;
+  final tituloSearchTransactions = "".obs;
 
   //CONTROLLER E KEY DESPESA
 
@@ -45,6 +46,7 @@ class TransactionController extends GetxController {
   final txtChargeTypeController = TextEditingController();
 
   RxBool isLoading = true.obs;
+  RxBool isLoadingInsertUpdate = false.obs;
 
   RxBool isLoadingChargeTypes = true.obs;
   RxBool isLoadingBalance = true.obs;
@@ -113,6 +115,7 @@ class TransactionController extends GetxController {
   var searchQuery = ''.obs;
 
   Future<void> getAll() async {
+    tituloSearchTransactions.value = "";
     isLoading.value = true;
     try {
       listTransactions.value = await repository.getAll();
@@ -124,6 +127,7 @@ class TransactionController extends GetxController {
   }
 
   Future<void> getTransactionsWithFilter() async {
+    tituloSearchTransactions.value = "";
     isLoading.value = true;
     try {
       String inicio = startDateController.text.isNotEmpty
@@ -132,6 +136,19 @@ class TransactionController extends GetxController {
       String fim = endDateController.text.isNotEmpty
           ? "${FormattedInputers.parseDateForApi(endDateController.text).toString()} 00:00:00"
           : "";
+
+      String dataInicio =
+          startDateController.text.isNotEmpty ? startDateController.text : "";
+      String dataFim =
+          endDateController.text.isNotEmpty ? endDateController.text : "";
+
+      if (dataInicio.isNotEmpty && dataFim.isNotEmpty) {
+        tituloSearchTransactions.value += "${dataInicio} - ${dataFim}";
+      }
+      if (txtDescriptionFilterController.text.isNotEmpty) {
+        tituloSearchTransactions.value +=
+            " ${txtDescriptionFilterController.text}";
+      }
 
       listTransactions.value = await repository.getTransactionsWithFilter(
         inicio,
@@ -143,6 +160,9 @@ class TransactionController extends GetxController {
       Exception(e);
     }
     isLoading.value = false;
+    txtDescriptionFilterController.text = "";
+    startDateController.text = "";
+    endDateController.text = "";
   }
 
   Future<void> getSaldo() async {
@@ -282,25 +302,56 @@ class TransactionController extends GetxController {
   }
 
   Future<Map<String, dynamic>> insertTransaction(String typeTransaction) async {
+    isLoadingInsertUpdate.value = true;
     if (formKeyTransaction.currentState!.validate()) {
       final RegExp cidadeUfRegex = RegExp(r'^[A-Za-zÀ-ÿ\s]+-[A-Z]{2}$');
 
-      if (!cidadeUfRegex.hasMatch(txtCityController.text)) {
-        return {
-          'success': false,
-          'message': ['Formato de cidade e UF inválido! Use "Cidade-UF".']
-        };
-      }
+      dynamic cidadePartes;
+      dynamic cidade = "";
+      dynamic uf = "";
 
-      final cidadePartes = txtCityController.text.split('-');
-      if (cidadePartes.length != 2) {
-        return {
-          'success': false,
-          'message': ['Formato de cidade inválido!']
-        };
+      dynamic cidadeOrigem = "";
+      dynamic cidadeDestino = "";
+
+      if (typeTransaction == "saida" && txtCityController.text.isNotEmpty) {
+        if (!cidadeUfRegex.hasMatch(txtCityController.text)) {
+          return {
+            'success': false,
+            'message': ['Formato de cidade e UF inválido! Use "Cidade-UF".']
+          };
+        }
+
+        cidadePartes = txtCityController.text.split('-');
+        if (cidadePartes.length != 2) {
+          return {
+            'success': false,
+            'message': ['Formato de cidade inválido!']
+          };
+        }
+        cidade = cidadePartes[0];
+        uf = cidadePartes[1];
+      } else {
+        if (txtOriginController.text.isNotEmpty &&
+            txtDestinyController.text.isNotEmpty) {
+          if (!cidadeUfRegex.hasMatch(txtOriginController.text)) {
+            return {
+              'success': false,
+              'message': [
+                'Formato de cidade (origem) e UF inválido! Use "Cidade-UF".'
+              ]
+            };
+          }
+
+          if (!cidadeUfRegex.hasMatch(txtDestinyController.text)) {
+            return {
+              'success': false,
+              'message': [
+                'Formato de cidade (destino) e UF inválido! Use "Cidade-UF".'
+              ]
+            };
+          }
+        }
       }
-      final cidadeOrigem = cidadePartes[0];
-      final ufOrigem = cidadePartes[1];
 
       List<TransactionsPhotos>? photos = [];
       if (selectedImagesPaths.isNotEmpty) {
@@ -309,28 +360,38 @@ class TransactionController extends GetxController {
         }
       }
 
-      mensagem = await repository.insert(Transacoes(
-        descricao: txtDescriptionController.text,
-        data: txtDateController.text,
-        categoriaDespesaId: 1,
-        tipoEspecificoDespesaId: 1,
-        valor: FormattedInputers.convertToDouble(txtValueController.text),
-        empresa: txtCompanyController.text,
-        cidade: cidadeOrigem,
-        uf: ufOrigem,
-        ddd: txtDDDController.text,
-        telefone: txtPhoneController.text,
-        status: 1,
-        pessoaId: ServiceStorage.getUserId(),
-        veiculoId: ServiceStorage.idSelectedVehicle(),
-        origem: txtOriginController.text,
-        destino: txtDestinyController.text,
-        quantidadeTonelada:
-            FormattedInputers.convertToDouble(txtTonController.text),
-        tipoCargaId: 1,
-        tipoTransacao: typeTransaction,
-        photos: photos,
-      ));
+      Transacoes transaction = Transacoes();
+
+      transaction.descricao = txtDescriptionController.text;
+      transaction.data = txtDateController.text;
+
+      if (typeTransaction == "saida") {
+        transaction.categoriaDespesaId = selectedCategory.value;
+        transaction.tipoEspecificoDespesaId = selectedSpecificType.value;
+        transaction.cidade = cidade;
+        transaction.uf = uf;
+        transaction.ddd = txtDDDController.text;
+        transaction.telefone = txtPhoneController.text;
+        transaction.empresa = txtCompanyController.text;
+      } else if (typeTransaction == "entrada") {
+        transaction.quantidadeTonelada =
+            FormattedInputers.convertToDouble(txtTonController.text);
+        transaction.origem = txtOriginController.text;
+        transaction.destino = txtDestinyController.text;
+        transaction.tipoCargaId = selectedCargoType.value;
+      }
+
+      transaction.valor =
+          FormattedInputers.convertToDouble(txtValueController.text);
+      transaction.status = 1;
+      transaction.pessoaId = ServiceStorage.getUserId();
+      transaction.veiculoId = ServiceStorage.idSelectedVehicle();
+
+      transaction.tipoTransacao = typeTransaction;
+      transaction.photos = photos;
+
+      mensagem = await repository.insert(transaction);
+
       if (mensagem != null) {
         retorno = {
           'success': mensagem['success'],
@@ -346,11 +407,13 @@ class TransactionController extends GetxController {
         };
       }
     }
+    isLoadingInsertUpdate.value = false;
     return retorno;
   }
 
   Future<Map<String, dynamic>> updateTransaction(
       String typeTransaction, int $id) async {
+    isLoadingInsertUpdate.value = true;
     if (formKeyTransaction.currentState!.validate()) {
       List<TransactionsPhotos>? photos = [];
       if (selectedImagesPaths.isNotEmpty) {
@@ -364,8 +427,8 @@ class TransactionController extends GetxController {
             id: $id,
             descricao: txtDescriptionController.text,
             data: txtDateController.text,
-            categoriaDespesaId: 1,
-            tipoEspecificoDespesaId: 1,
+            categoriaDespesaId: selectedCategory.value,
+            tipoEspecificoDespesaId: selectedSpecificType.value,
             valor: FormattedInputers.convertToDouble(txtValueController.text),
             empresa: txtCompanyController.text,
             cidade: txtCityController.text,
@@ -379,7 +442,7 @@ class TransactionController extends GetxController {
             destino: txtDestinyController.text,
             quantidadeTonelada:
                 FormattedInputers.convertToDouble(txtTonController.text),
-            tipoCargaId: 1,
+            tipoCargaId: selectedCargoType.value,
             tipoTransacao: typeTransaction,
             photos: photos,
           ),
@@ -398,6 +461,7 @@ class TransactionController extends GetxController {
         };
       }
     }
+    isLoadingInsertUpdate.value = false;
     return retorno;
   }
 
@@ -484,9 +548,8 @@ class TransactionController extends GetxController {
     txtPhoneController.text =
         selected.telefone != null ? selected.telefone.toString() : "";
 
-    txtOriginController.text = selected.origem != null
-        ? "${selected.origem.toString()}-${selected.uf.toString()}"
-        : "";
+    txtOriginController.text =
+        selected.origem != null ? "${selected.origem.toString()}" : "";
     txtDestinyController.text =
         selected.destino != null ? selected.destino.toString() : "";
 
@@ -494,9 +557,12 @@ class TransactionController extends GetxController {
         ? selected.quantidadeTonelada.toString()
         : "";
 
-    selectedCategory.value = selected.categoriaDespesaId!;
-    selectedCargoType.value = selected.tipoCargaId;
-    selectedSpecificType.value = selected.tipoEspecificoDespesaId;
+    if (selected.tipoTransacao == 'saida') {
+      selectedCategory.value = selected.categoriaDespesaId!;
+      selectedSpecificType.value = selected.tipoEspecificoDespesaId;
+    } else {
+      selectedCargoType.value = selected.tipoCargaId;
+    }
 
     if (selected.photos!.isNotEmpty) {
       selectedImagesPathsApiRemove.clear();
@@ -522,6 +588,7 @@ class TransactionController extends GetxController {
       txtTonController,
       startDateController,
       endDateController,
+      txtDescriptionFilterController
     ];
 
     for (final controller in textControllers) {

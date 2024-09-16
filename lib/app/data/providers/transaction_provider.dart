@@ -77,7 +77,6 @@ class TransactionApiClient {
         body: body,
       );
 
-      print(json.decode(response.body));
       if (response.statusCode == 201) {
         return json.decode(response.body);
       } else if (response.statusCode == 401 &&
@@ -182,12 +181,8 @@ class TransactionApiClient {
               .add(await http.MultipartFile.fromPath('fotos[]', foto.arquivo!));
         }
       }
-
-      request.fields.addAll({
+      final requestBody = {
         "descricao": transacoes.descricao.toString(),
-        "categoriadespesa_id": transacoes.categoriaDespesaId.toString(),
-        "tipoespecificodespesa_id":
-            transacoes.tipoEspecificoDespesaId.toString(),
         "valor": transacoes.valor.toString(),
         "empresa": transacoes.empresa.toString(),
         "cidade": transacoes.cidade.toString(),
@@ -200,10 +195,28 @@ class TransactionApiClient {
         "data": transacoes.data.toString(),
         "origem": transacoes.origem.toString(),
         "destino": transacoes.destino.toString(),
-        "quantidade_tonelada": transacoes.quantidadeTonelada.toString(),
-        "tipocarga_id": transacoes.tipoCargaId.toString(),
         "tipo_transacao": transacoes.tipoTransacao.toString(),
-      });
+      };
+
+      if (transacoes.quantidadeTonelada != null) {
+        requestBody["quantidade_tonelada"] =
+            transacoes.quantidadeTonelada.toString();
+      }
+      if (transacoes.tipoCargaId != null) {
+        requestBody["tipocarga_id"] = transacoes.tipoCargaId.toString();
+      }
+
+      if (transacoes.tipoEspecificoDespesaId != null) {
+        requestBody["tipoespecificodespesa_id"] =
+            transacoes.tipoEspecificoDespesaId.toString();
+      }
+
+      if (transacoes.categoriaDespesaId != null) {
+        requestBody["categoriadespesa_id"] =
+            transacoes.categoriaDespesaId.toString();
+      }
+
+      request.fields.addAll(requestBody);
 
       request.headers.addAll({
         'Accept': 'application/json',
@@ -258,6 +271,8 @@ class TransactionApiClient {
 
       var responseStream = await response.stream.bytesToString();
       var httpResponse = http.Response(responseStream, response.statusCode);
+
+      print(json.decode(httpResponse.body));
 
       if (httpResponse.statusCode == 201 ||
           httpResponse.statusCode == 422 ||
@@ -425,11 +440,8 @@ class TransactionApiClient {
         }
       }
 
-      request.fields.addAll({
+      var requestBody = {
         "descricao": transacoes.descricao.toString(),
-        "categoriadespesa_id": transacoes.categoriaDespesaId.toString(),
-        "tipoespecificodespesa_id":
-            transacoes.tipoEspecificoDespesaId.toString(),
         "valor": transacoes.valor.toString(),
         "empresa": transacoes.empresa.toString(),
         "cidade": transacoes.cidade.toString(),
@@ -442,11 +454,29 @@ class TransactionApiClient {
         "data": transacoes.data.toString(),
         "origem": transacoes.origem.toString(),
         "destino": transacoes.destino.toString(),
-        "quantidade_tonelada": transacoes.quantidadeTonelada.toString(),
-        "tipocarga_id": transacoes.tipoCargaId.toString(),
         "tipo_transacao": transacoes.tipoTransacao.toString(),
         "fotos_para_excluir": photosRemove.join(','),
-      });
+      };
+
+      if (transacoes.quantidadeTonelada != null) {
+        requestBody["quantidade_tonelada"] =
+            transacoes.quantidadeTonelada.toString();
+      }
+      if (transacoes.tipoCargaId != null) {
+        requestBody["tipocarga_id"] = transacoes.tipoCargaId.toString();
+      }
+
+      if (transacoes.tipoEspecificoDespesaId != null) {
+        requestBody["tipoespecificodespesa_id"] =
+            transacoes.tipoEspecificoDespesaId.toString();
+      }
+
+      if (transacoes.categoriaDespesaId != null) {
+        requestBody["categoriadespesa_id"] =
+            transacoes.categoriaDespesaId.toString();
+      }
+
+      request.fields.addAll(requestBody);
 
       request.headers.addAll({
         'Accept': 'application/json',
@@ -458,6 +488,9 @@ class TransactionApiClient {
       var responseStream = await response.stream.bytesToString();
       var httpResponse = http.Response(responseStream, response.statusCode);
 
+      print("-----------------");
+      print(json.decode(httpResponse.body));
+      print("-----------------");
       return json.decode(httpResponse.body);
     } catch (err) {
       Exception(err);

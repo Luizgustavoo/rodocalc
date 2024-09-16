@@ -181,6 +181,13 @@ class CreateReceiptModal extends GetView<TransactionController> {
                       if (value == null || value.isEmpty) {
                         return 'Por favor, selecione a origem';
                       }
+                      // Verifica se a cidade está na lista de sugestões
+                      bool isValidCity = cityController.listCities
+                          .any((city) => city.cidadeEstado == value);
+                      if (cityController.listCities.isNotEmpty &&
+                          !isValidCity) {
+                        return 'Cidade não encontrada na lista';
+                      }
                       return null;
                     },
                   ),
@@ -204,6 +211,14 @@ class CreateReceiptModal extends GetView<TransactionController> {
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Por favor, selecione o destino';
+                      }
+
+                      // Verifica se a cidade está na lista de sugestões
+                      bool isValidCity = cityController.listCities
+                          .any((city) => city.cidadeEstado == value);
+                      if (cityController.listCities.isNotEmpty &&
+                          !isValidCity) {
+                        return 'Cidade não encontrada na lista';
                       }
                       return null;
                     },
@@ -269,22 +284,15 @@ class CreateReceiptModal extends GetView<TransactionController> {
                   } else if (controller.listChargeTypes.isNotEmpty) {
                     return DropdownButtonFormField<int>(
                       decoration: InputDecoration(
-                        prefixIcon: IconButton(
-                          onPressed: () {
-                            // Ação ao clicar no botão
-                            controller.clearDescriptionModal();
-                            showSpecificTypeModal(context);
-                          },
-                          icon: const Icon(
-                            Icons.add_rounded,
-                          ),
+                        prefixIcon: Icon(
+                          Icons.search_rounded,
                         ),
                         labelText: 'TIPO DE CARGA',
                       ),
                       items: [
                         const DropdownMenuItem<int>(
                           value: null,
-                          child: Text('Selecione um tipo'),
+                          child: Text('Selecione ou cadastre um tipo'),
                         ),
                         ...controller.listChargeTypes.map((ChargeType charge) {
                           return DropdownMenuItem<int>(
@@ -295,6 +303,28 @@ class CreateReceiptModal extends GetView<TransactionController> {
                             ),
                           );
                         }),
+                        DropdownMenuItem<int>(
+                          value: 0,
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: SizedBox(
+                              child: TextButton(
+                                onPressed: () {
+                                  controller.selectedCategory.value = null;
+                                  controller.clearDescriptionModal();
+                                  Get.back();
+                                  showSpecificTypeModal(context);
+                                },
+                                child: const Text(
+                                  "CADASTRAR NOVO TIPO...",
+                                  style: TextStyle(
+                                      color: Color(0xFFFF6B00),
+                                      fontWeight: FontWeight.w900),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                       onChanged: (newValue) {
                         controller.selectedCargoType.value = newValue;
@@ -365,35 +395,42 @@ class CreateReceiptModal extends GetView<TransactionController> {
                       ),
                     ),
                     const SizedBox(width: 10),
-                    CustomElevatedButton(
-                      onPressed: () async {
-                        Map<String, dynamic> retorno = isUpdate
-                            ? await controller.updateTransaction(
-                                "entrada", idTransaction!)
-                            : await controller.insertTransaction("entrada");
+                    Obx(
+                      () => controller.isLoadingInsertUpdate.value
+                          ? CircularProgressIndicator()
+                          : CustomElevatedButton(
+                              onPressed: () async {
+                                Map<String, dynamic> retorno = isUpdate
+                                    ? await controller.updateTransaction(
+                                        "entrada", idTransaction!)
+                                    : await controller
+                                        .insertTransaction("entrada");
 
-                        if (retorno['success'] == true) {
-                          Get.back();
-                          Get.snackbar(
-                              'Sucesso!', retorno['message'].join('\n'),
-                              backgroundColor: Colors.green,
-                              colorText: Colors.white,
-                              duration: const Duration(seconds: 2),
-                              snackPosition: SnackPosition.BOTTOM);
-                        } else {
-                          Get.snackbar('Falha!', retorno['message'].join('\n'),
-                              backgroundColor: Colors.red,
-                              colorText: Colors.white,
-                              duration: const Duration(seconds: 2),
-                              snackPosition: SnackPosition.BOTTOM);
-                        }
-                      },
-                      child: Text(
-                        isUpdate ? 'ALTERAR' : 'CADASTRAR',
-                        style: const TextStyle(
-                            fontFamily: 'Inter-Bold', color: Colors.white),
-                      ),
-                    ),
+                                if (retorno['success'] == true) {
+                                  Get.back();
+                                  Get.snackbar(
+                                      'Sucesso!', retorno['message'].join('\n'),
+                                      backgroundColor: Colors.green,
+                                      colorText: Colors.white,
+                                      duration: const Duration(seconds: 2),
+                                      snackPosition: SnackPosition.BOTTOM);
+                                } else {
+                                  Get.snackbar(
+                                      'Falha!', retorno['message'].join('\n'),
+                                      backgroundColor: Colors.red,
+                                      colorText: Colors.white,
+                                      duration: const Duration(seconds: 2),
+                                      snackPosition: SnackPosition.BOTTOM);
+                                }
+                              },
+                              child: Text(
+                                isUpdate ? 'ALTERAR' : 'CADASTRAR',
+                                style: const TextStyle(
+                                    fontFamily: 'Inter-Bold',
+                                    color: Colors.white),
+                              ),
+                            ),
+                    )
                   ],
                 ),
               ],
@@ -482,6 +519,12 @@ class CreateReceiptModal extends GetView<TransactionController> {
           ),
           actions: <Widget>[
             TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('CANCELAR'),
+            ),
+            CustomElevatedButton(
               onPressed: () async {
                 Map<String, dynamic> retorno =
                     await controller.insertChargeType();
@@ -501,16 +544,11 @@ class CreateReceiptModal extends GetView<TransactionController> {
                       snackPosition: SnackPosition.BOTTOM);
                 }
               },
-              child: const Text(
+              child: Text(
                 'SALVAR',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
               ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('CANCELAR'),
             ),
           ],
         );

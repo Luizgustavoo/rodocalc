@@ -112,7 +112,6 @@ class CreateClassifiedModal extends GetView<ClassifiedController> {
                 const SizedBox(height: 10),
                 TextFormField(
                   controller: controller.descriptionController,
-                  keyboardType: TextInputType.number,
                   maxLines: 7,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(

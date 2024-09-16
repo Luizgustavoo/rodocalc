@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/base_url.dart';
+import 'package:rodocalc/app/data/controllers/city_state_controller.dart';
 import 'package:rodocalc/app/data/controllers/freight_controller.dart';
 import 'package:rodocalc/app/data/models/freight_model.dart';
 import 'package:rodocalc/app/modules/freight/widgets/create_freight_modal.dart';
@@ -207,10 +208,12 @@ class FreightView extends GetView<FreightController> {
         child: FloatingActionButton(
           backgroundColor: const Color(0xFFFF6B00),
           onPressed: () {
+            final cityController = Get.put(CityStateController());
+            cityController.getCities();
             showModalBottomSheet(
               isScrollControlled: true,
               context: context,
-              builder: (context) => const CreateFreightModal(isUpdate: false),
+              builder: (context) => CreateFreightModal(isUpdate: false),
             );
           },
           child: const Icon(

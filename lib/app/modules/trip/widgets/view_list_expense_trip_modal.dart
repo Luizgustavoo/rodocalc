@@ -39,6 +39,8 @@ class ViewListExpenseTripModal extends GetView<TripController> {
                       ),
                       IconButton(
                           onPressed: () {
+                            Get.back();
+                            controller.clearAllFieldsExpense();
                             showModalBottomSheet(
                               isScrollControlled: true,
                               context: context,

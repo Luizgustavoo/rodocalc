@@ -30,9 +30,9 @@ class TripController extends GetxController {
   final selectedStateDestiny = ''.obs;
   var result = ''.obs;
 
-  var selectedOption = 'Saída'.obs;
+  var selectedOption = ''.obs;
 
-  final options = ['Saída', 'Chegada'];
+  final options = ['Saída', 'Chegada'].toSet().toList();
 
   Map<String, dynamic> retorno = {
     "success": false,
@@ -144,6 +144,7 @@ class TripController extends GetxController {
 
   RxList<Trip> listTrip = RxList<Trip>([]);
   RxBool isLoading = true.obs;
+  RxBool isLoadingCRUD = false.obs;
   RxBool isLoadingData = true.obs;
 
   Future<void> getAll() async {
@@ -206,7 +207,19 @@ class TripController extends GetxController {
     selectedOption.value = '';
   }
 
+  void clearAllFieldsExpense() {
+    final textControllers = [
+      txtDateExpenseTripController,
+      txtDescriptionExpenseTripController,
+      txtAmountExpenseTripController,
+    ];
+    for (final controller in textControllers) {
+      controller.clear();
+    }
+  }
+
   Future<Map<String, dynamic>> insertTrip() async {
+    isLoadingCRUD(true);
     if (tripFormKey.currentState!.validate()) {
       // Define a expressão regular para validar o formato "Cidade-UF"
       final RegExp cidadeUfRegex = RegExp(r'^[A-Za-zÀ-ÿ\s]+-[A-Z]{2}$');
@@ -214,6 +227,7 @@ class TripController extends GetxController {
       // Valida e separa as strings de origem e destino
       if (!cidadeUfRegex.hasMatch(originController.text) ||
           !cidadeUfRegex.hasMatch(destinyController.text)) {
+        isLoadingCRUD(false);
         return {
           'success': false,
           'message': ['Formato de cidade e UF inválido! Use "Cidade-UF".']
@@ -223,6 +237,7 @@ class TripController extends GetxController {
       // Separa a cidade e UF de origem
       final origemPartes = originController.text.split('-');
       if (origemPartes.length != 2) {
+        isLoadingCRUD(false);
         return {
           'success': false,
           'message': ['Formato de origem inválido!']
@@ -234,6 +249,7 @@ class TripController extends GetxController {
       // Separa a cidade e UF de destino
       final destinoPartes = destinyController.text.split('-');
       if (destinoPartes.length != 2) {
+        isLoadingCRUD(false);
         return {
           'success': false,
           'message': ['Formato de destino inválido!']
@@ -269,67 +285,73 @@ class TripController extends GetxController {
         };
       }
     }
+    isLoadingCRUD(false);
     return retorno;
   }
 
   Future<Map<String, dynamic>> insertExpenseTrip(int trechoPercorridoId) async {
-    if (tripFormKey.currentState!.validate()) {
-      mensagem = await repository.insertExpenseTrip(ExpenseTrip(
-        trechoPercorridoId: trechoPercorridoId,
-        dataHora: txtDateExpenseTripController.text,
-        descricao: txtDescriptionExpenseTripController.text,
-        valorDespesa: FormattedInputers.convertForCents(
-            txtAmountExpenseTripController.text),
-        status: 1,
-      ));
+    isLoadingCRUD(false);
 
-      if (mensagem != null) {
-        retorno = {
-          'success': mensagem['success'],
-          'message': mensagem['message']
-        };
-        getAll();
-        //clearAllFields();
-      } else {
-        retorno = {
-          'success': false,
-          'message': ['Falha ao realizar a operação!']
-        };
-      }
+    mensagem = await repository.insertExpenseTrip(ExpenseTrip(
+      trechoPercorridoId: trechoPercorridoId,
+      dataHora: txtDateExpenseTripController.text,
+      descricao: txtDescriptionExpenseTripController.text,
+      valorDespesa: FormattedInputers.convertForCents(
+          txtAmountExpenseTripController.text),
+      status: 1,
+    ));
+
+    if (mensagem != null) {
+      retorno = {
+        'success': mensagem['success'],
+        'message': mensagem['message']
+      };
+      getAll();
+      //clearAllFields();
+    } else {
+      retorno = {
+        'success': false,
+        'message': ['Falha ao realizar a operação!']
+      };
     }
+
+    isLoadingCRUD(false);
     return retorno;
   }
 
   Future<Map<String, dynamic>> updateExpenseTrip(
       int trechoPercorridoId, int expenseTripId) async {
-    if (tripFormKey.currentState!.validate()) {
-      mensagem = await repository.updateExpenseTrip(ExpenseTrip(
-        id: expenseTripId,
-        trechoPercorridoId: trechoPercorridoId,
-        dataHora: txtDateExpenseTripController.text,
-        descricao: txtDescriptionExpenseTripController.text,
-        valorDespesa: int.parse(txtAmountExpenseTripController.text),
-        status: 1,
-      ));
+    isLoadingCRUD(false);
 
-      if (mensagem != null) {
-        retorno = {
-          'success': mensagem['success'],
-          'message': mensagem['message']
-        };
-        getAll();
-        clearAllFields();
-      } else {
-        retorno = {
-          'success': false,
-          'message': ['Falha ao realizar a operação!']
-        };
-      }
+    mensagem = await repository.updateExpenseTrip(ExpenseTrip(
+      id: expenseTripId,
+      trechoPercorridoId: trechoPercorridoId,
+      dataHora: txtDateExpenseTripController.text,
+      descricao: txtDescriptionExpenseTripController.text,
+      valorDespesa: int.parse(txtAmountExpenseTripController.text),
+      status: 1,
+    ));
+
+    if (mensagem != null) {
+      retorno = {
+        'success': mensagem['success'],
+        'message': mensagem['message']
+      };
+      getAll();
+      clearAllFields();
+    } else {
+      retorno = {
+        'success': false,
+        'message': ['Falha ao realizar a operação!']
+      };
     }
+
+    isLoadingCRUD(false);
     return retorno;
   }
 
   Future<Map<String, dynamic>> deleteExpenseTrip(int id) async {
+    isLoadingCRUD(false);
     if (id > 0) {
       mensagem = await repository.deleteExpenseTrip(ExpenseTrip(id: id));
       retorno = {
@@ -343,22 +365,60 @@ class TripController extends GetxController {
         'message': ['Falha ao realizar a operação!']
       };
     }
-
+    isLoadingCRUD(false);
     return retorno;
   }
 
   Future<Map<String, dynamic>> updateTrip(int id) async {
+    isLoadingCRUD(false);
     if (tripFormKey.currentState!.validate()) {
+      // Define a expressão regular para validar o formato "Cidade-UF"
+      final RegExp cidadeUfRegex = RegExp(r'^[A-Za-zÀ-ÿ\s]+-[A-Z]{2}$');
+
+      // Valida e separa as strings de origem e destino
+      if (!cidadeUfRegex.hasMatch(originController.text) ||
+          !cidadeUfRegex.hasMatch(destinyController.text)) {
+        isLoadingCRUD(false);
+        return {
+          'success': false,
+          'message': ['Formato de cidade e UF inválido! Use "Cidade-UF".']
+        };
+      }
+
+      // Separa a cidade e UF de origem
+      final origemPartes = originController.text.split('-');
+      if (origemPartes.length != 2) {
+        isLoadingCRUD(false);
+        return {
+          'success': false,
+          'message': ['Formato de origem inválido!']
+        };
+      }
+      final cidadeOrigem = origemPartes[0];
+      final ufOrigem = origemPartes[1];
+
+      // Separa a cidade e UF de destino
+      final destinoPartes = destinyController.text.split('-');
+      if (destinoPartes.length != 2) {
+        isLoadingCRUD(false);
+        return {
+          'success': false,
+          'message': ['Formato de destino inválido!']
+        };
+      }
+      final cidadeDestino = destinoPartes[0];
+      final ufDestino = destinoPartes[1];
+
       mensagem = await repository.update(Trip(
         id: id,
         userId: ServiceStorage.getUserId(),
         veiculoId: ServiceStorage.idSelectedVehicle(),
         dataHora: txtDateController.text,
         tipoSaidaChegada: selectedOption.value,
-        origem: originController.text,
-        ufOrigem: selectedStateOrigin.value,
-        destino: destinyController.text,
-        ufDestino: selectedStateDestiny.value,
+        origem: cidadeOrigem,
+        ufOrigem: ufOrigem,
+        destino: cidadeDestino,
+        ufDestino: ufDestino,
         distancia: FormattedInputers.convertToDouble(distanceController.text),
         status: 1,
       ));
@@ -376,10 +436,12 @@ class TripController extends GetxController {
         };
       }
     }
+    isLoadingCRUD(false);
     return retorno;
   }
 
   Future<Map<String, dynamic>> deleteTrip(int id) async {
+    isLoadingCRUD(false);
     if (id > 0) {
       mensagem = await repository.delete(Trip(id: id));
       retorno = {
@@ -393,7 +455,7 @@ class TripController extends GetxController {
         'message': ['Falha ao realizar a operação!']
       };
     }
-
+    isLoadingCRUD(false);
     return retorno;
   }
 }

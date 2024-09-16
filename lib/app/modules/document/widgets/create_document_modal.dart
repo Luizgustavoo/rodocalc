@@ -145,6 +145,7 @@ class CreateDocumentModal extends GetView<DocumentController> {
                 const SizedBox(height: 15),
                 Obx(
                   () => DropdownButtonFormField<int>(
+                    menuMaxHeight: Get.height / 2,
                     value: controller.selectedTipoDocumento.value,
                     onChanged: (value) {
                       controller.selectedTipoDocumento.value = value!;
@@ -153,7 +154,20 @@ class CreateDocumentModal extends GetView<DocumentController> {
                         .map<DropdownMenuItem<int>>((item) {
                       return DropdownMenuItem<int>(
                         value: item.id,
-                        child: Text(item.descricao ?? ''.toUpperCase()),
+                        child: SizedBox(
+                          width: Get.width * .7,
+                          child: ListView(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            children: [
+                              Text(
+                                item.descricao.toString().toUpperCase() ?? '',
+                                overflow: TextOverflow.clip,
+                              ),
+                              Divider()
+                            ],
+                          ),
+                        ),
                       );
                     }).toList(),
                     decoration: InputDecoration(
@@ -191,46 +205,54 @@ class CreateDocumentModal extends GetView<DocumentController> {
                           )),
                     ),
                     const SizedBox(width: 10),
-                    CustomElevatedButton(
-                      onPressed: () async {
-                        if (controller.selectedImagePath.value.isEmpty &&
-                            controller.selectedPdfPath.value.isEmpty) {
-                          Get.snackbar(
-                            'Falha!',
-                            'Por favor, selecione uma imagem ou um PDF.',
-                            backgroundColor: Colors.orange,
-                            colorText: Colors.white,
-                            duration: const Duration(seconds: 2),
-                            snackPosition: SnackPosition.BOTTOM,
-                          );
-                          return;
-                        }
-                        Map<String, dynamic> retorno = update
-                            ? await controller.updateDocument(document!.id!)
-                            : await controller.insertDocument();
+                    Obx(() {
+                      return controller.isLoadingCRUD.value
+                          ? const CircularProgressIndicator()
+                          : CustomElevatedButton(
+                              onPressed: () async {
+                                if (controller
+                                        .selectedImagePath.value.isEmpty &&
+                                    controller.selectedPdfPath.value.isEmpty) {
+                                  Get.snackbar(
+                                    'Falha!',
+                                    'Por favor, selecione uma imagem ou um PDF.',
+                                    backgroundColor: Colors.orange,
+                                    colorText: Colors.white,
+                                    duration: const Duration(seconds: 2),
+                                    snackPosition: SnackPosition.BOTTOM,
+                                  );
+                                  return;
+                                }
+                                Map<String, dynamic> retorno = update
+                                    ? await controller
+                                        .updateDocument(document!.id!)
+                                    : await controller.insertDocument();
 
-                        if (retorno['success'] == true) {
-                          Get.back();
-                          Get.snackbar(
-                              'Sucesso!', retorno['message'].join('\n'),
-                              backgroundColor: Colors.green,
-                              colorText: Colors.white,
-                              duration: const Duration(seconds: 2),
-                              snackPosition: SnackPosition.BOTTOM);
-                        } else {
-                          Get.snackbar('Falha!', retorno['message'].join('\n'),
-                              backgroundColor: Colors.red,
-                              colorText: Colors.white,
-                              duration: const Duration(seconds: 2),
-                              snackPosition: SnackPosition.BOTTOM);
-                        }
-                      },
-                      child: Text(
-                        update ? 'ATUALIZAR' : 'CADASTRAR',
-                        style: const TextStyle(
-                            fontFamily: 'Inter-Bold', color: Colors.white),
-                      ),
-                    ),
+                                if (retorno['success'] == true) {
+                                  Get.back();
+                                  Get.snackbar(
+                                      'Sucesso!', retorno['message'].join('\n'),
+                                      backgroundColor: Colors.green,
+                                      colorText: Colors.white,
+                                      duration: const Duration(seconds: 2),
+                                      snackPosition: SnackPosition.BOTTOM);
+                                } else {
+                                  Get.snackbar(
+                                      'Falha!', retorno['message'].join('\n'),
+                                      backgroundColor: Colors.red,
+                                      colorText: Colors.white,
+                                      duration: const Duration(seconds: 2),
+                                      snackPosition: SnackPosition.BOTTOM);
+                                }
+                              },
+                              child: Text(
+                                update ? 'ATUALIZAR' : 'CADASTRAR',
+                                style: const TextStyle(
+                                    fontFamily: 'Inter-Bold',
+                                    color: Colors.white),
+                              ),
+                            );
+                    }),
                   ],
                 ),
               ],

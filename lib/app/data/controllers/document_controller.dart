@@ -10,6 +10,8 @@ import 'package:rodocalc/app/data/repositories/document_repository.dart';
 
 class DocumentController extends GetxController {
   RxBool isLoading = true.obs;
+  RxBool isLoadingDocumentType = true.obs;
+  RxBool isLoadingCRUD = false.obs;
   var selectedImagePath = ''.obs;
   var selectedPdfPath = ''.obs;
 
@@ -121,22 +123,24 @@ class DocumentController extends GetxController {
     try {
       listDocuments.value = await repository.getAll();
     } catch (e) {
+      listDocuments.clear();
       Exception(e);
     }
     isLoading.value = false;
   }
 
   Future<void> getAllDocumentType() async {
-    isLoading.value = true;
+    isLoadingDocumentType.value = true;
     try {
       listDocumentsType.value = await repository.getAllDocumentType();
     } catch (e) {
       Exception(e);
     }
-    isLoading.value = false;
+    isLoadingDocumentType.value = false;
   }
 
   Future<Map<String, dynamic>> insertDocument() async {
+    isLoadingCRUD(true);
     if (formKeyDocument.currentState!.validate()) {
       String imagemPdf = '';
       String arquivo = '';
@@ -170,10 +174,12 @@ class DocumentController extends GetxController {
         };
       }
     }
+    isLoadingCRUD(false);
     return retorno;
   }
 
   Future<Map<String, dynamic>> updateDocument(int id) async {
+    isLoadingCRUD(true);
     if (formKeyDocument.currentState!.validate()) {
       String imagemPdf = '';
       String arquivo = '';
@@ -186,7 +192,7 @@ class DocumentController extends GetxController {
         arquivo = selectedPdfPath.value;
       }
 
-      mensagem = await repository.insert(DocumentModel(
+      mensagem = await repository.update(DocumentModel(
         id: id,
         descricao: descriptionController.text,
         status: 1,
@@ -208,24 +214,26 @@ class DocumentController extends GetxController {
         };
       }
     }
+    isLoadingCRUD(false);
     return retorno;
   }
 
   Future<Map<String, dynamic>> deleteDocument(int id) async {
+    isLoadingCRUD(true);
     if (id > 0) {
       mensagem = await repository.delete(DocumentModel(id: id));
       retorno = {
         'success': mensagem['success'],
         'message': mensagem['message']
       };
-      getAll();
     } else {
       retorno = {
         'success': false,
         'message': ['Falha ao realizar a operação!']
       };
     }
-
+    getAll();
+    isLoadingCRUD(false);
     return retorno;
   }
 }

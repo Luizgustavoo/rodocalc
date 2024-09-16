@@ -22,6 +22,7 @@ class CreateTripModal extends GetView<TripController> {
       padding: MediaQuery.of(context).viewInsets,
       child: Form(
           key: controller.tripFormKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             padding: const EdgeInsets.all(12.0),
@@ -48,6 +49,16 @@ class CreateTripModal extends GetView<TripController> {
                 ),
                 const SizedBox(height: 15),
                 Obx(() {
+                  // Verifique se selectedOption.value está na lista de opções
+                  if (!controller.options
+                      .contains(controller.selectedOption.value)) {
+                    // Defina um valor padrão se selectedOption.value não estiver na lista
+                    controller.selectedOption.value =
+                        controller.options.isNotEmpty
+                            ? controller.options[0]
+                            : '';
+                  }
+
                   return DropdownButtonFormField<String>(
                     value: controller.selectedOption.value,
                     decoration: InputDecoration(
@@ -90,46 +101,54 @@ class CreateTripModal extends GetView<TripController> {
                   },
                 ),
                 const SizedBox(height: 10),
-                SearchField<String>(
-                  controller: controller.originController,
-                  suggestions: cityController.listCities
-                      .map((city) =>
-                          SearchFieldListItem<String>(city.cidadeEstado!))
-                      .toList(),
-                  searchInputDecoration: const InputDecoration(
-                    labelText: "ORIGEM",
-                    hintText: "Digite o nome da cidade",
+                Obx(
+                  () => SearchField<String>(
+                    controller: controller.originController,
+                    suggestions: cityController.listCities
+                        .map((city) =>
+                            SearchFieldListItem<String>(city.cidadeEstado!))
+                        .toList(),
+                    searchInputDecoration: InputDecoration(
+                      labelText: cityController.isLoading.value
+                          ? "CARREGANDO..."
+                          : "ORIGEM",
+                      hintText: "Digite o nome da cidade",
+                    ),
+                    onSuggestionTap: (suggestion) {
+                      controller.originController.text = suggestion.searchKey;
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, selecione a cidade';
+                      }
+                      return null;
+                    },
                   ),
-                  onSuggestionTap: (suggestion) {
-                    controller.originController.text = suggestion.searchKey;
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, selecione a cidade';
-                    }
-                    return null;
-                  },
                 ),
                 const SizedBox(height: 10),
-                SearchField<String>(
-                  controller: controller.destinyController,
-                  suggestions: cityController.listCities
-                      .map((city) =>
-                          SearchFieldListItem<String>(city.cidadeEstado!))
-                      .toList(),
-                  searchInputDecoration: const InputDecoration(
-                    labelText: "DESTINO",
-                    hintText: "Digite o nome da cidade",
+                Obx(
+                  () => SearchField<String>(
+                    controller: controller.destinyController,
+                    suggestions: cityController.listCities
+                        .map((city) =>
+                            SearchFieldListItem<String>(city.cidadeEstado!))
+                        .toList(),
+                    searchInputDecoration: InputDecoration(
+                      labelText: cityController.isLoading.value
+                          ? "CARREGANDO..."
+                          : "DESTINO",
+                      hintText: "Digite o nome da cidade",
+                    ),
+                    onSuggestionTap: (suggestion) {
+                      controller.destinyController.text = suggestion.searchKey;
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, selecione a cidade';
+                      }
+                      return null;
+                    },
                   ),
-                  onSuggestionTap: (suggestion) {
-                    controller.destinyController.text = suggestion.searchKey;
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, selecione a cidade';
-                    }
-                    return null;
-                  },
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
@@ -166,37 +185,43 @@ class CreateTripModal extends GetView<TripController> {
                           )),
                     ),
                     const SizedBox(width: 10),
-                    CustomElevatedButton(
-                      onPressed: () async {
-                        if (controller.tripFormKey.currentState!.validate()) {
-                          Map<String, dynamic> retorno = isUpdate
-                              ? await controller.updateTrip(trip!.id!)
-                              : await controller.insertTrip();
+                    Obx(() {
+                      return controller.isLoadingCRUD.value
+                          ? const CircularProgressIndicator()
+                          : CustomElevatedButton(
+                              onPressed: () async {
+                                if (controller.tripFormKey.currentState!
+                                    .validate()) {
+                                  Map<String, dynamic> retorno = isUpdate
+                                      ? await controller.updateTrip(trip!.id!)
+                                      : await controller.insertTrip();
 
-                          if (retorno['success'] == true) {
-                            Get.back();
-                            Get.snackbar(
-                                'Sucesso!', retorno['message'].join('\n'),
-                                backgroundColor: Colors.green,
-                                colorText: Colors.white,
-                                duration: const Duration(seconds: 2),
-                                snackPosition: SnackPosition.BOTTOM);
-                          } else {
-                            Get.snackbar(
-                                'Falha!', retorno['message'].join('\n'),
-                                backgroundColor: Colors.red,
-                                colorText: Colors.white,
-                                duration: const Duration(seconds: 2),
-                                snackPosition: SnackPosition.BOTTOM);
-                          }
-                        }
-                      },
-                      child: const Text(
-                        'SALVAR',
-                        style: TextStyle(
-                            fontFamily: 'Inter-Bold', color: Colors.white),
-                      ),
-                    ),
+                                  if (retorno['success'] == true) {
+                                    Get.back();
+                                    Get.snackbar('Sucesso!',
+                                        retorno['message'].join('\n'),
+                                        backgroundColor: Colors.green,
+                                        colorText: Colors.white,
+                                        duration: const Duration(seconds: 2),
+                                        snackPosition: SnackPosition.BOTTOM);
+                                  } else {
+                                    Get.snackbar(
+                                        'Falha!', retorno['message'].join('\n'),
+                                        backgroundColor: Colors.red,
+                                        colorText: Colors.white,
+                                        duration: const Duration(seconds: 2),
+                                        snackPosition: SnackPosition.BOTTOM);
+                                  }
+                                }
+                              },
+                              child: const Text(
+                                'SALVAR',
+                                style: TextStyle(
+                                    fontFamily: 'Inter-Bold',
+                                    color: Colors.white),
+                              ),
+                            );
+                    }),
                   ],
                 ),
               ],
