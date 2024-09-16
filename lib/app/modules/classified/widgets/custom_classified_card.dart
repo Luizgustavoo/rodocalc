@@ -155,29 +155,34 @@ class CustomClassifiedCard extends StatelessWidget {
                 ),
               )
             : IconButton(onPressed: fnEdit, icon: const Icon(Icons.edit)),
-        title: RichText(
-          text: TextSpan(
-            style: const TextStyle(
-              fontSize: 12,
-              color: Colors.black,
-              fontFamily: 'Inter-Regular',
-            ),
-            children: [
-              const TextSpan(
-                text: 'VALOR: ',
-                style: TextStyle(
-                  fontFamily: 'Inter-Bold',
-                ),
-              ),
-              TextSpan(
-                  text:
-                      "R\$${FormattedInputers.formatValuePTBR(classificado!.valor.toString())}"),
-            ],
-          ),
+        title: Text(
+          'DESCRIÇÃO: ${classificado!.descricao!.toUpperCase()}',
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(fontFamily: 'Inter-Bold'),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            RichText(
+              text: TextSpan(
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.black,
+                  fontFamily: 'Inter-Regular',
+                ),
+                children: [
+                  const TextSpan(
+                    text: 'VALOR: ',
+                    style: TextStyle(
+                      fontFamily: 'Inter-Bold',
+                    ),
+                  ),
+                  TextSpan(
+                      text:
+                          "R\$${FormattedInputers.formatValuePTBR(classificado!.valor.toString())}"),
+                ],
+              ),
+            ),
             RichText(
               text: TextSpan(
                 style: const TextStyle(
