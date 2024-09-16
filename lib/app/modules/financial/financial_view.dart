@@ -126,7 +126,7 @@ class FinancialView extends GetView<TransactionController> {
           ),
         ),
         floatingActionButton: Padding(
-          padding: const EdgeInsets.only(right: 8, bottom: 8),
+          padding: const EdgeInsets.only(right: 8, bottom: 36),
           child: SpeedDial(
             childrenButtonSize: const Size(55, 55),
             foregroundColor: Colors.white,
@@ -491,6 +491,8 @@ class FinancialView extends GetView<TransactionController> {
                 splashColor: Colors.grey.shade50,
                 onTap: () {
                   //METODO PARA EDITAR UMA TRANSAÇÃO
+                  final cityController = Get.put(CityStateController());
+                  cityController.getCities();
                   controller.clearAllFields();
                   controller.fillInFields(transaction);
                   controller.getMyCategories();
