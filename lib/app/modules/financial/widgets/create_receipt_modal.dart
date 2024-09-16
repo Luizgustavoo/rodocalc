@@ -135,28 +135,29 @@ class CreateReceiptModal extends GetView<TransactionController> {
                   },
                 ),
                 const SizedBox(height: 10),
+
                 TextFormField(
-                  maxLength: 10,
                   controller: controller.txtDateController,
                   decoration: const InputDecoration(
-                    counterText: '',
-                    prefixIcon: Icon(
-                      Icons.calendar_month,
-                      size: 25,
-                    ),
-                    labelText: 'DATA RECEBIMENTO',
+                    labelText: 'Data',
+                    prefixIcon: Icon(Icons.date_range),
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
+                    filled: true,
                   ),
-                  onChanged: (value) {
-                    FormattedInputers.onDateChanged(
-                        value, controller.txtDateController);
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, insira a data da despesa';
-                    } else if (!FormattedInputers.validateDate(value)) {
-                      return 'Por favor, insira uma data válida!';
+                  readOnly: true,
+                  onTap: () async {
+                    DateTime? pickedDate = await showDatePicker(
+                      context: Get.context!,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime.now(),
+                      locale: const Locale('pt', 'BR'),
+                    );
+                    if (pickedDate != null) {
+                      controller.txtDateController.text =
+                          FormattedInputers.formatDate2(pickedDate);
                     }
-                    return null;
                   },
                 ),
                 const SizedBox(height: 10),
