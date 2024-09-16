@@ -344,8 +344,13 @@ abstract class FormattedInputers {
       final month = int.parse(parts[1]);
       final year = int.parse(parts[2]);
 
-      final date = DateTime(year, month, day);
-      return date.day == day && date.month == month && date.year == year;
+      // Usa DateTime.utc para evitar problemas com fusos horários
+      final date = DateTime.utc(year, month, day);
+      if (date.year != year || date.month != month || date.day != day) {
+        return false;
+      }
+
+      return true;
     } catch (e) {
       return false;
     }

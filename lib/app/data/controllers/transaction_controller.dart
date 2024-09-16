@@ -399,7 +399,9 @@ class TransactionController extends GetxController {
         };
         getAll();
         getSaldo();
-        clearAllFields();
+        if (mensagem['success'] == true) {
+          clearAllFields();
+        }
       } else {
         retorno = {
           'success': false,
