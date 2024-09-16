@@ -21,12 +21,12 @@ class AlterPlanDropDown {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['plano_id'] = this.planoId;
-    data['plano'] = this.plano;
-    data['quantidade_licencas'] = this.quantidadeLicencas;
-    data['quantidade_veiculos'] = this.quantidadeVeiculos;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['plano_id'] = planoId;
+    data['plano'] = plano;
+    data['quantidade_licencas'] = quantidadeLicencas;
+    data['quantidade_veiculos'] = quantidadeVeiculos;
     return data;
   }
 }

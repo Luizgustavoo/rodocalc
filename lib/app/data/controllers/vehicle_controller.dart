@@ -137,7 +137,6 @@ class VehicleController extends GetxController {
     isLoadingDropDown.value = true;
     try {
       listMyPlans.value = await repository.getAllUserPlans();
-      print(listMyPlans);
     } catch (e) {
       Exception(e);
     }

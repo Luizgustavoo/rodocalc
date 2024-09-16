@@ -42,7 +42,6 @@ class AuthApiClient {
         "Accept": "application/json",
       });
 
-      print(json.decode(response.body));
       return json.decode(response.body);
     } catch (e) {
       Exception(e);
@@ -109,7 +108,6 @@ class AuthApiClient {
 
       var responseStream = await response.stream.bytesToString();
       var httpResponse = http.Response(responseStream, response.statusCode);
-      print(httpResponse.body);
       return json.decode(httpResponse.body);
     } catch (err) {
       Exception(err);
@@ -208,14 +206,10 @@ class AuthApiClient {
         newAuth["token_type"] = responseData["token_type"];
         newAuth["expires_in"] = responseData["expires_in"];
 
-        print("user antigo:${oldAuth['user']}");
-        print("user novo:${newAuth['user']}");
-
         box.write('auth', newAuth);
 
         Get.find<HomeController>().updateUserPhoto();
       }
-      print(httpResponse.body);
       return json.decode(httpResponse.body);
     } catch (err) {
       Exception('Error: $err');

@@ -310,9 +310,6 @@ class TransactionController extends GetxController {
       dynamic cidade = "";
       dynamic uf = "";
 
-      dynamic cidadeOrigem = "";
-      dynamic cidadeDestino = "";
-
       if (typeTransaction == "saida" && txtCityController.text.isNotEmpty) {
         if (!cidadeUfRegex.hasMatch(txtCityController.text)) {
           return {

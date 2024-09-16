@@ -154,7 +154,6 @@ class PlanController extends GetxController {
     isLoading.value = true;
     try {
       listPlans.value = await repository.getAll();
-      print(listPlans);
     } catch (e) {
       listPlans.clear();
       Exception(e);
