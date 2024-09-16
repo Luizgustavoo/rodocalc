@@ -6,6 +6,7 @@ import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/models/auth_model.dart';
 import 'package:rodocalc/app/data/models/people_model.dart';
 import 'package:rodocalc/app/data/models/user_model.dart';
+import 'package:rodocalc/app/data/repositories/cep_repository.dart';
 import 'package:rodocalc/app/data/repositories/perfil_repository.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
@@ -26,6 +27,36 @@ class PerfilController extends GetxController {
   final TextEditingController txtSenhaController = TextEditingController();
   final TextEditingController txtConfirmaSenhaController =
       TextEditingController();
+
+  final TextEditingController cepController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
+  final TextEditingController neighborhoodController = TextEditingController();
+  final TextEditingController houseNumberController = TextEditingController();
+  final cepRepository = Get.put(CepRepository());
+
+  void fetchAddressFromCep(String cep) async {
+    if (cep.length == 9) {
+      final address = await cepRepository.getAddressByCep(cep);
+      if (address != null) {
+        addressController.text = address.logradouro;
+        neighborhoodController.text = address.bairro;
+        txtCidadeController.text = "${address.cidade}-${address.uf}";
+        selectedState.value = address.uf;
+      }
+    }
+  }
+
+  void onCEPChanged(String cep) {
+    final formattedCEP = FormattedInputers.formatCEP(cep);
+    cepController.value = TextEditingValue(
+      text: formattedCEP.value,
+      selection: TextSelection.collapsed(offset: formattedCEP.value.length),
+    );
+  }
+
+  bool validateCEP() {
+    return FormattedInputers.validateCEP(cepController.text);
+  }
 
   List<String> get states => [
         'AC',

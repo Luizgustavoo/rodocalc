@@ -66,7 +66,7 @@ class LoginController extends GetxController {
     }
   }
 
-  void forgotPassword() async {
+  Future<Map<String, dynamic>> forgotPassword() async {
     isLoadingForgot(true);
     mensagem =
         await repository.forgotPassword(forgotPasswordEmailController.text);
