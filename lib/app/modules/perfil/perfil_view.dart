@@ -170,6 +170,75 @@ class PerfilView extends GetView<PerfilController> {
                             },
                           ),
                           const SizedBox(height: 10),
+                          TextFormField(
+                            controller: controller.txtCpfController,
+                            maxLength: 18,
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                                prefixIcon: Icon(Icons.credit_card),
+                                labelText: 'CPF/CNPJ',
+                                counterText: ''),
+                            onChanged: (value) {
+                              FormattedInputers.onCPFCNPJChanged(
+                                  value, controller.txtCpfController);
+                            },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Digite seu cpf ou cnpj";
+                              }
+                              if (!Services.validCPF(value) &&
+                                  !Services.validCNPJ(value)) {
+                                return "Digite um cpf ou cnpj válido";
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 10),
+                          TextFormField(
+                            controller: controller.txtApelidoController,
+                            decoration: const InputDecoration(
+                              prefixIcon: Icon(Icons.business),
+                              labelText: 'APELIDO OU TRANSPORTADORA',
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Focus(
+                            onFocusChange: (hasFocus) async {
+                              if (!hasFocus) {
+                                controller.fetchAddressFromCep(
+                                    controller.cepController.text);
+                              }
+                            },
+                            child: TextFormField(
+                              keyboardType: TextInputType.number,
+                              controller: controller.cepController,
+                              onChanged: (value) =>
+                                  controller.onCEPChanged(value),
+                              maxLength: 9,
+                              decoration: InputDecoration(
+                                counterText: '',
+                                suffixIcon: IconButton(
+                                    splashRadius: 2,
+                                    iconSize: 20,
+                                    onPressed: () {
+                                      controller.fetchAddressFromCep(
+                                          controller.cepController.text);
+                                    },
+                                    icon: const Icon(
+                                      Icons.search_rounded,
+                                    )),
+                                labelText: 'CEP',
+                                prefixIcon: const Icon(Icons.location_pin),
+                              ),
+                              validator: (value) {
+                                if (!controller.validateCEP()) {
+                                  return 'CEP inválido';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 10),
                           Obx(
                             () => SearchField<String>(
                               controller: controller.txtCidadeController,
@@ -204,35 +273,45 @@ class PerfilView extends GetView<PerfilController> {
                           ),
                           const SizedBox(height: 10),
                           TextFormField(
-                            controller: controller.txtCpfController,
-                            maxLength: 18,
-                            keyboardType: TextInputType.number,
+                            controller: controller.addressController,
                             decoration: const InputDecoration(
-                                prefixIcon: Icon(Icons.credit_card),
-                                labelText: 'CPF/CNPJ',
-                                counterText: ''),
-                            onChanged: (value) {
-                              FormattedInputers.onCPFCNPJChanged(
-                                  value, controller.txtCpfController);
-                            },
+                              prefixIcon: Icon(Icons.home),
+                              labelText: 'ENDEREÇO',
+                            ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return "Digite seu cpf ou cnpj";
-                              }
-                              if (!Services.validCPF(value) &&
-                                  !Services.validCNPJ(value)) {
-                                return "Digite um cpf ou cnpj válido";
+                                return 'Digite o endereço';
                               }
                               return null;
                             },
                           ),
                           const SizedBox(height: 10),
                           TextFormField(
-                            controller: controller.txtApelidoController,
+                            controller: controller.houseNumberController,
                             decoration: const InputDecoration(
-                              prefixIcon: Icon(Icons.business),
-                              labelText: 'APELIDO OU TRANSPORTADORA',
+                              prefixIcon: Icon(Icons.numbers),
+                              labelText: 'NÚMERO',
                             ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Digite o número da casa';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 10),
+                          TextFormField(
+                            controller: controller.neighborhoodController,
+                            decoration: const InputDecoration(
+                              prefixIcon: Icon(Icons.location_city),
+                              labelText: 'BAIRRO',
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Digite o bairro';
+                              }
+                              return null;
+                            },
                           ),
                           const SizedBox(height: 10),
                           TextFormField(
