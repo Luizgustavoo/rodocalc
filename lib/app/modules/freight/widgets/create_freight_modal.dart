@@ -308,11 +308,9 @@ class CreateFreightModal extends GetView<FreightController> {
                                       children: [
                                         Text(
                                           textAlign: TextAlign.center,
-                                          retorno['lucro'] < 0
+                                          retorno['lucro'] <= 0
                                               ? "Você terá um prejuízo de: R\$${FormattedInputers.formatValuePTBR(retorno['lucro'])}"
-                                              : retorno['lucro'] == 0
-                                                  ? "Você não terá lucro!"
-                                                  : "Você irá lucrar: R\$${FormattedInputers.formatValuePTBR(retorno['lucro'])}",
+                                              : "Você irá lucrar: R\$${FormattedInputers.formatValuePTBR(retorno['lucro'])}",
                                           style: TextStyle(
                                               fontFamily: 'Inter-Regular',
                                               fontSize: 18,
