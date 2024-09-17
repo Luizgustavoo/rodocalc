@@ -390,9 +390,9 @@ class FinancialView extends GetView<TransactionController> {
                       lastDate: DateTime.now(),
                     );
                     if (pickedDate != null) {
-                      if (controller.startDateController.text.isNotEmpty) {
+                      if (controller.endDateController.text.isNotEmpty) {
                         DateTime startDate = FormattedInputers.parseDate(
-                            controller.startDateController.text);
+                            controller.endDateController.text);
                         if (pickedDate.isBefore(startDate)) {
                           Get.snackbar('Erro',
                               'A data final não pode ser menor que a data inicial',

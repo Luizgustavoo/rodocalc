@@ -156,13 +156,11 @@ class TransactionController extends GetxController {
         txtDescriptionFilterController.text,
       );
       filteredTransactions.value = listTransactions;
+      clearAllFields();
     } catch (e) {
       Exception(e);
     }
     isLoading.value = false;
-    txtDescriptionFilterController.text = "";
-    startDateController.text = "";
-    endDateController.text = "";
   }
 
   Future<void> getSaldo() async {
@@ -589,7 +587,10 @@ class TransactionController extends GetxController {
       txtTonController,
       startDateController,
       endDateController,
-      txtDescriptionFilterController
+      txtDescriptionFilterController,
+      txtDescriptionFilterController,
+      startDateController,
+      endDateController,
     ];
 
     for (final controller in textControllers) {
