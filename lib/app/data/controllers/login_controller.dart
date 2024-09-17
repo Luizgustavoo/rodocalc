@@ -11,6 +11,7 @@ class LoginController extends GetxController {
   final passwordController = TextEditingController();
   final forgotPasswordEmailController = TextEditingController();
   final loginKey = GlobalKey<FormState>();
+  final forgotKey = GlobalKey<FormState>();
   final RxBool isImageLoaded = false.obs;
   var isPasswordHidden = true.obs;
 

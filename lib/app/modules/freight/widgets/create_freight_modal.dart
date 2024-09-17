@@ -78,7 +78,7 @@ class CreateFreightModal extends GetView<FreightController> {
                             SearchFieldListItem<String>(city.cidadeEstado!))
                         .toList(),
                     searchInputDecoration: InputDecoration(
-                      prefixIcon: Icon(Icons.search),
+                      prefixIcon: const Icon(Icons.search),
                       labelText: cityController.isLoading.value
                           ? "CARREGANDO"
                           : "ORIGEM",
@@ -111,7 +111,7 @@ class CreateFreightModal extends GetView<FreightController> {
                             SearchFieldListItem<String>(city.cidadeEstado!))
                         .toList(),
                     searchInputDecoration: InputDecoration(
-                      prefixIcon: Icon(Icons.search),
+                      prefixIcon: const Icon(Icons.search),
                       labelText: cityController.isLoading.value
                           ? "CARREGANDO"
                           : "DESTINO",

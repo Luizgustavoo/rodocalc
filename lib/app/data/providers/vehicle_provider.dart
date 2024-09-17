@@ -24,7 +24,6 @@ class VehicleApiClient {
           "Authorization": token,
         },
       );
-      print(json.decode(response.body));
       if (response.statusCode == 201) {
         return json.decode(response.body);
       } else {
@@ -174,7 +173,6 @@ class VehicleApiClient {
       var responseStream = await response.stream.bytesToString();
       var httpResponse = http.Response(responseStream, response.statusCode);
 
-      print(json.decode(httpResponse.body));
 
       if (httpResponse.statusCode == 201 ||
           httpResponse.statusCode == 422 ||
@@ -228,7 +226,6 @@ class VehicleApiClient {
       var responseStream = await response.stream.bytesToString();
       var httpResponse = http.Response(responseStream, response.statusCode);
 
-      print(json.decode(httpResponse.body));
       return json.decode(httpResponse.body);
     } catch (err) {
       Exception(err);

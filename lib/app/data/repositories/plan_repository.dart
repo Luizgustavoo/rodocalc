@@ -41,7 +41,6 @@ class PlanRepository {
     } catch (e) {
       Exception(e);
     }
-    print(list);
     return list;
   }
 
@@ -59,7 +58,6 @@ class PlanRepository {
     } catch (e) {
       Exception(e);
     }
-    print(list);
     return list;
   }
 

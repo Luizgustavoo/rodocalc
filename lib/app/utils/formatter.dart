@@ -462,7 +462,7 @@ abstract class FormattedInputers {
       String year = dateParts[2];
       return '$year-$month-$day';
     } else {
-      throw FormatException('Formato de data inválido. Use dd/mm/yyyy.');
+      throw const FormatException('Formato de data inválido. Use dd/mm/yyyy.');
     }
   }
 }

@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -185,6 +187,8 @@ class PerfilController extends GetxController {
         numeroCasa: houseNumberController.text,
         cidade: txtCidadeController.text,
         uf: selectedState.value,
+        endereco: addressController.text,
+        bairro: neighborhoodController.text,
         status: 1,
       );
 
@@ -219,7 +223,7 @@ class PerfilController extends GetxController {
       loginController.loginKey.currentState?.dispose();
       loginController.logout();
       Future.delayed(const Duration(seconds: 1), () {
-        Get.offNamed(Routes.login); // Testa com delay ou usando `offNamed`
+        Get.offNamed(Routes.login);
       });
     } else {
       retorno = {

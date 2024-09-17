@@ -162,7 +162,6 @@ class DocumentApiClient {
       var responseStream = await response.stream.bytesToString();
       var httpResponse = http.Response(responseStream, response.statusCode);
 
-      print(json.decode(httpResponse.body));
       return json.decode(httpResponse.body);
     } catch (err) {
       Exception(err);
@@ -184,7 +183,6 @@ class DocumentApiClient {
         },
       );
 
-      print(json.decode(response.body));
       return json.decode(response.body);
     } catch (err) {
       Exception(err);

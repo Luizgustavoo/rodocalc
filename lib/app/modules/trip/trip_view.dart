@@ -249,13 +249,16 @@ class TripView extends GetView<TripController> {
 }
 
 void showDialog(context, Trip trip, TripController controller) {
+  if (controller.isDialogOpen.value) return;
+
+  controller.isDialogOpen.value = true;
   Get.defaultDialog(
     titlePadding: const EdgeInsets.all(16),
     contentPadding: const EdgeInsets.all(16),
     title: "Confirmação",
     content: const Text(
       textAlign: TextAlign.center,
-      "Tem certeza que deseja excluir o calculo selecionado?",
+      "Tem certeza que deseja excluir o trecho selecionado?",
       style: TextStyle(
         fontFamily: 'Poppins',
         fontSize: 18,
@@ -264,20 +267,21 @@ void showDialog(context, Trip trip, TripController controller) {
     actions: [
       ElevatedButton(
         onPressed: () async {
+          Get.back(); // Fecha o diálogo atual primeiro
+          await Future.delayed(const Duration(milliseconds: 500));
           Map<String, dynamic> retorno = await controller.deleteTrip(trip.id!);
 
           if (retorno['success'] == true) {
-            Get.back();
             Get.snackbar('Sucesso!', retorno['message'].join('\n'),
                 backgroundColor: Colors.green,
                 colorText: Colors.white,
-                duration: const Duration(seconds: 2),
+                duration: const Duration(seconds: 1),
                 snackPosition: SnackPosition.BOTTOM);
           } else {
             Get.snackbar('Falha!', retorno['message'].join('\n'),
                 backgroundColor: Colors.red,
                 colorText: Colors.white,
-                duration: const Duration(seconds: 2),
+                duration: const Duration(seconds: 1),
                 snackPosition: SnackPosition.BOTTOM);
           }
         },

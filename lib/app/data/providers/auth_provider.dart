@@ -246,7 +246,6 @@ class AuthApiClient {
           'Authorization': 'Bearer $token',
         },
       );
-      print(response.body);
       return json.decode(response.body);
     } catch (e) {
       Exception(e);

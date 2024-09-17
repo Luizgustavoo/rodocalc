@@ -53,7 +53,6 @@ class PlanApiClient {
           "Authorization": token,
         },
       );
-      print(json.decode(response.body));
       if (response.statusCode == 200 || response.statusCode == 201) {
         return json.decode(response.body);
       } else {
@@ -219,7 +218,6 @@ class PlanApiClient {
         body: jsonEncode(requestBody),
       );
 
-      print(response.body);
 
       return json.decode(response.body);
     } catch (err) {
@@ -245,7 +243,6 @@ class PlanApiClient {
         body: requestBody,
       );
 
-      print(json.decode(response.body));
 
       return json.decode(response.body);
     } catch (err) {
@@ -273,7 +270,6 @@ class PlanApiClient {
         body: requestBody,
       );
 
-      print(json.decode(response.body));
 
       return json.decode(response.body);
     } catch (err) {

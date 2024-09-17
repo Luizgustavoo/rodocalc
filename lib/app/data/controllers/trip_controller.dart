@@ -33,6 +33,8 @@ class TripController extends GetxController {
 
   var selectedOption = ''.obs;
 
+  RxBool isDialogOpen = false.obs;
+
   final options = {'Saída', 'Chegada'}.toList();
 
   Map<String, dynamic> retorno = {
@@ -450,6 +452,7 @@ class TripController extends GetxController {
         'message': mensagem['message']
       };
       getAll();
+      isDialogOpen.value = false;
     } else {
       retorno = {
         'success': false,

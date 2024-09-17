@@ -48,7 +48,7 @@ class CreateUserModal extends GetView<UserController> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Padding(
-                        padding: EdgeInsets.only(top: 10, bottom: 5),
+                        padding: const EdgeInsets.only(top: 10, bottom: 5),
                         child: Text(
                           isUpdate ? 'EDITAR USUÁRIO' : 'CADASTRO DE USUÁRIO',
                           style: const TextStyle(

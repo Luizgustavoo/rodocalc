@@ -6,19 +6,16 @@ import 'package:rodocalc/app/data/controllers/login_controller.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 
 class ForgotPasswordModal extends GetView<LoginController> {
-  ForgotPasswordModal({
-    Key? key,
-  })  : formKey = GlobalKey<FormState>(),
-        super(key: key);
-
-  final GlobalKey<FormState> formKey;
+  const ForgotPasswordModal({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Form(
-          key: formKey,
+          key: controller.forgotKey,
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             padding: const EdgeInsets.all(12.0),
@@ -79,7 +76,7 @@ class ForgotPasswordModal extends GetView<LoginController> {
                     const SizedBox(width: 10),
                     CustomElevatedButton(
                       onPressed: () async {
-                        if (formKey.currentState!.validate()) {
+                        if (controller.forgotKey.currentState!.validate()) {
                           Map<String, dynamic> retorno =
                               await controller.forgotPassword();
                           if (retorno['success'] == true) {
@@ -101,7 +98,7 @@ class ForgotPasswordModal extends GetView<LoginController> {
                         }
                       },
                       child: const Text(
-                        'SALVAR',
+                        'ENVIAR',
                         style: TextStyle(
                             fontFamily: 'Inter-Bold', color: Colors.white),
                       ),

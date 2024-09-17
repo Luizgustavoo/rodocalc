@@ -137,16 +137,16 @@ class HomeView extends GetView<HomeController> {
                                           iconColor: Colors.white,
                                           onSelected: (String value) {
                                             switch (value) {
-                                              case 'Perfil':
+                                              case 'PERFIL':
                                                 cityController.getCities();
                                                 perfilController.fillInFields();
                                                 Get.toNamed(Routes.perfil);
                                                 break;
-                                              case 'Adicionar usuário':
+                                              case 'ADICIONAR USUÁRIO':
                                                 userController.getMyEmployees();
                                                 Get.toNamed(Routes.user);
                                                 break;
-                                              case 'Sair':
+                                              case 'SAIR':
                                                 final loginController =
                                                     Get.put(LoginController());
                                                 loginController.logout();
@@ -157,11 +157,11 @@ class HomeView extends GetView<HomeController> {
                                             List<Map<String, dynamic>> choices =
                                                 [
                                               {
-                                                'text': 'Perfil',
+                                                'text': 'PERFIL',
                                                 'icon': Icons.person
                                               },
                                               {
-                                                'text': 'Sair',
+                                                'text': 'SAIR',
                                                 'icon': Icons.logout
                                               },
                                             ];
@@ -171,7 +171,7 @@ class HomeView extends GetView<HomeController> {
                                                     .getUserTypeId() ==
                                                 3) {
                                               choices.insert(1, {
-                                                'text': 'Adicionar usuário',
+                                                'text': 'ADICIONAR USUÁRIO',
                                                 'icon': Icons.add
                                               });
                                             }
