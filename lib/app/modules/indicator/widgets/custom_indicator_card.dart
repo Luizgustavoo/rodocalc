@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/models/indication_model.dart';
+import 'package:rodocalc/app/utils/service_storage.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../utils/formatter.dart';
@@ -34,8 +35,10 @@ class CustomIndicatorCard extends StatelessWidget {
                 .replaceAll(')', '')
                 .replaceAll('-', '')
                 .replaceAll(' ', '');
+            String cupom = ServiceStorage.getUserId().toString();
+            print(cupom);
             String linkWhatsApp =
-                "https://meusite.com.br?codigo=EDVFERgvcdfgrth342re";
+                "https://painel.rodocalc.com.br/redirect/?codigo=$cupom";
 
             var contact = phone;
             var androidUrl =
