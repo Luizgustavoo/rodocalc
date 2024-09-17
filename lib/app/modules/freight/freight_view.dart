@@ -22,7 +22,7 @@ class FreightView extends GetView<FreightController> {
                   fontFamily: 'Inter-Black',
                 )),
             Text(
-              ServiceStorage.titleSelectedVehicle(),
+              ServiceStorage.titleSelectedVehicle().toUpperCase(),
               style: const TextStyle(fontFamily: 'Inter-Regular', fontSize: 14),
             ),
             const SizedBox(height: 5),

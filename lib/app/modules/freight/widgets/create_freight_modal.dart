@@ -298,23 +298,39 @@ class CreateFreightModal extends GetView<FreightController> {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  title: const Text('Resultado do cálculo:'),
+                                  title: const Text(
+                                    'Resultado do cálculo:',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontFamily: 'Inter-Bold'),
+                                  ),
                                   content: SingleChildScrollView(
                                     child: ListBody(
                                       children: [
                                         Text(
-                                          "Você irá lucrar: R\$${FormattedInputers.formatValuePTBR(retorno['lucro'])}",
+                                          textAlign: TextAlign.center,
+                                          retorno['lucro'] < 0
+                                              ? "Você terá um prejuízo de: R\$${FormattedInputers.formatValuePTBR(retorno['lucro'])}"
+                                              : retorno['lucro'] == 0
+                                                  ? "Você não terá lucro!"
+                                                  : "Você irá lucrar: R\$${FormattedInputers.formatValuePTBR(retorno['lucro'])}",
                                           style: TextStyle(
-                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Inter-Regular',
                                               fontSize: 18,
-                                              color: Colors.green.shade900),
+                                              color: retorno['lucro'] >= 0
+                                                  ? Colors.green.shade900
+                                                  : Colors.red.shade900),
                                         ),
                                       ],
                                     ),
                                   ),
-                                  actions: <Widget>[
+                                  actions: [
                                     TextButton(
-                                      child: const Text('OK'),
+                                      child: const Text(
+                                        'OK',
+                                        style: TextStyle(
+                                            fontFamily: 'Inter-Bold',
+                                            color: Colors.black),
+                                      ),
                                       onPressed: () {
                                         controller.clearAllFields();
                                         Navigator.of(context).pop();

@@ -27,7 +27,7 @@ class FinancialView extends GetView<TransactionController> {
                     fontFamily: 'Inter-Black',
                   )),
               Text(
-                ServiceStorage.titleSelectedVehicle(),
+                ServiceStorage.titleSelectedVehicle().toUpperCase(),
                 style:
                     const TextStyle(fontFamily: 'Inter-Regular', fontSize: 14),
               ),
@@ -307,29 +307,20 @@ class FinancialView extends GetView<TransactionController> {
       padding: const EdgeInsets.only(top: 5, left: 12, right: 12, bottom: 10),
       child: Column(
         children: [
-          //INICIA AQUI
-
           Row(
             children: [
               Expanded(
                 child: TextFormField(
                   controller: controller.startDateController,
                   decoration: const InputDecoration(
-                    labelText: 'DATA INICIAL',
+                    hintText: 'DATA INICIAL',
                     prefixIcon: Icon(Icons.date_range),
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
-                    filled: true,
                     fillColor: Colors.transparent,
-                    // Altere para a cor desejada
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Colors.grey), // Cor da borda inferior
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Colors.grey,
-                          width: 1.5), // Cor da borda quando focado
+                    border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black),
                     ),
                   ),
                   readOnly: true,
@@ -364,21 +355,14 @@ class FinancialView extends GetView<TransactionController> {
                 child: TextFormField(
                   controller: controller.endDateController,
                   decoration: const InputDecoration(
+                    hintText: 'DATA FINAL',
+                    prefixIcon: Icon(Icons.date_range),
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
-                    filled: true,
-                    labelText: 'DATA FINAL',
-                    prefixIcon: Icon(Icons.date_range),
                     fillColor: Colors.transparent,
-                    // Altere para a cor desejada
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Colors.grey), // Cor da borda inferior
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Colors.grey,
-                          width: 1.5), // Cor da borda quando focado
+                    border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black),
                     ),
                   ),
                   readOnly: true,
@@ -413,13 +397,9 @@ class FinancialView extends GetView<TransactionController> {
               ),
             ],
           ),
-
-          //FINALIZA AQUI
-
           const SizedBox(
-            height: 20,
+            height: 15,
           ),
-
           SizedBox(
             height: 45,
             child: TextFormField(
@@ -445,7 +425,6 @@ class FinancialView extends GetView<TransactionController> {
                       icon: const Icon(Icons.search))),
             ),
           ),
-
           Obx(() {
             return controller.tituloSearchTransactions.value.isNotEmpty
                 ? Column(
@@ -490,7 +469,6 @@ class FinancialView extends GetView<TransactionController> {
               return InkWell(
                 splashColor: Colors.grey.shade50,
                 onTap: () {
-                  //METODO PARA EDITAR UMA TRANSAÇÃO
                   final cityController = Get.put(CityStateController());
                   cityController.getCities();
                   controller.clearAllFields();

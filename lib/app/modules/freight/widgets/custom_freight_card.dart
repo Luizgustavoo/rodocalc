@@ -65,7 +65,7 @@ class CustomFreightCard extends StatelessWidget {
                       fontFamily: 'Inter-Bold',
                     ),
                   ),
-                  TextSpan(text: "$distance km"),
+                  TextSpan(text: "$distance KM"),
                 ],
               ),
             ),
