@@ -228,6 +228,7 @@ class CreateReceiptModal extends GetView<TransactionController> {
                 const SizedBox(height: 10),
                 TextFormField(
                   controller: controller.txtValueController,
+                  keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
                       Icons.monetization_on,
