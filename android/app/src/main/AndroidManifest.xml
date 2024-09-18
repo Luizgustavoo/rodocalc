@@ -45,7 +45,7 @@
                 <data android:scheme="https"/>
 
                 <!-- Include one or more domains that should be verified. -->
-                <data android:host="projetocrescer.com"/>
+                <data android:host="https://painel.rodocalc.com.br/redirect"/>
             </intent-filter>
             <!-- End-->
 
@@ -71,6 +71,6 @@
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
-        
+
     </queries>
 </manifest>

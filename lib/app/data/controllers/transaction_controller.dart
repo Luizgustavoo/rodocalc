@@ -538,9 +538,8 @@ class TransactionController extends GetxController {
 
     txtValueController.text =
         FormattedInputers.formatValuePTBR(selected.valor!.toString());
-    txtCityController.text = selected.cidade != null
-        ? "${selected.cidade.toString()}-${selected.uf.toString()}"
-        : "";
+    txtCityController.text =
+        selected.cidade != null ? "${selected.cidade.toString()}" : "";
     txtCompanyController.text =
         selected.empresa != null ? selected.empresa.toString() : "";
     txtDDDController.text = selected.ddd != null ? selected.ddd.toString() : "";

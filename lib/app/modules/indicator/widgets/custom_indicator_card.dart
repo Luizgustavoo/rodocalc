@@ -38,7 +38,7 @@ class CustomIndicatorCard extends StatelessWidget {
             String cupom = ServiceStorage.getUserId().toString();
             print(cupom);
             String linkWhatsApp =
-                "https://painel.rodocalc.com.br/redirect/?codigo=$cupom";
+                "https://painel.rodocalc.com.br/redirect/?code=$cupom";
 
             var contact = phone;
             var androidUrl =
