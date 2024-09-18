@@ -491,23 +491,20 @@ class HomeView extends GetView<HomeController> {
                                                               "",
                                                           overflow: TextOverflow
                                                               .ellipsis,
-                                                          // Usa "..." no final do texto
                                                           maxLines: 1,
-                                                          // Limita o texto a uma linha
-                                                          style: const TextStyle(
-                                                              fontSize:
-                                                                  16), // Ajusta o tamanho da fonte, se necessário
+                                                          style:
+                                                              const TextStyle(
+                                                                  fontSize: 16),
                                                         ),
                                                         Text(
                                                           subtitulo,
                                                           overflow: TextOverflow
                                                               .ellipsis,
-                                                          // Usa "..." no final do texto, se necessário
                                                           maxLines: 1,
-                                                          // Limita o texto a uma linha
-                                                          style: const TextStyle(
-                                                              color: Colors
-                                                                  .grey), // Estilo para subtítulo
+                                                          style:
+                                                              const TextStyle(
+                                                                  color: Colors
+                                                                      .grey),
                                                         ),
                                                       ],
                                                     ),

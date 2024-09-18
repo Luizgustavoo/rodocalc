@@ -568,23 +568,26 @@ class FinancialView extends GetView<TransactionController> {
                   Text(
                     FormattedInputers.formatApiDate(transaction.data!),
                     style: TextStyle(
-                        fontFamily: 'Inter-Bold', fontSize: 11, color: cor),
+                        fontFamily: 'Inter-Bold', fontSize: 14, color: cor),
                   ),
-                  Text(
-                    stringTitulo,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        fontFamily: 'Inter-Bold', fontSize: 10, color: cor),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Text(
+                      stringTitulo,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontFamily: 'Inter-Bold', fontSize: 14, color: cor),
+                    ),
                   ),
                   Text(
                     "CÓDIGO",
                     style: TextStyle(
-                        fontFamily: 'Inter-Regular', fontSize: 12, color: cor),
+                        fontFamily: 'Inter-Regular', fontSize: 14, color: cor),
                   ),
                   Text(
                     'SALDO',
                     style: TextStyle(
-                        fontFamily: 'Inter-Regular', fontSize: 12, color: cor),
+                        fontFamily: 'Inter-Regular', fontSize: 14, color: cor),
                   ),
                 ],
               ),
@@ -598,10 +601,11 @@ class FinancialView extends GetView<TransactionController> {
                     stringValor,
                     style: TextStyle(
                       fontFamily: 'Inter-Bold',
-                      fontSize: 13,
+                      fontSize: 14,
                       color: cor,
                     ),
                   ),
+                  const SizedBox(height: 8),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
@@ -610,7 +614,7 @@ class FinancialView extends GetView<TransactionController> {
                         transaction.id.toString().padLeft(5, '0'),
                         style: TextStyle(
                           fontFamily: 'Inter-Regular',
-                          fontSize: 12,
+                          fontSize: 14,
                           color: cor,
                         ),
                       ),
@@ -618,7 +622,7 @@ class FinancialView extends GetView<TransactionController> {
                         'R\$ ${transaction.saldo!.toStringAsFixed(2)}',
                         style: TextStyle(
                           fontFamily: 'Inter-Regular',
-                          fontSize: 12,
+                          fontSize: 14,
                           color: cor,
                         ),
                       ),
