@@ -45,7 +45,7 @@
                 <data android:scheme="https"/>
 
                 <!-- Include one or more domains that should be verified. -->
-                <data android:host="https://painel.rodocalc.com.br/redirect"/>
+                <data android:host="painel.rodocalc.com.br"/>
             </intent-filter>
             <!-- End-->
 
