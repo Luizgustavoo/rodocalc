@@ -15,4 +15,5 @@ abstract class Routes {
   static const manageplan = '/manageplan';
   static const user = '/user';
   static const trip = '/trip';
+  static const newplanview = '/newplanview';
 }

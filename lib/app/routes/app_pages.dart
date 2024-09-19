@@ -25,6 +25,7 @@ import 'package:rodocalc/app/modules/initial/initial_view.dart';
 import 'package:rodocalc/app/modules/login/login_view.dart';
 import 'package:rodocalc/app/modules/perfil/perfil_view.dart';
 import 'package:rodocalc/app/modules/plan/manage_plan_view.dart';
+import 'package:rodocalc/app/modules/plan/new_plan_view.dart';
 import 'package:rodocalc/app/modules/plan/plan_view.dart';
 import 'package:rodocalc/app/modules/signup/signup_view.dart';
 import 'package:rodocalc/app/modules/trip/trip_view.dart';
@@ -113,6 +114,11 @@ class AppPages {
       name: Routes.trip,
       page: () => const TripView(),
       binding: TripBinding(),
+    ),
+    GetPage(
+      name: Routes.newplanview,
+      page: () => const NewPlanView(),
+      binding: PlanBinding(),
     ),
   ];
 }

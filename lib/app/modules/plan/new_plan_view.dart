@@ -1,0 +1,186 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:rodocalc/app/data/controllers/plan_controller.dart';
+import 'package:rodocalc/app/global/custom_app_bar.dart';
+import 'package:rodocalc/app/modules/plan/widgets/update_plan_modal.dart';
+import 'package:rodocalc/app/utils/custom_elevated_button.dart';
+import 'package:rodocalc/app/utils/formatter.dart';
+
+class NewPlanView extends GetView<PlanController> {
+  const NewPlanView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: const CustomAppBar(title: 'PLANOS'),
+      body: Stack(
+        children: [
+          SizedBox(
+            height: double.infinity,
+            width: double.infinity,
+            child: ColorFiltered(
+              colorFilter: ColorFilter.mode(
+                Colors.black.withOpacity(0.3),
+                BlendMode.darken,
+              ),
+              child: Image.asset(
+                'assets/images/signup.jpg',
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Center(
+            child: Obx(() {
+              if (controller.myPlans.isEmpty) {
+                return const CircularProgressIndicator();
+              } else {
+                final plan = controller.myPlans.first;
+
+                final plano = controller.listPlans.first;
+                return Container(
+                  width: Get.width / 1.1,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 10,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        plan.plano!.descricao!,
+                        style: const TextStyle(
+                            fontSize: 28, fontFamily: 'Inter-Bold'),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        "R\$ ${FormattedInputers.formatValuePTBR(plan.plano!.valor)}",
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontFamily: 'Inter-Regular',
+                          color: Colors.black54,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        " ${plan.plano!.status == 1 ? 'ATIVO' : 'INATIVO'}",
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: plan.plano!.status == 1
+                                ? Colors.green
+                                : Colors.red,
+                            fontFamily: 'Inter-Black'),
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            "ASSINATURA:",
+                            style: TextStyle(fontFamily: 'Inter-Bold'),
+                          ),
+                          Text(
+                            FormattedInputers.formatApiDate(
+                                plan.dataAssinaturaPlano.toString()),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            "PRÓXIMO VENCIMENTO:",
+                            style: TextStyle(fontFamily: 'Inter-Bold'),
+                          ),
+                          Text(
+                            FormattedInputers.formatApiDate(
+                                plan.dataVencimentoPlano.toString()),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            "LICENÇAS:",
+                            style: TextStyle(fontFamily: 'Inter-Bold'),
+                          ),
+                          Text("${plan.quantidadeLicencas} LICENÇAS"),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "CARTÃO:",
+                            style: TextStyle(fontFamily: 'Inter-Black'),
+                          ),
+                          Text(
+                            '**** - **** - **** - ****',
+                            style: TextStyle(fontFamily: 'Inter-Black'),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 30),
+                      CustomElevatedButton(
+                        width: Get.width / 1,
+                        onPressed: () {
+                          controller.clearAllFields();
+                          controller.updateSelectedPlan(plano);
+
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (_) => UpdatePlanModal(
+                              plano: plano,
+                              isUpdate: true,
+                            ),
+                            isScrollControlled: true,
+                          );
+                        },
+                        child: const Text(
+                          "ALTERAR",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      CustomElevatedButton(
+                        width: Get.width / 1,
+                        gradient: LinearGradient(colors: [
+                          Colors.red.shade900,
+                          Colors.red.shade300,
+                        ]),
+                        onPressed: () {},
+                        child: const Text(
+                          "CANCELAR ASSINATURA",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                    ],
+                  ),
+                );
+              }
+            }),
+          ),
+        ],
+      ),
+    );
+  }
+}

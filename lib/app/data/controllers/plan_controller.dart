@@ -15,6 +15,8 @@ class PlanController extends GetxController {
   var calculatedPrice = ''.obs;
   var selectedPlanDropDown = 0.obs;
 
+  var shouldChangeCard = false.obs;
+
   var bandeiraCartao = 'NÚMERO DO CARTÃO'.obs;
 
   final planKey = GlobalKey<FormState>();
@@ -235,6 +237,7 @@ class PlanController extends GetxController {
     calculatedPrice = ''.obs;
     selectedPlan.value = null;
     selectedCardType = ''.obs;
+    shouldChangeCard.value = false;
   }
 }
 

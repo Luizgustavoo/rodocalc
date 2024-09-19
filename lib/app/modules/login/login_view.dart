@@ -129,7 +129,8 @@ class LoginView extends GetView<LoginController> {
                                   showModalBottomSheet(
                                     isScrollControlled: true,
                                     context: context,
-                                    builder: (context) => ForgotPasswordModal(),
+                                    builder: (context) =>
+                                        const ForgotPasswordModal(),
                                   );
                                 },
                                 child: const Text(

@@ -365,10 +365,14 @@ class HomeView extends GetView<HomeController> {
                                       CustomHomeCard(
                                         imagePath: 'assets/images/plano.png',
                                         label: 'Planos',
-                                        onTap: () {
-                                          planController.getAll();
-                                          planController.getMyPlans();
-                                          Get.toNamed(Routes.plan);
+                                        onTap: () async {
+                                          await planController.getAll();
+                                          await planController.getMyPlans();
+                                          if (planController.myPlans.isEmpty) {
+                                            Get.toNamed(Routes.plan);
+                                          } else {
+                                            Get.toNamed(Routes.newplanview);
+                                          }
                                         },
                                       ),
                                     ],

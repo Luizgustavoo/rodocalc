@@ -91,8 +91,6 @@ class FreightApiClient {
         body: requestBody,
       );
 
-      print(response.body);
-
       if (response.statusCode == 201 ||
           response.statusCode == 422 ||
           response.statusCode == 404) {
