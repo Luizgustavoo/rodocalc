@@ -106,7 +106,7 @@ class PlanController extends GetxController {
     return retorno;
   }
 
-  Future<Map<String, dynamic>> updateSubscribe(UserPlan userplan) async {
+  Future<Map<String, dynamic>> updateSubscribe(UserPlan planoUsuario) async {
     if (planKey.currentState!.validate()) {
       isLoadingSubscrible.value = true;
 
@@ -136,10 +136,9 @@ class PlanController extends GetxController {
       }
       UserPlan userplan = UserPlan();
       if (addLicenses.value > 0) {
-        userplan.assignatureId = userplan.assignatureId;
+        userplan.assignatureId = planoUsuario.assignatureId;
         userplan.quantidadeLicencas = addLicenses.value;
-        userplan.valorPlano =
-            Services.converterParaCentavos(userplan.plano!.valor.toString());
+        userplan.valorPlano = planoUsuario.valorPlano;
       }
 
       mensagem = await repository.updateSubscribe(userplan, creditCard);
