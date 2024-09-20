@@ -161,7 +161,7 @@ class VehiclesView extends GetView<VehicleController> {
                               ));
                             } else {
                               return const Center(
-                                child: Text('Nenhum veículo encontrado!'),
+                                child: Text('NENHUM VEÍCULO CADASTRADO!'),
                               );
                             }
                           }),

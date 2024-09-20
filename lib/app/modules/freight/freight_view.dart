@@ -195,7 +195,7 @@ class FreightView extends GetView<FreightController> {
                       );
                     } else {
                       return const Center(
-                        child: Text('NENHUM FRETE ENCONTRADO!'),
+                        child: Text('NENHUM FRETE CADASTRADO!'),
                       );
                     }
                   }),

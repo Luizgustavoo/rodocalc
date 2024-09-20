@@ -88,7 +88,7 @@ class CourseView extends GetView<CourseController> {
                               );
                             } else {
                               return const Center(
-                                child: Text('Nenhum curso encontrado!'),
+                                child: Text('NENHUM CURSO CADASTRADO!'),
                               );
                             }
                           },

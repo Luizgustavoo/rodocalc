@@ -105,6 +105,53 @@ class PlanController extends GetxController {
     return retorno;
   }
 
+  Future<Map<String, dynamic>> updateSubscribe(String assignatureId) async {
+    if (planKey.currentState!.validate()) {
+      isLoadingSubscrible.value = true;
+
+      final CreditCard creditCard = CreditCard();
+
+      if (shouldChangeCard.value == true) {
+        creditCard.cardName = nameCardController.text;
+        creditCard.validate = validateController.text;
+        creditCard.cpf = cpfController.text;
+        creditCard.cvv = cvvController.text;
+        creditCard.cardNumber = numberCardController.text;
+        creditCard.valor =
+            Services.converterParaCentavos(calculatedPrice.value);
+        creditCard.brand = selectedCardType.value.toString();
+      }
+
+      mensagem = await repository.updateSubscribe(
+          UserPlan(
+            // usuarioId: ServiceStorage.getUserId(),
+            // planoId: selectedPlan.value!.id!,
+            assignatureId: assignatureId,
+            quantidadeLicencas: selectedLicenses.value,
+            valorPlano: Services.converterParaCentavos(calculatedPrice.value),
+          ),
+          creditCard);
+
+      isLoadingSubscrible.value = false;
+
+      if (mensagem != null) {
+        retorno = {
+          'success': mensagem['success'],
+          'message': mensagem['message']
+        };
+
+        getMyPlans();
+      } else {
+        retorno = {
+          'success': false,
+          'message': ['Falha ao realizar a operação!']
+        };
+      }
+    }
+    isLoadingSubscrible.value = false;
+    return retorno;
+  }
+
   Future<Map<String, dynamic>> cancelSubscribe(String idSubscription) async {
     if (idSubscription.isNotEmpty) {
       isLoadingSubscrible.value = true;
@@ -223,33 +270,12 @@ class PlanController extends GetxController {
 
   void updatePrice() {
     if (selectedPlan.value != null) {
-      // Obtém o valor base do plano diretamente como double
-
-      // Obtém o multiplicador com base no tipo do plano (Mensal, Trimestral, etc.)
-      double planMultiplier =
-          getPlanPriceMultiplier(selectedPlan.value!.descricao!);
-
-      // Calcula o preço total
-      double totalPrice =
-          licensePrice * planMultiplier * selectedLicenses.value;
-
-      // Atualiza o valor calculado no formato R$
-      calculatedPrice.value = 'R\$ ${totalPrice.toStringAsFixed(2)}';
-    }
-  }
-
-  double getPlanPriceMultiplier(String planType) {
-    switch (planType) {
-      case 'MENSAL':
-        return 1.0; // Mensal: multiplica por 1
-      case 'TRIMESTRAL':
-        return 3.0; // Trimestral: multiplica por 3
-      case 'SEMESTRAL':
-        return 6.0; // Semestral: multiplica por 6
-      case 'ANUAL':
-        return 12.0; // Anual: multiplica por 12
-      default:
-        return 1.0; // Valor padrão, caso o tipo de plano seja desconhecido
+      double pricePerLicense = double.parse(selectedPlan.value!.valor!
+          .toString()
+          .replaceAll('R\$ ', '')
+          .replaceAll(',', '.'));
+      calculatedPrice.value =
+          'R\$ ${(pricePerLicense * selectedLicenses.value).toStringAsFixed(2)}';
     }
   }
 

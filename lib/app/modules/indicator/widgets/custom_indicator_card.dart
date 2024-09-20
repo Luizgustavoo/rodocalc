@@ -24,6 +24,7 @@ class CustomIndicatorCard extends StatelessWidget {
       ),
       margin: const EdgeInsets.only(bottom: 10),
       child: ListTile(
+        horizontalTitleGap: 5,
         trailing: IconButton(
           onPressed: functionUpdate,
           icon: const Icon(Icons.edit),

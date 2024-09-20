@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/plan_controller.dart';
-import 'package:rodocalc/app/data/models/plan_model.dart';
+import 'package:rodocalc/app/data/models/user_plan_model.dart';
 import 'package:rodocalc/app/routes/app_routes.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
@@ -10,7 +10,7 @@ import 'package:rodocalc/app/utils/services.dart';
 class UpdatePlanModal extends GetView<PlanController> {
   const UpdatePlanModal({super.key, this.plano, required this.isUpdate});
 
-  final Plan? plano;
+  final UserPlan? plano;
 
   final bool isUpdate;
 

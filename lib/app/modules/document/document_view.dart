@@ -255,7 +255,7 @@ class DocumentView extends GetView<DocumentController> {
                               ));
                             } else {
                               return const Center(
-                                child: Text('Nenhum documento encontrado!'),
+                                child: Text('NENHUM DOCUMENTO CADASTRADO!'),
                               );
                             }
                           })

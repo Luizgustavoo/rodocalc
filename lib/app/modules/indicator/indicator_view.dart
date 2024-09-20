@@ -61,7 +61,7 @@ class IndicatorView extends GetView<IndicationController> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceAround,
                                 children: [
-                                  const Text('A receber:',
+                                  const Text('A RECEBER:',
                                       style: TextStyle(
                                           fontSize: 16,
                                           fontFamily: 'Inter-Bold')),
@@ -240,7 +240,7 @@ class IndicatorView extends GetView<IndicationController> {
                                 );
                               } else {
                                 return const Center(
-                                  child: Text("Nenhuma indicação encontrada!"),
+                                  child: Text("NENHUMA INDICAÇÃO CADASTRADA!"),
                                 );
                               }
                             },

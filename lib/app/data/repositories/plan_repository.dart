@@ -70,6 +70,15 @@ class PlanRepository {
     }
   }
 
+  updateSubscribe(UserPlan userplan, CreditCard creditCard) async {
+    try {
+      var response = await apiClient.updateSubscribe(userplan, creditCard);
+      return response;
+    } catch (e) {
+      Exception(e);
+    }
+  }
+
   cancelSubscribe(String idSubscription) async {
     try {
       var response = await apiClient.cancelSubscribe(idSubscription);

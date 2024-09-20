@@ -218,7 +218,87 @@ class PlanApiClient {
         body: jsonEncode(requestBody),
       );
 
+      print(response.body);
+      return json.decode(response.body);
+    } catch (err) {
+      return null;
+    }
+  }
 
+  updateSubscribe(UserPlan userPlan, CreditCard creditCard) async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+      final indicatorUrl =
+          Uri.parse('$baseUrl/v1/planousuario/alterarassinatura');
+
+      final Auth auth = ServiceStorage.getAuth();
+
+      // Map<String, String> telefoneSplit =
+      //     Services.separarDDD(auth.user!.people!.telefone.toString());
+
+      Map<String, String> mesAno =
+          Services.mesAnoValidateCreditCart(creditCard.validate.toString());
+
+      String enderecoCompleto =
+          "${auth.user!.people!.numeroCasa}, ${auth.user!.people!.endereco}, ${auth.user!.people!.bairro}";
+
+      String cpf = Services.limparCPF(creditCard.cpf.toString());
+      String cep = Services.limparCEP(auth.user!.people!.cep.toString());
+
+      String cidade = auth.user!.people!.cidade.toString();
+      String uf = auth.user!.people!.uf.toString();
+
+      // int valor = userPlan.valorPlano!;
+
+      var requestBody = {
+        // 'usuario_id': userPlan.usuarioId.toString(),
+        // 'plano_id': userPlan.planoId.toString(),
+        // 'quantidade_licencas': userPlan.quantidadeLicencas.toString(),
+
+        //**DADOS */
+        "subscriptionId": userPlan.assignatureId.toString(),
+        "name": "RodoCalcApp2",
+        "description": "Rodocalc App",
+        "quantity": userPlan.quantidadeLicencas.toString(),
+        "price": userPlan.plano!.valor.toString(),
+        /*--------DADOS DO CARTÃO--------*/
+
+        /*---------FIM DADOS DO CARTÃO-------*/
+        // "metadata": {
+        //   "id": "my_subscription_id",
+        //   "licenses": userPlan.quantidadeLicencas.toString()
+        // }
+      };
+
+      if (creditCard != null) {
+        requestBody['number'] =
+            Services.sanitizarCartaoCredito(creditCard.cardNumber.toString());
+        requestBody['holder_name'] = creditCard.cardName.toString();
+        requestBody['holder_document'] = cpf;
+        requestBody['exp_month'] = mesAno['mes'].toString();
+        requestBody['exp_year'] = mesAno['ano'].toString();
+        requestBody['cvv'] = creditCard.cvv.toString();
+        requestBody['brand'] = creditCard.brand.toString();
+        requestBody['label'] = 'Rodocalc';
+        requestBody['billing_address_line_1'] = enderecoCompleto;
+        requestBody['billing_address_line_2'] = '';
+        requestBody['billing_address_zip_code'] = cep;
+        requestBody['billing_address_city'] = cidade;
+        requestBody['billing_address_state'] = uf;
+        requestBody['billing_address_country'] = 'BR';
+      }
+
+      final response = await http.post(
+        indicatorUrl,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': token,
+        },
+        body: jsonEncode(requestBody),
+      );
+
+      print(response.body);
       return json.decode(response.body);
     } catch (err) {
       return null;
@@ -242,7 +322,6 @@ class PlanApiClient {
         },
         body: requestBody,
       );
-
 
       return json.decode(response.body);
     } catch (err) {
@@ -269,7 +348,6 @@ class PlanApiClient {
         },
         body: requestBody,
       );
-
 
       return json.decode(response.body);
     } catch (err) {

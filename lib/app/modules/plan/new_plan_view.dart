@@ -34,7 +34,7 @@ class NewPlanView extends GetView<PlanController> {
               if (controller.myPlans.isEmpty) {
                 return const CircularProgressIndicator();
               } else {
-                final plan = controller.myPlans.first;
+                final userPlan = controller.myPlans.first;
 
                 final plano = controller.listPlans.first;
                 return Container(
@@ -56,13 +56,13 @@ class NewPlanView extends GetView<PlanController> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        plan.plano!.descricao!,
+                        userPlan.plano!.descricao!,
                         style: const TextStyle(
                             fontSize: 28, fontFamily: 'Inter-Bold'),
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        "R\$ ${FormattedInputers.formatValuePTBR(plan.plano!.valor)}",
+                        "R\$ ${FormattedInputers.formatValuePTBR(userPlan.plano!.valor)}",
                         style: const TextStyle(
                           fontSize: 20,
                           fontFamily: 'Inter-Regular',
@@ -71,10 +71,10 @@ class NewPlanView extends GetView<PlanController> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        " ${plan.plano!.status == 1 ? 'ATIVO' : 'INATIVO'}",
+                        " ${userPlan.plano!.status == 1 ? 'ATIVO' : 'INATIVO'}",
                         style: TextStyle(
                             fontSize: 16,
-                            color: plan.plano!.status == 1
+                            color: userPlan.plano!.status == 1
                                 ? Colors.green
                                 : Colors.red,
                             fontFamily: 'Inter-Black'),
@@ -89,7 +89,7 @@ class NewPlanView extends GetView<PlanController> {
                           ),
                           Text(
                             FormattedInputers.formatApiDate(
-                                plan.dataAssinaturaPlano.toString()),
+                                userPlan.dataAssinaturaPlano.toString()),
                           ),
                         ],
                       ),
@@ -103,7 +103,7 @@ class NewPlanView extends GetView<PlanController> {
                           ),
                           Text(
                             FormattedInputers.formatApiDate(
-                                plan.dataVencimentoPlano.toString()),
+                                userPlan.dataVencimentoPlano.toString()),
                           ),
                         ],
                       ),
@@ -115,7 +115,7 @@ class NewPlanView extends GetView<PlanController> {
                             "LICENÇAS:",
                             style: TextStyle(fontFamily: 'Inter-Bold'),
                           ),
-                          Text("${plan.quantidadeLicencas} LICENÇAS"),
+                          Text("${userPlan.quantidadeLicencas} LICENÇAS"),
                         ],
                       ),
                       const SizedBox(height: 8),
@@ -142,7 +142,7 @@ class NewPlanView extends GetView<PlanController> {
                           showModalBottomSheet(
                             context: context,
                             builder: (_) => UpdatePlanModal(
-                              plano: plano,
+                              plano: userPlan,
                               isUpdate: true,
                             ),
                             isScrollControlled: true,
@@ -165,7 +165,7 @@ class NewPlanView extends GetView<PlanController> {
                         ]),
                         onPressed: () {
                           showDialogCancelSubscription(context,
-                              plan.assignatureId.toString(), controller);
+                              userPlan.assignatureId.toString(), controller);
                         },
                         child: const Text(
                           "CANCELAR ASSINATURA",

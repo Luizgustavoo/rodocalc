@@ -206,7 +206,7 @@ class TripView extends GetView<TripController> {
                       );
                     } else {
                       return const Center(
-                        child: Text('NENHUM TRECHO ENCONTRADO!'),
+                        child: Text('NENHUM TRECHO CADASTRADO!'),
                       );
                     }
                   }),

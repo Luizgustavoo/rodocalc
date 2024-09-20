@@ -164,7 +164,7 @@ class ClassifiedView extends GetView<ClassifiedController> {
                             );
                           } else {
                             return const Center(
-                              child: Text('Nenhum classificado econtrado!'),
+                              child: Text('NENHUM CLASSIFICADO CADASTRADO!'),
                             );
                           }
                         }),

@@ -161,7 +161,7 @@ class CreateDocumentModal extends GetView<DocumentController> {
                             physics: const NeverScrollableScrollPhysics(),
                             children: [
                               Text(
-                                item.descricao.toString().toUpperCase() ?? '',
+                                item.descricao.toString().toUpperCase(),
                                 overflow: TextOverflow.clip,
                               ),
                               const Divider()
