@@ -249,15 +249,15 @@ class PlanApiClient {
 
       var requestBody = {};
 
-      if (userPlan != null) {
+      if (userPlan.assignatureId != null && userPlan.assignatureId != '') {
         requestBody["subscriptionId"] = userPlan.assignatureId.toString();
         requestBody["name"] = "Licença adicionada";
         requestBody["description"] = "Licença adicionada";
         requestBody["quantity"] = userPlan.quantidadeLicencas.toString();
-        requestBody["price"] = userPlan.plano!.valor.toString();
+        requestBody["price"] = userPlan.valorPlano.toString();
       }
 
-      if (creditCard != null) {
+      if (creditCard.cardNumber != null) {
         Map<String, String> mesAno =
             Services.mesAnoValidateCreditCart(creditCard.validate.toString());
         requestBody['number'] =
@@ -281,6 +281,8 @@ class PlanApiClient {
         return null;
       }
 
+      print(requestBody);
+
       final response = await http.post(
         indicatorUrl,
         headers: {
@@ -291,7 +293,6 @@ class PlanApiClient {
         body: jsonEncode(requestBody),
       );
 
-      print(response.body);
       return json.decode(response.body);
     } catch (err) {
       return null;
