@@ -43,11 +43,10 @@ class UpdatePlanModal extends GetView<PlanController> {
                 color: Colors.black,
               ),
               const SizedBox(height: 20),
-              Obx(() => Text(
-                    '${controller.selectedLicenses.value} licença(s) ativa(s)',
-                    style:
-                        const TextStyle(fontSize: 18, fontFamily: 'Inter-Bold'),
-                  )),
+              Text(
+                '${controller.selectedLicenses.value} licença(s) ativa(s)',
+                style: const TextStyle(fontSize: 18, fontFamily: 'Inter-Bold'),
+              ),
               const SizedBox(height: 15),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -62,41 +61,22 @@ class UpdatePlanModal extends GetView<PlanController> {
                         IconButton(
                           icon: const Icon(Icons.remove),
                           onPressed: () {
-                            if (controller.selectedLicenses.value > 0) {
-                              controller.selectedLicenses.value--;
-                            }
+                            controller.decrementLicenses();
                           },
                         ),
+                        Obx(() => Text(
+                              '${controller.selectedLicenses.value}',
+                              style: const TextStyle(fontSize: 16),
+                            )),
                         IconButton(
                           icon: const Icon(Icons.add),
                           onPressed: () {
-                            controller.selectedLicenses.value++;
+                            controller.incrementLicenses();
                           },
                         ),
                       ],
                     ),
                   ],
-                ),
-              ),
-              const SizedBox(height: 15),
-              Obx(
-                () => DropdownButtonFormField<Plan>(
-                  value: controller.selectedPlan.value,
-                  items: controller.listPlans.map((plan) {
-                    return DropdownMenuItem<Plan>(
-                      value: plan,
-                      child: Text(plan.descricao ?? ''),
-                    );
-                  }).toList(),
-                  onChanged: (Plan? selectedPlan) {
-                    if (selectedPlan != null) {
-                      controller.updateSelectedPlan(selectedPlan);
-                    }
-                  },
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.assignment),
-                    labelText: 'SELECIONE O PLANO',
-                  ),
                 ),
               ),
               const SizedBox(height: 15),
@@ -326,9 +306,9 @@ class UpdatePlanModal extends GetView<PlanController> {
                           child: CircularProgressIndicator(),
                         );
                       }
-                      return Text(
-                        isUpdate ? 'ALTERAR PLANO' : 'CONTRATAR',
-                        style: const TextStyle(
+                      return const Text(
+                        'ALTERAR PLANO',
+                        style: TextStyle(
                             color: Colors.white, fontFamily: 'InterBold'),
                       );
                     }),

@@ -195,15 +195,61 @@ class PlanController extends GetxController {
       updatePrice();
     }
   }
+  //**TESTE DE INCREMENTAR VALOR */
+
+  final double licensePrice = 59.90; // Valor de cada licença (exemplo)
+
+  // Método para calcular o valor total
+  void calculateTotalPrice() {
+    calculatedPrice.value =
+        (selectedLicenses.value * licensePrice).toStringAsFixed(2);
+  }
+
+  // Método para incrementar licenças
+  void incrementLicenses() {
+    selectedLicenses.value++;
+    calculateTotalPrice();
+  }
+
+  // Método para decrementar licenças
+  void decrementLicenses() {
+    if (selectedLicenses.value > 0) {
+      selectedLicenses.value--;
+      calculateTotalPrice();
+    }
+  }
+
+  //** */
 
   void updatePrice() {
     if (selectedPlan.value != null) {
-      double pricePerLicense = double.parse(selectedPlan.value!.valor!
-          .toString()
-          .replaceAll('R\$ ', '')
-          .replaceAll(',', '.'));
-      calculatedPrice.value =
-          'R\$ ${(pricePerLicense * selectedLicenses.value).toStringAsFixed(2)}';
+      // Obtém o valor base do plano diretamente como double
+
+      // Obtém o multiplicador com base no tipo do plano (Mensal, Trimestral, etc.)
+      double planMultiplier =
+          getPlanPriceMultiplier(selectedPlan.value!.descricao!);
+
+      // Calcula o preço total
+      double totalPrice =
+          licensePrice * planMultiplier * selectedLicenses.value;
+
+      // Atualiza o valor calculado no formato R$
+      calculatedPrice.value = 'R\$ ${totalPrice.toStringAsFixed(2)}';
+    }
+  }
+
+  double getPlanPriceMultiplier(String planType) {
+    switch (planType) {
+      case 'MENSAL':
+        return 1.0; // Mensal: multiplica por 1
+      case 'TRIMESTRAL':
+        return 3.0; // Trimestral: multiplica por 3
+      case 'SEMESTRAL':
+        return 6.0; // Semestral: multiplica por 6
+      case 'ANUAL':
+        return 12.0; // Anual: multiplica por 12
+      default:
+        return 1.0; // Valor padrão, caso o tipo de plano seja desconhecido
     }
   }
 

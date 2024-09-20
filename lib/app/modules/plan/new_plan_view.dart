@@ -163,7 +163,10 @@ class NewPlanView extends GetView<PlanController> {
                           Colors.red.shade900,
                           Colors.red.shade300,
                         ]),
-                        onPressed: () {},
+                        onPressed: () {
+                          showDialogCancelSubscription(context,
+                              plan.assignatureId.toString(), controller);
+                        },
                         child: const Text(
                           "CANCELAR ASSINATURA",
                           style: TextStyle(
@@ -183,4 +186,59 @@ class NewPlanView extends GetView<PlanController> {
       ),
     );
   }
+}
+
+void showDialogCancelSubscription(
+    context, String idSubscription, PlanController controller) {
+  Get.defaultDialog(
+    titlePadding: const EdgeInsets.all(16),
+    contentPadding: const EdgeInsets.all(16),
+    title: "Confirmação",
+    titleStyle: const TextStyle(fontFamily: 'Inter-Bold'),
+    content: const Text(
+      textAlign: TextAlign.center,
+      "Tem certeza que deseja cancelar o plano selecionado?",
+      style: TextStyle(
+        fontFamily: 'Inter-Regular',
+        fontSize: 18,
+      ),
+    ),
+    actions: [
+      TextButton(
+        onPressed: () {
+          Get.back();
+        },
+        child: const Text(
+          "CANCELAR",
+          style: TextStyle(fontFamily: 'Poppinss'),
+        ),
+      ),
+      ElevatedButton(
+        onPressed: () async {
+          Map<String, dynamic> retorno =
+              await controller.cancelSubscribe(idSubscription);
+
+          if (retorno['success'] == true) {
+            Get.back();
+            Get.back();
+            Get.snackbar('Sucesso!', retorno['message'].join('\n'),
+                backgroundColor: Colors.green,
+                colorText: Colors.white,
+                duration: const Duration(seconds: 2),
+                snackPosition: SnackPosition.BOTTOM);
+          } else {
+            Get.snackbar('Falha!', retorno['message'].join('\n'),
+                backgroundColor: Colors.red,
+                colorText: Colors.white,
+                duration: const Duration(seconds: 2),
+                snackPosition: SnackPosition.BOTTOM);
+          }
+        },
+        child: const Text(
+          "CONFIRMAR",
+          style: TextStyle(fontFamily: 'Poppinss', color: Colors.white),
+        ),
+      ),
+    ],
+  );
 }
