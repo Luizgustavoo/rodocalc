@@ -247,7 +247,10 @@ class PlanApiClient {
 
       // int valor = userPlan.valorPlano!;
 
-      var requestBody = {};
+      var requestBody = {
+        'alterar_cartao': "nao",
+        'alterar_licenca': "nao",
+      };
 
       if (userPlan.assignatureId != null && userPlan.assignatureId != '') {
         requestBody["subscriptionId"] = userPlan.assignatureId.toString();
@@ -255,6 +258,7 @@ class PlanApiClient {
         requestBody["description"] = "Licença adicionada";
         requestBody["quantity"] = userPlan.quantidadeLicencas.toString();
         requestBody["price"] = userPlan.valorPlano.toString();
+        requestBody['alterar_licenca'] = 'sim';
       }
 
       if (creditCard.cardNumber != null) {
@@ -271,17 +275,16 @@ class PlanApiClient {
         requestBody['label'] = 'Rodocalc';
         requestBody['billing_address_line_1'] = enderecoCompleto;
         requestBody['billing_address_line_2'] = '';
-        requestBody['billing_address_zip_code'] = cep;
-        requestBody['billing_address_city'] = cidade;
-        requestBody['billing_address_state'] = uf;
-        requestBody['billing_address_country'] = 'BR';
+        requestBody['zip_code'] = cep;
+        requestBody['city'] = cidade;
+        requestBody['state'] = uf;
+        requestBody['country'] = 'BR';
+        requestBody['alterar_cartao'] = "sim";
       }
 
       if (requestBody.isEmpty) {
         return null;
       }
-
-      print(requestBody);
 
       final response = await http.post(
         indicatorUrl,
@@ -292,7 +295,7 @@ class PlanApiClient {
         },
         body: jsonEncode(requestBody),
       );
-
+      print(response.body);
       return json.decode(response.body);
     } catch (err) {
       return null;

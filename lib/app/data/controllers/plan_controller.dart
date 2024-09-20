@@ -324,6 +324,7 @@ class PlanController extends GetxController {
     selectedPlan.value = null;
     selectedCardType = ''.obs;
     shouldChangeCard.value = false;
+    addLicenses.value = 0;
   }
 }
 
