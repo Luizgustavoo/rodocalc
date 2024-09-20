@@ -1,4 +1,4 @@
-// ignore_for_file: equal_keys_in_map
+// ignore_for_file: equal_keys_in_map, unnecessary_null_comparison
 
 import 'dart:convert';
 
@@ -236,9 +236,6 @@ class PlanApiClient {
       // Map<String, String> telefoneSplit =
       //     Services.separarDDD(auth.user!.people!.telefone.toString());
 
-      Map<String, String> mesAno =
-          Services.mesAnoValidateCreditCart(creditCard.validate.toString());
-
       String enderecoCompleto =
           "${auth.user!.people!.numeroCasa}, ${auth.user!.people!.endereco}, ${auth.user!.people!.bairro}";
 
@@ -261,6 +258,8 @@ class PlanApiClient {
       }
 
       if (creditCard != null) {
+        Map<String, String> mesAno =
+            Services.mesAnoValidateCreditCart(creditCard.validate.toString());
         requestBody['number'] =
             Services.sanitizarCartaoCredito(creditCard.cardNumber.toString());
         requestBody['holder_name'] = creditCard.cardName.toString();
