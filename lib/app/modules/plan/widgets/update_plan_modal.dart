@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/plan_controller.dart';
 import 'package:rodocalc/app/data/models/user_plan_model.dart';
-import 'package:rodocalc/app/routes/app_routes.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/services.dart';
@@ -28,13 +27,13 @@ class UpdatePlanModal extends GetView<PlanController> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const SizedBox(height: 10),
-              Obx(() => Text(
-                    controller.selectedPlan.value!.descricao ?? '',
-                    style: const TextStyle(
-                        fontFamily: 'Inter-Bold',
-                        fontSize: 25,
-                        color: Color(0xFFFF6B00)),
-                  )),
+              Text(
+                plano!.plano!.descricao! ?? '',
+                style: const TextStyle(
+                    fontFamily: 'Inter-Bold',
+                    fontSize: 25,
+                    color: Color(0xFFFF6B00)),
+              ),
               const Divider(
                 endIndent: 8,
                 indent: 8,
@@ -44,7 +43,7 @@ class UpdatePlanModal extends GetView<PlanController> {
               ),
               const SizedBox(height: 20),
               Text(
-                '${controller.selectedLicenses.value} licença(s) ativa(s)',
+                '${plano!.quantidadeLicencas} licença(s) ativa(s)',
                 style: const TextStyle(fontSize: 18, fontFamily: 'Inter-Bold'),
               ),
               const SizedBox(height: 15),
@@ -65,7 +64,7 @@ class UpdatePlanModal extends GetView<PlanController> {
                           },
                         ),
                         Obx(() => Text(
-                              '${controller.selectedLicenses.value}',
+                              '${controller.addLicenses.value}',
                               style: const TextStyle(fontSize: 16),
                             )),
                         IconButton(
@@ -279,40 +278,42 @@ class UpdatePlanModal extends GetView<PlanController> {
                               fontFamily: 'Inter-Black', fontSize: 18),
                         ),
                       )),
-                  CustomElevatedButton(
-                    onPressed: () async {
-                      Map<String, dynamic> retorno =
-                          await controller.subscribe();
+                  Obx(() {
+                    if (controller.isLoadingSubscrible.value) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    return CustomElevatedButton(
+                      onPressed: () async {
+                        Map<String, dynamic> retorno =
+                            await controller.updateSubscribe(plano!);
 
-                      if (retorno['success'] == true) {
-                        controller.clearAllFields();
-                        Get.offAllNamed(Routes.home);
-                        Get.snackbar('Sucesso!', retorno['message'].join('\n'),
-                            backgroundColor: Colors.green,
-                            colorText: Colors.white,
-                            duration: const Duration(seconds: 2),
-                            snackPosition: SnackPosition.BOTTOM);
-                      } else {
-                        Get.snackbar('Falha!', retorno['message'].join('\n'),
-                            backgroundColor: Colors.red,
-                            colorText: Colors.white,
-                            duration: const Duration(seconds: 2),
-                            snackPosition: SnackPosition.BOTTOM);
-                      }
-                    },
-                    child: Obx(() {
-                      if (controller.isLoadingSubscrible.value) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                      return const Text(
+                        if (retorno['success'] == true) {
+                          // controller.clearAllFields();
+                          Get.back();
+                          //Get.offAllNamed(Routes.home);
+                          Get.snackbar(
+                              'Sucesso!', retorno['message'].join('\n'),
+                              backgroundColor: Colors.green,
+                              colorText: Colors.white,
+                              duration: const Duration(seconds: 2),
+                              snackPosition: SnackPosition.BOTTOM);
+                        } else {
+                          Get.snackbar('Falha!', retorno['message'].join('\n'),
+                              backgroundColor: Colors.red,
+                              colorText: Colors.white,
+                              duration: const Duration(seconds: 2),
+                              snackPosition: SnackPosition.BOTTOM);
+                        }
+                      },
+                      child: const Text(
                         'ALTERAR PLANO',
                         style: TextStyle(
                             color: Colors.white, fontFamily: 'InterBold'),
-                      );
-                    }),
-                  )
+                      ),
+                    );
+                  }),
                 ],
               )
             ],

@@ -12,7 +12,7 @@ class NewPlanView extends GetView<PlanController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'PLANOS'),
+      appBar: const CustomAppBar(title: 'MEU PLANO'),
       body: Stack(
         children: [
           SizedBox(
@@ -137,7 +137,6 @@ class NewPlanView extends GetView<PlanController> {
                         width: Get.width / 1,
                         onPressed: () {
                           controller.clearAllFields();
-                          controller.updateSelectedPlan(plano);
 
                           showModalBottomSheet(
                             context: context,

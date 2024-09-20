@@ -12,6 +12,7 @@ class PlanController extends GetxController {
   var licenses = 1.obs;
   var selectedPlan = Rxn<Plan>();
   var selectedLicenses = 1.obs;
+  RxInt addLicenses = 0.obs;
   var calculatedPrice = ''.obs;
   var selectedPlanDropDown = 0.obs;
 
@@ -105,11 +106,23 @@ class PlanController extends GetxController {
     return retorno;
   }
 
-  Future<Map<String, dynamic>> updateSubscribe(String assignatureId) async {
+  Future<Map<String, dynamic>> updateSubscribe(UserPlan userplan) async {
     if (planKey.currentState!.validate()) {
       isLoadingSubscrible.value = true;
 
       final CreditCard creditCard = CreditCard();
+
+      if (addLicenses.value <= 0 && !shouldChangeCard.value) {
+        retorno = {
+          'success': false,
+          'message': [
+            'Dados incorretos, nenhuma licença para adionar e nenhum cartão informado!'
+          ]
+        };
+
+        isLoadingSubscrible.value = false;
+        return retorno;
+      }
 
       if (shouldChangeCard.value == true) {
         creditCard.cardName = nameCardController.text;
@@ -121,18 +134,15 @@ class PlanController extends GetxController {
             Services.converterParaCentavos(calculatedPrice.value);
         creditCard.brand = selectedCardType.value.toString();
       }
+      UserPlan userplan = UserPlan();
+      if (addLicenses.value > 0) {
+        userplan.assignatureId = userplan.assignatureId;
+        userplan.quantidadeLicencas = addLicenses.value;
+        userplan.valorPlano =
+            Services.converterParaCentavos(userplan.plano!.valor.toString());
+      }
 
-      mensagem = await repository.updateSubscribe(
-          UserPlan(
-            // usuarioId: ServiceStorage.getUserId(),
-            // planoId: selectedPlan.value!.id!,
-            assignatureId: assignatureId,
-            quantidadeLicencas: selectedLicenses.value,
-            valorPlano: Services.converterParaCentavos(calculatedPrice.value),
-          ),
-          creditCard);
-
-      isLoadingSubscrible.value = false;
+      mensagem = await repository.updateSubscribe(userplan, creditCard);
 
       if (mensagem != null) {
         retorno = {
@@ -242,6 +252,7 @@ class PlanController extends GetxController {
       updatePrice();
     }
   }
+
   //**TESTE DE INCREMENTAR VALOR */
 
   final double licensePrice = 59.90; // Valor de cada licença (exemplo)
@@ -249,19 +260,22 @@ class PlanController extends GetxController {
   // Método para calcular o valor total
   void calculateTotalPrice() {
     calculatedPrice.value =
-        (selectedLicenses.value * licensePrice).toStringAsFixed(2);
+        (addLicenses.value * licensePrice).toStringAsFixed(2);
   }
 
   // Método para incrementar licenças
   void incrementLicenses() {
-    selectedLicenses.value++;
+    addLicenses.value++;
     calculateTotalPrice();
   }
 
   // Método para decrementar licenças
   void decrementLicenses() {
     if (selectedLicenses.value > 0) {
-      selectedLicenses.value--;
+      addLicenses.value--;
+      if (addLicenses.value < 0) {
+        addLicenses.value = 0;
+      }
       calculateTotalPrice();
     }
   }

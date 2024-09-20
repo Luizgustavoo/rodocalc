@@ -250,25 +250,15 @@ class PlanApiClient {
 
       // int valor = userPlan.valorPlano!;
 
-      var requestBody = {
-        // 'usuario_id': userPlan.usuarioId.toString(),
-        // 'plano_id': userPlan.planoId.toString(),
-        // 'quantidade_licencas': userPlan.quantidadeLicencas.toString(),
+      var requestBody = {};
 
-        //**DADOS */
-        "subscriptionId": userPlan.assignatureId.toString(),
-        "name": "RodoCalcApp2",
-        "description": "Rodocalc App",
-        "quantity": userPlan.quantidadeLicencas.toString(),
-        "price": userPlan.plano!.valor.toString(),
-        /*--------DADOS DO CARTÃO--------*/
-
-        /*---------FIM DADOS DO CARTÃO-------*/
-        // "metadata": {
-        //   "id": "my_subscription_id",
-        //   "licenses": userPlan.quantidadeLicencas.toString()
-        // }
-      };
+      if (userPlan != null) {
+        requestBody["subscriptionId"] = userPlan.assignatureId.toString();
+        requestBody["name"] = "Licença adicionada";
+        requestBody["description"] = "Licença adicionada";
+        requestBody["quantity"] = userPlan.quantidadeLicencas.toString();
+        requestBody["price"] = userPlan.plano!.valor.toString();
+      }
 
       if (creditCard != null) {
         requestBody['number'] =
@@ -286,6 +276,10 @@ class PlanApiClient {
         requestBody['billing_address_city'] = cidade;
         requestBody['billing_address_state'] = uf;
         requestBody['billing_address_country'] = 'BR';
+      }
+
+      if (requestBody.isEmpty) {
+        return null;
       }
 
       final response = await http.post(
