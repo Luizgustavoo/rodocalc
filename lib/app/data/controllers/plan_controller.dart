@@ -15,6 +15,7 @@ class PlanController extends GetxController {
   RxInt addLicenses = 0.obs;
   var calculatedPrice = ''.obs;
   var selectedPlanDropDown = 0.obs;
+  RxDouble licensePrice = 0.0.obs;
 
   var shouldChangeCard = false.obs;
 
@@ -254,12 +255,12 @@ class PlanController extends GetxController {
 
   //**TESTE DE INCREMENTAR VALOR */
 
-  final double licensePrice = 59.90; // Valor de cada licença (exemplo)
+  // Valor de cada licença (exemplo)
 
   // Método para calcular o valor total
   void calculateTotalPrice() {
     calculatedPrice.value =
-        (addLicenses.value * licensePrice).toStringAsFixed(2);
+        (addLicenses.value * licensePrice.value).toStringAsFixed(2);
   }
 
   // Método para incrementar licenças

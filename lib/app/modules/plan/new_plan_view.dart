@@ -137,6 +137,8 @@ class NewPlanView extends GetView<PlanController> {
                         width: Get.width / 1,
                         onPressed: () {
                           controller.clearAllFields();
+                          controller.licensePrice.value =
+                              userPlan.plano!.valor!;
 
                           showModalBottomSheet(
                             context: context,
