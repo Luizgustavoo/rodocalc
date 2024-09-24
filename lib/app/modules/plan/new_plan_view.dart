@@ -35,8 +35,6 @@ class NewPlanView extends GetView<PlanController> {
                 return const CircularProgressIndicator();
               } else {
                 final userPlan = controller.myPlans.first;
-
-                final plano = controller.listPlans.first;
                 return Container(
                   width: Get.width / 1.1,
                   padding: const EdgeInsets.all(20),

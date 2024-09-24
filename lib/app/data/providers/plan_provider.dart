@@ -218,7 +218,6 @@ class PlanApiClient {
         body: jsonEncode(requestBody),
       );
 
-      print(response.body);
       return json.decode(response.body);
     } catch (err) {
       return null;

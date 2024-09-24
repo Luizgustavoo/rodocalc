@@ -21,7 +21,7 @@ class ComissionRepository {
   }
 
   getExistsPedidoSaque() async {
-    List<ComissionIndicator> list = <ComissionIndicator>[];
+    // List<ComissionIndicator> list = <ComissionIndicator>[];
 
     var response = await apiClient.getExistsPedidoSaque();
 

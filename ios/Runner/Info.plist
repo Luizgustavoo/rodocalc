@@ -41,15 +41,22 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+	<string>http</string>
+	<string>https</string>
+	</array>
+	<key>UIFileSharingEnabled</key>
+	<true/>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
-
     <key>NSCameraUsageDescription</key>
-	    <string>O aplicativo precisa de permissão para acessar a câmera. Isso será necessário para cadastrar uma pessoa ou para alterar sua foto de perfil.</string>
+	<string>O aplicativo precisa de permissão para acessar a câmera. Isso será necessário para cadastrar uma pessoa ou para alterar sua foto de perfil.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	    <string>A aplicação requer acesso à sua galeria e biblioteca de imagens para possibilitar a seleção de fotos previamente capturadas.</string>
-
+	<string>A aplicação requer acesso à sua galeria e biblioteca de imagens para possibilitar a seleção de fotos previamente capturadas.</string>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>O app precisa acessar seus documentos para selecionar arquivos armazenados localmente.</string>
 </dict>
 </plist>
