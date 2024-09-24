@@ -139,6 +139,7 @@ class NewPlanView extends GetView<PlanController> {
                           controller.clearAllFields();
                           controller.licensePrice.value =
                               userPlan.plano!.valor!;
+                          controller.isLoadingSubscrible.value = false;
 
                           showModalBottomSheet(
                             context: context,

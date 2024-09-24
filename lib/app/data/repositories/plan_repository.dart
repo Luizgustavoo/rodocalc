@@ -70,9 +70,11 @@ class PlanRepository {
     }
   }
 
-  updateSubscribe(UserPlan userplan, CreditCard creditCard) async {
+  updateSubscribe(
+      UserPlan userplan, CreditCard creditCard, String subscriptionId) async {
     try {
-      var response = await apiClient.updateSubscribe(userplan, creditCard);
+      var response =
+          await apiClient.updateSubscribe(userplan, creditCard, subscriptionId);
       return response;
     } catch (e) {
       Exception(e);

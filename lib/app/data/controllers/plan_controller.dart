@@ -131,8 +131,8 @@ class PlanController extends GetxController {
         creditCard.cpf = cpfController.text;
         creditCard.cvv = cvvController.text;
         creditCard.cardNumber = numberCardController.text;
-        creditCard.valor =
-            Services.converterParaCentavos(calculatedPrice.value);
+        // creditCard.valor =
+        //     Services.converterParaCentavos(calculatedPrice.value);
         creditCard.brand = selectedCardType.value.toString();
       }
       UserPlan userplan = UserPlan();
@@ -142,7 +142,8 @@ class PlanController extends GetxController {
         userplan.valorPlano = planoUsuario.valorPlano;
       }
 
-      mensagem = await repository.updateSubscribe(userplan, creditCard);
+      mensagem = await repository.updateSubscribe(
+          userplan, creditCard, planoUsuario.assignatureId.toString());
 
       if (mensagem != null) {
         retorno = {

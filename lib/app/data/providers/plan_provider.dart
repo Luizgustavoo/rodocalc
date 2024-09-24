@@ -225,7 +225,8 @@ class PlanApiClient {
     }
   }
 
-  updateSubscribe(UserPlan userPlan, CreditCard creditCard) async {
+  updateSubscribe(
+      UserPlan userPlan, CreditCard creditCard, String subscriptionId) async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
       final indicatorUrl =
@@ -248,12 +249,12 @@ class PlanApiClient {
       // int valor = userPlan.valorPlano!;
 
       var requestBody = {
+        'subscriptionId': subscriptionId.toString(),
         'alterar_cartao': "nao",
         'alterar_licenca': "nao",
       };
 
       if (userPlan.assignatureId != null && userPlan.assignatureId != '') {
-        requestBody["subscriptionId"] = userPlan.assignatureId.toString();
         requestBody["name"] = "Licença adicionada";
         requestBody["description"] = "Licença adicionada";
         requestBody["quantity"] = userPlan.quantidadeLicencas.toString();
