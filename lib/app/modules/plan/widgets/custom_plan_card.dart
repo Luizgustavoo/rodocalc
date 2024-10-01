@@ -36,7 +36,7 @@ class CustomPlanCard extends StatelessWidget {
             ),
             const SizedBox(height: 8.0),
             Text(
-              description!,
+              description ?? '',
               textAlign: TextAlign.center,
               style: const TextStyle(fontFamily: 'Inter-Regular'),
             ),

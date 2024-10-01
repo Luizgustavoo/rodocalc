@@ -17,6 +17,8 @@ class PlanController extends GetxController {
   var selectedPlanDropDown = 0.obs;
   RxDouble licensePrice = 0.0.obs;
 
+  var selectedRecurrence = ''.obs;
+
   var shouldChangeCard = false.obs;
 
   var bandeiraCartao = 'NÚMERO DO CARTÃO'.obs;
@@ -44,6 +46,12 @@ class PlanController extends GetxController {
   void updateCardType(String? newType) {
     if (newType != null) {
       selectedCardType.value = newType;
+    }
+  }
+
+  void updateRecurrence(String? recurrence) {
+    if (recurrence != null) {
+      selectedRecurrence.value = recurrence;
     }
   }
 

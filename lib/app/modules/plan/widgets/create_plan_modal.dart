@@ -55,6 +55,34 @@ class CreatePlanModal extends GetView<PlanController> {
                 ),
               ),
               const SizedBox(height: 15.0),
+              Obx(
+                () => DropdownButtonFormField<String>(
+                  value: controller.selectedRecurrence.value.isEmpty
+                      ? null
+                      : controller.selectedRecurrence.value,
+                  items:
+                      ['MENSAL', 'SEMESTRAL', 'ANUAL'].map((String recurrence) {
+                    return DropdownMenuItem<String>(
+                      value: recurrence,
+                      child: Text(recurrence),
+                    );
+                  }).toList(),
+                  onChanged: (newValue) {
+                    controller.updateRecurrence(newValue);
+                  },
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.calendar_today),
+                    labelText: 'RECORRÊNCIA',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, selecione uma recorrência';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              const SizedBox(height: 15.0),
               TextFormField(
                 controller: controller.numberCardController,
                 decoration: const InputDecoration(

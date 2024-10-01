@@ -368,11 +368,11 @@ class HomeView extends GetView<HomeController> {
                                         onTap: () async {
                                           await planController.getAll();
                                           await planController.getMyPlans();
-                                          if (planController.myPlans.isEmpty) {
-                                            Get.toNamed(Routes.plan);
-                                          } else {
-                                            Get.toNamed(Routes.newplanview);
-                                          }
+                                          // if (planController.myPlans.isEmpty) {
+                                          Get.toNamed(Routes.plan);
+                                          // } else {
+                                          //   Get.toNamed(Routes.newplanview);
+                                          // }
                                         },
                                       ),
                                     ],
