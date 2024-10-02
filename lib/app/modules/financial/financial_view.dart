@@ -125,97 +125,148 @@ class FinancialView extends GetView<TransactionController> {
             ],
           ),
         ),
-        floatingActionButton: Padding(
-          padding: const EdgeInsets.only(right: 8, bottom: 36),
-          child: SpeedDial(
-            childrenButtonSize: const Size(55, 55),
-            foregroundColor: Colors.white,
-            backgroundColor: const Color(0xFFFF6B00),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-            isOpenOnStart: false,
-            animatedIcon: AnimatedIcons.menu_close,
-            buttonSize: const Size(50, 50),
-            children: [
-              if (ServiceStorage.getUserTypeId() != 4) ...[
-                SpeedDialChild(
-                  backgroundColor: Colors.green.shade600,
-                  child: const SizedBox(
-                    width: 40,
-                    height: 40,
-                    child: Icon(
-                      Icons.attach_money_rounded,
-                      color: Colors.white,
-                    ),
-                  ),
-                  label: 'ADICIONAR RECEBIMENTO',
-                  labelStyle: const TextStyle(fontFamily: "Inter-Black"),
-                  onTap: () {
-                    Vehicle v = ServiceStorage.getVehicleStorage();
-                    if (v.isEmpty()) {
-                      Get.snackbar('Atenção!', 'Selecione um veículo antes!',
-                          backgroundColor: Colors.orange,
-                          colorText: Colors.black,
-                          duration: const Duration(seconds: 2),
-                          snackPosition: SnackPosition.BOTTOM);
-                    } else {
-                      final cityController = Get.put(CityStateController());
-                      cityController.getCities();
-                      controller.clearAllFields();
-                      controller.getMyChargeTypes();
-                      showModalBottomSheet(
-                        isScrollControlled: true,
-                        context: context,
-                        builder: (context) => CreateReceiptModal(
-                          isUpdate: false,
-                        ),
-                      );
-                    }
-                  },
-                ),
-              ],
-              SpeedDialChild(
-                backgroundColor: Colors.red.shade600,
-                child: const SizedBox(
-                  width: 40,
-                  height: 40,
-                  child: Icon(
-                    Icons.money_off_csred_rounded,
-                    color: Colors.white,
-                  ),
-                ),
-                label: 'ADICIONAR DESPESA',
-                labelStyle: const TextStyle(fontFamily: "Inter-Black"),
-                onTap: () {
-                  Vehicle v = ServiceStorage.getVehicleStorage();
-                  if (v.isEmpty()) {
-                    Get.snackbar('Atenção!', 'Selecione um veículo antes!',
-                        backgroundColor: Colors.orange,
-                        colorText: Colors.black,
-                        duration: const Duration(seconds: 2),
-                        snackPosition: SnackPosition.BOTTOM);
-                  } else {
-                    final cityController = Get.put(CityStateController());
-                    cityController.getCities();
-                    controller.clearAllFields();
-                    final transactionController =
-                        Get.put(TransactionController());
-
-                    transactionController.getMyCategories();
-                    transactionController.getMySpecifics();
-
-                    showModalBottomSheet(
-                      isScrollControlled: true,
-                      context: context,
-                      builder: (context) => CreateExpenseModal(
-                        isUpdate: false,
-                      ),
-                    );
-                  }
-                },
+        floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(right: 8, bottom: 5),
+              child: FloatingActionButton(
+                backgroundColor: Colors.grey.shade300,
+                mini: true,
+                onPressed: () {},
+                child: const Icon(Icons.download),
               ),
-            ],
-          ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 8, bottom: 36),
+              child: SpeedDial(
+                childrenButtonSize: const Size(55, 55),
+                foregroundColor: Colors.white,
+                backgroundColor: const Color(0xFFFF6B00),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15)),
+                isOpenOnStart: false,
+                animatedIcon: AnimatedIcons.menu_close,
+                buttonSize: const Size(50, 50),
+                children: [
+                  if (ServiceStorage.getUserTypeId() != 4) ...[
+                    SpeedDialChild(
+                      backgroundColor: Colors.green.shade600,
+                      child: const SizedBox(
+                        width: 40,
+                        height: 40,
+                        child: Icon(
+                          Icons.attach_money_rounded,
+                          color: Colors.white,
+                        ),
+                      ),
+                      label: 'ADICIONAR RECEBIMENTO',
+                      labelStyle: const TextStyle(fontFamily: "Inter-Black"),
+                      onTap: () {
+                        Vehicle v = ServiceStorage.getVehicleStorage();
+                        if (v.isEmpty()) {
+                          Get.snackbar(
+                              'Atenção!', 'Selecione um veículo antes!',
+                              backgroundColor: Colors.orange,
+                              colorText: Colors.black,
+                              duration: const Duration(seconds: 2),
+                              snackPosition: SnackPosition.BOTTOM);
+                        } else {
+                          final cityController = Get.put(CityStateController());
+                          cityController.getCities();
+                          controller.clearAllFields();
+                          controller.getMyChargeTypes();
+                          showModalBottomSheet(
+                            isScrollControlled: true,
+                            context: context,
+                            builder: (context) => CreateReceiptModal(
+                              isUpdate: false,
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                    SpeedDialChild(
+                      backgroundColor: Colors.green.shade600,
+                      child: const SizedBox(
+                        width: 40,
+                        height: 40,
+                        child: Icon(
+                          Icons.download,
+                          color: Colors.white,
+                        ),
+                      ),
+                      label: 'GERAR PDF',
+                      labelStyle: const TextStyle(fontFamily: "Inter-Black"),
+                      onTap: () {
+                        Vehicle v = ServiceStorage.getVehicleStorage();
+                        if (v.isEmpty()) {
+                          Get.snackbar(
+                              'Atenção!', 'Selecione um veículo antes!',
+                              backgroundColor: Colors.orange,
+                              colorText: Colors.black,
+                              duration: const Duration(seconds: 2),
+                              snackPosition: SnackPosition.BOTTOM);
+                        } else {
+                          final cityController = Get.put(CityStateController());
+                          cityController.getCities();
+                          controller.clearAllFields();
+                          controller.getMyChargeTypes();
+                          showModalBottomSheet(
+                            isScrollControlled: true,
+                            context: context,
+                            builder: (context) => CreateReceiptModal(
+                              isUpdate: false,
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                  SpeedDialChild(
+                    backgroundColor: Colors.red.shade600,
+                    child: const SizedBox(
+                      width: 40,
+                      height: 40,
+                      child: Icon(
+                        Icons.money_off_csred_rounded,
+                        color: Colors.white,
+                      ),
+                    ),
+                    label: 'ADICIONAR DESPESA',
+                    labelStyle: const TextStyle(fontFamily: "Inter-Black"),
+                    onTap: () {
+                      Vehicle v = ServiceStorage.getVehicleStorage();
+                      if (v.isEmpty()) {
+                        Get.snackbar('Atenção!', 'Selecione um veículo antes!',
+                            backgroundColor: Colors.orange,
+                            colorText: Colors.black,
+                            duration: const Duration(seconds: 2),
+                            snackPosition: SnackPosition.BOTTOM);
+                      } else {
+                        final cityController = Get.put(CityStateController());
+                        cityController.getCities();
+                        controller.clearAllFields();
+                        final transactionController =
+                            Get.put(TransactionController());
+
+                        transactionController.getMyCategories();
+                        transactionController.getMySpecifics();
+
+                        showModalBottomSheet(
+                          isScrollControlled: true,
+                          context: context,
+                          builder: (context) => CreateExpenseModal(
+                            isUpdate: false,
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
         ));
   }
 
@@ -318,10 +369,6 @@ class FinancialView extends GetView<TransactionController> {
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
                     fillColor: Colors.transparent,
-                    border: OutlineInputBorder(),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
-                    ),
                   ),
                   readOnly: true,
                   onTap: () async {
@@ -360,10 +407,6 @@ class FinancialView extends GetView<TransactionController> {
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
                     fillColor: Colors.transparent,
-                    border: OutlineInputBorder(),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
-                    ),
                   ),
                   readOnly: true,
                   onTap: () async {
@@ -398,33 +441,37 @@ class FinancialView extends GetView<TransactionController> {
             ],
           ),
           const SizedBox(
-            height: 15,
+            height: 10,
           ),
           SizedBox(
             height: 45,
             child: TextFormField(
               controller: controller.txtDescriptionFilterController,
               decoration: InputDecoration(
-                  labelText: 'Pesquisar',
-                  suffixIcon: IconButton(
-                      onPressed: () {
-                        if ((controller.startDateController.text.isNotEmpty &&
-                                controller.endDateController.text.isNotEmpty) ||
-                            controller.txtDescriptionFilterController.text
-                                .isNotEmpty) {
-                          controller.getTransactionsWithFilter();
-                        } else {
-                          Get.snackbar('Atenção!',
-                              'Selecione data inicial e final, ou uma descrição!',
-                              backgroundColor: Colors.orange,
-                              colorText: Colors.black,
-                              duration: const Duration(seconds: 2),
-                              snackPosition: SnackPosition.BOTTOM);
-                        }
-                      },
-                      icon: const Icon(Icons.search))),
+                fillColor: Colors.grey.shade200,
+                labelText: 'Pesquisar',
+                suffixIcon: IconButton(
+                  onPressed: () {
+                    if ((controller.startDateController.text.isNotEmpty &&
+                            controller.endDateController.text.isNotEmpty) ||
+                        controller
+                            .txtDescriptionFilterController.text.isNotEmpty) {
+                      controller.getTransactionsWithFilter();
+                    } else {
+                      Get.snackbar('Atenção!',
+                          'Selecione data inicial e final, ou uma descrição!',
+                          backgroundColor: Colors.orange,
+                          colorText: Colors.black,
+                          duration: const Duration(seconds: 2),
+                          snackPosition: SnackPosition.BOTTOM);
+                    }
+                  },
+                  icon: const Icon(Icons.search),
+                ),
+              ),
             ),
           ),
+          const SizedBox(width: 5),
           Obx(() {
             return controller.tituloSearchTransactions.value.isNotEmpty
                 ? Column(
@@ -461,8 +508,8 @@ class FinancialView extends GetView<TransactionController> {
           controller.listTransactions.isNotEmpty) {
         return Expanded(
           child: ListView.builder(
-            padding:
-                const EdgeInsets.only(left: 16, top: 16, right: 16, bottom: 60),
+            padding: const EdgeInsets.only(
+                left: 16, top: 16, right: 16, bottom: 130),
             itemCount: controller.listTransactions.length,
             itemBuilder: (context, index) {
               final transaction = controller.listTransactions[index];
@@ -476,7 +523,6 @@ class FinancialView extends GetView<TransactionController> {
                   controller.getMyCategories();
                   controller.getMyChargeTypes();
                   controller.getMySpecifics();
-
                   if (transaction.tipoTransacao == 'entrada') {
                     showModalBottomSheet(
                       isScrollControlled: true,
