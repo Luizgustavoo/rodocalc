@@ -304,7 +304,8 @@ class HomeView extends GetView<HomeController> {
                                         if(ServiceStorage.isRotaPermitida("vehicle")){
                                           Get.toNamed(Routes.vehicle);
                                         }else{
-                                          Get.snackbar('Falha', 'Seu plano nao contempla essa rota');
+                                          Get.snackbar('Atenção!', 'Seu plano nao contempla esse módulo!', backgroundColor: const Color(0xFFFF6B00),
+                                              colorText: Colors.white, );
                                         }
 
                                       },
@@ -313,7 +314,7 @@ class HomeView extends GetView<HomeController> {
                                     if (ServiceStorage.getUserTypeId() !=
                                         4) ...[
                                       CustomHomeCard(
-                                        color: ServiceStorage.isRotaPermitida("financial") ? Color(0xFFFF6B00) : Colors.grey.shade700,
+                                        color: ServiceStorage.isRotaPermitida("financial") ? Color(0xFFFF6B01) : Colors.grey.shade700,
                                         imagePath: 'assets/images/frete.png',
                                         label: 'Financeiro',
                                         onTap: () {
