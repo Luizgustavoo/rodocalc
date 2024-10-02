@@ -73,6 +73,21 @@ class ServiceStorage {
     return "";
   }
 
+  static List<String?> rotasPermitidas(){
+    List<String?> list = [];
+    if (existUser()) {
+      Map<String, dynamic> authJson = _box.read('auth');
+      Auth auth = Auth.fromJson(authJson);
+      list = auth.rotas!.map((rota) => rota.rota).toList();
+    }
+      return list;
+  }
+
+  static bool isRotaPermitida(String rotaNome) {
+    List<String?> rotas = rotasPermitidas();
+    return rotas.contains(rotaNome);
+  }
+
   static Auth getDataUser() {
     if (existUser()) {
       Map<String, dynamic> authJson = _box.read('auth');

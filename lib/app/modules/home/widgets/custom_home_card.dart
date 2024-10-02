@@ -4,12 +4,14 @@ class CustomHomeCard extends StatelessWidget {
   final String imagePath;
   final String label;
   final VoidCallback onTap;
+  final Color color;
 
   const CustomHomeCard({
     super.key,
     required this.imagePath,
     required this.label,
     required this.onTap,
+    required this.color,
   });
 
   @override
@@ -24,7 +26,7 @@ class CustomHomeCard extends StatelessWidget {
             height: 75,
             width: 75,
             decoration: BoxDecoration(
-              color: const Color(0xFFFF6B00),
+              color: color,
               borderRadius: BorderRadius.circular(5),
             ),
             child: Column(

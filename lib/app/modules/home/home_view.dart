@@ -294,19 +294,26 @@ class HomeView extends GetView<HomeController> {
                                       MainAxisAlignment.spaceAround,
                                   children: [
                                     CustomHomeCard(
+                                      color: ServiceStorage.isRotaPermitida("vehicle") ? Color(0xFFFF6B00) : Colors.grey.shade700,
                                       imagePath: 'assets/images/caminhao.png',
                                       label: 'Caminhões',
                                       onTap: () {
                                         vehicleController.isLoading.value =
                                             false;
                                         vehicleController.getAll();
-                                        Get.toNamed(Routes.vehicle);
+                                        if(ServiceStorage.isRotaPermitida("vehicle")){
+                                          Get.toNamed(Routes.vehicle);
+                                        }else{
+                                          Get.snackbar('Falha', 'Seu plano nao contempla essa rota');
+                                        }
+
                                       },
                                     ),
                                     const SizedBox(width: 5),
                                     if (ServiceStorage.getUserTypeId() !=
                                         4) ...[
                                       CustomHomeCard(
+                                        color: ServiceStorage.isRotaPermitida("financial") ? Color(0xFFFF6B00) : Colors.grey.shade700,
                                         imagePath: 'assets/images/frete.png',
                                         label: 'Financeiro',
                                         onTap: () {
@@ -320,6 +327,7 @@ class HomeView extends GetView<HomeController> {
                                     if (ServiceStorage.getUserTypeId() !=
                                         4) ...[
                                       CustomHomeCard(
+                                        color: ServiceStorage.isRotaPermitida("freight") ? Color(0xFFFF6B00) : Colors.grey.shade700,
                                         imagePath: 'assets/images/estrada.png',
                                         label: 'Fretes',
                                         onTap: () {
@@ -330,6 +338,7 @@ class HomeView extends GetView<HomeController> {
                                       const SizedBox(width: 5),
                                     ],
                                     CustomHomeCard(
+                                      color: ServiceStorage.isRotaPermitida("trip") ? Color(0xFFFF6B00) : Colors.grey.shade700,
                                       imagePath: 'assets/images/trecho.png',
                                       label: 'Trechos',
                                       onTap: () {
@@ -339,6 +348,7 @@ class HomeView extends GetView<HomeController> {
                                     ),
                                     const SizedBox(width: 5),
                                     CustomHomeCard(
+                                      color: ServiceStorage.isRotaPermitida("document") ? Color(0xFFFF6B00) : Colors.grey.shade700,
                                       imagePath: 'assets/images/documento.png',
                                       label: 'Documentos',
                                       onTap: () {
@@ -348,6 +358,7 @@ class HomeView extends GetView<HomeController> {
                                     ),
                                     const SizedBox(width: 5),
                                     CustomHomeCard(
+                                      color: ServiceStorage.isRotaPermitida("indicator") ? Color(0xFFFF6B00) : Colors.grey.shade700,
                                       imagePath: 'assets/images/indicador.png',
                                       label: 'Indicador',
                                       onTap: () {
@@ -363,21 +374,23 @@ class HomeView extends GetView<HomeController> {
                                         4) ...[
                                       const SizedBox(width: 5),
                                       CustomHomeCard(
+                                        color: Color(0xFFFF6B00),
                                         imagePath: 'assets/images/plano.png',
                                         label: 'Planos',
                                         onTap: () async {
                                           await planController.getAll();
                                           await planController.getMyPlans();
-                                          // if (planController.myPlans.isEmpty) {
+                                          if (planController.myPlans.isEmpty) {
                                           Get.toNamed(Routes.plan);
-                                          // } else {
-                                          //   Get.toNamed(Routes.newplanview);
-                                          // }
+                                          } else {
+                                            Get.toNamed(Routes.newplanview);
+                                          }
                                         },
                                       ),
                                     ],
                                     const SizedBox(width: 5),
                                     CustomHomeCard(
+                                      color: ServiceStorage.isRotaPermitida("classified") ? Color(0xFFFF6B00) : Colors.grey.shade700,
                                       imagePath: 'assets/images/classific.png',
                                       label: 'Classificados',
                                       onTap: () {
@@ -387,6 +400,7 @@ class HomeView extends GetView<HomeController> {
                                     ),
                                     const SizedBox(width: 5),
                                     CustomHomeCard(
+                                      color: ServiceStorage.isRotaPermitida("course") ? Color(0xFFFF6B00) : Colors.grey.shade700,
                                       imagePath: 'assets/images/curso.png',
                                       label: 'Cursos',
                                       onTap: () {

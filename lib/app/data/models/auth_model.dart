@@ -1,4 +1,5 @@
 import 'package:rodocalc/app/data/models/people_model.dart';
+import 'package:rodocalc/app/data/models/rota_model.dart';
 import 'package:rodocalc/app/data/models/user_model.dart';
 
 class Auth {
@@ -7,6 +8,7 @@ class Auth {
   String? accessToken;
   String? tokenType;
   String? expiresIn;
+  List<Rota>? rotas;
 
   Auth({
     this.user,
@@ -14,6 +16,7 @@ class Auth {
     this.tokenType,
     this.expiresIn,
     this.people,
+    this.rotas,
   });
 
   Auth.fromJson(Map<String, dynamic> json) {
@@ -22,6 +25,12 @@ class Auth {
     accessToken = json['access_token'];
     tokenType = json['token_type'];
     expiresIn = json['expires_in'].toString();
+    if (json['rotas'] != null) {
+      rotas = [];
+      json['rotas'].forEach((v) {
+        rotas!.add(Rota.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -35,6 +44,10 @@ class Auth {
     data['access_token'] = accessToken;
     data['token_type'] = tokenType as String;
     data['expires_in'] = expiresIn as String;
+    // Convertendo as rotas para JSON se existirem
+    if (rotas != null) {
+      data['rotas'] = rotas!.map((v) => v.toJson()).toList();
+    }
     return data;
   }
 }
