@@ -133,7 +133,7 @@ class FinancialView extends GetView<TransactionController> {
               child: FloatingActionButton(
                 backgroundColor: Colors.grey.shade300,
                 mini: true,
-                onPressed: () {},
+                onPressed: () async => await controller.generatePdf(),
                 child: const Icon(Icons.download),
               ),
             ),

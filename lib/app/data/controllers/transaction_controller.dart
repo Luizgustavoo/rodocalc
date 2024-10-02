@@ -1,8 +1,14 @@
+import 'dart:io';
+import 'dart:math';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:rodocalc/app/data/models/charge_type_model.dart';
 import 'package:rodocalc/app/data/models/expense_category_model.dart';
 import 'package:rodocalc/app/data/models/specific_type_expense_model.dart';
@@ -11,6 +17,9 @@ import 'package:rodocalc/app/data/models/transactions_model.dart';
 import 'package:rodocalc/app/data/repositories/transaction_repository.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:share_plus/share_plus.dart';
+import 'package:path_provider/path_provider.dart';
 
 class TransactionController extends GetxController {
   RxBool trailerCheckboxValue = false.obs;
@@ -125,6 +134,205 @@ class TransactionController extends GetxController {
     }
     isLoading.value = false;
   }
+
+  //*RELATORIO */
+  Future<void> generatePdf() async {
+    final pdf = pw.Document();
+    final String formattedDate =
+        DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now());
+    final int randomNum = Random().nextInt(100000);
+    final ByteData imageData =
+        await rootBundle.load('assets/images/background.jpg');
+    final Uint8List bytes = imageData.buffer.asUint8List();
+    final image = pw.MemoryImage(bytes);
+    pdf.addPage(
+      pw.MultiPage(
+        pageTheme: pw.PageTheme(
+          margin: pw.EdgeInsets.zero,
+          buildBackground: (context) => pw.Positioned.fill(
+            child: pw.Image(image, fit: pw.BoxFit.cover),
+          ),
+        ),
+        header: (context) => pw.Padding(
+          padding: const pw.EdgeInsets.only(top: 70, left: 20),
+          child: pw.Text('RELATÓRIO TRANSAÇÕES',
+              style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+        ),
+        footer: (context) => pw.Padding(
+          padding: const pw.EdgeInsets.only(left: 20, bottom: 10),
+          child: pw.Text('DATA RELATÓRIO: $formattedDate',
+              style: const pw.TextStyle(fontSize: 12, height: 10)),
+        ),
+        build: (context) => listTransactions.map((transaction) {
+          return pw.Padding(
+              padding: const pw.EdgeInsets.only(left: 20),
+              child: pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.SizedBox(height: 10),
+                  pw.Text('ORIGEM: ${transaction.origem}',),
+                  pw.Text('DESTINO: ${transaction.destino}'),
+                  pw.Text('EMPRESA: ${transaction.uf}'),
+                  pw.Text('DATA: ${transaction.data}'),
+                  pw.Text('EMPRESA: ${transaction.empresa}'),
+                  pw.Text('DESCRIÇÃO: ${transaction.descricao}'),
+                  pw.Text('VALOR: ${transaction.valor.toStringAsFixed(2)}'),
+                  pw.SizedBox(height: 10),
+                  pw.Divider(),
+                ],
+              ));
+        }).toList(),
+      ),
+    );
+
+    final output = await pdf.save();
+    await showShareDialog(
+      Get.context!,
+      'Relatório_Transacao_$randomNum',
+      output,
+    );
+  }
+
+  Future<void> showShareDialog(
+      BuildContext context, String fileName, List<int> pdfData) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Compartilhar Relatório'),
+          titleTextStyle:
+              const TextStyle(fontFamily: 'Poppinss', color: Colors.black),
+          content:
+              const Text('Como você gostaria de compartilhar o relatório?'),
+          contentTextStyle:
+              const TextStyle(fontFamily: 'Poppins', color: Colors.black),
+          actions: [
+            TextButton.icon(
+              onPressed: () {
+                Get.back();
+                saveFile(pdfData, fileName);
+              },
+              label: const Text(
+                'Salvar',
+                style: TextStyle(fontFamily: 'Poppins'),
+              ),
+              icon: const Icon(
+                Icons.save_alt_rounded,
+                color: Colors.black,
+              ),
+            ),
+            TextButton.icon(
+              onPressed: () {
+                Get.back();
+                shareFileByWhatsApp(pdfData, fileName);
+              },
+              label: const Text(
+                'E-mail/Whatsapp',
+                style: TextStyle(fontFamily: 'Poppins'),
+              ),
+              icon: const Icon(
+                Icons.email_rounded,
+                color: Colors.black,
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> saveFile(List<int> pdfData, String fileName) async {
+    // Verifique se a permissão de armazenamento foi concedida
+    final status = await Permission.storage.status;
+    if (!status.isGranted) {
+      final result = await Permission.storage.request();
+      if (!result.isGranted) {
+        // Se a permissão não for concedida, mostre uma mensagem para o usuário
+        Get.snackbar(
+          'Permissão negada',
+          'A permissão de armazenamento é necessária para salvar o arquivo.',
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 2),
+          snackPosition: SnackPosition.BOTTOM,
+        );
+        return;
+      }
+    }
+
+    try {
+      // Obtém o diretório para salvar o arquivo
+      Directory directory;
+      if (Platform.isAndroid) {
+        directory = Directory('/storage/emulated/0/Download');
+      } else {
+        directory = await getApplicationDocumentsDirectory();
+      }
+
+      // Verifica se o diretório existe e cria se necessário
+      bool hasExisted = await directory.exists();
+      if (!hasExisted) {
+        await directory.create(recursive: true);
+      }
+
+      // Cria o arquivo
+      final filePath =
+          "${directory.path}${Platform.pathSeparator}$fileName.pdf";
+      final file = File(filePath);
+      if (!file.existsSync()) {
+        await file.create();
+      }
+
+      // Escreve os dados do PDF no arquivo
+      await file.writeAsBytes(pdfData);
+      Get.snackbar(
+        'Sucesso!',
+        'Arquivo salvo com sucesso em $filePath',
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 2),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } catch (e) {
+      Get.snackbar(
+        'Erro!',
+        'Ocorreu um erro ao salvar o arquivo: $e',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 2),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      rethrow;
+    }
+  }
+
+  Future<void> shareFileByWhatsApp(List<int> pdfData, String fileName) async {
+    final directory = await getExternalStorageDirectory();
+    final path = directory!.path;
+    final file = File('$path/$fileName.pdf');
+    await file.writeAsBytes(pdfData);
+
+    try {
+      await Share.shareXFiles(
+        [XFile(file.path)],
+        text: 'Segue em anexo o relatório de empresas.',
+      );
+      Get.snackbar(
+        'Sucesso',
+        'Arquivo compartilhado com sucesso!',
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+    } catch (e) {
+      Get.snackbar(
+        'Erro',
+        'Ocorreu um erro ao compartilhar o arquivo.',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+  //* fim relatorio*/
 
   Future<void> getTransactionsWithFilter() async {
     tituloSearchTransactions.value = "";
