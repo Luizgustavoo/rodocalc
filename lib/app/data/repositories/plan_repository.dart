@@ -61,9 +61,9 @@ class PlanRepository {
     return list;
   }
 
-  subscribe(UserPlan userplan, CreditCard creditCard) async {
+  subscribe(UserPlan userplan, CreditCard creditCard, String recurrence) async {
     try {
-      var response = await apiClient.subscribe(userplan, creditCard);
+      var response = await apiClient.subscribe(userplan, creditCard, recurrence);
       return response;
     } catch (e) {
       Exception(e);

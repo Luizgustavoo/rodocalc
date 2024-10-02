@@ -117,7 +117,7 @@ class PlanApiClient {
     return null;
   }
 
-  subscribe(UserPlan userPlan, CreditCard creditCard) async {
+  subscribe(UserPlan userPlan, CreditCard creditCard, String recurrence) async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
       final indicatorUrl = Uri.parse('$baseUrl/v1/planousuario/contratar');
@@ -141,7 +141,16 @@ class PlanApiClient {
 
       int valor = userPlan.valorPlano!;
 
+      int recurrenceDays = 0;
+
+      switch(recurrence){
+        case 'MENSAL': recurrenceDays = 30;break;
+        case 'SEMESTRAL': recurrenceDays = 180;break;
+        case 'ANUAL': recurrenceDays = 365;break;
+      }
+
       var requestBody = {
+        'recorrencia': recurrenceDays.toString(),
         'usuario_id': userPlan.usuarioId.toString(),
         'plano_id': userPlan.planoId.toString(),
         'quantidade_licencas': userPlan.quantidadeLicencas.toString(),

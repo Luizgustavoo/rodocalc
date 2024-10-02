@@ -93,6 +93,7 @@ class PlanController extends GetxController {
           valor: Services.converterParaCentavos(calculatedPrice.value),
           brand: selectedCardType.value.toString(),
         ),
+          selectedRecurrence.value
       );
 
       isLoadingSubscrible.value = false;
