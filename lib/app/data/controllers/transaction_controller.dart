@@ -141,47 +141,68 @@ class TransactionController extends GetxController {
     final String formattedDate =
         DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now());
     final int randomNum = Random().nextInt(100000);
-    final ByteData imageData =
-        await rootBundle.load('assets/images/background.jpg');
-    final Uint8List bytes = imageData.buffer.asUint8List();
-    final image = pw.MemoryImage(bytes);
+
+    // Carregar a logo
+    final ByteData logoData = await rootBundle.load('assets/images/logo.png');
+    final Uint8List logoBytes = logoData.buffer.asUint8List();
+    final logoImage = pw.MemoryImage(logoBytes);
+
     pdf.addPage(
       pw.MultiPage(
-        pageTheme: pw.PageTheme(
+        pageTheme: const pw.PageTheme(
           margin: pw.EdgeInsets.zero,
-          buildBackground: (context) => pw.Positioned.fill(
-            child: pw.Image(image, fit: pw.BoxFit.cover),
-          ),
         ),
         header: (context) => pw.Padding(
-          padding: const pw.EdgeInsets.only(top: 70, left: 20),
-          child: pw.Text('RELATÓRIO TRANSAÇÕES',
-              style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+          padding: const pw.EdgeInsets.only(top: 70, left: 20, right: 20),
+          child: pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            children: [
+              pw.Text(
+                'RELATÓRIO TRANSAÇÕES',
+                style:
+                    pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 18),
+              ),
+              pw.Image(logoImage,
+                  width: 50), // Tamanho da logo ajustado para o header
+            ],
+          ),
         ),
         footer: (context) => pw.Padding(
           padding: const pw.EdgeInsets.only(left: 20, bottom: 10),
-          child: pw.Text('DATA RELATÓRIO: $formattedDate',
-              style: const pw.TextStyle(fontSize: 12, height: 10)),
+          child: pw.Text(
+            'DATA RELATÓRIO: $formattedDate',
+            style: const pw.TextStyle(fontSize: 12, height: 10),
+          ),
         ),
-        build: (context) => listTransactions.map((transaction) {
-          return pw.Padding(
+        build: (context) => [
+          ...listTransactions.map((transaction) {
+            return pw.Padding(
               padding: const pw.EdgeInsets.only(left: 20),
               child: pw.Column(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
                   pw.SizedBox(height: 10),
-                  pw.Text('ORIGEM: ${transaction.origem}',),
-                  pw.Text('DESTINO: ${transaction.destino}'),
-                  pw.Text('EMPRESA: ${transaction.uf}'),
-                  pw.Text('DATA: ${transaction.data}'),
-                  pw.Text('EMPRESA: ${transaction.empresa}'),
-                  pw.Text('DESCRIÇÃO: ${transaction.descricao}'),
-                  pw.Text('VALOR: ${transaction.valor.toStringAsFixed(2)}'),
+                  pw.Text(
+                      'ORIGEM: ${transaction.origem == 'null' ? 'N/A' : transaction.origem}'),
+                  pw.Text(
+                      'DESTINO: ${transaction.destino == 'null' ? 'N/A' : transaction.destino}'),
+                  pw.Text(
+                      'EMPRESA: ${transaction.uf == 'null' ? 'N/A' : transaction.uf}'),
+                  pw.Text(
+                      'DATA: ${transaction.data != 'null' ? FormattedInputers.formatApiDate(transaction.data!) : 'N/A'}'),
+                  pw.Text(
+                      'EMPRESA: ${transaction.empresa == 'null' ? 'N/A' : transaction.empresa}'),
+                  pw.Text(
+                      'DESCRIÇÃO: ${transaction.descricao == 'null' ? 'N/A' : transaction.descricao}'),
+                  pw.Text(
+                      'VALOR: ${transaction.valor != 'null' ? FormattedInputers.formatCurrency(transaction.valor.toDouble()) : 'N/A'}'),
                   pw.SizedBox(height: 10),
                   pw.Divider(),
                 ],
-              ));
-        }).toList(),
+              ),
+            );
+          }),
+        ],
       ),
     );
 

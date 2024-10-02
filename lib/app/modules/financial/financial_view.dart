@@ -128,15 +128,17 @@ class FinancialView extends GetView<TransactionController> {
         floatingActionButton: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(right: 8, bottom: 5),
-              child: FloatingActionButton(
-                backgroundColor: Colors.grey.shade300,
-                mini: true,
-                onPressed: () async => await controller.generatePdf(),
-                child: const Icon(Icons.download),
-              ),
-            ),
+            Obx(() => Padding(
+                  padding: const EdgeInsets.only(right: 8, bottom: 5),
+                  child: controller.listTransactions.isEmpty
+                      ? const SizedBox.shrink()
+                      : FloatingActionButton(
+                          backgroundColor: Colors.grey.shade300,
+                          mini: true,
+                          onPressed: () async => await controller.generatePdf(),
+                          child: const Icon(Icons.download),
+                        ),
+                )),
             Padding(
               padding: const EdgeInsets.only(right: 8, bottom: 36),
               child: SpeedDial(

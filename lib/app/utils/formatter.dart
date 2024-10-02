@@ -272,6 +272,11 @@ abstract class FormattedInputers {
     return true;
   }
 
+   static String formatCurrency(double value) {
+    final format = NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$');
+    return format.format(value);
+  }
+
   static double convertToDouble(String valorString) {
     try {
       String valorSemMoeda = valorString.replaceAll("R\$ ", "");

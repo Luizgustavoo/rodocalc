@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rodocalc/app/data/controllers/plan_controller.dart';
 import 'package:rodocalc/app/routes/app_routes.dart';
 
 class WidgetPlan extends StatelessWidget {
-  const WidgetPlan({super.key, required this.titulo, required this.data});
+  const WidgetPlan(
+      {super.key,
+      required this.titulo,
+      required this.data,
+      required this.planController});
 
   final String titulo;
   final String data;
+  final PlanController planController;
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +47,14 @@ class WidgetPlan extends StatelessWidget {
             ],
           ),
           ElevatedButton(
-            onPressed: () {
-              Get.toNamed(Routes.plan);
+            onPressed: () async {
+              await planController.getAll();
+              await planController.getMyPlans();
+              if (planController.myPlans.isEmpty) {
+                Get.toNamed(Routes.plan);
+              } else {
+                Get.toNamed(Routes.newplanview);
+              }
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.white,

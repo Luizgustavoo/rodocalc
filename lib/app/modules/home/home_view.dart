@@ -294,27 +294,38 @@ class HomeView extends GetView<HomeController> {
                                       MainAxisAlignment.spaceAround,
                                   children: [
                                     CustomHomeCard(
-                                      color: ServiceStorage.isRotaPermitida("vehicle") ? Color(0xFFFF6B00) : Colors.grey.shade700,
+                                      color: ServiceStorage.isRotaPermitida(
+                                              "vehicle")
+                                          ? const Color(0xFFFF6B00)
+                                          : Colors.grey.shade700,
                                       imagePath: 'assets/images/caminhao.png',
                                       label: 'Caminhões',
                                       onTap: () {
                                         vehicleController.isLoading.value =
                                             false;
                                         vehicleController.getAll();
-                                        if(ServiceStorage.isRotaPermitida("vehicle")){
+                                        if (ServiceStorage.isRotaPermitida(
+                                            "vehicle")) {
                                           Get.toNamed(Routes.vehicle);
-                                        }else{
-                                          Get.snackbar('Atenção!', 'Seu plano nao contempla esse módulo!', backgroundColor: const Color(0xFFFF6B00),
-                                              colorText: Colors.white, );
+                                        } else {
+                                          Get.snackbar(
+                                            'Atenção!',
+                                            'Seu plano nao contempla esse módulo!',
+                                            backgroundColor:
+                                                const Color(0xFFFF6B00),
+                                            colorText: Colors.white,
+                                          );
                                         }
-
                                       },
                                     ),
                                     const SizedBox(width: 5),
                                     if (ServiceStorage.getUserTypeId() !=
                                         4) ...[
                                       CustomHomeCard(
-                                        color: ServiceStorage.isRotaPermitida("financial") ? Color(0xFFFF6B01) : Colors.grey.shade700,
+                                        color: ServiceStorage.isRotaPermitida(
+                                                "financial")
+                                            ? const Color(0xFFFF6B01)
+                                            : Colors.grey.shade700,
                                         imagePath: 'assets/images/frete.png',
                                         label: 'Financeiro',
                                         onTap: () {
@@ -328,7 +339,10 @@ class HomeView extends GetView<HomeController> {
                                     if (ServiceStorage.getUserTypeId() !=
                                         4) ...[
                                       CustomHomeCard(
-                                        color: ServiceStorage.isRotaPermitida("freight") ? Color(0xFFFF6B00) : Colors.grey.shade700,
+                                        color: ServiceStorage.isRotaPermitida(
+                                                "freight")
+                                            ? const Color(0xFFFF6B00)
+                                            : Colors.grey.shade700,
                                         imagePath: 'assets/images/estrada.png',
                                         label: 'Fretes',
                                         onTap: () {
@@ -339,7 +353,10 @@ class HomeView extends GetView<HomeController> {
                                       const SizedBox(width: 5),
                                     ],
                                     CustomHomeCard(
-                                      color: ServiceStorage.isRotaPermitida("trip") ? Color(0xFFFF6B00) : Colors.grey.shade700,
+                                      color:
+                                          ServiceStorage.isRotaPermitida("trip")
+                                              ? const Color(0xFFFF6B00)
+                                              : Colors.grey.shade700,
                                       imagePath: 'assets/images/trecho.png',
                                       label: 'Trechos',
                                       onTap: () {
@@ -349,7 +366,10 @@ class HomeView extends GetView<HomeController> {
                                     ),
                                     const SizedBox(width: 5),
                                     CustomHomeCard(
-                                      color: ServiceStorage.isRotaPermitida("document") ? Color(0xFFFF6B00) : Colors.grey.shade700,
+                                      color: ServiceStorage.isRotaPermitida(
+                                              "document")
+                                          ? const Color(0xFFFF6B00)
+                                          : Colors.grey.shade700,
                                       imagePath: 'assets/images/documento.png',
                                       label: 'Documentos',
                                       onTap: () {
@@ -359,7 +379,10 @@ class HomeView extends GetView<HomeController> {
                                     ),
                                     const SizedBox(width: 5),
                                     CustomHomeCard(
-                                      color: ServiceStorage.isRotaPermitida("indicator") ? Color(0xFFFF6B00) : Colors.grey.shade700,
+                                      color: ServiceStorage.isRotaPermitida(
+                                              "indicator")
+                                          ? const Color(0xFFFF6B00)
+                                          : Colors.grey.shade700,
                                       imagePath: 'assets/images/indicador.png',
                                       label: 'Indicador',
                                       onTap: () {
@@ -375,14 +398,14 @@ class HomeView extends GetView<HomeController> {
                                         4) ...[
                                       const SizedBox(width: 5),
                                       CustomHomeCard(
-                                        color: Color(0xFFFF6B00),
+                                        color: const Color(0xFFFF6B00),
                                         imagePath: 'assets/images/plano.png',
                                         label: 'Planos',
                                         onTap: () async {
                                           await planController.getAll();
                                           await planController.getMyPlans();
                                           if (planController.myPlans.isEmpty) {
-                                          Get.toNamed(Routes.plan);
+                                            Get.toNamed(Routes.plan);
                                           } else {
                                             Get.toNamed(Routes.newplanview);
                                           }
@@ -391,7 +414,10 @@ class HomeView extends GetView<HomeController> {
                                     ],
                                     const SizedBox(width: 5),
                                     CustomHomeCard(
-                                      color: ServiceStorage.isRotaPermitida("classified") ? Color(0xFFFF6B00) : Colors.grey.shade700,
+                                      color: ServiceStorage.isRotaPermitida(
+                                              "classified")
+                                          ? const Color(0xFFFF6B00)
+                                          : Colors.grey.shade700,
                                       imagePath: 'assets/images/classific.png',
                                       label: 'Classificados',
                                       onTap: () {
@@ -401,7 +427,10 @@ class HomeView extends GetView<HomeController> {
                                     ),
                                     const SizedBox(width: 5),
                                     CustomHomeCard(
-                                      color: ServiceStorage.isRotaPermitida("course") ? Color(0xFFFF6B00) : Colors.grey.shade700,
+                                      color: ServiceStorage.isRotaPermitida(
+                                              "course")
+                                          ? const Color(0xFFFF6B00)
+                                          : Colors.grey.shade700,
                                       imagePath: 'assets/images/curso.png',
                                       label: 'Cursos',
                                       onTap: () {
@@ -592,6 +621,7 @@ class HomeView extends GetView<HomeController> {
                     bottom: 0,
                     left: 0,
                     child: WidgetPlan(
+                      planController: planController,
                       titulo:
                           "${controller.diasRestantes.value} dia(s) restante(s) para o vencimento!",
                       data: controller.dataVencimento.value,
