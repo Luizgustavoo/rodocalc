@@ -301,11 +301,11 @@ class HomeView extends GetView<HomeController> {
                                       imagePath: 'assets/images/caminhao.png',
                                       label: 'Caminhões',
                                       onTap: () {
-                                        vehicleController.isLoading.value =
-                                            false;
-                                        vehicleController.getAll();
                                         if (ServiceStorage.isRotaPermitida(
                                             "vehicle")) {
+                                          vehicleController.isLoading.value =
+                                              false;
+                                          vehicleController.getAll();
                                           Get.toNamed(Routes.vehicle);
                                         } else {
                                           Get.snackbar(
@@ -329,9 +329,20 @@ class HomeView extends GetView<HomeController> {
                                         imagePath: 'assets/images/frete.png',
                                         label: 'Financeiro',
                                         onTap: () {
-                                          transactionController.getAll();
-                                          transactionController.getSaldo();
-                                          Get.toNamed(Routes.financial);
+                                          if (ServiceStorage.isRotaPermitida(
+                                              "financial")) {
+                                            transactionController.getAll();
+                                            transactionController.getSaldo();
+                                            Get.toNamed(Routes.financial);
+                                          } else {
+                                            Get.snackbar(
+                                              'Atenção!',
+                                              'Seu plano nao contempla esse módulo!',
+                                              backgroundColor:
+                                                  const Color(0xFFFF6B00),
+                                              colorText: Colors.white,
+                                            );
+                                          }
                                         },
                                       ),
                                       const SizedBox(width: 5),
@@ -346,8 +357,19 @@ class HomeView extends GetView<HomeController> {
                                         imagePath: 'assets/images/estrada.png',
                                         label: 'Fretes',
                                         onTap: () {
-                                          freightController.getAll();
-                                          Get.toNamed(Routes.freight);
+                                          if (ServiceStorage.isRotaPermitida(
+                                              "freight")) {
+                                            freightController.getAll();
+                                            Get.toNamed(Routes.freight);
+                                          } else {
+                                            Get.snackbar(
+                                              'Atenção!',
+                                              'Seu plano nao contempla esse módulo!',
+                                              backgroundColor:
+                                                  const Color(0xFFFF6B00),
+                                              colorText: Colors.white,
+                                            );
+                                          }
                                         },
                                       ),
                                       const SizedBox(width: 5),
@@ -360,8 +382,19 @@ class HomeView extends GetView<HomeController> {
                                       imagePath: 'assets/images/trecho.png',
                                       label: 'Trechos',
                                       onTap: () {
-                                        tripController.getAll();
-                                        Get.toNamed(Routes.trip);
+                                        if (ServiceStorage.isRotaPermitida(
+                                            "trip")) {
+                                          tripController.getAll();
+                                          Get.toNamed(Routes.trip);
+                                        } else {
+                                          Get.snackbar(
+                                            'Atenção!',
+                                            'Seu plano nao contempla esse módulo!',
+                                            backgroundColor:
+                                                const Color(0xFFFF6B00),
+                                            colorText: Colors.white,
+                                          );
+                                        }
                                       },
                                     ),
                                     const SizedBox(width: 5),
@@ -373,8 +406,19 @@ class HomeView extends GetView<HomeController> {
                                       imagePath: 'assets/images/documento.png',
                                       label: 'Documentos',
                                       onTap: () {
-                                        documentController.getAll();
-                                        Get.toNamed(Routes.document);
+                                        if (ServiceStorage.isRotaPermitida(
+                                            "document")) {
+                                          documentController.getAll();
+                                          Get.toNamed(Routes.document);
+                                        } else {
+                                          Get.snackbar(
+                                            'Atenção!',
+                                            'Seu plano nao contempla esse módulo!',
+                                            backgroundColor:
+                                                const Color(0xFFFF6B00),
+                                            colorText: Colors.white,
+                                          );
+                                        }
                                       },
                                     ),
                                     const SizedBox(width: 5),
@@ -386,12 +430,23 @@ class HomeView extends GetView<HomeController> {
                                       imagePath: 'assets/images/indicador.png',
                                       label: 'Indicador',
                                       onTap: () {
-                                        comissionIndicatorController
-                                            .getAllToReceive();
-                                        comissionIndicatorController
-                                            .getExistsPedidoSaque();
-                                        indicationController.getAll();
-                                        Get.toNamed(Routes.indicator);
+                                        if (ServiceStorage.isRotaPermitida(
+                                            "indicator")) {
+                                          comissionIndicatorController
+                                              .getAllToReceive();
+                                          comissionIndicatorController
+                                              .getExistsPedidoSaque();
+                                          indicationController.getAll();
+                                          Get.toNamed(Routes.indicator);
+                                        } else {
+                                          Get.snackbar(
+                                            'Atenção!',
+                                            'Seu plano nao contempla esse módulo!',
+                                            backgroundColor:
+                                                const Color(0xFFFF6B00),
+                                            colorText: Colors.white,
+                                          );
+                                        }
                                       },
                                     ),
                                     if (ServiceStorage.getUserTypeId() !=
@@ -421,8 +476,19 @@ class HomeView extends GetView<HomeController> {
                                       imagePath: 'assets/images/classific.png',
                                       label: 'Classificados',
                                       onTap: () {
-                                        classifiedsController.getAll();
-                                        Get.toNamed(Routes.classified);
+                                        if (ServiceStorage.isRotaPermitida(
+                                            "classified")) {
+                                          classifiedsController.getAll();
+                                          Get.toNamed(Routes.classified);
+                                        } else {
+                                          Get.snackbar(
+                                            'Atenção!',
+                                            'Seu plano nao contempla esse módulo!',
+                                            backgroundColor:
+                                                const Color(0xFFFF6B00),
+                                            colorText: Colors.white,
+                                          );
+                                        }
                                       },
                                     ),
                                     const SizedBox(width: 5),
@@ -434,8 +500,19 @@ class HomeView extends GetView<HomeController> {
                                       imagePath: 'assets/images/curso.png',
                                       label: 'Cursos',
                                       onTap: () {
-                                        coursesController.getAll();
-                                        Get.toNamed(Routes.course);
+                                        if (ServiceStorage.isRotaPermitida(
+                                            "course")) {
+                                          coursesController.getAll();
+                                          Get.toNamed(Routes.course);
+                                        } else {
+                                          Get.snackbar(
+                                            'Atenção!',
+                                            'Seu plano nao contempla esse módulo!',
+                                            backgroundColor:
+                                                const Color(0xFFFF6B00),
+                                            colorText: Colors.white,
+                                          );
+                                        }
                                       },
                                     ),
                                   ],

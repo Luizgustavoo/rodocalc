@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
 import 'package:rodocalc/app/data/models/expense_trip_model.dart';
 import 'package:rodocalc/app/data/models/trip_model.dart';
 import 'package:rodocalc/app/data/repositories/trip_repository.dart';
@@ -281,6 +282,7 @@ class TripController extends GetxController {
         };
         getAll();
         clearAllFields();
+
       } else {
         retorno = {
           'success': false,
@@ -310,6 +312,7 @@ class TripController extends GetxController {
         'message': mensagem['message']
       };
       getAll();
+      Get.find<TransactionController>().getSaldo();
       //clearAllFields();
     } else {
       retorno = {
