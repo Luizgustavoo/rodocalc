@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/models/auth_model.dart';
@@ -141,13 +142,15 @@ class PlanApiClient {
 
       int valor = userPlan.valorPlano!;
 
-      int recurrenceDays = 0;
+      String recurrenceDays = "0";
 
       switch(recurrence){
-        case 'MENSAL': recurrenceDays = 30;break;
-        case 'SEMESTRAL': recurrenceDays = 180;break;
-        case 'ANUAL': recurrenceDays = 365;break;
+        case 'MENSAL': recurrenceDays = "30";break;
+        case 'SEMESTRAL': recurrenceDays = "180";break;
+        case 'ANUAL': recurrenceDays = "365";break;
       }
+
+
 
       var requestBody = {
         'recorrencia': recurrenceDays.toString(),
@@ -226,6 +229,19 @@ class PlanApiClient {
         },
         body: jsonEncode(requestBody),
       );
+
+      //MÉTODO PARA ATUALIZAR O STORAGE COM AS NOVAS ROTAS DE ACORDO COM O PLANO SELECIONADO!
+      final planUserUrl = Uri.parse('$baseUrl/v1/usuario/getuserbyid/${ServiceStorage.getUserId()}');
+      final responsePlan = await http.get(planUserUrl,headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': token,
+      },);
+
+      Auth authh = Auth.fromJson(json.decode(responsePlan.body));
+      final box = GetStorage('rodocalc');
+      box.write('auth', authh.toJson());
+      //FINAL DA ATUALIZAÇÃO DO STORAGE.
 
       return json.decode(response.body);
     } catch (err) {
