@@ -146,14 +146,22 @@ class CreateFreightModal extends GetView<FreightController> {
                     labelText: 'VALOR DE PEDÁGIOS',
                   ),
                   onChanged: (value) {
-                    FormattedInputers.onformatValueChanged(
-                        value, controller.priceTollsController);
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, insira o preço de todos os pedagios';
+                    if (value.isEmpty) {
+                      controller.priceTollsController.text = "0,00";
+                    } else {
+                      FormattedInputers.onformatValueChanged(
+                          value, controller.priceTollsController);
                     }
-                    return null;
+                  },
+                  onFieldSubmitted: (value) {
+                    if (controller.priceTollsController.text.isEmpty) {
+                      controller.priceTollsController.text = "0,00";
+                    }
+                  },
+                  onEditingComplete: () {
+                    if (controller.priceTollsController.text.isEmpty) {
+                      controller.priceTollsController.text = "0,00";
+                    }
                   },
                 ),
                 const SizedBox(height: 10),

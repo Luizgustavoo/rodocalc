@@ -188,42 +188,6 @@ class FinancialView extends GetView<TransactionController> {
                         }
                       },
                     ),
-                    SpeedDialChild(
-                      backgroundColor: Colors.green.shade600,
-                      child: const SizedBox(
-                        width: 40,
-                        height: 40,
-                        child: Icon(
-                          Icons.download,
-                          color: Colors.white,
-                        ),
-                      ),
-                      label: 'GERAR PDF',
-                      labelStyle: const TextStyle(fontFamily: "Inter-Black"),
-                      onTap: () {
-                        Vehicle v = ServiceStorage.getVehicleStorage();
-                        if (v.isEmpty()) {
-                          Get.snackbar(
-                              'Atenção!', 'Selecione um veículo antes!',
-                              backgroundColor: Colors.orange,
-                              colorText: Colors.black,
-                              duration: const Duration(seconds: 2),
-                              snackPosition: SnackPosition.BOTTOM);
-                        } else {
-                          final cityController = Get.put(CityStateController());
-                          cityController.getCities();
-                          controller.clearAllFields();
-                          controller.getMyChargeTypes();
-                          showModalBottomSheet(
-                            isScrollControlled: true,
-                            context: context,
-                            builder: (context) => CreateReceiptModal(
-                              isUpdate: false,
-                            ),
-                          );
-                        }
-                      },
-                    ),
                   ],
                   SpeedDialChild(
                     backgroundColor: Colors.red.shade600,

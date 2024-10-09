@@ -15,7 +15,7 @@ class FreightController extends GetxController {
   final priceDieselController = TextEditingController();
   final totalTiresController = TextEditingController();
   final priceTiresController = TextEditingController();
-  final priceTollsController = TextEditingController();
+  final priceTollsController = TextEditingController(text: "0,00");
   final othersExpensesController = TextEditingController();
 
   final selectedStateOrigin = ''.obs;
@@ -163,7 +163,9 @@ class FreightController extends GetxController {
     final double T =
         double.parse(cleanValue(priceTiresController.text)); // preco dos pneus
 
-    double tolls = double.parse(cleanValue(priceTollsController.text));
+    double tolls = cleanValue(priceTollsController.text).length > 0
+        ? double.parse(cleanValue(priceTollsController.text))
+        : 0;
     double otherExpenses = 0;
     if (othersExpensesController.text.isNotEmpty) {
       otherExpenses = double.parse(cleanValue(othersExpensesController.text));
