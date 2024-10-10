@@ -217,7 +217,7 @@ class FinancialView extends GetView<TransactionController> {
                             Get.put(TransactionController());
 
                         transactionController.getMyCategories();
-                        transactionController.getMySpecifics();
+                        //transactionController.getMySpecifics();
 
                         showModalBottomSheet(
                           isScrollControlled: true,
@@ -488,7 +488,8 @@ class FinancialView extends GetView<TransactionController> {
                   controller.fillInFields(transaction);
                   controller.getMyCategories();
                   controller.getMyChargeTypes();
-                  controller.getMySpecifics();
+                  controller.getMySpecifics(
+                      controller.selectedCategoryCadSpecificType.value!);
                   if (transaction.tipoTransacao == 'entrada') {
                     showModalBottomSheet(
                       isScrollControlled: true,
@@ -502,7 +503,8 @@ class FinancialView extends GetView<TransactionController> {
                     final transactionController =
                         Get.put(TransactionController());
                     transactionController.getMyCategories();
-                    transactionController.getMySpecifics();
+                    transactionController.getMySpecifics(transactionController
+                        .selectedCategoryCadSpecificType.value!);
                     showModalBottomSheet(
                       isScrollControlled: true,
                       context: context,

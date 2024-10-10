@@ -134,10 +134,10 @@ class TransactionRepository {
     return list;
   }
 
-  getMySpecifics() async {
+  getMySpecifics(int categoria_id) async {
     List<SpecificTypeExpense> list = <SpecificTypeExpense>[];
 
-    var response = await apiClient.getMySpecifics();
+    var response = await apiClient.getMySpecifics(categoria_id);
 
     if (response != null) {
       response['data'].forEach((e) {
@@ -157,9 +157,9 @@ class TransactionRepository {
     }
   }
 
-  insertCategory(ExpenseCategory category, String type) async {
+  insertCategory(ExpenseCategory category, String type, int categoryId) async {
     try {
-      var response = await apiClient.insertCategory(category, type);
+      var response = await apiClient.insertCategory(category, type, categoryId);
       return response;
     } catch (e) {
       Exception(e);

@@ -244,6 +244,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
                   ],
                   onChanged: (newValue) {
                     controller.selectedCategory.value = newValue!;
+                    controller.getMySpecifics(newValue!);
                   },
                   value: controller.expenseCategories.any((specific) =>
                           specific.id == controller.selectedCategory.value)
@@ -539,18 +540,87 @@ class CreateExpenseModal extends GetView<TransactionController> {
           content: Form(
             key: controller.formKeyExpenseCategory,
             autovalidateMode: AutovalidateMode.onUserInteraction,
-            child: TextFormField(
-              controller: controller.txtDescriptionExpenseCategoryController,
-              decoration: const InputDecoration(
-                prefixIcon: Icon(Icons.message_outlined),
-                labelText: 'DESCRIÇÃO',
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Por favor, insira a descrição';
-                }
-                return null;
-              },
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller:
+                      controller.txtDescriptionExpenseCategoryController,
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.message_outlined),
+                    labelText: 'DESCRIÇÃO',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira a descrição';
+                    }
+                    return null;
+                  },
+                ),
+                if (type == "tipoespecificodespesa") ...[
+                  SizedBox(height: 15),
+                  Obx(
+                    () => SizedBox(
+                      height: 50,
+                      child: DropdownButtonFormField<int>(
+                        decoration: const InputDecoration(
+                          prefixIcon: Icon(Icons.search_rounded),
+                          labelText: 'CATEGORIA',
+                        ),
+                        items: [
+                          DropdownMenuItem<int>(
+                            value: null,
+                            child: SizedBox(
+                              width: Get.width * 0.7, // Ajuste o tamanho
+                              child: const Text(
+                                'Selecione',
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ),
+                          ...controller.expenseCategories
+                              .map((ExpenseCategory category) {
+                            return DropdownMenuItem<int>(
+                              value: category.id!,
+                              child: Container(
+                                constraints:
+                                    BoxConstraints(maxWidth: Get.width * .7),
+                                // Limita a largura
+                                child: Text(
+                                  category.descricao!,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontFamily: 'Inter-Bold',
+                                    color: Colors.black54,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }),
+                        ],
+                        onChanged: (newValue) {
+                          controller.selectedCategoryCadSpecificType.value =
+                              newValue!;
+                        },
+                        value: controller.expenseCategories.any((specific) =>
+                                specific.id ==
+                                controller
+                                    .selectedCategoryCadSpecificType.value)
+                            ? controller.selectedCategoryCadSpecificType.value
+                            : null,
+                        validator: (value) {
+                          if (value == null) {
+                            return 'Por favor, selecione a categoria';
+                          }
+                          return null;
+                        },
+                        isExpanded:
+                            true, // Garantir que ocupe todo o espaço disponível
+                      ),
+                    ),
+                  )
+                ]
+              ],
             ),
           ),
           actions: <Widget>[
