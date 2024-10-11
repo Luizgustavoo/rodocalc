@@ -13,9 +13,10 @@ class ClassifiedsApiClient {
   getAll() async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
+      final idUser = ServiceStorage.getUserId();
 
       Uri classifiedsUrl;
-      String url = '$baseUrl/v1/classificados';
+      String url = '$baseUrl/v1/classificados/$idUser';
       classifiedsUrl = Uri.parse(url);
       var response = await httpClient.get(
         classifiedsUrl,

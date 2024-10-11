@@ -28,8 +28,24 @@ class CustomClassifiedCard extends StatelessWidget {
           "$urlImagem/storage/fotos/classificados/${classificado!.fotosclassificados!.first.arquivo}";
     }
 
+    Color corCard;
+    String? observacoes = "";
+    String status = "";
+
+    if (classificado!.status == 1) {
+      corCard = Colors.green.shade100;
+      status = "ATIVO";
+    } else if (classificado!.status == 2) {
+      corCard = Colors.orange.shade100;
+      status = "EM ANALISE";
+    } else {
+      corCard = Colors.red.shade100;
+      status = "NEGADO";
+      observacoes = classificado!.observacoes;
+    }
+
     return Card(
-      color: Colors.orange.shade50,
+      color: corCard,
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5),
@@ -202,6 +218,24 @@ class CustomClassifiedCard extends StatelessWidget {
                 ],
               ),
             ),
+            RichText(
+              text: TextSpan(
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.black,
+                  fontFamily: 'Inter-Regular',
+                ),
+                children: [
+                  const TextSpan(
+                    text: 'STATUS: ',
+                    style: TextStyle(
+                      fontFamily: 'Inter-Bold',
+                    ),
+                  ),
+                  TextSpan(text: status.toUpperCase()),
+                ],
+              ),
+            ),
           ],
         ),
         children: [
@@ -224,6 +258,26 @@ class CustomClassifiedCard extends StatelessWidget {
               ],
             ),
           ),
+          if (classificado!.status == 0) ...[
+            RichText(
+              text: TextSpan(
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.black,
+                  fontFamily: 'Inter-Regular',
+                ),
+                children: [
+                  const TextSpan(
+                    text: 'MOTIVO NEGADO: ',
+                    style: TextStyle(
+                      fontFamily: 'Inter-Bold',
+                    ),
+                  ),
+                  TextSpan(text: classificado!.observacoes!.toUpperCase()),
+                ],
+              ),
+            ),
+          ]
         ],
       ),
     );

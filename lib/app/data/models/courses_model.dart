@@ -1,6 +1,8 @@
 class Courses {
   int? id;
+  String? titulo;
   String? descricao;
+  String? imagem;
   String? link;
   String? duracao;
   double? valor;
@@ -10,7 +12,9 @@ class Courses {
 
   Courses(
       {this.id,
+      this.titulo,
       this.descricao,
+      this.imagem,
       this.link,
       this.duracao,
       this.valor,
@@ -20,7 +24,9 @@ class Courses {
 
   Courses.fromJson(Map<String, dynamic> json) {
     id = json['id'];
+    titulo = json['titulo'];
     descricao = json['descricao'];
+    imagem = json['imagem'];
     link = json['link'];
     duracao = json['duracao'];
     valor = json['valor']?.toDouble();
@@ -32,7 +38,9 @@ class Courses {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
+    data['titulo'] = titulo;
     data['descricao'] = descricao;
+    data['imagem'] = imagem;
     data['link'] = link;
     data['duracao'] = duracao;
     data['valor'] = valor;
