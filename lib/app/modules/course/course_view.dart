@@ -83,6 +83,8 @@ class CourseView extends GetView<CourseController> {
                                     valor:
                                         "R\$ ${FormattedInputers.formatValuePTBR(curso.valor.toString())}",
                                     link: curso.link.toString(),
+                                    imagem: curso.imagem!,
+                                    titulo: curso.titulo!,
                                   );
                                 },
                               );

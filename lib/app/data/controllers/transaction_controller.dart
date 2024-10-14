@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:math';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,6 +7,8 @@ import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/widgets.dart' as pw;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rodocalc/app/data/models/charge_type_model.dart';
 import 'package:rodocalc/app/data/models/expense_category_model.dart';
@@ -17,9 +18,7 @@ import 'package:rodocalc/app/data/models/transactions_model.dart';
 import 'package:rodocalc/app/data/repositories/transaction_repository.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
-import 'package:pdf/widgets.dart' as pw;
 import 'package:share_plus/share_plus.dart';
-import 'package:path_provider/path_provider.dart';
 
 class TransactionController extends GetxController {
   RxBool trailerCheckboxValue = false.obs;
@@ -108,6 +107,7 @@ class TransactionController extends GetxController {
 
   var selectedSpecificType = Rxn<int>();
   var selectedCategory = Rxn<int>();
+  var selectedCategoryCadSpecificType = Rxn<int>(0);
   var selectedCargoType = Rxn<int>();
 
   var balance = 0.0.obs;
@@ -383,6 +383,7 @@ class TransactionController extends GetxController {
       );
     }
   }
+
   //* fim relatorio*/
 
   Future<void> getTransactionsWithFilter() async {
@@ -465,10 +466,10 @@ class TransactionController extends GetxController {
     isLoading.value = false;
   }
 
-  Future<void> getMySpecifics() async {
+  Future<void> getMySpecifics(int categoria_id) async {
     isLoading.value = true;
     try {
-      specificTypes.value = await repository.getMySpecifics();
+      specificTypes.value = await repository.getMySpecifics(categoria_id);
     } catch (e) {
       Exception(e);
     }
@@ -724,20 +725,24 @@ class TransactionController extends GetxController {
 
   Future<Map<String, dynamic>> insertExpenseCategory(String type) async {
     if (formKeyExpenseCategory.currentState!.validate()) {
+      int? category_id = type == "categoriadespesa"
+          ? 0
+          : selectedCategoryCadSpecificType.value;
       mensagem = await repository.insertCategory(
           ExpenseCategory(
             descricao: txtDescriptionExpenseCategoryController.text,
             status: 1,
             userId: ServiceStorage.getUserId(),
           ),
-          type);
+          type,
+          category_id!);
       if (mensagem != null) {
         retorno = {
           'success': mensagem['success'],
           'message': mensagem['message']
         };
         getMyCategories();
-        getMySpecifics();
+        getMySpecifics(selectedCategoryCadSpecificType.value!);
       } else {
         retorno = {
           'success': false,

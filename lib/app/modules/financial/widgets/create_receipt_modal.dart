@@ -112,28 +112,27 @@ class CreateReceiptModal extends GetView<TransactionController> {
                 //TERMINA AQUI AS FOTOS
                 const SizedBox(height: 10),
                 TextFormField(
-                  controller: controller.txtDescriptionController,
+                  controller: controller.txtValueController,
+                  keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
-                      Icons.description_rounded,
-                      size: 25,
+                      Icons.monetization_on,
                     ),
-                    labelText: 'DESCRIÇÃO',
+                    labelText: 'VALOR RECEBIDO',
                   ),
-                  onChanged: (text) {
-                    controller.txtDescriptionController.value =
-                        TextEditingValue(
-                      text: text.toUpperCase(),
-                      selection: controller.txtDescriptionController.selection,
-                    );
+                  onChanged: (value) {
+                    FormattedInputers.onformatValueChanged(
+                        value, controller.txtValueController);
+                    // controller.onValueChanged(value, 'valueReceive');
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Por favor, insira a descrição';
+                      return 'Por favor, insira o valor recebido';
                     }
                     return null;
                   },
                 ),
+
                 const SizedBox(height: 10),
 
                 TextFormField(
@@ -225,28 +224,7 @@ class CreateReceiptModal extends GetView<TransactionController> {
                     },
                   ),
                 ),
-                const SizedBox(height: 10),
-                TextFormField(
-                  controller: controller.txtValueController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.monetization_on,
-                    ),
-                    labelText: 'VALOR RECEBIDO',
-                  ),
-                  onChanged: (value) {
-                    FormattedInputers.onformatValueChanged(
-                        value, controller.txtValueController);
-                    // controller.onValueChanged(value, 'valueReceive');
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, insira o valor recebido';
-                    }
-                    return null;
-                  },
-                ),
+
                 const SizedBox(height: 10),
                 TextFormField(
                   controller: controller.txtTonController,
@@ -361,6 +339,31 @@ class CreateReceiptModal extends GetView<TransactionController> {
                     );
                   }
                 }),
+
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: controller.txtDescriptionController,
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(
+                      Icons.description_rounded,
+                      size: 25,
+                    ),
+                    labelText: 'DESCRIÇÃO',
+                  ),
+                  onChanged: (text) {
+                    controller.txtDescriptionController.value =
+                        TextEditingValue(
+                      text: text.toUpperCase(),
+                      selection: controller.txtDescriptionController.selection,
+                    );
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira a descrição';
+                    }
+                    return null;
+                  },
+                ),
 
                 const SizedBox(height: 16),
                 Row(

@@ -1,18 +1,24 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../../data/base_url.dart';
 
 class CustomCourseCard extends StatelessWidget {
   const CustomCourseCard({
     super.key,
+    required this.titulo,
     required this.descricao,
+    required this.imagem,
     required this.duracao,
     required this.valor,
     required this.link,
   });
 
+  final String titulo;
   final String descricao;
+  final String imagem;
   final String valor;
   final String duracao;
   final String link;
@@ -44,42 +50,60 @@ class CustomCourseCard extends StatelessWidget {
         dense: true,
         contentPadding:
             const EdgeInsets.only(bottom: 5, top: 5, left: 10, right: 10),
-        leading: IconButton(
-            onPressed: () async {
-              if (link.isEmpty) {
-                Get.snackbar(
-                  'Atenção',
-                  'Link do curso não disponível!',
-                  backgroundColor: Colors.orange,
-                  colorText: Colors.white,
-                  snackPosition: SnackPosition.BOTTOM,
-                );
-              } else {
-                await launchUrl(Uri.parse(link));
-              }
-            },
-            icon: const Icon(
-              FontAwesomeIcons.globe,
-              color: Colors.black,
-            )),
-        title: RichText(
-          text: TextSpan(
-            style: const TextStyle(
-              fontSize: 12,
-              color: Colors.black,
-              fontFamily: 'Inter-Regular',
+        leading: Container(
+          width: 60,
+          height: 70,
+          decoration: BoxDecoration(
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(5),
+            image: DecorationImage(
+              image: imagem!.isNotEmpty
+                  ? CachedNetworkImageProvider(
+                      "$urlImagem/storage/fotos/cursos/${imagem}")
+                  : const AssetImage('assets/images/logo.png') as ImageProvider,
+              fit: BoxFit.cover,
             ),
-            children: [
-              const TextSpan(
-                text: 'DESCRIÇÃO: ',
-                style: TextStyle(
-                  fontFamily: 'Inter-Bold',
-                ),
-              ),
-              TextSpan(text: descricao.toUpperCase()),
-            ],
           ),
         ),
+        title: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          RichText(
+            text: TextSpan(
+              style: const TextStyle(
+                fontSize: 12,
+                color: Colors.black,
+                fontFamily: 'Inter-Regular',
+              ),
+              children: [
+                const TextSpan(
+                  text: 'TITULO: ',
+                  style: TextStyle(
+                    fontFamily: 'Inter-Bold',
+                  ),
+                ),
+                TextSpan(text: titulo.toUpperCase()),
+              ],
+            ),
+          ),
+          SizedBox(height: 5),
+          RichText(
+            text: TextSpan(
+              style: const TextStyle(
+                fontSize: 12,
+                color: Colors.black,
+                fontFamily: 'Inter-Regular',
+              ),
+              children: [
+                const TextSpan(
+                  text: 'DESCRIÇÃO: ',
+                  style: TextStyle(
+                    fontFamily: 'Inter-Bold',
+                  ),
+                ),
+                TextSpan(text: descricao.toUpperCase()),
+              ],
+            ),
+          ),
+        ]),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

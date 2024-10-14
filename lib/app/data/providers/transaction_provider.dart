@@ -241,7 +241,7 @@ class TransactionApiClient {
     return null;
   }
 
-  insertCategory(ExpenseCategory category, String type) async {
+  insertCategory(ExpenseCategory category, String type, int categoryId) async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
       String finalRoute = "categoriadespesa";
@@ -258,7 +258,8 @@ class TransactionApiClient {
         "descricao": category.descricao.toString(),
         "status": category.status.toString(),
         "user_id": category.userId.toString(),
-        "tipo": type.toString()
+        "tipo": type.toString(),
+        "categoria_id": categoryId.toString()
       });
 
       request.headers.addAll({
@@ -270,7 +271,6 @@ class TransactionApiClient {
 
       var responseStream = await response.stream.bytesToString();
       var httpResponse = http.Response(responseStream, response.statusCode);
-
 
       if (httpResponse.statusCode == 201 ||
           httpResponse.statusCode == 422 ||
@@ -386,13 +386,13 @@ class TransactionApiClient {
     return null;
   }
 
-  getMySpecifics() async {
+  getMySpecifics(int categoria_id) async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
       Uri categoriesUrl;
       String url =
-          '$baseUrl/v1/tipoespecificodespesa/my/${ServiceStorage.getUserId().toString()}';
+          '$baseUrl/v1/tipoespecificodespesa/my/${ServiceStorage.getUserId().toString()}/$categoria_id';
       categoriesUrl = Uri.parse(url);
       var response = await httpClient.get(
         categoriesUrl,
@@ -484,7 +484,6 @@ class TransactionApiClient {
 
       var responseStream = await response.stream.bytesToString();
       var httpResponse = http.Response(responseStream, response.statusCode);
-
 
       return json.decode(httpResponse.body);
     } catch (err) {
