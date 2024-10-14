@@ -262,50 +262,80 @@ class TransactionController extends GetxController {
     );
   }
 
-  Future<void> saveFile(List<int> pdfData, String fileName) async {
-    // Verifique se a permissão de armazenamento foi concedida
-    final status = await Permission.storage.status;
-    if (!status.isGranted) {
-      final result = await Permission.storage.request();
-      if (!result.isGranted) {
-        // Se a permissão não for concedida, mostre uma mensagem para o usuário
+  Future<void> checkStoragePermission() async {
+    if (Platform.isAndroid) {
+      // Verifica se a permissão foi negada permanentemente e abre as configurações se necessário
+      if (await Permission.manageExternalStorage.isPermanentlyDenied ||
+          await Permission.storage.isPermanentlyDenied) {
+        await openAppSettings();
+        return;
+      }
+
+      // Verifica permissões para Android 13+ e versões anteriores
+      final manageExternalStorageGranted =
+          await Permission.manageExternalStorage.request().isGranted;
+      final storagePermissionGranted =
+          await Permission.storage.request().isGranted;
+      if (!storagePermissionGranted) {
+        return;
+      }
+      // Verifica se pelo menos uma das permissões foi concedida
+      if (!manageExternalStorageGranted && !storagePermissionGranted) {
         Get.snackbar(
           'Permissão negada',
-          'A permissão de armazenamento é necessária para salvar o arquivo.',
+          'A permissão de gerenciamento de arquivos é necessária para salvar o arquivo.',
           backgroundColor: Colors.red,
           colorText: Colors.white,
           duration: const Duration(seconds: 2),
           snackPosition: SnackPosition.BOTTOM,
         );
-        return;
+        return; // Interrompe o processo se a permissão não for concedida
       }
+    }
+  }
+
+  Future<void> saveFile(List<int> pdfData, String fileName) async {
+    // Verifica permissões
+    await checkStoragePermission();
+
+    // Antes de salvar, verifica se a permissão foi realmente concedida
+    final storagePermissionGranted = await Permission.storage.isGranted;
+    final manageExternalStorageGranted =
+        await Permission.manageExternalStorage.isGranted;
+
+    if (!storagePermissionGranted && !manageExternalStorageGranted) {
+      Get.snackbar(
+        'Erro!',
+        'Permissão de armazenamento não foi concedida. Não foi possível salvar o arquivo.',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 2),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return; // Interrompe o processo se a permissão não foi concedida
     }
 
     try {
-      // Obtém o diretório para salvar o arquivo
       Directory directory;
       if (Platform.isAndroid) {
+        // Diretório padrão de download para Android
         directory = Directory('/storage/emulated/0/Download');
       } else {
+        // Diretório de documentos no iOS ou outro sistema
         directory = await getApplicationDocumentsDirectory();
       }
 
-      // Verifica se o diretório existe e cria se necessário
       bool hasExisted = await directory.exists();
       if (!hasExisted) {
         await directory.create(recursive: true);
       }
 
-      // Cria o arquivo
       final filePath =
           "${directory.path}${Platform.pathSeparator}$fileName.pdf";
       final file = File(filePath);
-      if (!file.existsSync()) {
-        await file.create();
-      }
 
-      // Escreve os dados do PDF no arquivo
       await file.writeAsBytes(pdfData);
+
       Get.snackbar(
         'Sucesso!',
         'Arquivo salvo com sucesso em $filePath',
