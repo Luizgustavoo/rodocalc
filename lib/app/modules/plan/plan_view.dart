@@ -169,6 +169,8 @@ class PlanView extends GetView<PlanController> {
                                   FormattedInputers.formatValuePTBR(plan.valor),
                               onPressed: () {
                                 controller.updateSelectedPlan(plan);
+                                controller.selectedLicenses.value = plan.minLicencas!;
+                                controller.updatePrice();
                                 showModalBottomSheet(
                                   context: context,
                                   builder: (_) => const CreatePlanModal(),

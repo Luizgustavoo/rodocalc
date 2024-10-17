@@ -183,15 +183,27 @@ class ClassifiedView extends GetView<ClassifiedController> {
               padding: const EdgeInsets.only(right: 8, bottom: 8),
               child: FloatingActionButton(
                 backgroundColor: const Color(0xFFFF6B00),
-                onPressed: () {
-                  controller.clearAllFields();
-                  showModalBottomSheet(
-                    isScrollControlled: true,
-                    context: context,
-                    builder: (context) => const CreateClassifiedModal(
-                      isUpdate: false,
-                    ),
-                  );
+                onPressed: () async {
+                  await controller.getQuantityLicences();
+                  await controller.getQuantityLicences();
+                  if (controller.classificados_cadastrados.value >=
+                      controller.posts_permitidos.value) {
+                    Get.snackbar('Atenção!',
+                        'A quantidade de licenças do seu plano estourou!',
+                        backgroundColor: Colors.orange,
+                        colorText: Colors.black,
+                        duration: const Duration(seconds: 2),
+                        snackPosition: SnackPosition.BOTTOM);
+                  } else {
+                    controller.clearAllFields();
+                    showModalBottomSheet(
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (context) => const CreateClassifiedModal(
+                        isUpdate: false,
+                      ),
+                    );
+                  }
                 },
                 child: const Icon(
                   Icons.add_rounded,

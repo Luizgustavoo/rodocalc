@@ -123,6 +123,22 @@ class ClassifiedController extends GetxController {
     isLoading.value = false;
   }
 
+  RxBool isLoadingQuantityLicences = true.obs;
+  RxInt posts_permitidos = 0.obs;
+  RxInt classificados_cadastrados = 0.obs;
+
+  Future<void> getQuantityLicences() async {
+    isLoadingQuantityLicences.value = true;
+    try {
+      var data = await repository.getQuantityLicences();
+      posts_permitidos.value = data['posts_permitidos'];
+      classificados_cadastrados.value = data['classificados_cadastrados'];
+    } catch (e) {
+      Exception(e);
+    }
+    isLoadingQuantityLicences.value = false;
+  }
+
   Future<Map<String, dynamic>> insertClassificado() async {
     if (formKeyClassified.currentState!.validate()) {
       List<ClassifiedsPhotos>? photos = [];
@@ -136,7 +152,7 @@ class ClassifiedController extends GetxController {
         Classifieds(
           descricao: descriptionController.text,
           valor: FormattedInputers.convertToDouble(valueController.text),
-          status: 1,
+          status: 2,
           fotosclassificados: photos,
           userId: ServiceStorage.getUserId(),
         ),
@@ -171,7 +187,7 @@ class ClassifiedController extends GetxController {
             id: id,
             descricao: descriptionController.text,
             valor: FormattedInputers.convertToDouble(valueController.text),
-            status: 1,
+            status: 2,
             fotosclassificados: photos,
             userId: ServiceStorage.getUserId(),
           ),
