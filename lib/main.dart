@@ -28,8 +28,8 @@ void main() async {
   runApp(GetMaterialApp(
     locale: const Locale('pt', 'BR'),
     supportedLocales: const [
-      Locale('pt', 'BR'), // Suporte para pt-BR
-      Locale('en', 'US'), // Suporte para en-US (padrão)
+      Locale('pt', 'BR'),
+      Locale('en', 'US'),
     ],
     localizationsDelegates: const [
       GlobalMaterialLocalizations.delegate,

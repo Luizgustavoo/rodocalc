@@ -17,9 +17,11 @@ class ClassifiedController extends GetxController {
   final valueController = TextEditingController();
   final descriptionController = TextEditingController();
   final modelController = TextEditingController();
+  final searchClassifiedController = TextEditingController();
 
   RxBool isLoading = true.obs;
   RxList<Classifieds> listClassifieds = RxList<Classifieds>([]);
+  RxList<Classifieds> filteredClassifieds = RxList<Classifieds>([]);
 
   final repository = Get.put(ClassifiedsRepository());
 
@@ -29,6 +31,12 @@ class ClassifiedController extends GetxController {
     "message": ["Preencha todos os campos!"]
   };
   dynamic mensagem;
+
+  @override
+  void onInit() {
+    super.onInit();
+    filteredClassifieds.assignAll(listClassifieds);
+  }
 
   void pickImage(ImageSource source) async {
     if (source == ImageSource.gallery) {
@@ -116,23 +124,47 @@ class ClassifiedController extends GetxController {
   Future<void> getAll() async {
     isLoading.value = true;
     try {
+      searchClassifiedController.clear();
       listClassifieds.value = await repository.getAll();
+      filteredClassifieds.assignAll(listClassifieds);
     } catch (e) {
+      listClassifieds.clear();
+      filteredClassifieds.clear();
       Exception(e);
     }
     isLoading.value = false;
   }
 
+  void filterClassifieds(String query) {
+    if (query.isEmpty) {
+      // Se a busca estiver vazia, mostra todos os fretes
+      filteredClassifieds.assignAll(listClassifieds);
+    } else {
+      // Filtra os fretes com base no campo "origem", "destino" ou qualquer outro
+      filteredClassifieds.assignAll(
+        listClassifieds
+            .where((classified) =>
+                classified.descricao!
+                    .toLowerCase()
+                    .contains(query.toLowerCase()) ||
+                classified.observacoes!
+                    .toLowerCase()
+                    .contains(query.toLowerCase()))
+            .toList(),
+      );
+    }
+  }
+
   RxBool isLoadingQuantityLicences = true.obs;
-  RxInt posts_permitidos = 0.obs;
-  RxInt classificados_cadastrados = 0.obs;
+  RxInt postsPermitidos = 0.obs;
+  RxInt classificadosCadastrados = 0.obs;
 
   Future<void> getQuantityLicences() async {
     isLoadingQuantityLicences.value = true;
     try {
       var data = await repository.getQuantityLicences();
-      posts_permitidos.value = data['posts_permitidos'];
-      classificados_cadastrados.value = data['classificados_cadastrados'];
+      postsPermitidos.value = data['posts_permitidos'];
+      classificadosCadastrados.value = data['classificados_cadastrados'];
     } catch (e) {
       Exception(e);
     }

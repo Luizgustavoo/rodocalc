@@ -17,11 +17,13 @@ class DocumentController extends GetxController {
 
   final formKeyDocument = GlobalKey<FormState>();
   final descriptionController = TextEditingController();
+  final searchDocumentController = TextEditingController();
   RxInt selectedTipoDocumento = 1.obs;
 
   late DocumentModel selectedDocument;
 
   RxList<DocumentModel> listDocuments = RxList<DocumentModel>([]);
+  RxList<DocumentModel> filteredDocuments = RxList<DocumentModel>([]);
   RxList<DocumentType> listDocumentsType = RxList<DocumentType>([]);
 
   final repository = Get.put(DocumentRepository());
@@ -32,6 +34,12 @@ class DocumentController extends GetxController {
     "message": ["Preencha todos os campos!"]
   };
   dynamic mensagem;
+
+  @override
+  void onInit() {
+    super.onInit();
+    filteredDocuments.assignAll(listDocuments);
+  }
 
   void clearAllFields() {
     final textControllers = [
@@ -121,12 +129,35 @@ class DocumentController extends GetxController {
   Future<void> getAll() async {
     isLoading.value = true;
     try {
+      searchDocumentController.clear();
       listDocuments.value = await repository.getAll();
+      filteredDocuments.assignAll(listDocuments);
     } catch (e) {
       listDocuments.clear();
+      filteredDocuments.clear();
       Exception(e);
     }
     isLoading.value = false;
+  }
+
+  void filterDocuments(String query) {
+    if (query.isEmpty) {
+      // Se a busca estiver vazia, mostra todos os fretes
+      filteredDocuments.assignAll(listDocuments);
+    } else {
+      // Filtra os fretes com base no campo "origem", "destino" ou qualquer outro
+      filteredDocuments.assignAll(
+        listDocuments
+            .where((document) =>
+                document.descricao!
+                    .toLowerCase()
+                    .contains(query.toLowerCase()) ||
+                document.nomeDocumento!
+                    .toLowerCase()
+                    .contains(query.toLowerCase()))
+            .toList(),
+      );
+    }
   }
 
   Future<void> getAllDocumentType() async {

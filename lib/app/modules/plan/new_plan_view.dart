@@ -55,15 +55,17 @@ class NewPlanView extends GetView<PlanController> {
                     children: [
                       Text(
                         userPlan.plano!.descricao!,
+                        textAlign: TextAlign.center,
                         style: const TextStyle(
                             fontSize: 28, fontFamily: 'Inter-Bold'),
                       ),
+                      const Divider(thickness: 4),
                       const SizedBox(height: 8),
                       Text(
                         "R\$ ${FormattedInputers.formatValuePTBR(userPlan.plano!.valor)}",
                         style: const TextStyle(
                           fontSize: 20,
-                          fontFamily: 'Inter-Regular',
+                          fontFamily: 'Inter-Bold',
                           color: Colors.black54,
                         ),
                       ),

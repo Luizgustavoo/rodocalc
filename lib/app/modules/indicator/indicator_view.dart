@@ -35,217 +35,236 @@ class IndicatorView extends GetView<IndicationController> {
             ),
           ),
           SingleChildScrollView(
+            physics: const NeverScrollableScrollPhysics(),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(
-                  height: MediaQuery.sizeOf(context).height,
-                  child: Card(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    elevation: 5,
-                    margin: const EdgeInsets.all(12.0),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const SizedBox(height: 5),
-                          Card(
-                            color: Colors.grey.shade300,
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  const Text('A RECEBER:',
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontFamily: 'Inter-Bold')),
-                                  const SizedBox(width: 3),
-                                  Obx(
-                                    () {
-                                      String valor = "R\$ 0,00";
+                RefreshIndicator(
+                  onRefresh: () async {
+                    controller.searchIndicatorController.clear();
+                    controller.listIndications.clear();
+                    controller.getAll();
+                  },
+                  child: SizedBox(
+                    height: MediaQuery.sizeOf(context).height,
+                    child: Card(
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      elevation: 5,
+                      margin: const EdgeInsets.all(12.0),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const SizedBox(height: 5),
+                            Card(
+                              color: Colors.grey.shade300,
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    const Text('A RECEBER:',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontFamily: 'Inter-Bold')),
+                                    const SizedBox(width: 3),
+                                    Obx(
+                                      () {
+                                        String valor = "R\$ 0,00";
 
-                                      if (comissionIndicatorController
-                                              .sumComissions.value >
-                                          0) {
-                                        valor =
-                                            "R\$ ${FormattedInputers.formatValuePTBR(comissionIndicatorController.sumComissions.value / 100)}";
-                                      }
+                                        if (comissionIndicatorController
+                                                .sumComissions.value >
+                                            0) {
+                                          valor =
+                                              "R\$ ${FormattedInputers.formatValuePTBR(comissionIndicatorController.sumComissions.value / 100)}";
+                                        }
 
-                                      return Text(
-                                        valor,
-                                        style: const TextStyle(
-                                          fontSize: 18,
-                                          fontFamily: 'Inter-Black',
+                                        return Text(
+                                          valor,
+                                          style: const TextStyle(
+                                            fontSize: 18,
+                                            fontFamily: 'Inter-Black',
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                    const SizedBox(width: 5),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(colors: [
+                                          Colors.green.shade700,
+                                          Colors.greenAccent.shade400
+                                        ]),
+                                        borderRadius: BorderRadius.circular(50),
+                                      ),
+                                      child: Obx(() {
+                                        if (comissionIndicatorController
+                                                .sumComissions.value <
+                                            25000) {
+                                          return const SizedBox();
+                                        }
+
+                                        return ElevatedButton(
+                                          onPressed:
+                                              comissionIndicatorController
+                                                          .totalPedidoSaque
+                                                          .value >
+                                                      0
+                                                  ? null
+                                                  : () {
+                                                      showModalBottomSheet(
+                                                        isScrollControlled:
+                                                            true,
+                                                        context: context,
+                                                        builder: (context) =>
+                                                            const WithdrawalRequestModal(
+                                                          isUpdate: false,
+                                                        ),
+                                                      );
+                                                    },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.transparent,
+                                            shadowColor: Colors.transparent,
+                                          ),
+                                          child: Obx(() {
+                                            String tTitulo = "SOLICITAR\nSAQUE";
+                                            if (comissionIndicatorController
+                                                    .totalPedidoSaque.value >
+                                                0) {
+                                              tTitulo = "SAQUE\nSOLICITADO";
+                                            }
+                                            return Text(
+                                              tTitulo,
+                                              textAlign: TextAlign.center,
+                                              style: const TextStyle(
+                                                  fontFamily: 'Inter-Bold',
+                                                  color: Colors.white,
+                                                  fontSize: 12),
+                                            );
+                                          }),
+                                        );
+                                      }),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            TextFormField(
+                              controller: controller.searchIndicatorController,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide.none,
+                                ),
+                                suffixIcon: const Icon(Icons.search_rounded),
+                                labelText: 'PESQUISAR INDICAÇÃO',
+                              ),
+                              onChanged: (value) {
+                                controller.filterIndications(value);
+                              },
+                            ),
+                            const SizedBox(height: 16),
+                            Obx(
+                              () {
+                                if (controller.isLoading.value) {
+                                  return const Column(
+                                    children: [
+                                      Text('Carregando...'),
+                                      SizedBox(height: 20.0),
+                                      CircularProgressIndicator(),
+                                    ],
+                                  );
+                                } else if (controller.isLoading.value ==
+                                        false &&
+                                    controller.listIndications.isNotEmpty) {
+                                  return ListView.builder(
+                                    shrinkWrap: true,
+                                    physics:
+                                        const AlwaysScrollableScrollPhysics(),
+                                    itemCount:
+                                        controller.filteredIndications.length,
+                                    itemBuilder: (context, index) {
+                                      Indication indication =
+                                          controller.filteredIndications[index];
+
+                                      return Dismissible(
+                                        key: UniqueKey(),
+                                        direction: DismissDirection.endToStart,
+                                        confirmDismiss:
+                                            (DismissDirection direction) async {
+                                          if (direction ==
+                                              DismissDirection.endToStart) {
+                                            showDialog(context, indication,
+                                                controller);
+                                          }
+                                          return false;
+                                        },
+                                        background: Container(
+                                          margin: const EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            color: Colors.red,
+                                          ),
+                                          child: const Align(
+                                            alignment: Alignment.centerRight,
+                                            child: Padding(
+                                                padding: EdgeInsets.all(10),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.check_rounded,
+                                                      size: 25,
+                                                      color: Colors.white,
+                                                    ),
+                                                    SizedBox(width: 10),
+                                                    Text(
+                                                      'EXCLUIR',
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                  ],
+                                                )),
+                                          ),
+                                        ),
+                                        child: CustomIndicatorCard(
+                                          functionUpdate: () {
+                                            controller.fillInFields(indication);
+                                            showModalBottomSheet(
+                                              isScrollControlled: true,
+                                              context: context,
+                                              builder: (context) =>
+                                                  CreateIndicatorModal(
+                                                isUpdate: true,
+                                                indication: indication,
+                                              ),
+                                            );
+                                          },
+                                          indication: indication,
                                         ),
                                       );
                                     },
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(colors: [
-                                        Colors.green.shade700,
-                                        Colors.greenAccent.shade400
-                                      ]),
-                                      borderRadius: BorderRadius.circular(50),
-                                    ),
-                                    child: Obx(() {
-                                      if (comissionIndicatorController
-                                              .sumComissions.value <
-                                          25000) {
-                                        return const SizedBox();
-                                      }
-
-                                      return ElevatedButton(
-                                        onPressed: comissionIndicatorController
-                                                    .totalPedidoSaque.value >
-                                                0
-                                            ? null
-                                            : () {
-                                                showModalBottomSheet(
-                                                  isScrollControlled: true,
-                                                  context: context,
-                                                  builder: (context) =>
-                                                      const WithdrawalRequestModal(
-                                                    isUpdate: false,
-                                                  ),
-                                                );
-                                              },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.transparent,
-                                          shadowColor: Colors.transparent,
-                                        ),
-                                        child: Obx(() {
-                                          String tTitulo = "SOLICITAR\nSAQUE";
-                                          if (comissionIndicatorController
-                                                  .totalPedidoSaque.value >
-                                              0) {
-                                            tTitulo = "SAQUE\nSOLICITADO";
-                                          }
-                                          return Text(
-                                            tTitulo,
-                                            textAlign: TextAlign.center,
-                                            style: const TextStyle(
-                                                fontFamily: 'Inter-Bold',
-                                                color: Colors.white,
-                                                fontSize: 12),
-                                          );
-                                        }),
-                                      );
-                                    }),
-                                  ),
-                                ],
-                              ),
+                                  );
+                                } else {
+                                  return const Center(
+                                    child:
+                                        Text("NENHUMA INDICAÇÃO CADASTRADA!"),
+                                  );
+                                }
+                              },
                             ),
-                          ),
-                          const SizedBox(height: 10),
-                          TextFormField(
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide.none,
-                              ),
-                              suffixIcon: const Icon(Icons.search_rounded),
-                              labelText: 'PESQUISAR INDICAÇÃO',
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          Obx(
-                            () {
-                              if (controller.isLoading.value) {
-                                return const Column(
-                                  children: [
-                                    Text('Carregando...'),
-                                    SizedBox(height: 20.0),
-                                    CircularProgressIndicator(),
-                                  ],
-                                );
-                              } else if (controller.isLoading.value == false &&
-                                  controller.listIndications.isNotEmpty) {
-                                return ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: controller.listIndications.length,
-                                  itemBuilder: (context, index) {
-                                    Indication indication =
-                                        controller.listIndications[index];
-
-                                    return Dismissible(
-                                      key: UniqueKey(),
-                                      direction: DismissDirection.endToStart,
-                                      confirmDismiss:
-                                          (DismissDirection direction) async {
-                                        if (direction ==
-                                            DismissDirection.endToStart) {
-                                          showDialog(
-                                              context, indication, controller);
-                                        }
-                                        return false;
-                                      },
-                                      background: Container(
-                                        margin: const EdgeInsets.all(5),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          color: Colors.red,
-                                        ),
-                                        child: const Align(
-                                          alignment: Alignment.centerRight,
-                                          child: Padding(
-                                              padding: EdgeInsets.all(10),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                children: [
-                                                  Icon(
-                                                    Icons.check_rounded,
-                                                    size: 25,
-                                                    color: Colors.white,
-                                                  ),
-                                                  SizedBox(width: 10),
-                                                  Text(
-                                                    'EXCLUIR',
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                ],
-                                              )),
-                                        ),
-                                      ),
-                                      child: CustomIndicatorCard(
-                                        functionUpdate: () {
-                                          controller.fillInFields(indication);
-                                          showModalBottomSheet(
-                                            isScrollControlled: true,
-                                            context: context,
-                                            builder: (context) =>
-                                                CreateIndicatorModal(
-                                              isUpdate: true,
-                                              indication: indication,
-                                            ),
-                                          );
-                                        },
-                                        indication: indication,
-                                      ),
-                                    );
-                                  },
-                                );
-                              } else {
-                                return const Center(
-                                  child: Text("NENHUMA INDICAÇÃO CADASTRADA!"),
-                                );
-                              }
-                            },
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),

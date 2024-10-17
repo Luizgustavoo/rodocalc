@@ -13,8 +13,10 @@ class IndicationController extends GetxController {
   final formKeyIndication = GlobalKey<FormState>();
   final txtNomeIndication = TextEditingController();
   final txtTelefoneIndication = TextEditingController();
+  final searchIndicatorController = TextEditingController();
 
   RxList<Indication> listIndications = RxList<Indication>([]);
+  RxList<Indication> filteredIndications = RxList<Indication>([]);
 
   final repository = Get.put(IndicationRepository());
 
@@ -27,15 +29,40 @@ class IndicationController extends GetxController {
   dynamic mensagem;
   RxBool isLoading = true.obs;
 
+  @override
+  void onInit() {
+    super.onInit();
+    filteredIndications.assignAll(listIndications);
+  }
+
   Future<void> getAll() async {
     isLoading.value = true;
     try {
+      searchIndicatorController.clear();
       listIndications.value = await repository.getAll();
+      filteredIndications.assignAll(listIndications);
     } catch (e) {
       listIndications.clear();
+      filteredIndications.clear();
       Exception(e);
     }
     isLoading.value = false;
+  }
+
+  void filterIndications(String query) {
+    if (query.isEmpty) {
+      // Se a busca estiver vazia, mostra todos os fretes
+      filteredIndications.assignAll(listIndications);
+    } else {
+      // Filtra os fretes com base no campo "origem", "destino" ou qualquer outro
+      filteredIndications.assignAll(
+        listIndications
+            .where((indicator) =>
+                indicator.nome!.toLowerCase().contains(query.toLowerCase()) ||
+                indicator.telefone!.toLowerCase().contains(query.toLowerCase()))
+            .toList(),
+      );
+    }
   }
 
   Future<Map<String, dynamic>> insertIndication() async {

@@ -6,6 +6,11 @@ import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 
 class FreightController extends GetxController {
+  RxList<Freight> listFreight = RxList<Freight>([]);
+  RxList<Freight> filteredFreights = RxList<Freight>([]);
+  RxBool isLoading = true.obs;
+  RxBool isLoadingData = true.obs;
+
   final freightKey = GlobalKey<FormState>();
   final originController = TextEditingController();
   final destinyController = TextEditingController();
@@ -17,6 +22,7 @@ class FreightController extends GetxController {
   final priceTiresController = TextEditingController();
   final priceTollsController = TextEditingController(text: "0,00");
   final othersExpensesController = TextEditingController();
+  final searchFreightController = TextEditingController();
 
   final selectedStateOrigin = ''.obs;
   final selectedStateDestiny = ''.obs;
@@ -91,6 +97,12 @@ class FreightController extends GetxController {
     'SP': 'sao paulo',
     'TO': 'tocantins'
   };
+
+  @override
+  void onInit() {
+    super.onInit();
+    filteredFreights.assignAll(listFreight);
+  }
 
   String cleanValue(String value) {
     String cleanedValue = value.replaceAll(RegExp(r'R\$|\s'), '');
@@ -328,16 +340,16 @@ class FreightController extends GetxController {
     return retorno;
   }
 
-  RxList<Freight> listFreight = RxList<Freight>([]);
-  RxBool isLoading = true.obs;
-  RxBool isLoadingData = true.obs;
-
   Future<void> getAll() async {
     isLoading.value = true;
     try {
+      searchFreightController.clear();
       listFreight.value = await repository.getAll();
+      filteredFreights.assignAll(listFreight);
     } catch (e) {
       listFreight.clear();
+      filteredFreights.clear();
+      searchFreightController.clear();
       Exception(e);
     }
     isLoading.value = false;
@@ -365,6 +377,22 @@ class FreightController extends GetxController {
       Exception(e);
     }
     isLoadingData.value = false;
+  }
+
+  void filterFreights(String query) {
+    if (query.isEmpty) {
+      // Se a busca estiver vazia, mostra todos os fretes
+      filteredFreights.assignAll(listFreight);
+    } else {
+      // Filtra os fretes com base no campo "origem", "destino" ou qualquer outro
+      filteredFreights.assignAll(
+        listFreight
+            .where((freight) =>
+                freight.origem!.toLowerCase().contains(query.toLowerCase()) ||
+                freight.destino!.toLowerCase().contains(query.toLowerCase()))
+            .toList(),
+      );
+    }
   }
 
   void fillInFields(Freight freight) {

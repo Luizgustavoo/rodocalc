@@ -92,129 +92,145 @@ class TripView extends GetView<TripController> {
           ),
         ),
         SingleChildScrollView(
+            physics: const NeverScrollableScrollPhysics(),
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          SizedBox(
-            height: MediaQuery.sizeOf(context).height,
-            child: Card(
-              color: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              elevation: 5,
-              margin: const EdgeInsets.all(12.0),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  const SizedBox(height: 5),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                      suffixIcon: const Icon(Icons.search_rounded),
-                      labelText: 'PESQUISAR TRECHOS',
+              RefreshIndicator(
+                onRefresh: () async {
+                  controller.searchTripController.clear();
+                  controller.listTrip.clear();
+                  controller.getAll();
+                },
+                child: SizedBox(
+                  height: MediaQuery.sizeOf(context).height,
+                  child: Card(
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  Obx(() {
-                    if (controller.isLoading.value) {
-                      return const Column(
-                        children: [
-                          Text('Carregando...'),
-                          SizedBox(height: 20.0),
-                          CircularProgressIndicator(),
-                        ],
-                      );
-                    } else if (!controller.isLoading.value &&
-                        controller.listTrip.isNotEmpty) {
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: controller.listTrip.length,
-                        itemBuilder: (context, index) {
-                          Trip trip = controller.listTrip[index];
-                          return Dismissible(
-                            key: UniqueKey(),
-                            direction: DismissDirection.endToStart,
-                            confirmDismiss: (DismissDirection direction) async {
-                              controller.clearAllFields();
-                              if (direction == DismissDirection.endToStart) {
-                                showDialog(context, trip, controller);
-                              }
-
-                              return false;
-                            },
-                            background: Container(
-                              margin: const EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.red,
-                              ),
-                              child: const Align(
-                                alignment: Alignment.centerRight,
-                                child: Padding(
-                                    padding: EdgeInsets.all(10),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Icon(
-                                          Icons.check_rounded,
-                                          size: 25,
-                                          color: Colors.white,
-                                        ),
-                                        SizedBox(width: 10),
-                                        Text(
-                                          'EXCLUIR',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    )),
-                              ),
+                    elevation: 5,
+                    margin: const EdgeInsets.all(12.0),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(mainAxisSize: MainAxisSize.min, children: [
+                        const SizedBox(height: 5),
+                        TextFormField(
+                          controller: controller.searchTripController,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none,
                             ),
-                            child: InkWell(
-                              onTap: () {
-                                showModalBottomSheet(
-                                  isScrollControlled: true,
-                                  context: context,
-                                  builder: (context) =>
-                                      ViewListExpenseTripModal(
-                                    trip: trip,
+                            suffixIcon: const Icon(Icons.search_rounded),
+                            labelText: 'PESQUISAR TRECHOS',
+                          ),
+                          onChanged: (value) {
+                            controller.filterTrips(value);
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        Obx(() {
+                          if (controller.isLoading.value) {
+                            return const Column(
+                              children: [
+                                Text('Carregando...'),
+                                SizedBox(height: 20.0),
+                                CircularProgressIndicator(),
+                              ],
+                            );
+                          } else if (!controller.isLoading.value &&
+                              controller.listTrip.isNotEmpty) {
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              itemCount: controller.filteredTrips.length,
+                              itemBuilder: (context, index) {
+                                Trip trip = controller.filteredTrips[index];
+                                return Dismissible(
+                                  key: UniqueKey(),
+                                  direction: DismissDirection.endToStart,
+                                  confirmDismiss:
+                                      (DismissDirection direction) async {
+                                    controller.clearAllFields();
+                                    if (direction ==
+                                        DismissDirection.endToStart) {
+                                      showDialog(context, trip, controller);
+                                    }
+
+                                    return false;
+                                  },
+                                  background: Container(
+                                    margin: const EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.red,
+                                    ),
+                                    child: const Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Padding(
+                                          padding: EdgeInsets.all(10),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              Icon(
+                                                Icons.check_rounded,
+                                                size: 25,
+                                                color: Colors.white,
+                                              ),
+                                              SizedBox(width: 10),
+                                              Text(
+                                                'EXCLUIR',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ],
+                                          )),
+                                    ),
+                                  ),
+                                  child: InkWell(
+                                    onTap: () {
+                                      showModalBottomSheet(
+                                        isScrollControlled: true,
+                                        context: context,
+                                        builder: (context) =>
+                                            ViewListExpenseTripModal(
+                                          trip: trip,
+                                        ),
+                                      );
+                                    },
+                                    child: CustomTripCard(
+                                      trip: trip,
+                                      functionEdit: () {
+                                        controller.fillInFields(trip);
+                                        showModalBottomSheet(
+                                          isScrollControlled: true,
+                                          context: context,
+                                          builder: (context) => CreateTripModal(
+                                            isUpdate: true,
+                                            trip: trip,
+                                          ),
+                                        );
+                                      },
+                                    ),
                                   ),
                                 );
                               },
-                              child: CustomTripCard(
-                                trip: trip,
-                                functionEdit: () {
-                                  controller.fillInFields(trip);
-                                  showModalBottomSheet(
-                                    isScrollControlled: true,
-                                    context: context,
-                                    builder: (context) => CreateTripModal(
-                                      isUpdate: true,
-                                      trip: trip,
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    } else {
-                      return const Center(
-                        child: Text('NENHUM TRECHO CADASTRADO!'),
-                      );
-                    }
-                  }),
-                ]),
-              ),
-            ),
-          )
-        ])),
+                            );
+                          } else {
+                            return const Center(
+                              child: Text('NENHUM TRECHO CADASTRADO!'),
+                            );
+                          }
+                        }),
+                      ]),
+                    ),
+                  ),
+                ),
+              )
+            ])),
       ]),
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(right: 8, bottom: 8),

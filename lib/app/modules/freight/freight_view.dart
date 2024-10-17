@@ -91,119 +91,138 @@ class FreightView extends GetView<FreightController> {
           ),
         ),
         SingleChildScrollView(
+            physics: const NeverScrollableScrollPhysics(),
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          SizedBox(
-            height: MediaQuery.sizeOf(context).height,
-            child: Card(
-              color: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              elevation: 5,
-              margin: const EdgeInsets.all(12.0),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  const SizedBox(height: 5),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                      suffixIcon: const Icon(Icons.search_rounded),
-                      labelText: 'PESQUISAR FRETE',
+              RefreshIndicator(
+                onRefresh: () async {
+                  controller.searchFreightController.clear();
+                  controller.listFreight.clear();
+                  controller.getAll();
+                },
+                child: SizedBox(
+                  height: MediaQuery.sizeOf(context).height,
+                  child: Card(
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  Obx(() {
-                    if (controller.isLoading.value) {
-                      return const Column(
-                        children: [
-                          Text('Carregando...'),
-                          SizedBox(height: 20.0),
-                          CircularProgressIndicator(),
-                        ],
-                      );
-                    } else if (!controller.isLoading.value &&
-                        controller.listFreight.isNotEmpty) {
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: controller.listFreight.length,
-                        itemBuilder: (context, index) {
-                          Freight frete = controller.listFreight[index];
-                          return Dismissible(
-                            key: UniqueKey(),
-                            direction: DismissDirection.endToStart,
-                            confirmDismiss: (DismissDirection direction) async {
-                              if (direction == DismissDirection.endToStart) {
-                                showDialog(context, frete, controller);
-                              }
-                              return false;
-                            },
-                            background: Container(
-                              margin: const EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.red,
-                              ),
-                              child: const Align(
-                                alignment: Alignment.centerRight,
-                                child: Padding(
-                                    padding: EdgeInsets.all(10),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Icon(
-                                          Icons.check_rounded,
-                                          size: 25,
-                                          color: Colors.white,
-                                        ),
-                                        SizedBox(width: 10),
-                                        Text(
-                                          'EXCLUIR',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    )),
-                              ),
+                    elevation: 5,
+                    margin: const EdgeInsets.all(12.0),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(mainAxisSize: MainAxisSize.min, children: [
+                        const SizedBox(height: 5),
+                        TextFormField(
+                          controller: controller.searchFreightController,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none,
                             ),
-                            child: CustomFreightCard(
-                              origin: "${frete.origem!}-${frete.ufOrigem}",
-                              destination:
-                                  "${frete.destino!}-${frete.ufDestino}",
-                              distance: frete.distanciaKm.toString(),
-                              value: frete.valorRecebido.toString(),
-                              functionEdit: () {
-                                controller.fillInFields(frete);
-                                showModalBottomSheet(
-                                  isScrollControlled: true,
-                                  context: context,
-                                  builder: (context) => CreateFreightModal(
-                                    isUpdate: true,
-                                    freight: frete,
+                            suffixIcon: const Icon(Icons.search_rounded),
+                            labelText: 'PESQUISAR FRETE',
+                          ),
+                          onChanged: (value) {
+                            controller.filterFreights(value);
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        Obx(() {
+                          if (controller.isLoading.value) {
+                            return const Column(
+                              children: [
+                                Text('Carregando...'),
+                                SizedBox(height: 20.0),
+                                CircularProgressIndicator(),
+                              ],
+                            );
+                          } else if (!controller.isLoading.value &&
+                              controller.listFreight.isNotEmpty) {
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              itemCount: controller.filteredFreights.length,
+                              itemBuilder: (context, index) {
+                                Freight frete =
+                                    controller.filteredFreights[index];
+                                return Dismissible(
+                                  key: UniqueKey(),
+                                  direction: DismissDirection.endToStart,
+                                  confirmDismiss:
+                                      (DismissDirection direction) async {
+                                    if (direction ==
+                                        DismissDirection.endToStart) {
+                                      showDialog(context, frete, controller);
+                                    }
+                                    return false;
+                                  },
+                                  background: Container(
+                                    margin: const EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.red,
+                                    ),
+                                    child: const Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Padding(
+                                          padding: EdgeInsets.all(10),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              Icon(
+                                                Icons.check_rounded,
+                                                size: 25,
+                                                color: Colors.white,
+                                              ),
+                                              SizedBox(width: 10),
+                                              Text(
+                                                'EXCLUIR',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ],
+                                          )),
+                                    ),
+                                  ),
+                                  child: CustomFreightCard(
+                                    origin:
+                                        "${frete.origem!}-${frete.ufOrigem}",
+                                    destination:
+                                        "${frete.destino!}-${frete.ufDestino}",
+                                    distance: frete.distanciaKm.toString(),
+                                    value: frete.valorRecebido.toString(),
+                                    functionEdit: () {
+                                      controller.fillInFields(frete);
+                                      showModalBottomSheet(
+                                        isScrollControlled: true,
+                                        context: context,
+                                        builder: (context) =>
+                                            CreateFreightModal(
+                                          isUpdate: true,
+                                          freight: frete,
+                                        ),
+                                      );
+                                    },
                                   ),
                                 );
                               },
-                            ),
-                          );
-                        },
-                      );
-                    } else {
-                      return const Center(
-                        child: Text('NENHUM FRETE CADASTRADO!'),
-                      );
-                    }
-                  }),
-                ]),
-              ),
-            ),
-          )
-        ])),
+                            );
+                          } else {
+                            return const Center(
+                              child: Text('NENHUM FRETE CADASTRADO!'),
+                            );
+                          }
+                        }),
+                      ]),
+                    ),
+                  ),
+                ),
+              )
+            ])),
       ]),
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(right: 8, bottom: 8),

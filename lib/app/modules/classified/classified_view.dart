@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/classified_controller.dart';
@@ -35,140 +37,155 @@ class ClassifiedView extends GetView<ClassifiedController> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(
-                  height: MediaQuery.sizeOf(context).height,
-                  child: Card(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    elevation: 5,
-                    margin: const EdgeInsets.all(12.0),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(children: [
-                        TextFormField(
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide.none,
-                            ),
-                            suffixIcon: const Icon(Icons.search_rounded),
-                            labelText: 'PESQUISAR CLASSIFICADO',
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Obx(() {
-                          if (controller.isLoading.value) {
-                            return const Column(
-                              children: [
-                                Text('Carregando...'),
-                                SizedBox(height: 20.0),
-                                CircularProgressIndicator(),
-                              ],
-                            );
-                          } else if (!controller.isLoading.value &&
-                              controller.listClassifieds.isNotEmpty) {
-                            return Expanded(
-                              child: ListView.builder(
-                                padding: EdgeInsets.only(
-                                    bottom: MediaQuery.of(context).size.height *
-                                        .22),
-                                shrinkWrap: true,
-                                physics: const AlwaysScrollableScrollPhysics(),
-                                itemCount: controller.listClassifieds.length,
-                                itemBuilder: (context, index) {
-                                  final Classifieds classificado =
-                                      controller.listClassifieds[index];
-
-                                  return Dismissible(
-                                    key: UniqueKey(),
-                                    direction: ServiceStorage.getUserId() ==
-                                            classificado.user!.id
-                                        ? DismissDirection.endToStart
-                                        : DismissDirection.none,
-                                    confirmDismiss:
-                                        (DismissDirection direction) async {
-                                      if (direction ==
-                                          DismissDirection.endToStart) {
-                                        showDialog(
-                                            context, classificado, controller);
-                                      }
-                                      return false;
-                                    },
-                                    background: Container(
-                                      margin: const EdgeInsets.all(5),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: Colors.red,
-                                      ),
-                                      child: const Align(
-                                        alignment: Alignment.centerRight,
-                                        child: Padding(
-                                            padding: EdgeInsets.all(10),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: [
-                                                Icon(
-                                                  Icons.check_rounded,
-                                                  size: 25,
-                                                  color: Colors.white,
-                                                ),
-                                                SizedBox(width: 10),
-                                                Text(
-                                                  'EXCLUIR',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ],
-                                            )),
-                                      ),
-                                    ),
-                                    child: InkWell(
-                                      child: CustomClassifiedCard(
-                                        fnEdit: () {
-                                          if (ServiceStorage.getUserId() ==
-                                              classificado.user!.id!) {
-                                            controller.clearAllFields();
-                                            controller
-                                                .fillInFields(classificado);
-                                            showModalBottomSheet(
-                                              isScrollControlled: true,
-                                              context: context,
-                                              builder: (context) =>
-                                                  CreateClassifiedModal(
-                                                isUpdate: true,
-                                                classificado: classificado,
-                                              ),
-                                            );
-                                          } else {
-                                            Get.snackbar('Falha!',
-                                                "Classificado não foi criado por você!",
-                                                backgroundColor: Colors.red,
-                                                colorText: Colors.white,
-                                                duration:
-                                                    const Duration(seconds: 2),
-                                                snackPosition:
-                                                    SnackPosition.BOTTOM);
-                                          }
-                                        },
-                                        classificado: classificado,
-                                      ),
-                                    ),
-                                  );
-                                },
+                RefreshIndicator(
+                  onRefresh: () async {
+                    controller.searchClassifiedController.clear();
+                    controller.listClassifieds.clear();
+                    controller.getAll();
+                  },
+                  child: SizedBox(
+                    height: MediaQuery.sizeOf(context).height,
+                    child: Card(
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      elevation: 5,
+                      margin: const EdgeInsets.all(12.0),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(children: [
+                          TextFormField(
+                            controller: controller.searchClassifiedController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide.none,
                               ),
-                            );
-                          } else {
-                            return const Center(
-                              child: Text('NENHUM CLASSIFICADO CADASTRADO!'),
-                            );
-                          }
-                        }),
-                      ]),
+                              suffixIcon: const Icon(Icons.search_rounded),
+                              labelText: 'PESQUISAR CLASSIFICADO',
+                            ),
+                            onChanged: (value) {
+                              controller.filterClassifieds(value);
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                          Obx(() {
+                            if (controller.isLoading.value) {
+                              return const Column(
+                                children: [
+                                  Text('Carregando...'),
+                                  SizedBox(height: 20.0),
+                                  CircularProgressIndicator(),
+                                ],
+                              );
+                            } else if (!controller.isLoading.value &&
+                                controller.listClassifieds.isNotEmpty) {
+                              return Expanded(
+                                child: ListView.builder(
+                                  padding: EdgeInsets.only(
+                                      bottom:
+                                          MediaQuery.of(context).size.height *
+                                              .22),
+                                  shrinkWrap: true,
+                                  physics:
+                                      const AlwaysScrollableScrollPhysics(),
+                                  itemCount:
+                                      controller.filteredClassifieds.length,
+                                  itemBuilder: (context, index) {
+                                    final Classifieds classificado =
+                                        controller.filteredClassifieds[index];
+
+                                    return Dismissible(
+                                      key: UniqueKey(),
+                                      direction: ServiceStorage.getUserId() ==
+                                              classificado.user!.id
+                                          ? DismissDirection.endToStart
+                                          : DismissDirection.none,
+                                      confirmDismiss:
+                                          (DismissDirection direction) async {
+                                        if (direction ==
+                                            DismissDirection.endToStart) {
+                                          showDialog(context, classificado,
+                                              controller);
+                                        }
+                                        return false;
+                                      },
+                                      background: Container(
+                                        margin: const EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: Colors.red,
+                                        ),
+                                        child: const Align(
+                                          alignment: Alignment.centerRight,
+                                          child: Padding(
+                                              padding: EdgeInsets.all(10),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  Icon(
+                                                    Icons.check_rounded,
+                                                    size: 25,
+                                                    color: Colors.white,
+                                                  ),
+                                                  SizedBox(width: 10),
+                                                  Text(
+                                                    'EXCLUIR',
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                      ),
+                                      child: InkWell(
+                                        child: CustomClassifiedCard(
+                                          fnEdit: () {
+                                            if (ServiceStorage.getUserId() ==
+                                                classificado.user!.id!) {
+                                              controller.clearAllFields();
+                                              controller
+                                                  .fillInFields(classificado);
+                                              showModalBottomSheet(
+                                                isScrollControlled: true,
+                                                context: context,
+                                                builder: (context) =>
+                                                    CreateClassifiedModal(
+                                                  isUpdate: true,
+                                                  classificado: classificado,
+                                                ),
+                                              );
+                                            } else {
+                                              Get.snackbar('Falha!',
+                                                  "Classificado não foi criado por você!",
+                                                  backgroundColor: Colors.red,
+                                                  colorText: Colors.white,
+                                                  duration: const Duration(
+                                                      seconds: 2),
+                                                  snackPosition:
+                                                      SnackPosition.BOTTOM);
+                                            }
+                                          },
+                                          classificado: classificado,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            } else {
+                              return const Center(
+                                child: Text('NENHUM CLASSIFICADO CADASTRADO!'),
+                              );
+                            }
+                          }),
+                        ]),
+                      ),
                     ),
                   ),
                 ),
@@ -186,8 +203,8 @@ class ClassifiedView extends GetView<ClassifiedController> {
                 onPressed: () async {
                   await controller.getQuantityLicences();
                   await controller.getQuantityLicences();
-                  if (controller.classificados_cadastrados.value >=
-                      controller.posts_permitidos.value) {
+                  if (controller.classificadosCadastrados.value >=
+                      controller.postsPermitidos.value) {
                     Get.snackbar('Atenção!',
                         'A quantidade de licenças do seu plano estourou!',
                         backgroundColor: Colors.orange,

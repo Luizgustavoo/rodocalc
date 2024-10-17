@@ -9,6 +9,12 @@ import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 
 class TripController extends GetxController {
+  RxList<Trip> listTrip = RxList<Trip>([]);
+  RxList<Trip> filteredTrips = RxList<Trip>([]);
+  RxBool isLoading = true.obs;
+  RxBool isLoadingCRUD = false.obs;
+  RxBool isLoadingData = true.obs;
+
   final tripFormKey = GlobalKey<FormState>();
   final viewTripFormKey = GlobalKey<FormState>();
   final originController = TextEditingController();
@@ -27,6 +33,8 @@ class TripController extends GetxController {
   final txtDateExpenseTripController = TextEditingController();
   final txtDescriptionExpenseTripController = TextEditingController();
   final txtAmountExpenseTripController = TextEditingController();
+
+  final searchTripController = TextEditingController();
 
   final selectedStateOrigin = ''.obs;
   final selectedStateDestiny = ''.obs;
@@ -108,6 +116,12 @@ class TripController extends GetxController {
     'TO': 'tocantins'
   };
 
+  @override
+  void onInit() {
+    super.onInit();
+    filteredTrips.assignAll(listTrip);
+  }
+
   String cleanValue(String value) {
     String cleanedValue = value.replaceAll(RegExp(r'R\$|\s'), '');
     cleanedValue = cleanedValue.replaceAll('.', '').replaceAll(',', '.');
@@ -146,20 +160,34 @@ class TripController extends GetxController {
     }
   }
 
-  RxList<Trip> listTrip = RxList<Trip>([]);
-  RxBool isLoading = true.obs;
-  RxBool isLoadingCRUD = false.obs;
-  RxBool isLoadingData = true.obs;
-
   Future<void> getAll() async {
     isLoading.value = true;
     try {
+      searchTripController.clear();
       listTrip.value = await repository.getAll();
+      filteredTrips.assignAll(listTrip);
     } catch (e) {
       listTrip.clear();
+      filteredTrips.clear();
       Exception(e);
     }
     isLoading.value = false;
+  }
+
+  void filterTrips(String query) {
+    if (query.isEmpty) {
+      // Se a busca estiver vazia, mostra todos os fretes
+      filteredTrips.assignAll(listTrip);
+    } else {
+      // Filtra os fretes com base no campo "origem", "destino" ou qualquer outro
+      filteredTrips.assignAll(
+        listTrip
+            .where((trip) =>
+                trip.origem!.toLowerCase().contains(query.toLowerCase()) ||
+                trip.destino!.toLowerCase().contains(query.toLowerCase()))
+            .toList(),
+      );
+    }
   }
 
   void fillInFields(Trip trip) {
@@ -282,7 +310,6 @@ class TripController extends GetxController {
         };
         getAll();
         clearAllFields();
-
       } else {
         retorno = {
           'success': false,
