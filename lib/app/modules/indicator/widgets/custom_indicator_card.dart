@@ -37,7 +37,6 @@ class CustomIndicatorCard extends StatelessWidget {
                 .replaceAll('-', '')
                 .replaceAll(' ', '');
             String cupom = ServiceStorage.getUserId().toString();
-            print(cupom);
             String linkWhatsApp =
                 "https://painel.rodocalc.com.br/redirect/?code=$cupom";
 

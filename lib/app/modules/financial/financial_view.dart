@@ -295,7 +295,7 @@ class FinancialView extends GetView<TransactionController> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              const Text('Saldo Atual',
+              const Text('SALDO ATUAL:',
                   style: TextStyle(fontSize: 18, fontFamily: 'Inter-Bold')),
               const SizedBox(width: 5),
               Obx(
@@ -590,18 +590,18 @@ class FinancialView extends GetView<TransactionController> {
                       stringTitulo,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                          fontFamily: 'Inter-Bold', fontSize: 14, color: cor),
+                          fontFamily: 'Inter-Bold', fontSize: 12, color: cor),
                     ),
                   ),
                   Text(
                     "CÓDIGO",
                     style: TextStyle(
-                        fontFamily: 'Inter-Regular', fontSize: 14, color: cor),
+                        fontFamily: 'Inter-Regular', fontSize: 12, color: cor),
                   ),
                   Text(
                     'SALDO',
                     style: TextStyle(
-                        fontFamily: 'Inter-Regular', fontSize: 14, color: cor),
+                        fontFamily: 'Inter-Regular', fontSize: 12, color: cor),
                   ),
                 ],
               ),
@@ -628,7 +628,7 @@ class FinancialView extends GetView<TransactionController> {
                         transaction.id.toString().padLeft(5, '0'),
                         style: TextStyle(
                           fontFamily: 'Inter-Regular',
-                          fontSize: 14,
+                          fontSize: 12,
                           color: cor,
                         ),
                       ),
@@ -636,7 +636,7 @@ class FinancialView extends GetView<TransactionController> {
                         'R\$ ${transaction.saldo!.toStringAsFixed(2)}',
                         style: TextStyle(
                           fontFamily: 'Inter-Regular',
-                          fontSize: 14,
+                          fontSize: 12,
                           color: cor,
                         ),
                       ),

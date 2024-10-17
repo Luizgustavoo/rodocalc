@@ -38,21 +38,35 @@ class CreatePlanModal extends GetView<PlanController> {
               ),
               const SizedBox(height: 15),
               Obx(
-                () => DropdownButtonFormField<int>(
-                  value: controller.selectedLicenses.value,
-                  items: List.generate(
-                    50,
+                () {
+                  // Obtém o valor mínimo de licenças
+                  int minLicencas = controller.selectedPlan.value!.minLicencas!;
+
+                  // Gera a lista de itens a partir do valor mínimo até 50
+                  List<DropdownMenuItem<int>> items = List.generate(
+                    50 - minLicencas + 1,
                     (index) => DropdownMenuItem(
-                      value: index + 1,
-                      child: Text('${index + 1} Licença(s)'),
+                      value: minLicencas + index,
+                      child: Text('${minLicencas + index} Licença(s)'),
                     ),
-                  ),
-                  onChanged: controller.updateLicenses,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.location_on),
-                    labelText: 'QUANTIDADE DE LICENÇAS',
-                  ),
-                ),
+                  );
+
+                  // Verifica se o valor atual está na lista de itens
+                  if (!items.any((item) =>
+                      item.value == controller.selectedLicenses.value)) {
+                    controller.selectedLicenses.value = minLicencas;
+                  }
+
+                  return DropdownButtonFormField<int>(
+                    value: controller.selectedLicenses.value,
+                    items: items,
+                    onChanged: controller.updateLicenses,
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(Icons.location_on),
+                      labelText: 'QUANTIDADE DE LICENÇAS',
+                    ),
+                  );
+                },
               ),
               const SizedBox(height: 15.0),
               Obx(

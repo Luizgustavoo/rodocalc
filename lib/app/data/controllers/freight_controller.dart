@@ -163,7 +163,7 @@ class FreightController extends GetxController {
     final double T =
         double.parse(cleanValue(priceTiresController.text)); // preco dos pneus
 
-    double tolls = cleanValue(priceTollsController.text).length > 0
+    double tolls = cleanValue(priceTollsController.text).isNotEmpty
         ? double.parse(cleanValue(priceTollsController.text))
         : 0;
     double otherExpenses = 0;

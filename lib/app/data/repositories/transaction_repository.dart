@@ -134,10 +134,10 @@ class TransactionRepository {
     return list;
   }
 
-  getMySpecifics(int categoria_id) async {
+  getMySpecifics(int categoriaId) async {
     List<SpecificTypeExpense> list = <SpecificTypeExpense>[];
 
-    var response = await apiClient.getMySpecifics(categoria_id);
+    var response = await apiClient.getMySpecifics(categoriaId);
 
     if (response != null) {
       response['data'].forEach((e) {

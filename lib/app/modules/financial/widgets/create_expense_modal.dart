@@ -114,29 +114,6 @@ class CreateExpenseModal extends GetView<TransactionController> {
 
               //TERMINA AQUI AS FOTOS
 
-              const SizedBox(height: 10),
-              TextFormField(
-                controller: controller.txtDescriptionController,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(
-                    Icons.message,
-                    size: 25,
-                  ),
-                  labelText: 'DESCRIÇÃO',
-                ),
-                onChanged: (text) {
-                  controller.txtDescriptionController.value = TextEditingValue(
-                    text: text.toUpperCase(),
-                    selection: controller.txtDescriptionController.selection,
-                  );
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, insira a descrição';
-                  }
-                  return null;
-                },
-              ),
               const SizedBox(height: 15),
               TextFormField(
                 controller: controller.txtDateController,
@@ -244,7 +221,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
                   ],
                   onChanged: (newValue) {
                     controller.selectedCategory.value = newValue!;
-                    controller.getMySpecifics(newValue!);
+                    controller.getMySpecifics(newValue);
                   },
                   value: controller.expenseCategories.any((specific) =>
                           specific.id == controller.selectedCategory.value)
@@ -394,6 +371,29 @@ class CreateExpenseModal extends GetView<TransactionController> {
                 onChanged: (value) {
                   FormattedInputers.onContactChanged(
                       value, controller.txtPhoneController);
+                },
+              ),
+              const SizedBox(height: 10),
+              TextFormField(
+                controller: controller.txtDescriptionController,
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(
+                    Icons.message,
+                    size: 25,
+                  ),
+                  labelText: 'DESCRIÇÃO',
+                ),
+                onChanged: (text) {
+                  controller.txtDescriptionController.value = TextEditingValue(
+                    text: text.toUpperCase(),
+                    selection: controller.txtDescriptionController.selection,
+                  );
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, insira a descrição';
+                  }
+                  return null;
                 },
               ),
               const SizedBox(height: 16),
@@ -558,7 +558,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
                   },
                 ),
                 if (type == "tipoespecificodespesa") ...[
-                  SizedBox(height: 15),
+                  const SizedBox(height: 15),
                   Obx(
                     () => SizedBox(
                       height: 50,

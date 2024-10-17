@@ -30,7 +30,6 @@ final class DynamicLinkHandler {
     final queryParams = data.queryParameters;
     if (queryParams.isNotEmpty) {
       final code = queryParams['code'];
-      print(queryParams['code']);
       if (code != null) {
         final box = GetStorage('rodocalc');
         box.write('indicador', code);

@@ -160,6 +160,9 @@ class PlanViewOld extends GetView<PlanController> {
                           itemBuilder: (context, index) {
                             final Plan plan = controller.listPlans[index];
                             return CustomPlanCard(
+                              corCard: plan.corCard,
+                              corTexto: plan.corTexto,
+                              minLicencas: plan.minLicencas,
                               name: plan.descricao,
                               description: plan.observacoes,
                               price:

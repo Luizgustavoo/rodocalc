@@ -466,10 +466,10 @@ class TransactionController extends GetxController {
     isLoading.value = false;
   }
 
-  Future<void> getMySpecifics(int categoria_id) async {
+  Future<void> getMySpecifics(int categoriaId) async {
     isLoading.value = true;
     try {
-      specificTypes.value = await repository.getMySpecifics(categoria_id);
+      specificTypes.value = await repository.getMySpecifics(categoriaId);
     } catch (e) {
       Exception(e);
     }
@@ -725,7 +725,7 @@ class TransactionController extends GetxController {
 
   Future<Map<String, dynamic>> insertExpenseCategory(String type) async {
     if (formKeyExpenseCategory.currentState!.validate()) {
-      int? category_id = type == "categoriadespesa"
+      int? categoryId = type == "categoriadespesa"
           ? 0
           : selectedCategoryCadSpecificType.value;
       mensagem = await repository.insertCategory(
@@ -735,7 +735,7 @@ class TransactionController extends GetxController {
             userId: ServiceStorage.getUserId(),
           ),
           type,
-          category_id!);
+          categoryId!);
       if (mensagem != null) {
         retorno = {
           'success': mensagem['success'],

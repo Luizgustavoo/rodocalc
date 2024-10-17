@@ -57,9 +57,9 @@ class CustomCourseCard extends StatelessWidget {
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(5),
             image: DecorationImage(
-              image: imagem!.isNotEmpty
+              image: imagem.isNotEmpty
                   ? CachedNetworkImageProvider(
-                      "$urlImagem/storage/fotos/cursos/${imagem}")
+                      "$urlImagem/storage/fotos/cursos/$imagem")
                   : const AssetImage('assets/images/logo.png') as ImageProvider,
               fit: BoxFit.cover,
             ),
@@ -84,7 +84,7 @@ class CustomCourseCard extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: 5),
+          const SizedBox(height: 5),
           RichText(
             text: TextSpan(
               style: const TextStyle(

@@ -160,10 +160,13 @@ class PlanView extends GetView<PlanController> {
                           itemBuilder: (context, index) {
                             final Plan plan = controller.listPlans[index];
                             return CustomPlanCard(
+                              minLicencas: plan.minLicencas,
                               name: plan.descricao,
+                              corCard: plan.corCard,
+                              corTexto: plan.corTexto,
                               description: plan.observacoes,
                               price:
-                                  "R\$ ${FormattedInputers.formatValuePTBR(plan.valor)}",
+                                  FormattedInputers.formatValuePTBR(plan.valor),
                               onPressed: () {
                                 controller.updateSelectedPlan(plan);
                                 showModalBottomSheet(

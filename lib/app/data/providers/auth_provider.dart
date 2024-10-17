@@ -197,7 +197,6 @@ class AuthApiClient {
       if (httpResponse.statusCode == 200 || httpResponse.statusCode == 201) {
         final box = GetStorage('rodocalc');
         Map<String, dynamic> responseData = json.decode(httpResponse.body);
-        Map<String, dynamic> oldAuth = box.read('auth');
 
         Map<String, dynamic> newAuth = {};
 

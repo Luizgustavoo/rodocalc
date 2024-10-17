@@ -386,13 +386,13 @@ class TransactionApiClient {
     return null;
   }
 
-  getMySpecifics(int categoria_id) async {
+  getMySpecifics(int categoriaId) async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
       Uri categoriesUrl;
       String url =
-          '$baseUrl/v1/tipoespecificodespesa/my/${ServiceStorage.getUserId().toString()}/$categoria_id';
+          '$baseUrl/v1/tipoespecificodespesa/my/${ServiceStorage.getUserId().toString()}/$categoriaId';
       categoriesUrl = Uri.parse(url);
       var response = await httpClient.get(
         categoriesUrl,

@@ -9,18 +9,25 @@ class Plan {
   String? updatedAt;
   String? observacoes;
   String? gatewayPlanId;
+  int? minLicencas;
+  String? corTexto;
+  String? corCard;
 
-  Plan(
-      {this.id,
-      this.descricao,
-      this.valor,
-      this.quantidadeCadastrosPermitidos,
-      this.duracaoPlanoDias,
-      this.status,
-      this.createdAt,
-      this.updatedAt,
-      this.gatewayPlanId,
-      this.observacoes});
+  Plan({
+    this.id,
+    this.descricao,
+    this.valor,
+    this.quantidadeCadastrosPermitidos,
+    this.duracaoPlanoDias,
+    this.status,
+    this.createdAt,
+    this.updatedAt,
+    this.gatewayPlanId,
+    this.observacoes,
+    this.minLicencas,
+    this.corTexto,
+    this.corCard,
+  });
 
   Plan.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -33,6 +40,9 @@ class Plan {
     updatedAt = json['updated_at'];
     observacoes = json['observacoes'];
     gatewayPlanId = json['gateway_plan_id'];
+    minLicencas = json['min_licencas'];
+    corTexto = json['cor_texto'];
+    corCard = json['cor_card'];
   }
 
   Map<String, dynamic> toJson() {
@@ -47,6 +57,9 @@ class Plan {
     data['updated_at'] = updatedAt;
     data['observacoes'] = observacoes;
     data['gateway_plan_id'] = gatewayPlanId;
+    data['min_licencas'] = minLicencas;
+    data['cor_texto'] = corTexto;
+    data['cor_card'] = corCard;
     return data;
   }
 }

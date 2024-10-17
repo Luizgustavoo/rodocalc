@@ -144,13 +144,17 @@ class PlanApiClient {
 
       String recurrenceDays = "0";
 
-      switch(recurrence){
-        case 'MENSAL': recurrenceDays = "30";break;
-        case 'SEMESTRAL': recurrenceDays = "180";break;
-        case 'ANUAL': recurrenceDays = "365";break;
+      switch (recurrence) {
+        case 'MENSAL':
+          recurrenceDays = "30";
+          break;
+        case 'SEMESTRAL':
+          recurrenceDays = "180";
+          break;
+        case 'ANUAL':
+          recurrenceDays = "365";
+          break;
       }
-
-
 
       var requestBody = {
         'recorrencia': recurrenceDays.toString(),
@@ -231,12 +235,16 @@ class PlanApiClient {
       );
 
       //MÉTODO PARA ATUALIZAR O STORAGE COM AS NOVAS ROTAS DE ACORDO COM O PLANO SELECIONADO!
-      final planUserUrl = Uri.parse('$baseUrl/v1/usuario/getuserbyid/${ServiceStorage.getUserId()}');
-      final responsePlan = await http.get(planUserUrl,headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': token,
-      },);
+      final planUserUrl = Uri.parse(
+          '$baseUrl/v1/usuario/getuserbyid/${ServiceStorage.getUserId()}');
+      final responsePlan = await http.get(
+        planUserUrl,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': token,
+        },
+      );
 
       Auth authh = Auth.fromJson(json.decode(responsePlan.body));
       final box = GetStorage('rodocalc');
@@ -320,7 +328,6 @@ class PlanApiClient {
         },
         body: jsonEncode(requestBody),
       );
-      print(response.body);
       return json.decode(response.body);
     } catch (err) {
       return null;

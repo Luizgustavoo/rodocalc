@@ -15,9 +15,9 @@ class InitialController extends GetxController {
   }
 
   String verifyAuth() {
-    print('-------------valor de codigo-----------');
-    print(codigo.value);
-    print('---------------------------------------');
+    // print('-------------valor de codigo-----------');
+    // print(codigo.value);
+    // print('---------------------------------------');
     if (auth != null) {
       return Routes.home;
     }
