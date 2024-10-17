@@ -152,7 +152,7 @@ class ClassifiedController extends GetxController {
         Classifieds(
           descricao: descriptionController.text,
           valor: FormattedInputers.convertToDouble(valueController.text),
-          status: 1,
+          status: 2,
           fotosclassificados: photos,
           userId: ServiceStorage.getUserId(),
         ),
@@ -187,7 +187,7 @@ class ClassifiedController extends GetxController {
             id: id,
             descricao: descriptionController.text,
             valor: FormattedInputers.convertToDouble(valueController.text),
-            status: 1,
+            status: 2,
             fotosclassificados: photos,
             userId: ServiceStorage.getUserId(),
           ),
