@@ -18,6 +18,11 @@ class ClassifiedsRepository {
     return list;
   }
 
+  getQuantityLicences() async {
+    var response = await apiClient.getQuantityLicences();
+    return response['data'];
+  }
+
   insert(Classifieds classificados) async {
     try {
       var response = await apiClient.insert(classificados);
