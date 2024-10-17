@@ -213,6 +213,12 @@ class CreatePlanModal extends GetView<PlanController> {
                   prefixIcon: Icon(Icons.person),
                   labelText: 'NOME NO CARTÃO',
                 ),
+                onChanged: (text) {
+                  controller.nameCardController.value = TextEditingValue(
+                    text: text.toUpperCase(),
+                    selection: controller.nameCardController.selection,
+                  );
+                },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Digite o nome igual do cartão.';
@@ -223,6 +229,7 @@ class CreatePlanModal extends GetView<PlanController> {
               const SizedBox(height: 10),
               TextFormField(
                 controller: controller.cpfController,
+                keyboardType: TextInputType.number,
                 maxLength: 14,
                 decoration: const InputDecoration(
                     prefixIcon: Icon(Icons.badge),
