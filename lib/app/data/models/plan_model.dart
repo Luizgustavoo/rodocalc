@@ -10,6 +10,7 @@ class Plan {
   String? observacoes;
   String? gatewayPlanId;
   int? minLicencas;
+  int? posts;
   String? corTexto;
   String? corCard;
 
@@ -27,6 +28,7 @@ class Plan {
     this.minLicencas,
     this.corTexto,
     this.corCard,
+    this.posts,
   });
 
   Plan.fromJson(Map<String, dynamic> json) {
@@ -43,6 +45,7 @@ class Plan {
     minLicencas = json['min_licencas'];
     corTexto = json['cor_texto'];
     corCard = json['cor_card'];
+    posts = json['posts'];
   }
 
   Map<String, dynamic> toJson() {
@@ -60,6 +63,7 @@ class Plan {
     data['min_licencas'] = minLicencas;
     data['cor_texto'] = corTexto;
     data['cor_card'] = corCard;
+    data['posts'] = posts;
     return data;
   }
 }
