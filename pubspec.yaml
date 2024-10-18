@@ -61,6 +61,7 @@ dependencies:
   flutter_localization: ^0.2.1
   pdf: ^3.11.1
   path_provider: ^2.1.4
+  open_file: ^3.2.1
   permission_handler: ^11.3.1
 
 

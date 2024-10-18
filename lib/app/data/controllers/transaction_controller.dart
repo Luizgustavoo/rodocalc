@@ -7,7 +7,9 @@ import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rodocalc/app/data/models/charge_type_model.dart';
@@ -162,8 +164,7 @@ class TransactionController extends GetxController {
                 style:
                     pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 18),
               ),
-              pw.Image(logoImage,
-                  width: 50), // Tamanho da logo ajustado para o header
+              pw.Image(logoImage, width: 50),
             ],
           ),
         ),
@@ -175,27 +176,107 @@ class TransactionController extends GetxController {
           ),
         ),
         build: (context) => [
+          pw.Padding(
+            padding: const pw.EdgeInsets.only(left: 20, top: 10, bottom: 10),
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text(
+                  'CAMINHÃO: ${ServiceStorage.titleSelectedVehicle().toUpperCase() ?? 'N/A'}',
+                  style: pw.TextStyle(
+                      fontSize: 16, fontWeight: pw.FontWeight.bold),
+                ),
+                pw.Text(
+                  'MOTORISTA: ${ServiceStorage.motoristaSelectedVehicle().toUpperCase() ?? 'N/A'}',
+                  style: const pw.TextStyle(fontSize: 14),
+                ),
+                pw.SizedBox(height: 20),
+              ],
+            ),
+          ),
           ...listTransactions.map((transaction) {
             return pw.Padding(
-              padding: const pw.EdgeInsets.only(left: 20),
+              padding: const pw.EdgeInsets.only(left: 20, bottom: 10),
               child: pw.Column(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
-                  pw.SizedBox(height: 10),
-                  pw.Text(
-                      'ORIGEM: ${transaction.origem == 'null' ? 'N/A' : transaction.origem}'),
-                  pw.Text(
-                      'DESTINO: ${transaction.destino == 'null' ? 'N/A' : transaction.destino}'),
-                  pw.Text(
-                      'EMPRESA: ${transaction.uf == 'null' ? 'N/A' : transaction.uf}'),
-                  pw.Text(
-                      'DATA: ${transaction.data != 'null' ? FormattedInputers.formatApiDate(transaction.data!) : 'N/A'}'),
-                  pw.Text(
-                      'EMPRESA: ${transaction.empresa == 'null' ? 'N/A' : transaction.empresa}'),
-                  pw.Text(
-                      'DESCRIÇÃO: ${transaction.descricao == 'null' ? 'N/A' : transaction.descricao}'),
-                  pw.Text(
-                      'VALOR: ${transaction.valor != 'null' ? FormattedInputers.formatCurrency(transaction.valor.toDouble()) : 'N/A'}'),
+                  if (transaction.tipoTransacao == 'entrada') ...[
+                    pw.Text('ENTRADA',
+                        style: pw.TextStyle(
+                            color: PdfColors.green,
+                            fontWeight: pw.FontWeight.bold)),
+                    pw.Text(
+                        'ORIGEM: ${transaction.origem!.toUpperCase() ?? 'N/A'}',
+                        style: const pw.TextStyle(
+                          color: PdfColors.green,
+                        )),
+                    pw.Text(
+                        'DESTINO: ${transaction.destino!.toUpperCase() ?? 'N/A'}',
+                        style: const pw.TextStyle(
+                          color: PdfColors.green,
+                        )),
+                    pw.Text(
+                        'TIPO CARGA: ${transaction.chargeType!.descricao ?? 'N/A'}',
+                        style: const pw.TextStyle(
+                          color: PdfColors.green,
+                        )),
+                    pw.Text('DESCRIÇÃO: ${transaction.descricao ?? 'N/A'}',
+                        style: const pw.TextStyle(
+                          color: PdfColors.green,
+                        )),
+                    pw.Text(
+                        'VALOR: ${transaction.valor != null ? FormattedInputers.formatCurrency(transaction.valor.toDouble()) : 'N/A'}',
+                        style: const pw.TextStyle(
+                          color: PdfColors.green,
+                        )),
+                    pw.Text(
+                        'DATA: ${transaction.data != null ? FormattedInputers.formatApiDate(transaction.data!) : 'N/A'}',
+                        style: const pw.TextStyle(
+                          color: PdfColors.green,
+                        )),
+                  ] else if (transaction.tipoTransacao == 'saida') ...[
+                    pw.Text('SAÍDA',
+                        style: pw.TextStyle(
+                            color: PdfColors.red,
+                            fontWeight: pw.FontWeight.bold)),
+                    pw.Text(
+                        'CATEGORIA DESPESA: ${transaction.expenseCategory!.descricao ?? 'N/A'}',
+                        style: const pw.TextStyle(
+                          color: PdfColors.red,
+                        )),
+                    pw.Text(
+                        'TIPO ESPECÍFICO: ${transaction.specificTypeExpense!.descricao ?? 'N/A'}',
+                        style: const pw.TextStyle(
+                          color: PdfColors.red,
+                        )),
+                    pw.Text('DESCRIÇÃO: ${transaction.descricao ?? 'N/A'}',
+                        style: const pw.TextStyle(
+                          color: PdfColors.red,
+                        )),
+                    pw.Text('EMPRESA: ${transaction.empresa ?? 'N/A'}',
+                        style: const pw.TextStyle(
+                          color: PdfColors.red,
+                        )),
+                    pw.Text(
+                        'CIDADE: ${transaction.cidade!.toUpperCase() ?? 'N/A'}',
+                        style: const pw.TextStyle(
+                          color: PdfColors.red,
+                        )),
+                    pw.Text('UF: ${transaction.uf ?? 'N/A'}',
+                        style: const pw.TextStyle(
+                          color: PdfColors.red,
+                        )),
+                    pw.Text(
+                        'VALOR: ${transaction.valor != null ? FormattedInputers.formatCurrency(transaction.valor.toDouble()) : 'N/A'}',
+                        style: const pw.TextStyle(
+                          color: PdfColors.red,
+                        )),
+                    pw.Text(
+                        'DATA: ${transaction.data != null ? FormattedInputers.formatApiDate(transaction.data!) : 'N/A'}',
+                        style: const pw.TextStyle(
+                          color: PdfColors.red,
+                        )),
+                  ],
                   pw.SizedBox(height: 10),
                   pw.Divider(),
                 ],
@@ -338,11 +419,20 @@ class TransactionController extends GetxController {
 
       Get.snackbar(
         'Sucesso!',
-        'Arquivo salvo com sucesso em $filePath',
+        'Arquivo salvo com sucesso.',
         backgroundColor: Colors.green,
         colorText: Colors.white,
-        duration: const Duration(seconds: 2),
+        duration: const Duration(seconds: 4),
         snackPosition: SnackPosition.BOTTOM,
+        mainButton: TextButton(
+          onPressed: () {
+            openFile(filePath); // Chama a função para abrir o arquivo
+          },
+          child: const Text(
+            'ABRIR',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
       );
     } catch (e) {
       Get.snackbar(
@@ -354,6 +444,21 @@ class TransactionController extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
       );
       rethrow;
+    }
+  }
+
+  Future<void> openFile(String filePath) async {
+    try {
+      await OpenFile.open(filePath); // Abre o arquivo usando o pacote open_file
+    } catch (e) {
+      Get.snackbar(
+        'Erro!',
+        'Ocorreu um erro ao abrir o arquivo: $e',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 2),
+        snackPosition: SnackPosition.BOTTOM,
+      );
     }
   }
 

@@ -61,7 +61,7 @@ android {
         release {
             keyAlias keystoreProperties['keyAlias']
             keyPassword keystoreProperties['keyPassword']
-            storeFile file("F:/projetos_flutter/rodocalc/android/app/upload-keystore.jks")
+            storeFile file("C:/flutterprojects/rodocalc/android/app/upload-keystore.jks")
             storePassword keystoreProperties['storePassword']
         }
     }
