@@ -39,8 +39,8 @@ class ComissionIndicatorController extends GetxController {
   Future<void> getAllToReceive() async {
     isLoading.value = true;
     try {
+      sumComissions.value = 0;
       listComissions.value = await repository.getAllToReceive();
-
       sumComissions.value =
           listComissions.fold(0, (sum, item) => sum + item.valorComissao!);
     } catch (e) {

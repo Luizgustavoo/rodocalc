@@ -16,6 +16,8 @@ class IndicatorView extends GetView<IndicationController> {
 
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
       appBar: const CustomAppBar(title: 'INDICAÇÕES'),
       body: Stack(
@@ -63,96 +65,117 @@ class IndicatorView extends GetView<IndicationController> {
                             Card(
                               color: Colors.grey.shade300,
                               child: Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    const Text('A RECEBER:',
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontFamily: 'Inter-Bold')),
-                                    const SizedBox(width: 3),
-                                    Obx(
-                                      () {
-                                        String valor = "R\$ 0,00";
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Obx(() {
+                                    bool showButton =
+                                        comissionIndicatorController
+                                                .sumComissions.value >=
+                                            25000;
 
-                                        if (comissionIndicatorController
-                                                .sumComissions.value >
-                                            0) {
-                                          valor =
-                                              "R\$ ${FormattedInputers.formatValuePTBR(comissionIndicatorController.sumComissions.value / 100)}";
-                                        }
-
-                                        return Text(
-                                          valor,
-                                          style: const TextStyle(
-                                            fontSize: 18,
-                                            fontFamily: 'Inter-Black',
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                    const SizedBox(width: 5),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(colors: [
-                                          Colors.green.shade700,
-                                          Colors.greenAccent.shade400
-                                        ]),
-                                        borderRadius: BorderRadius.circular(50),
-                                      ),
-                                      child: Obx(() {
-                                        if (comissionIndicatorController
-                                                .sumComissions.value <
-                                            25000) {
-                                          return const SizedBox();
-                                        }
-
-                                        return ElevatedButton(
-                                          onPressed:
-                                              comissionIndicatorController
-                                                          .totalPedidoSaque
-                                                          .value >
-                                                      0
-                                                  ? null
-                                                  : () {
-                                                      showModalBottomSheet(
-                                                        isScrollControlled:
-                                                            true,
-                                                        context: context,
-                                                        builder: (context) =>
-                                                            const WithdrawalRequestModal(
-                                                          isUpdate: false,
-                                                        ),
-                                                      );
-                                                    },
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.transparent,
-                                            shadowColor: Colors.transparent,
-                                          ),
-                                          child: Obx(() {
-                                            String tTitulo = "SOLICITAR\nSAQUE";
-                                            if (comissionIndicatorController
-                                                    .totalPedidoSaque.value >
-                                                0) {
-                                              tTitulo = "SAQUE\nSOLICITADO";
-                                            }
-                                            return Text(
-                                              tTitulo,
-                                              textAlign: TextAlign.center,
-                                              style: const TextStyle(
-                                                  fontFamily: 'Inter-Bold',
-                                                  color: Colors.white,
-                                                  fontSize: 12),
-                                            );
-                                          }),
-                                        );
-                                      }),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                                    return Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      crossAxisAlignment: CrossAxisAlignment
+                                          .start, // Garante alinhamento superior
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            const Text(
+                                              'A RECEBER:',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontFamily: 'Inter-Bold',
+                                              ),
+                                            ),
+                                            const SizedBox(height: 3),
+                                            Obx(
+                                              () => Text(
+                                                "R\$ ${FormattedInputers.formatValuePTBR(comissionIndicatorController.sumComissions.value / 100)}",
+                                                style: const TextStyle(
+                                                  fontSize: 18,
+                                                  fontFamily: 'Inter-Black',
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                        if (showButton)
+                                          const SizedBox(
+                                              width:
+                                                  10), // Adiciona espaçamento entre o texto e o botão
+                                        // Exibe o botão "SOLICITAR SAQUE" se o valor for >= 25000
+                                        if (showButton)
+                                          Obx(
+                                            () => Container(
+                                              decoration: BoxDecoration(
+                                                gradient: LinearGradient(
+                                                  colors:
+                                                      comissionIndicatorController
+                                                                  .totalPedidoSaque
+                                                                  .value >
+                                                              0
+                                                          ? [
+                                                              Colors.grey
+                                                                  .shade700,
+                                                              Colors.grey
+                                                                  .shade400,
+                                                            ]
+                                                          : [
+                                                              Colors.green
+                                                                  .shade700,
+                                                              Colors.greenAccent
+                                                                  .shade400,
+                                                            ],
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(25),
+                                              ),
+                                              child: ElevatedButton(
+                                                onPressed:
+                                                    comissionIndicatorController
+                                                                .totalPedidoSaque
+                                                                .value >
+                                                            0
+                                                        ? null
+                                                        : () {
+                                                            showModalBottomSheet(
+                                                              isScrollControlled:
+                                                                  true,
+                                                              context: context,
+                                                              builder: (context) =>
+                                                                  const WithdrawalRequestModal(
+                                                                isUpdate: false,
+                                                              ),
+                                                            );
+                                                          },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                  shadowColor:
+                                                      Colors.transparent,
+                                                ),
+                                                child: Text(
+                                                  comissionIndicatorController
+                                                              .totalPedidoSaque
+                                                              .value >
+                                                          0
+                                                      ? "SAQUE\nSOLICITADO"
+                                                      : "SOLICITAR\nSAQUE",
+                                                  textAlign: TextAlign.center,
+                                                  style: const TextStyle(
+                                                    fontFamily: 'Inter-Black',
+                                                    color: Colors.white,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                      ],
+                                    );
+                                  })),
                             ),
                             const SizedBox(height: 10),
                             TextFormField(

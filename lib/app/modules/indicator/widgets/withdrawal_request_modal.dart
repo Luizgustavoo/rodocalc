@@ -109,6 +109,7 @@ class WithdrawalRequestModal extends GetView<ComissionIndicatorController> {
 
                         if (retorno['success'] == true) {
                           Get.back();
+                          controller.getExistsPedidoSaque();
                           Get.snackbar(
                               'Sucesso!', retorno['message'].join('\n'),
                               backgroundColor: Colors.green,
