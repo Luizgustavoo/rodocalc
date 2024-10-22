@@ -15,6 +15,7 @@ import 'package:rodocalc/app/data/controllers/indicator_controller.dart';
 import 'package:rodocalc/app/data/controllers/login_controller.dart';
 import 'package:rodocalc/app/data/controllers/perfil_controller.dart';
 import 'package:rodocalc/app/data/controllers/plan_controller.dart';
+import 'package:rodocalc/app/data/controllers/signup_controller.dart';
 import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
 import 'package:rodocalc/app/data/controllers/trip_controller.dart';
 import 'package:rodocalc/app/data/controllers/user_controller.dart';
@@ -140,6 +141,11 @@ class HomeView extends GetView<HomeController> {
                                               case 'PERFIL':
                                                 cityController.getCities();
                                                 perfilController.fillInFields();
+
+                                                final signupController =
+                                                    Get.put(SignUpController());
+                                                signupController.getUserTypes();
+
                                                 Get.toNamed(Routes.perfil);
                                                 break;
                                               case 'ADICIONAR USUÁRIO':

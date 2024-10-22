@@ -38,6 +38,8 @@ class PerfilController extends GetxController {
   final TextEditingController neighborhoodController = TextEditingController();
   final TextEditingController houseNumberController = TextEditingController();
 
+  RxInt userTypeUpdateController = 0.obs;
+
   final cepRepository = Get.put(CepRepository());
 
   void fetchAddressFromCep(String cep) async {
@@ -198,6 +200,10 @@ class PerfilController extends GetxController {
         password: txtSenhaController.text,
         status: 1,
       );
+
+      if (userTypeUpdateController.value > 0) {
+        user.userTypeId = userTypeUpdateController.value;
+      }
 
       mensagem = await repository.updateUser(people, user);
       if (mensagem != null) {

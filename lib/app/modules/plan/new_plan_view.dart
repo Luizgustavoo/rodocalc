@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rodocalc/app/data/controllers/login_controller.dart';
 import 'package:rodocalc/app/data/controllers/plan_controller.dart';
 import 'package:rodocalc/app/global/custom_app_bar.dart';
 import 'package:rodocalc/app/modules/plan/widgets/update_plan_modal.dart';
@@ -220,9 +221,10 @@ void showDialogCancelSubscription(
           Map<String, dynamic> retorno =
               await controller.cancelSubscribe(idSubscription);
 
+          Get.back();
           if (retorno['success'] == true) {
-            Get.back();
-            Get.back();
+            final loginController = Get.put(LoginController());
+            loginController.logout();
             Get.snackbar('Sucesso!', retorno['message'].join('\n'),
                 backgroundColor: Colors.green,
                 colorText: Colors.white,

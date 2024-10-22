@@ -16,7 +16,9 @@ class SignUpController extends GetxController {
 
   RxList<UserType> listUserTypes = RxList<UserType>([]);
   var isLoading = false.obs;
+  var isLoadingIndicatorName = false.obs;
   var selectedUserType = 0.obs;
+  var indicatorName = "".obs;
 
   final TextEditingController txtNomeController = TextEditingController();
   final TextEditingController txtTelefoneController = TextEditingController();
@@ -27,6 +29,8 @@ class SignUpController extends GetxController {
   final TextEditingController txtApelidoController = TextEditingController();
   final TextEditingController txtEmailController = TextEditingController();
   final TextEditingController txtSenhaController = TextEditingController();
+  final TextEditingController txtCodigoIndicadorController =
+      TextEditingController(text: ServiceStorage.getCodeIndicator().toString());
   final TextEditingController txtConfirmaSenhaController =
       TextEditingController();
 
@@ -163,7 +167,7 @@ class SignUpController extends GetxController {
         email: txtEmailController.text,
         password: txtSenhaController.text,
         status: 1,
-        cupomRecebido: ServiceStorage.getCodeIndicator(),
+        cupomRecebido: txtCodigoIndicadorController.text,
         userTypeId: selectedUserType.value,
       );
 
@@ -184,5 +188,26 @@ class SignUpController extends GetxController {
       Exception(e);
     }
     isLoading.value = false;
+  }
+
+  Future<bool> getIndicador() async {
+    isLoadingIndicatorName.value = true;
+    try {
+      String id = txtCodigoIndicadorController.text;
+      People peopleIndicator = await repository.getIndicador(id);
+      indicatorName.value =
+          (peopleIndicator.nome != null && peopleIndicator.nome!.isNotEmpty)
+              ? peopleIndicator.nome.toString()
+              : "CÓDIGO INVÁLIDO";
+
+      if (peopleIndicator.nome != null && peopleIndicator.nome!.isNotEmpty) {
+        return true;
+      }
+    } catch (e) {
+      Exception(e);
+      return false;
+    }
+    isLoadingIndicatorName.value = false;
+    return false;
   }
 }

@@ -67,6 +67,22 @@ class AuthApiClient {
     return null;
   }
 
+  Future<Map<String, dynamic>?> getIndicador(String id) async {
+    var loginUrl = Uri.parse('$baseUrl/myindicator/$id');
+    try {
+      var response = await httpClient.get(loginUrl, headers: {
+        "Accept": "application/json",
+      });
+
+      print(json.decode(response.body));
+
+      return json.decode(response.body);
+    } catch (e) {
+      Exception(e);
+    }
+    return null;
+  }
+
   insertUser(People people, User user) async {
     try {
       //final token = "Bearer ${ServiceStorage.getToken()}";
@@ -182,7 +198,9 @@ class AuthApiClient {
         request.fields['cep'] = people.cep!.toString();
       }
 
-      request.fields['usertype_id'] = "2";
+      if (user.userTypeId != null && user.userTypeId! > 0) {
+        request.fields['usertype_id'] = user.userTypeId.toString();
+      }
 
       request.headers.addAll({
         'Authorization': 'Bearer $token',

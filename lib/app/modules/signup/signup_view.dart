@@ -368,8 +368,27 @@ class SignUpView extends GetView<SignUpController> {
                           const SizedBox(height: 16),
                           Obx(
                             () => DropdownButtonFormField<int?>(
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.people),
                                 labelText: 'TIPO DE REGISTRO',
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.grey.shade400,
+                                    // Borda cinza clara
+                                    width:
+                                        1.0, // Ajuste a espessura da borda se necessário
+                                  ),
+                                  borderRadius: BorderRadius.circular(
+                                      8.0), // Ajuste o raio da borda
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.grey.shade400,
+                                    // Borda cinza mais escura ao focar
+                                    width: 1.0,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
                               ),
                               items: [
                                 const DropdownMenuItem<int?>(
@@ -411,6 +430,29 @@ class SignUpView extends GetView<SignUpController> {
                                 }
                                 return null;
                               },
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Obx(
+                            () => TextFormField(
+                              controller:
+                                  controller.txtCodigoIndicadorController,
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                  fillColor: Colors.grey.shade400,
+                                  prefixIcon: const Icon(Icons.code_sharp),
+                                  labelText:
+                                      'CÓDIGO DO INDICADOR: ${controller.indicatorName.value}',
+                                  suffixIcon: IconButton(
+                                      onPressed: () async {
+                                        if (await controller.getIndicador() ==
+                                            false) {
+                                          controller
+                                              .txtCodigoIndicadorController
+                                              .text = "";
+                                        }
+                                      },
+                                      icon: const Icon(Icons.add_circle))),
                             ),
                           ),
                           const SizedBox(height: 20),

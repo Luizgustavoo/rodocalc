@@ -3,10 +3,16 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:rodocalc/app/data/controllers/login_controller.dart';
 // import 'package:rodocalc/app/data/controllers/city_state_controller.dart';
 import 'package:rodocalc/app/data/controllers/perfil_controller.dart';
+import 'package:rodocalc/app/data/controllers/plan_controller.dart';
+import 'package:rodocalc/app/data/controllers/signup_controller.dart';
+import 'package:rodocalc/app/data/models/user_plan_model.dart';
+import 'package:rodocalc/app/data/models/user_type_model.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
+import 'package:rodocalc/app/utils/service_storage.dart';
 import 'package:rodocalc/app/utils/services.dart';
 // import 'package:searchfield/searchfield.dart';
 
@@ -323,28 +329,201 @@ class PerfilView extends GetView<PerfilController> {
                             validator: _validateConfirmaSenha,
                           ),
                           const SizedBox(height: 20),
+                          const Divider(
+                            color: Colors.orange,
+                            thickness: 2,
+                            height: 15,
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                              'Altere a opção abaixo apenas se desejar modificar seu tipo de conta. Essa ação cancelará sua assinatura atual e exigirá que você assine uma nova.',
+                              style: TextStyle(
+                                color: Colors.red,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          Obx(
+                            () => Card(
+                              color: Colors.black,
+                              surfaceTintColor: Colors.black,
+                              margin: const EdgeInsets.only(
+                                  left: 10, right: 10, bottom: 10),
+                              child: DropdownButtonFormField<int?>(
+                                decoration: InputDecoration(
+                                  prefixIcon: const Icon(Icons.people),
+                                  labelText: 'TIPO DE CONTA',
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Colors.grey.shade400,
+                                      // Borda cinza clara
+                                      width:
+                                          1.0, // Ajuste a espessura da borda se necessário
+                                    ),
+                                    borderRadius: BorderRadius.circular(
+                                        8.0), // Ajuste o raio da borda
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Colors.grey.shade400,
+                                      // Borda cinza mais escura ao focar
+                                      width: 1.0,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                ),
+                                items: [
+                                  const DropdownMenuItem<int?>(
+                                    value: 0,
+                                    child: Text('Selecione um tipo'),
+                                  ),
+                                  ...Get.put(SignUpController())
+                                      .listUserTypes
+                                      .map((UserType type) {
+                                    // Verifique se plan.id é nulo e use um valor padrão se necessário
+                                    if (type.id == null) {
+                                      return DropdownMenuItem<int?>(
+                                        value: null,
+                                        // Ou qualquer outro valor que não conflite
+                                        child: Text(type.descricao ??
+                                            'Descrição não disponível'),
+                                      );
+                                    }
+
+                                    return DropdownMenuItem<int?>(
+                                      value: type.id,
+                                      child: Container(
+                                        constraints: BoxConstraints(
+                                            maxWidth: Get.width * .7),
+                                        child: Text(
+                                          "${type.descricao}",
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    );
+                                  }),
+                                ],
+                                onChanged: (newValue) {
+                                  controller.userTypeUpdateController.value =
+                                      newValue!;
+                                },
+                              ),
+                            ),
+                          ),
+                          const Divider(
+                            color: Colors.orange,
+                            thickness: 2,
+                            height: 15,
+                          ),
+                          const SizedBox(height: 20),
                           CustomElevatedButton(
                             height: 50,
                             width: double.infinity,
                             onPressed: () async {
-                              Map<String, dynamic> retorno =
-                                  await controller.updateUser();
+                              if (controller.userTypeUpdateController.value >
+                                      0 &&
+                                  controller.userTypeUpdateController.value !=
+                                      ServiceStorage.getUserTypeId()) {
+                                Get.defaultDialog(
+                                  titlePadding: const EdgeInsets.all(16),
+                                  contentPadding: const EdgeInsets.all(16),
+                                  title: "Confirmação",
+                                  content: const Text(
+                                    textAlign: TextAlign.center,
+                                    "Você está mudando seu TIPO DE CONTA, isso cancelará sua assinatura. Deseja continuar?",
+                                    style: TextStyle(
+                                      fontFamily: 'Inter-Regular',
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  actions: [
+                                    ElevatedButton(
+                                      onPressed: () async {
+                                        Map<String, dynamic> retorno =
+                                            await controller.updateUser();
 
-                              if (retorno['success'] == true) {
-                                Get.back();
-                                Get.snackbar(
-                                    'Sucesso!', retorno['message'].join('\n'),
-                                    backgroundColor: Colors.green,
-                                    colorText: Colors.white,
-                                    duration: const Duration(seconds: 2),
-                                    snackPosition: SnackPosition.BOTTOM);
+                                        if (retorno['success'] == true) {
+                                          final planController =
+                                              Get.put(PlanController());
+
+                                          planController.getMyPlans();
+                                          List<UserPlan> userPlan =
+                                              planController.myPlans;
+
+                                          if (userPlan.isNotEmpty) {
+                                            Map<String, dynamic>
+                                                retornoCancelAssignature =
+                                                await planController
+                                                    .cancelSubscribe(userPlan
+                                                        .first.assignatureId
+                                                        .toString());
+                                            Get.back();
+                                            final loginController =
+                                                Get.put(LoginController());
+                                            loginController.logout();
+                                          }
+
+                                          Get.back();
+                                          Get.snackbar('Sucesso!',
+                                              retorno['message'].join('\n'),
+                                              backgroundColor: Colors.green,
+                                              colorText: Colors.white,
+                                              duration:
+                                                  const Duration(seconds: 2),
+                                              snackPosition:
+                                                  SnackPosition.BOTTOM);
+                                        } else {
+                                          Get.snackbar('Falha!',
+                                              retorno['message'].join('\n'),
+                                              backgroundColor: Colors.red,
+                                              colorText: Colors.white,
+                                              duration:
+                                                  const Duration(seconds: 2),
+                                              snackPosition:
+                                                  SnackPosition.BOTTOM);
+                                        }
+                                      },
+                                      child: const Text(
+                                        "CONFIRMAR",
+                                        style: TextStyle(
+                                            fontFamily: 'Poppinss',
+                                            color: Colors.white),
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Get.back();
+                                      },
+                                      child: const Text(
+                                        "CANCELAR",
+                                        style:
+                                            TextStyle(fontFamily: 'Poppinss'),
+                                      ),
+                                    ),
+                                  ],
+                                );
                               } else {
-                                Get.snackbar(
-                                    'Falha!', retorno['message'].join('\n'),
-                                    backgroundColor: Colors.red,
-                                    colorText: Colors.white,
-                                    duration: const Duration(seconds: 2),
-                                    snackPosition: SnackPosition.BOTTOM);
+                                Map<String, dynamic> retorno =
+                                    await controller.updateUser();
+
+                                if (retorno['success'] == true) {
+                                  Get.back();
+                                  Get.snackbar(
+                                      'Sucesso!', retorno['message'].join('\n'),
+                                      backgroundColor: Colors.green,
+                                      colorText: Colors.white,
+                                      duration: const Duration(seconds: 2),
+                                      snackPosition: SnackPosition.BOTTOM);
+                                } else {
+                                  Get.snackbar(
+                                      'Falha!', retorno['message'].join('\n'),
+                                      backgroundColor: Colors.red,
+                                      colorText: Colors.white,
+                                      duration: const Duration(seconds: 2),
+                                      snackPosition: SnackPosition.BOTTOM);
+                                }
                               }
                             },
                             child: const Text(

@@ -39,6 +39,25 @@ class AuthRepository {
     return list;
   }
 
+  Future<People> getIndicador(String id) async {
+    People people = People();
+    try {
+      var response = await apiClient.getIndicador(id);
+
+      if (response != null && response['data'] != null) {
+        if (response['data'] is List && response['data'].isNotEmpty) {
+          // Acessa o primeiro item da lista e converte para People
+          people = People.fromJson(response['data'][0]);
+        }
+      }
+    } catch (e) {
+      print('Erro: $e');
+      throw Exception(e);
+    }
+
+    return people; // Retorna o objeto People preenchido ou vazio se não houver dados
+  }
+
   Future<void> getLogout() async {
     try {
       await apiClient.getLogout();

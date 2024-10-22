@@ -7,6 +7,7 @@ import 'package:rodocalc/app/modules/plan/widgets/create_plan_modal.dart';
 import 'package:rodocalc/app/modules/plan/widgets/custom_plan_card.dart';
 // import 'package:rodocalc/app/routes/app_routes.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
+import 'package:rodocalc/app/utils/service_storage.dart';
 
 class PlanView extends GetView<PlanController> {
   const PlanView({super.key});
@@ -159,25 +160,34 @@ class PlanView extends GetView<PlanController> {
                           itemCount: controller.listPlans.length,
                           itemBuilder: (context, index) {
                             final Plan plan = controller.listPlans[index];
-                            return CustomPlanCard(
-                              minLicencas: plan.minLicencas,
-                              name: plan.descricao,
-                              corCard: plan.corCard,
-                              corTexto: plan.corTexto,
-                              description: plan.observacoes,
-                              price:
-                                  FormattedInputers.formatValuePTBR(plan.valor),
-                              onPressed: () {
-                                controller.updateSelectedPlan(plan);
-                                controller.selectedLicenses.value = plan.minLicencas!;
-                                controller.updatePrice();
-                                showModalBottomSheet(
-                                  context: context,
-                                  builder: (_) => const CreatePlanModal(),
-                                  isScrollControlled: true,
-                                );
-                              },
-                            );
+                            final userTypeId = ServiceStorage.getUserTypeId();
+
+                            if ((userTypeId == 3 && plan.id == 15) ||
+                                (userTypeId != 3 &&
+                                    (plan.id == 13 || plan.id == 14))) {
+                              return CustomPlanCard(
+                                minLicencas: plan.minLicencas,
+                                name: plan.descricao,
+                                corCard: plan.corCard,
+                                corTexto: plan.corTexto,
+                                description: plan.observacoes,
+                                price: FormattedInputers.formatValuePTBR(
+                                    plan.valor),
+                                onPressed: () {
+                                  controller.updateSelectedPlan(plan);
+                                  controller.selectedLicenses.value =
+                                      plan.minLicencas!;
+                                  controller.updatePrice();
+                                  showModalBottomSheet(
+                                    context: context,
+                                    builder: (_) => const CreatePlanModal(),
+                                    isScrollControlled: true,
+                                  );
+                                },
+                              );
+                            } else {
+                              return const SizedBox.shrink();
+                            }
                           },
                         ),
                       ),
