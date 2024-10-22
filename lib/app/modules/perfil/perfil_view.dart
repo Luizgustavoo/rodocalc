@@ -334,6 +334,17 @@ class PerfilView extends GetView<PerfilController> {
                             thickness: 2,
                             height: 15,
                           ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'CONTA ATUAL: ${ServiceStorage.getUserTypeName()}',
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
                           const Padding(
                             padding: EdgeInsets.all(8.0),
                             child: Text(
@@ -354,7 +365,7 @@ class PerfilView extends GetView<PerfilController> {
                               child: DropdownButtonFormField<int?>(
                                 decoration: InputDecoration(
                                   prefixIcon: const Icon(Icons.people),
-                                  labelText: 'TIPO DE CONTA',
+                                  labelText: 'ALTERAR TIPO DE CONTA',
                                   enabledBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
                                       color: Colors.grey.shade400,

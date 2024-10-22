@@ -41,6 +41,22 @@ class ServiceStorage {
     return 0;
   }
 
+  static String getUserTypeName() {
+    if (existUser()) {
+      int id = _box.read('auth')['user']['usertype_id'];
+      if (id == 1) {
+        return "ADMIN";
+      } else if (id == 2) {
+        return 'CAMINHONEIRO';
+      } else if (id == 3) {
+        return 'FROTISTA';
+      } else {
+        return 'MOTORISTA DO FROTISTA';
+      }
+    }
+    return "";
+  }
+
   static String getCodeIndicator() {
     if (_box.read('indicador') != null) {
       return _box.read('indicador');
@@ -73,14 +89,14 @@ class ServiceStorage {
     return "";
   }
 
-  static List<String?> rotasPermitidas(){
+  static List<String?> rotasPermitidas() {
     List<String?> list = [];
     if (existUser()) {
       Map<String, dynamic> authJson = _box.read('auth');
       Auth auth = Auth.fromJson(authJson);
       list = auth.rotas!.map((rota) => rota.rota).toList();
     }
-      return list;
+    return list;
   }
 
   static bool isRotaPermitida(String rotaNome) {
