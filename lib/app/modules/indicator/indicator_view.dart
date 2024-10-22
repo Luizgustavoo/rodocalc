@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/comission_indicator_controller.dart';
@@ -8,6 +10,8 @@ import 'package:rodocalc/app/modules/indicator/widgets/create_indicator_modal.da
 import 'package:rodocalc/app/modules/indicator/widgets/custom_indicator_card.dart';
 import 'package:rodocalc/app/modules/indicator/widgets/withdrawal_request_modal.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
+import 'package:rodocalc/app/utils/service_storage.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class IndicatorView extends GetView<IndicationController> {
   IndicatorView({super.key});
@@ -16,8 +20,7 @@ class IndicatorView extends GetView<IndicationController> {
 
   @override
   Widget build(BuildContext context) {
-
-
+    String cupom = ServiceStorage.getUserId().toString();
     return Scaffold(
       appBar: const CustomAppBar(title: 'INDICAÇÕES'),
       body: Stack(
@@ -62,6 +65,92 @@ class IndicatorView extends GetView<IndicationController> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             const SizedBox(height: 5),
+                            Card(
+                              color: const Color(0xff4f555f),
+                              elevation: 3,
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 12, right: 12, bottom: 15, top: 15),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 25,
+                                          backgroundColor: Colors.grey[200],
+                                          child: const Icon(Icons.qr_code,
+                                              color: Colors.black),
+                                        ),
+                                        const SizedBox(width: 20),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Text(
+                                              'Código de convite',
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.white,
+                                                  fontFamily: 'Inter-Regular'),
+                                            ),
+                                            Text(
+                                              cupom,
+                                              style: const TextStyle(
+                                                  fontSize: 25,
+                                                  color: Colors.white,
+                                                  fontFamily: 'Inter-Black'),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 50,
+                                      child: VerticalDivider(
+                                        thickness: 3,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.share,
+                                        color: Colors.white,
+                                      ),
+                                      onPressed: () async {
+                                        String linkWhatsApp =
+                                            "CÓDIGO DE CONVITE: $cupom . Link: https://painel.rodocalc.com.br/redirect/?code=$cupom";
+
+                                        var androidUrl =
+                                            "whatsapp://send?text=$linkWhatsApp";
+                                        var iosUrl =
+                                            "https://wa.me/text=$linkWhatsApp";
+
+                                        try {
+                                          if (Platform.isIOS) {
+                                            await launchUrl(Uri.parse(iosUrl));
+                                          } else {
+                                            await launchUrl(
+                                                Uri.parse(androidUrl));
+                                          }
+                                        } on Exception {
+                                          Get.snackbar(
+                                            'Falha',
+                                            'Whatsapp não instalado!',
+                                            backgroundColor:
+                                                Colors.red.shade500,
+                                            colorText: Colors.white,
+                                            snackPosition: SnackPosition.BOTTOM,
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 15),
                             Card(
                               color: Colors.grey.shade300,
                               child: Padding(
