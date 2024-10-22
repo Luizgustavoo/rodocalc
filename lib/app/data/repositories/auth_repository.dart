@@ -51,7 +51,6 @@ class AuthRepository {
         }
       }
     } catch (e) {
-      print('Erro: $e');
       throw Exception(e);
     }
 

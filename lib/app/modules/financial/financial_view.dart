@@ -3,6 +3,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/controllers/city_state_controller.dart';
+import 'package:rodocalc/app/data/controllers/plan_controller.dart';
 import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
 import 'package:rodocalc/app/data/models/transactions_model.dart';
 import 'package:rodocalc/app/data/models/vehicle_model.dart';
@@ -135,7 +136,21 @@ class FinancialView extends GetView<TransactionController> {
                       : FloatingActionButton(
                           backgroundColor: Colors.grey.shade300,
                           mini: true,
-                          onPressed: () async => await controller.generatePdf(),
+                          onPressed: () async {
+                            final planController = Get.put(PlanController());
+
+                            await planController.getMyPlans();
+                            if (planController.myPlans.first.plano!.id == 14 ||
+                                planController.myPlans.first.plano!.id == 15) {
+                              await controller.generateAndSharePdf();
+                            } else {
+                              Get.snackbar('Erro',
+                                  "Atualize o plano para usar esse recurso!",
+                                  colorText: Colors.white,
+                                  backgroundColor: Colors.red,
+                                  snackPosition: SnackPosition.BOTTOM);
+                            }
+                          },
                           child: const Icon(Icons.download),
                         ),
                 )),

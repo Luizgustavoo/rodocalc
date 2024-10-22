@@ -74,8 +74,6 @@ class AuthApiClient {
         "Accept": "application/json",
       });
 
-      print(json.decode(response.body));
-
       return json.decode(response.body);
     } catch (e) {
       Exception(e);

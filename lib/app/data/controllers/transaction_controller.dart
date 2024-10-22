@@ -7,11 +7,9 @@ import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:permission_handler/permission_handler.dart';
 import 'package:rodocalc/app/data/models/charge_type_model.dart';
 import 'package:rodocalc/app/data/models/expense_category_model.dart';
 import 'package:rodocalc/app/data/models/specific_type_expense_model.dart';
@@ -138,7 +136,7 @@ class TransactionController extends GetxController {
   }
 
   //*RELATORIO */
-  Future<void> generatePdf() async {
+  Future<void> generateAndSharePdf() async {
     final pdf = pw.Document();
     final String formattedDate =
         DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now());
@@ -288,197 +286,29 @@ class TransactionController extends GetxController {
     );
 
     final output = await pdf.save();
-    await showShareDialog(
-      Get.context!,
+    await sharePdf(
       'Relatório_Transacao_$randomNum',
       output,
     );
   }
 
-  Future<void> showShareDialog(
-      BuildContext context, String fileName, List<int> pdfData) async {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Compartilhar Relatório'),
-          titleTextStyle:
-              const TextStyle(fontFamily: 'Poppinss', color: Colors.black),
-          content:
-              const Text('Como você gostaria de compartilhar o relatório?'),
-          contentTextStyle:
-              const TextStyle(fontFamily: 'Poppins', color: Colors.black),
-          actions: [
-            TextButton.icon(
-              onPressed: () {
-                Get.back();
-                saveFile(pdfData, fileName);
-              },
-              label: const Text(
-                'Salvar',
-                style: TextStyle(fontFamily: 'Poppins'),
-              ),
-              icon: const Icon(
-                Icons.save_alt_rounded,
-                color: Colors.black,
-              ),
-            ),
-            TextButton.icon(
-              onPressed: () {
-                Get.back();
-                shareFileByWhatsApp(pdfData, fileName);
-              },
-              label: const Text(
-                'E-mail/Whatsapp',
-                style: TextStyle(fontFamily: 'Poppins'),
-              ),
-              icon: const Icon(
-                Icons.email_rounded,
-                color: Colors.black,
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> checkStoragePermission() async {
-    if (Platform.isAndroid) {
-      // Verifica se a permissão foi negada permanentemente e abre as configurações se necessário
-      if (await Permission.manageExternalStorage.isPermanentlyDenied ||
-          await Permission.storage.isPermanentlyDenied) {
-        await openAppSettings();
-        return;
-      }
-
-      // Verifica permissões para Android 13+ e versões anteriores
-      final manageExternalStorageGranted =
-          await Permission.manageExternalStorage.request().isGranted;
-      final storagePermissionGranted =
-          await Permission.storage.request().isGranted;
-      if (!storagePermissionGranted) {
-        return;
-      }
-      // Verifica se pelo menos uma das permissões foi concedida
-      if (!manageExternalStorageGranted && !storagePermissionGranted) {
-        Get.snackbar(
-          'Permissão negada',
-          'A permissão de gerenciamento de arquivos é necessária para salvar o arquivo.',
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-          duration: const Duration(seconds: 2),
-          snackPosition: SnackPosition.BOTTOM,
-        );
-        return; // Interrompe o processo se a permissão não for concedida
-      }
-    }
-  }
-
-  Future<void> saveFile(List<int> pdfData, String fileName) async {
-    // Verifica permissões
-    await checkStoragePermission();
-
-    // Antes de salvar, verifica se a permissão foi realmente concedida
-    final storagePermissionGranted = await Permission.storage.isGranted;
-    final manageExternalStorageGranted =
-        await Permission.manageExternalStorage.isGranted;
-
-    if (!storagePermissionGranted && !manageExternalStorageGranted) {
-      Get.snackbar(
-        'Erro!',
-        'Permissão de armazenamento não foi concedida. Não foi possível salvar o arquivo.',
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-        duration: const Duration(seconds: 2),
-        snackPosition: SnackPosition.BOTTOM,
-      );
-      return; // Interrompe o processo se a permissão não foi concedida
-    }
-
+  Future<void> sharePdf(String fileName, List<int> pdfData) async {
     try {
-      Directory directory;
-      if (Platform.isAndroid) {
-        // Diretório padrão de download para Android
-        directory = Directory('/storage/emulated/0/Download');
-      } else {
-        // Diretório de documentos no iOS ou outro sistema
-        directory = await getApplicationDocumentsDirectory();
-      }
-
-      bool hasExisted = await directory.exists();
-      if (!hasExisted) {
-        await directory.create(recursive: true);
-      }
-
-      final filePath =
-          "${directory.path}${Platform.pathSeparator}$fileName.pdf";
+      final directory =
+          await getExternalStorageDirectory(); // Diretório seguro para armazenar arquivos externos
+      final filePath = '${directory!.path}/$fileName.pdf';
       final file = File(filePath);
 
       await file.writeAsBytes(pdfData);
 
-      Get.snackbar(
-        'Sucesso!',
-        'Arquivo salvo com sucesso.',
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-        duration: const Duration(seconds: 4),
-        snackPosition: SnackPosition.BOTTOM,
-        mainButton: TextButton(
-          onPressed: () {
-            openFile(filePath); // Chama a função para abrir o arquivo
-          },
-          child: const Text(
-            'ABRIR',
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
-      );
-    } catch (e) {
-      Get.snackbar(
-        'Erro!',
-        'Ocorreu um erro ao salvar o arquivo: $e',
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-        duration: const Duration(seconds: 2),
-        snackPosition: SnackPosition.BOTTOM,
-      );
-      rethrow;
-    }
-  }
+      // Compartilhando o arquivo diretamente via Share+
+      await Share.shareXFiles([XFile(file.path)],
+          text: 'Segue em anexo o relatório.');
 
-  Future<void> openFile(String filePath) async {
-    try {
-      await OpenFile.open(filePath); // Abre o arquivo usando o pacote open_file
-    } catch (e) {
-      Get.snackbar(
-        'Erro!',
-        'Ocorreu um erro ao abrir o arquivo: $e',
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-        duration: const Duration(seconds: 2),
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    }
-  }
-
-  Future<void> shareFileByWhatsApp(List<int> pdfData, String fileName) async {
-    final directory = await getExternalStorageDirectory();
-    final path = directory!.path;
-    final file = File('$path/$fileName.pdf');
-    await file.writeAsBytes(pdfData);
-
-    try {
-      await Share.shareXFiles(
-        [XFile(file.path)],
-        text: 'Segue em anexo o relatório de empresas.',
-      );
-      Get.snackbar(
-        'Sucesso',
-        'Arquivo compartilhado com sucesso!',
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
+      Get.snackbar('Sucesso', 'Arquivo compartilhado com sucesso!',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM);
     } catch (e) {
       Get.snackbar(
         'Erro',
