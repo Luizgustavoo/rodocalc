@@ -116,6 +116,27 @@ class CreateExpenseModal extends GetView<TransactionController> {
 
               const SizedBox(height: 15),
               TextFormField(
+                controller: controller.txtValueController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(
+                    Icons.monetization_on,
+                  ),
+                  labelText: 'VALOR',
+                ),
+                onChanged: (value) {
+                  FormattedInputers.onformatValueChanged(
+                      value, controller.txtValueController);
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, insira o valor';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 15),
+              TextFormField(
                 controller: controller.txtDateController,
                 decoration: const InputDecoration(
                   labelText: 'DATA',
@@ -137,27 +158,6 @@ class CreateExpenseModal extends GetView<TransactionController> {
                     controller.txtDateController.text =
                         FormattedInputers.formatDate2(pickedDate);
                   }
-                },
-              ),
-              const SizedBox(height: 15),
-              TextFormField(
-                controller: controller.txtValueController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(
-                    Icons.monetization_on,
-                  ),
-                  labelText: 'VALOR',
-                ),
-                onChanged: (value) {
-                  FormattedInputers.onformatValueChanged(
-                      value, controller.txtValueController);
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, insira o valor';
-                  }
-                  return null;
                 },
               ),
               const SizedBox(height: 15),
