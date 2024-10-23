@@ -182,7 +182,9 @@ class TransactionApiClient {
         }
       }
       final requestBody = {
-        "descricao": transacoes.descricao.toString(),
+        "descricao": (transacoes.descricao == null || transacoes.descricao!.isEmpty)
+            ? 'NÃO INFORMADA'
+            : transacoes.descricao.toString(),
         "valor": transacoes.valor.toString(),
         "empresa": transacoes.empresa.toString(),
         "cidade": transacoes.cidade.toString(),
@@ -436,7 +438,9 @@ class TransactionApiClient {
       }
 
       var requestBody = {
-        "descricao": transacoes.descricao.toString(),
+        "descricao": (transacoes.descricao == null || transacoes.descricao!.isEmpty)
+            ? 'NÃO INFORMADA'
+            : transacoes.descricao.toString(),
         "valor": transacoes.valor.toString(),
         "empresa": transacoes.empresa.toString(),
         "cidade": transacoes.cidade.toString(),

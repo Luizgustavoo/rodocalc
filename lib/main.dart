@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:package_info_plus/package_info_plus.dart';
+//import 'package:package_info_plus/package_info_plus.dart';
 import 'package:rodocalc/app/data/bindings/initial_binding.dart';
 import 'package:rodocalc/app/routes/app_pages.dart';
 import 'package:rodocalc/app/routes/app_routes.dart';
@@ -20,7 +20,7 @@ void main() async {
   ]);
   DynamicLinkHandler.instance.initialize();
 
-  final storage = GetStorage('rodocalc');
+  /*final storage = GetStorage('rodocalc');
   final packageInfo = await PackageInfo.fromPlatform();
   final currentVersion = packageInfo.version;
   final storedVersion = storage.read('app_version');
@@ -29,7 +29,7 @@ void main() async {
     await storage.erase();
 
     storage.write('app_version', currentVersion);
-  }
+  }*/
 
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
