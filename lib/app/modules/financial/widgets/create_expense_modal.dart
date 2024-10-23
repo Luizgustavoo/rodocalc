@@ -389,12 +389,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
                     selection: controller.txtDescriptionController.selection,
                   );
                 },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, insira a descrição';
-                  }
-                  return null;
-                },
+
               ),
               const SizedBox(height: 16),
               Row(
