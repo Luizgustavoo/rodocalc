@@ -41,6 +41,7 @@ class VehicleController extends GetxController {
   RxInt vehiclesRegistered = 0.obs;
 
   RxList<Vehicle> listVehicles = RxList<Vehicle>([]);
+  RxList<Vehicle> filteredVehicles = RxList<Vehicle>([]);
   RxList<Vehicle> listVehiclesDropDown = RxList<Vehicle>([]);
   RxList<UserPlanDropdown> listMyPlans = RxList<UserPlanDropdown>([]);
 
@@ -101,14 +102,40 @@ class VehicleController extends GetxController {
   };
   dynamic mensagem;
 
+  @override
+  void onInit() {
+    super.onInit();
+    filteredVehicles.assignAll(listVehicles);
+  }
+
   Future<void> getAll() async {
     isLoading.value = true;
     try {
+      searchController.clear();
       listVehicles.value = await repository.getAll();
+      filteredVehicles.assignAll(listVehicles);
     } catch (e) {
+      listVehicles.clear();
+      filteredVehicles.clear();
       Exception(e);
     }
     isLoading.value = false;
+  }
+
+  void filterVehicles(String query) {
+    if (query.isEmpty) {
+      // Se a busca estiver vazia, mostra todos os fretes
+      filteredVehicles.assignAll(listVehicles);
+    } else {
+      // Filtra os fretes com base no campo "origem", "destino" ou qualquer outro
+      filteredVehicles.assignAll(
+        listVehicles
+            .where((vehicle) =>
+                vehicle.modelo!.toLowerCase().contains(query.toLowerCase()) ||
+                vehicle.marca!.toLowerCase().contains(query.toLowerCase()))
+            .toList(),
+      );
+    }
   }
 
   Future<void> getQuantityLicences() async {
@@ -195,6 +222,8 @@ class VehicleController extends GetxController {
     txtFipeController.text = selectedVehicle.fipe.toString();
     txtTrailerController.text = selectedVehicle.reboque.toString();
     selectedPlanDropDown.value = selectedVehicle.planoUsuarioId!;
+    trailerCheckboxValue.value =
+        selectedVehicle.reboque == 'sim' ? true : false;
     if (selectedVehicle.foto!.isNotEmpty) {
       setImage(true);
       selectedImagePath.value = selectedVehicle.foto!;

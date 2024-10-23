@@ -71,6 +71,15 @@ class TransactionController extends GetxController {
     "data": null,
     "message": ["Preencha todos os campos!"]
   };
+
+  resetAll() {
+    retorno = {
+      "success": false,
+      "data": null,
+      "message": ["Preencha todos os campos!"]
+    };
+  }
+
   dynamic mensagem;
 
   var ufs = [
@@ -496,6 +505,7 @@ class TransactionController extends GetxController {
 
   Future<Map<String, dynamic>> insertTransaction(String typeTransaction) async {
     isLoadingInsertUpdate.value = true;
+
     if (formKeyTransaction.currentState!.validate()) {
       final RegExp cidadeUfRegex = RegExp(r'^[A-Za-zÀ-ÿ\s]+-[A-Z]{2}$');
 

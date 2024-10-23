@@ -357,12 +357,6 @@ class CreateReceiptModal extends GetView<TransactionController> {
                       selection: controller.txtDescriptionController.selection,
                     );
                   },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, insira a descrição';
-                    }
-                    return null;
-                  },
                 ),
 
                 const SizedBox(height: 16),
@@ -408,6 +402,7 @@ class CreateReceiptModal extends GetView<TransactionController> {
                           ? const CircularProgressIndicator()
                           : CustomElevatedButton(
                               onPressed: () async {
+                                controller.resetAll();
                                 Map<String, dynamic> retorno = isUpdate
                                     ? await controller.updateTransaction(
                                         "entrada", idTransaction!)

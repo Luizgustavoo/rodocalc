@@ -14,7 +14,6 @@ import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 import 'package:rodocalc/app/utils/services.dart';
-import 'package:url_launcher/url_launcher.dart';
 // import 'package:searchfield/searchfield.dart';
 
 class PerfilView extends GetView<PerfilController> {

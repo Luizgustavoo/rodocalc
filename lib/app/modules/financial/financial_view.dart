@@ -6,6 +6,7 @@ import 'package:rodocalc/app/data/controllers/city_state_controller.dart';
 import 'package:rodocalc/app/data/controllers/plan_controller.dart';
 import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
 import 'package:rodocalc/app/data/models/transactions_model.dart';
+import 'package:rodocalc/app/data/models/user_plan_model.dart';
 import 'package:rodocalc/app/data/models/vehicle_model.dart';
 import 'package:rodocalc/app/modules/financial/widgets/create_expense_modal.dart';
 import 'package:rodocalc/app/modules/financial/widgets/create_receipt_modal.dart';
@@ -138,11 +139,21 @@ class FinancialView extends GetView<TransactionController> {
                           mini: true,
                           onPressed: () async {
                             final planController = Get.put(PlanController());
-
                             await planController.getMyPlans();
-                            if (planController.myPlans.first.plano!.id == 14 ||
-                                planController.myPlans.first.plano!.id == 15) {
-                              await controller.generateAndSharePdf();
+                            List<UserPlan> listplan = planController.myPlans();
+                            if (listplan.isNotEmpty) {
+                              if (planController.myPlans.first.plano!.id ==
+                                      14 ||
+                                  planController.myPlans.first.plano!.id ==
+                                      15) {
+                                await controller.generateAndSharePdf();
+                              } else {
+                                Get.snackbar('Erro',
+                                    "Atualize o plano para usar esse recurso!",
+                                    colorText: Colors.white,
+                                    backgroundColor: Colors.red,
+                                    snackPosition: SnackPosition.BOTTOM);
+                              }
                             } else {
                               Get.snackbar('Erro',
                                   "Atualize o plano para usar esse recurso!",
@@ -303,31 +314,34 @@ class FinancialView extends GetView<TransactionController> {
   Widget _buildHeader() {
     return Container(
       padding: const EdgeInsets.all(16),
-      child: Card(
-        color: Colors.grey.shade300,
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              const Text('SALDO ATUAL:',
-                  style: TextStyle(fontSize: 18, fontFamily: 'Inter-Bold')),
-              const SizedBox(width: 5),
-              Obx(
-                () {
-                  Color c = controller.balance.value == 0
-                      ? Colors.black
-                      : (controller.balance.value > 0
-                          ? Colors.green
-                          : Colors.red);
-                  return Text(
-                    'R\$ ${FormattedInputers.formatValuePTBR(controller.balance.value)}',
-                    style: TextStyle(
-                        fontSize: 22, fontFamily: 'Inter-Black', color: c),
-                  );
-                },
-              ),
-            ],
+      child: SizedBox(
+        width: double.infinity,
+        child: Card(
+          elevation: 3,
+          color: Colors.grey.shade300,
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                const Text('SALDO ATUAL',
+                    style: TextStyle(fontSize: 18, fontFamily: 'Inter-Black')),
+                Obx(
+                  () {
+                    Color c = controller.balance.value == 0
+                        ? Colors.black
+                        : (controller.balance.value > 0
+                            ? Colors.green
+                            : Colors.red);
+                    return Text(
+                      'R\$${FormattedInputers.formatValuePTBR(controller.balance.value)}',
+                      style: TextStyle(
+                          fontSize: 20, fontFamily: 'Inter-Black', color: c),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -590,7 +604,7 @@ class FinancialView extends GetView<TransactionController> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              flex: 2,
+              flex: 1,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -634,7 +648,6 @@ class FinancialView extends GetView<TransactionController> {
                       color: cor,
                     ),
                   ),
-                  const SizedBox(height: 8),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
@@ -648,7 +661,7 @@ class FinancialView extends GetView<TransactionController> {
                         ),
                       ),
                       Text(
-                        'R\$ ${transaction.saldo!.toStringAsFixed(2)}',
+                        'R\$ ${FormattedInputers.formatValuePTBR(transaction.saldo!)}',
                         style: TextStyle(
                           fontFamily: 'Inter-Regular',
                           fontSize: 12,

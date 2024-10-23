@@ -63,6 +63,9 @@ class VehiclesView extends GetView<VehicleController> {
                               suffixIcon: const Icon(Icons.search_rounded),
                               labelText: 'PESQUISAR VEÍCULO',
                             ),
+                            onChanged: (value) {
+                              controller.filterVehicles(value);
+                            },
                           ),
                           const SizedBox(height: 16),
                           Obx(() {
@@ -80,10 +83,10 @@ class VehiclesView extends GetView<VehicleController> {
                                   child: ListView.builder(
                                 shrinkWrap: true,
                                 physics: const AlwaysScrollableScrollPhysics(),
-                                itemCount: controller.listVehicles.length,
+                                itemCount: controller.filteredVehicles.length,
                                 itemBuilder: (context, index) {
                                   final Vehicle vehicle =
-                                      controller.listVehicles[index];
+                                      controller.filteredVehicles[index];
                                   return Dismissible(
                                     key: UniqueKey(),
                                     direction: DismissDirection.endToStart,

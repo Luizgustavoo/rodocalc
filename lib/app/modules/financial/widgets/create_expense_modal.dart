@@ -389,7 +389,6 @@ class CreateExpenseModal extends GetView<TransactionController> {
                     selection: controller.txtDescriptionController.selection,
                   );
                 },
-
               ),
               const SizedBox(height: 16),
               Row(
@@ -431,6 +430,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
                   const SizedBox(width: 10),
                   CustomElevatedButton(
                     onPressed: () async {
+                      controller.resetAll();
                       Map<String, dynamic> retorno = isUpdate
                           ? await controller.updateTransaction(
                               "saida", idTransaction!)

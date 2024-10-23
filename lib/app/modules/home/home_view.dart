@@ -1,6 +1,7 @@
 // ignore_for_file: unnecessary_null_comparison
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/base_url.dart';
@@ -89,17 +90,85 @@ class HomeView extends GetView<HomeController> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Align(
-                                alignment: Alignment.center,
-                                child: SizedBox(
-                                    width: 200,
-                                    height: 60,
-                                    child: Image.asset(
-                                        'assets/images/logo_horizontal.png')),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Align(
+                                    alignment: Alignment.center,
+                                    child: SizedBox(
+                                        width: 200,
+                                        height: 60,
+                                        child: Image.asset(
+                                            'assets/images/logo_horizontal.png')),
+                                  ),
+                                  PopupMenuButton<String>(
+                                    icon: const Icon(
+                                        CupertinoIcons.ellipsis_vertical),
+                                    color: Colors.white,
+                                    surfaceTintColor: Colors.white,
+                                    padding: EdgeInsets.zero,
+                                    iconColor: Colors.white,
+                                    onSelected: (String value) {
+                                      switch (value) {
+                                        case 'PERFIL':
+                                          cityController.getCities();
+                                          perfilController.fillInFields();
+
+                                          final signupController =
+                                              Get.put(SignUpController());
+                                          signupController.getUserTypes();
+
+                                          Get.toNamed(Routes.perfil);
+                                          break;
+                                        case 'ADICIONAR USUÁRIO':
+                                          userController.getMyEmployees();
+                                          Get.toNamed(Routes.user);
+                                          break;
+                                        case 'SAIR':
+                                          final loginController =
+                                              Get.put(LoginController());
+                                          loginController.logout();
+                                          break;
+                                      }
+                                    },
+                                    itemBuilder: (BuildContext context) {
+                                      List<Map<String, dynamic>> choices = [
+                                        {
+                                          'text': 'PERFIL',
+                                          'icon': Icons.person
+                                        },
+                                        {'text': 'SAIR', 'icon': Icons.logout},
+                                      ];
+
+                                      // Adiciona 'Adicionar usuário' apenas se o tipo de usuário for 3
+                                      if (ServiceStorage.getUserTypeId() == 3) {
+                                        choices.insert(1, {
+                                          'text': 'ADICIONAR USUÁRIO',
+                                          'icon': Icons.add
+                                        });
+                                      }
+
+                                      return choices.map((choice) {
+                                        return PopupMenuItem<String>(
+                                          value: choice['text'],
+                                          child: ListTile(
+                                            leading: Icon(choice['icon'],
+                                                color: Colors.black),
+                                            title: Text(
+                                              choice['text'],
+                                              style: const TextStyle(
+                                                  fontFamily: 'Poppins'),
+                                            ),
+                                          ),
+                                        );
+                                      }).toList();
+                                    },
+                                  ),
+                                ],
                               ),
                               const SizedBox(height: 20),
                               Padding(
-                                padding: const EdgeInsets.only(left: 20),
+                                padding: const EdgeInsets.only(left: 0),
                                 child: Align(
                                     alignment: Alignment.topLeft,
                                     child: Row(
@@ -109,7 +178,7 @@ class HomeView extends GetView<HomeController> {
                                                 'Olá, ${controller.nomeUser}',
                                                 style: const TextStyle(
                                                   color: Colors.white,
-                                                  fontSize: 28,
+                                                  fontSize: 25,
                                                   fontFamily: 'Inter-Black',
                                                 ),
                                                 overflow: TextOverflow.ellipsis,
@@ -131,83 +200,19 @@ class HomeView extends GetView<HomeController> {
                                                   : const NetworkImage(
                                                       'https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133352156-stock-illustration-default-placeholder-profile-icon.jpg'),
                                             )),
-                                        PopupMenuButton<String>(
-                                          color: Colors.white,
-                                          surfaceTintColor: Colors.white,
-                                          padding: EdgeInsets.zero,
-                                          iconColor: Colors.white,
-                                          onSelected: (String value) {
-                                            switch (value) {
-                                              case 'PERFIL':
-                                                cityController.getCities();
-                                                perfilController.fillInFields();
-
-                                                final signupController =
-                                                    Get.put(SignUpController());
-                                                signupController.getUserTypes();
-
-                                                Get.toNamed(Routes.perfil);
-                                                break;
-                                              case 'ADICIONAR USUÁRIO':
-                                                userController.getMyEmployees();
-                                                Get.toNamed(Routes.user);
-                                                break;
-                                              case 'SAIR':
-                                                final loginController =
-                                                    Get.put(LoginController());
-                                                loginController.logout();
-                                                break;
-                                            }
-                                          },
-                                          itemBuilder: (BuildContext context) {
-                                            List<Map<String, dynamic>> choices =
-                                                [
-                                              {
-                                                'text': 'PERFIL',
-                                                'icon': Icons.person
-                                              },
-                                              {
-                                                'text': 'SAIR',
-                                                'icon': Icons.logout
-                                              },
-                                            ];
-
-                                            // Adiciona 'Adicionar usuário' apenas se o tipo de usuário for 3
-                                            if (ServiceStorage
-                                                    .getUserTypeId() ==
-                                                3) {
-                                              choices.insert(1, {
-                                                'text': 'ADICIONAR USUÁRIO',
-                                                'icon': Icons.add
-                                              });
-                                            }
-
-                                            return choices.map((choice) {
-                                              return PopupMenuItem<String>(
-                                                value: choice['text'],
-                                                child: ListTile(
-                                                  leading: Icon(choice['icon'],
-                                                      color: Colors.black),
-                                                  title: Text(
-                                                    choice['text'],
-                                                    style: const TextStyle(
-                                                        fontFamily: 'Poppins'),
-                                                  ),
-                                                ),
-                                              );
-                                            }).toList();
-                                          },
-                                        ),
                                       ],
                                     )),
                               ),
                               const SizedBox(height: 40),
-                              Text(
-                                "VEICÚLO: ${ServiceStorage.titleSelectedVehicle()} - MOTORISTA: ${ServiceStorage.motoristaSelectedVehicle()}"
-                                    .toUpperCase(),
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                    color: Colors.white, fontSize: 16),
+                              SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Text(
+                                  "VEICÚLO: ${ServiceStorage.titleSelectedVehicle()} - MOTORISTA: ${ServiceStorage.motoristaSelectedVehicle()}"
+                                      .toUpperCase(),
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                      color: Colors.white, fontSize: 12),
+                                ),
                               ),
                               const SizedBox(height: 8),
                               Card(
@@ -219,6 +224,7 @@ class HomeView extends GetView<HomeController> {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
+                                    const SizedBox(width: 10),
                                     CircleAvatar(
                                       radius: 40,
                                       backgroundImage: !ServiceStorage
@@ -231,64 +237,75 @@ class HomeView extends GetView<HomeController> {
                                             ),
                                     ),
                                     const SizedBox(width: 10),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 10,
-                                          bottom: 10,
-                                          left: 8,
-                                          right: 18),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          const Text(
-                                            'Saldo do caminhão',
-                                            style: TextStyle(
+                                    Expanded(
+                                      // Aqui usamos Expanded para que a Column ocupe o espaço disponível.
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 10,
+                                            bottom: 10,
+                                            left: 8,
+                                            right: 18),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            const Text(
+                                              'Saldo do caminhão',
+                                              style: TextStyle(
                                                 fontFamily: 'Inter-Regular',
                                                 color: Colors.black,
-                                                fontSize: 14),
-                                          ),
-                                          Obx(() {
-                                            return Text(
-                                              "R\$ ${FormattedInputers.formatValuePTBR(transactionController.balance.value)}",
-                                              style: TextStyle(
-                                                  color: transactionController
-                                                              .balance.value ==
-                                                          0
-                                                      ? Colors.black
-                                                      : (transactionController
-                                                                  .balance
-                                                                  .value <
-                                                              0
-                                                          ? Colors.red
-                                                          : Colors.green),
-                                                  fontSize: 24,
-                                                  fontFamily: 'Inter-Black'),
-                                            );
-                                          }),
-                                          Obx(() {
-                                            return SizedBox(
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  .58,
-                                              child: SingleChildScrollView(
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                            Obx(() {
+                                              return SingleChildScrollView(
                                                 scrollDirection:
                                                     Axis.horizontal,
                                                 child: Text(
-                                                  '${transactionController.variacaoEntradas} entradas (em comparação ao mês anterior)',
-                                                  style: const TextStyle(
-                                                    color: Colors.black,
-                                                    fontFamily: 'Inter-Regular',
-                                                    fontSize: 12,
+                                                  "R\$${FormattedInputers.formatValuePTBR(transactionController.balance.value)}",
+                                                  style: TextStyle(
+                                                    color: transactionController
+                                                                .balance
+                                                                .value ==
+                                                            0
+                                                        ? Colors.black
+                                                        : (transactionController
+                                                                    .balance
+                                                                    .value <
+                                                                0
+                                                            ? Colors.red
+                                                            : Colors.green),
+                                                    fontSize: 24,
+                                                    fontFamily: 'Inter-Black',
                                                   ),
                                                 ),
-                                              ),
-                                            );
-                                          }),
-                                        ],
+                                              );
+                                            }),
+                                            Obx(() {
+                                              return SizedBox(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    .58,
+                                                child: SingleChildScrollView(
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  child: Text(
+                                                    '${transactionController.variacaoEntradas} entradas (em comparação ao mês anterior)',
+                                                    style: const TextStyle(
+                                                      color: Colors.black,
+                                                      fontFamily:
+                                                          'Inter-Regular',
+                                                      fontSize: 9.3,
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            }),
+                                          ],
+                                        ),
                                       ),
-                                    )
+                                    ),
                                   ],
                                 ),
                               ),
@@ -609,7 +626,7 @@ class HomeView extends GetView<HomeController> {
                                                 children: [
                                                   // Primeira coluna
                                                   Expanded(
-                                                    flex: 2,
+                                                    flex: 1,
                                                     // Controla a proporção de espaço ocupado
                                                     child: Column(
                                                       crossAxisAlignment:
@@ -627,15 +644,20 @@ class HomeView extends GetView<HomeController> {
                                                               const TextStyle(
                                                                   fontSize: 16),
                                                         ),
-                                                        Text(
-                                                          subtitulo,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          maxLines: 1,
-                                                          style:
-                                                              const TextStyle(
-                                                                  color: Colors
-                                                                      .grey),
+                                                        SingleChildScrollView(
+                                                          scrollDirection:
+                                                              Axis.horizontal,
+                                                          child: Text(
+                                                            subtitulo,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            maxLines: 1,
+                                                            style:
+                                                                const TextStyle(
+                                                                    color: Colors
+                                                                        .grey),
+                                                          ),
                                                         ),
                                                       ],
                                                     ),
