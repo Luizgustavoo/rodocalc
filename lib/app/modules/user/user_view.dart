@@ -50,6 +50,7 @@ class UserView extends GetView<UserController> {
                       padding: const EdgeInsets.all(16.0),
                       child: Column(children: [
                         TextFormField(
+                          controller: controller.searchUserController,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -58,6 +59,9 @@ class UserView extends GetView<UserController> {
                             suffixIcon: const Icon(Icons.search_rounded),
                             labelText: 'PESQUISAR USUÁRIO',
                           ),
+                          onChanged: (value) {
+                            controller.filterUsers(value);
+                          },
                         ),
                         const SizedBox(height: 16),
                         Obx(() {
@@ -73,11 +77,13 @@ class UserView extends GetView<UserController> {
                               controller.listUsers.isNotEmpty) {
                             return Expanded(
                               child: ListView.builder(
+                                padding: const EdgeInsets.only(bottom: 200),
                                 shrinkWrap: true,
                                 physics: const AlwaysScrollableScrollPhysics(),
-                                itemCount: controller.listUsers.length,
+                                itemCount: controller.filteredUsers.length,
                                 itemBuilder: (context, index) {
-                                  final User user = controller.listUsers[index];
+                                  final User user =
+                                      controller.filteredUsers[index];
                                   return CustomFleetOwnerCard(
                                     fnEdit: () {
                                       VehicleController vehicleController =

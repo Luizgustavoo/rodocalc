@@ -271,9 +271,16 @@ class CreateReceiptModal extends GetView<TransactionController> {
                         labelText: 'TIPO DE CARGA',
                       ),
                       items: [
-                        const DropdownMenuItem<int>(
+                        DropdownMenuItem<int>(
                           value: null,
-                          child: Text('Selecione ou cadastre um tipo'),
+                          child: SizedBox(
+                            width: Get.width * 0.7,
+                            child: const Text(
+                              'SELECIONE OU CADASTRE UM TIPO',
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(color: Color(0xFFFF6B00)),
+                            ),
+                          ),
                         ),
                         ...controller.listChargeTypes.map((ChargeType charge) {
                           return DropdownMenuItem<int>(

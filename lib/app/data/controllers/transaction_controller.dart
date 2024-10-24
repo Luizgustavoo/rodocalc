@@ -686,14 +686,13 @@ class TransactionController extends GetxController {
           'success': mensagem['success'],
           'message': mensagem['message'],
         };
-        if(mensagem['success'] == true){
-          if(type == "categoriadespesa"){
+        if (mensagem['success'] == true) {
+          if (type == "categoriadespesa") {
             selectedCategory.value = mensagem['data']['id'];
-          }else{
+          } else {
             selectedSpecificType.value = mensagem['data']['id'];
           }
         }
-
 
         getMyCategories();
         getMySpecifics(selectedCategoryCadSpecificType.value!);
@@ -717,7 +716,7 @@ class TransactionController extends GetxController {
           'success': mensagem['success'],
           'message': mensagem['message']
         };
-        if(mensagem['success'] == true){
+        if (mensagem['success'] == true) {
           selectedCargoType.value = mensagem['data']['id'];
         }
         getMyChargeTypes();
@@ -812,7 +811,9 @@ class TransactionController extends GetxController {
       startDateController,
       endDateController,
     ];
-
+    selectedCategory.value = 0;
+    selectedSpecificType.value = 0;
+    // selectedCargoType.value = 0;
     for (final controller in textControllers) {
       controller.clear();
     }

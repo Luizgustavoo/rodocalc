@@ -39,7 +39,7 @@ class CustomFleetOwnerCard extends StatelessWidget {
                   fontFamily: 'Inter-Bold',
                 ),
               ),
-              TextSpan(text: user.people!.nome.toString()),
+              TextSpan(text: user.people!.nome!.toUpperCase().toString()),
             ],
           ),
         ),
@@ -81,9 +81,12 @@ class CustomFleetOwnerCard extends StatelessWidget {
                     ),
                   ),
                   TextSpan(
-                      text: user.vehicles!
-                          .map((e) => "${e.marca}/${e.modelo}")
-                          .join(', ')),
+                      text: user.vehicles!.isNotEmpty
+                          ? user.vehicles!
+                              .map((e) => "${e.marca}/${e.modelo}")
+                              .join(', ')
+                              .toUpperCase()
+                          : 'NENHUM VEÍCULO VINCULADO'),
                 ],
               ),
             ),

@@ -296,6 +296,10 @@ class IndicatorView extends GetView<IndicationController> {
                                         false &&
                                     controller.listIndications.isNotEmpty) {
                                   return ListView.builder(
+                                    padding: EdgeInsets.only(
+                                        bottom:
+                                            MediaQuery.of(context).size.height *
+                                                .25),
                                     shrinkWrap: true,
                                     physics:
                                         const AlwaysScrollableScrollPhysics(),

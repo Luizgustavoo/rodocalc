@@ -81,6 +81,10 @@ class CourseView extends GetView<CourseController> {
                               } else if (!controller.isLoading.value &&
                                   controller.listCourses.isNotEmpty) {
                                 return ListView.builder(
+                                  padding: EdgeInsets.only(
+                                      bottom:
+                                          MediaQuery.of(context).size.height *
+                                              .25),
                                   shrinkWrap: true,
                                   physics:
                                       const AlwaysScrollableScrollPhysics(),

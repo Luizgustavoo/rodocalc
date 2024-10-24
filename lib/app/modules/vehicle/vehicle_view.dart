@@ -81,6 +81,9 @@ class VehiclesView extends GetView<VehicleController> {
                                 controller.listVehicles.isNotEmpty) {
                               return Expanded(
                                   child: ListView.builder(
+                                padding: EdgeInsets.only(
+                                    bottom: MediaQuery.of(context).size.height *
+                                        .25),
                                 shrinkWrap: true,
                                 physics: const AlwaysScrollableScrollPhysics(),
                                 itemCount: controller.filteredVehicles.length,

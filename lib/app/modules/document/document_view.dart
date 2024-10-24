@@ -85,6 +85,10 @@ class DocumentView extends GetView<DocumentController> {
                                   controller.listDocuments.isNotEmpty) {
                                 return Expanded(
                                     child: ListView.builder(
+                                  padding: EdgeInsets.only(
+                                      bottom:
+                                          MediaQuery.of(context).size.height *
+                                              .25),
                                   shrinkWrap: true,
                                   physics:
                                       const AlwaysScrollableScrollPhysics(),

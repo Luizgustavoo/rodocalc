@@ -176,8 +176,9 @@ class CreateExpenseModal extends GetView<TransactionController> {
                       child: SizedBox(
                         width: Get.width * 0.7,
                         child: const Text(
-                          'Selecione ou cadastre uma categoria',
+                          'SELECIONE OU CADASTRE UMA CATEGORIA',
                           overflow: TextOverflow.ellipsis,
+                          style: TextStyle(color: Color(0xFFFF6B00)),
                         ),
                       ),
                     ),
@@ -251,8 +252,9 @@ class CreateExpenseModal extends GetView<TransactionController> {
                     const DropdownMenuItem<int>(
                       value: null,
                       child: Text(
-                        'Selecione ou cadastre um tipo',
+                        'SELECIONE OU CADASTRE UM TIPO',
                         overflow: TextOverflow.ellipsis,
+                        style: TextStyle(color: Color(0xFFFF6B00)),
                       ),
                     ),
                     ...controller.specificTypes
@@ -328,7 +330,6 @@ class CreateExpenseModal extends GetView<TransactionController> {
                   onSuggestionTap: (suggestion) {
                     controller.txtCityController.text = suggestion.searchKey;
                   },
-
                 ),
               ),
               const SizedBox(height: 10),

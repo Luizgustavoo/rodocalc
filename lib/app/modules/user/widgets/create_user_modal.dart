@@ -365,7 +365,7 @@ class CreateUserModal extends GetView<UserController> {
                           ),
                           items: [
                             const DropdownMenuItem<int?>(
-                              value: 0,
+                              value: null,
                               child: Text('Selecione um Veículo'),
                             ),
                             ...vehicleController.listVehiclesDropDown
@@ -397,7 +397,7 @@ class CreateUserModal extends GetView<UserController> {
                             controller.selectedVehicleDropDown.value =
                                 newValue!;
                           },
-                          value: controller.selectedVehicleDropDown.value,
+                          // value: controller.selectedVehicleDropDown.value,
                           validator: (value) {
                             if (value == null) {
                               return 'Por favor, selecione um veículo';
@@ -406,6 +406,16 @@ class CreateUserModal extends GetView<UserController> {
                           },
                         ),
                       ),
+                      const SizedBox(height: 16),
+                      const Text(
+                        "VEÍCULOS DO MOTORISTA SELECIONADO:",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Obx(() => Text(
+                            controller.tituloVeiculosDoMotorista.value,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          )),
+                      const SizedBox(height: 16),
                       const SizedBox(height: 16),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,

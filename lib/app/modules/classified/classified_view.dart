@@ -86,7 +86,7 @@ class ClassifiedView extends GetView<ClassifiedController> {
                                   padding: EdgeInsets.only(
                                       bottom:
                                           MediaQuery.of(context).size.height *
-                                              .22),
+                                              .25),
                                   shrinkWrap: true,
                                   physics:
                                       const AlwaysScrollableScrollPhysics(),

@@ -141,6 +141,9 @@ class TripView extends GetView<TripController> {
                           } else if (!controller.isLoading.value &&
                               controller.listTrip.isNotEmpty) {
                             return ListView.builder(
+                              padding: EdgeInsets.only(
+                                  bottom:
+                                      MediaQuery.of(context).size.height * .25),
                               shrinkWrap: true,
                               physics: const AlwaysScrollableScrollPhysics(),
                               itemCount: controller.filteredTrips.length,

@@ -140,6 +140,9 @@ class FreightView extends GetView<FreightController> {
                           } else if (!controller.isLoading.value &&
                               controller.listFreight.isNotEmpty) {
                             return ListView.builder(
+                              padding: EdgeInsets.only(
+                                  bottom:
+                                      MediaQuery.of(context).size.height * .25),
                               shrinkWrap: true,
                               physics: const AlwaysScrollableScrollPhysics(),
                               itemCount: controller.filteredFreights.length,

@@ -17,6 +17,8 @@ class UserController extends GetxController {
   RxBool isLoadingQuantityLicences = true.obs;
   RxInt licences = 0.obs;
   RxInt usersRegistered = 0.obs;
+  var caminhoes = "".obs;
+  var tituloVeiculosDoMotorista = "".obs;
 
   var selectedVehicleDropDown = 0.obs;
 
@@ -37,6 +39,8 @@ class UserController extends GetxController {
   final TextEditingController addressController = TextEditingController();
   final TextEditingController neighborhoodController = TextEditingController();
   final TextEditingController houseNumberController = TextEditingController();
+
+  final TextEditingController searchUserController = TextEditingController();
 
   List<String> get states => [
         'AC',
@@ -69,6 +73,25 @@ class UserController extends GetxController {
       ];
 
   final cepRepository = Get.put(CepRepository());
+
+  final repository = Get.put(UserRepository());
+
+  Map<String, dynamic> retorno = {
+    "success": false,
+    "data": null,
+    "message": ["Preencha todos os campos!"]
+  };
+  dynamic mensagem;
+
+  RxBool isLoading = true.obs;
+  RxList<User> listUsers = RxList<User>([]);
+  RxList<User> filteredUsers = RxList<User>([]);
+
+  @override
+  void onInit() {
+    super.onInit();
+    filteredUsers.assignAll(listUsers);
+  }
 
   void fetchAddressFromCep(String cep) async {
     if (cep.length == 9) {
@@ -133,26 +156,33 @@ class UserController extends GetxController {
     }
   }
 
-  final repository = Get.put(UserRepository());
-
-  Map<String, dynamic> retorno = {
-    "success": false,
-    "data": null,
-    "message": ["Preencha todos os campos!"]
-  };
-  dynamic mensagem;
-
-  RxBool isLoading = true.obs;
-  RxList<User> listUsers = RxList<User>([]);
-
   Future<void> getMyEmployees() async {
     isLoading.value = true;
     try {
+      searchUserController.clear();
       listUsers.value = await repository.getMyEmployees();
+      filteredUsers.assignAll(listUsers);
     } catch (e) {
+      listUsers.clear();
+      filteredUsers.clear();
       Exception(e);
     }
     isLoading.value = false;
+  }
+
+  void filterUsers(String query) {
+    if (query.isEmpty) {
+      // Se a busca estiver vazia, mostra todos os fretes
+      filteredUsers.assignAll(listUsers);
+    } else {
+      // Filtra os fretes com base no campo "origem", "destino" ou qualquer outro
+      filteredUsers.assignAll(
+        listUsers
+            .where((user) =>
+                user.people!.nome!.toLowerCase().contains(query.toLowerCase()))
+            .toList(),
+      );
+    }
   }
 
   Future<void> getQuantityLicences() async {
@@ -257,13 +287,14 @@ class UserController extends GetxController {
     txtEmailController.text = user.email ?? '';
     txtSenhaController.text = "";
     txtConfirmaSenhaController.text = "";
-
     if (user.vehicles!.isNotEmpty) {
-      selectedVehicleDropDown.value = user.vehicles!.first.id!;
+      caminhoes.value =
+          user.vehicles!.map((e) => "${e.marca}/${e.modelo}").join(', ');
+      tituloVeiculosDoMotorista.value = "VEÍCULOS VINCULADOS:";
     } else {
-      selectedVehicleDropDown.value = 0;
+      caminhoes.value = "";
+      tituloVeiculosDoMotorista.value = "NENHUM VEÍCULO VINCULADO!";
     }
-
     cepController.text = user.people!.cep ?? '';
     addressController.text = user.people!.endereco ?? '';
     neighborhoodController.text = user.people!.bairro ?? '';
