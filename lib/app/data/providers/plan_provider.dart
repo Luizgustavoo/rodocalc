@@ -65,6 +65,32 @@ class PlanApiClient {
     return null;
   }
 
+  verifyPlan() async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+
+      Uri plansUrl;
+      String url =
+          '$baseUrl/v1/usuario/verificarplano/${ServiceStorage.getUserId()}';
+      plansUrl = Uri.parse(url);
+      var response = await httpClient.get(
+        plansUrl,
+        headers: {
+          "Accept": "application/json",
+          "Authorization": token,
+        },
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return json.decode(response.body);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      Exception(e);
+    }
+    return null;
+  }
+
   getMyPlans() async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";

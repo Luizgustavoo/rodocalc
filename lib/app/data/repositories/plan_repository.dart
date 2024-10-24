@@ -27,6 +27,10 @@ class PlanRepository {
     return response["data"];
   }
 
+  verifyPlan() async {
+    return await apiClient.verifyPlan();
+  }
+
   getMyPlans() async {
     List<UserPlan> list = <UserPlan>[];
     try {
@@ -63,7 +67,8 @@ class PlanRepository {
 
   subscribe(UserPlan userplan, CreditCard creditCard, String recurrence) async {
     try {
-      var response = await apiClient.subscribe(userplan, creditCard, recurrence);
+      var response =
+          await apiClient.subscribe(userplan, creditCard, recurrence);
       return response;
     } catch (e) {
       Exception(e);

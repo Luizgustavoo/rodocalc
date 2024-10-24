@@ -18,7 +18,6 @@ class PlanController extends GetxController {
   RxDouble licensePrice = 0.0.obs;
 
   var selectedRecurrence = ''.obs;
-
   var shouldChangeCard = false.obs;
 
   var bandeiraCartao = 'NÚMERO DO CARTÃO'.obs;
@@ -78,23 +77,22 @@ class PlanController extends GetxController {
     if (planKey.currentState!.validate()) {
       isLoadingSubscrible.value = true;
       mensagem = await repository.subscribe(
-        UserPlan(
-          usuarioId: ServiceStorage.getUserId(),
-          planoId: selectedPlan.value!.id!,
-          quantidadeLicencas: selectedLicenses.value,
-          valorPlano: Services.converterParaCentavos(calculatedPrice.value),
-        ),
-        CreditCard(
-          cardName: nameCardController.text,
-          validate: validateController.text,
-          cpf: cpfController.text,
-          cvv: cvvController.text,
-          cardNumber: numberCardController.text,
-          valor: Services.converterParaCentavos(calculatedPrice.value),
-          brand: selectedCardType.value.toString(),
-        ),
-          selectedRecurrence.value
-      );
+          UserPlan(
+            usuarioId: ServiceStorage.getUserId(),
+            planoId: selectedPlan.value!.id!,
+            quantidadeLicencas: selectedLicenses.value,
+            valorPlano: Services.converterParaCentavos(calculatedPrice.value),
+          ),
+          CreditCard(
+            cardName: nameCardController.text,
+            validate: validateController.text,
+            cpf: cpfController.text,
+            cvv: cvvController.text,
+            cardNumber: numberCardController.text,
+            valor: Services.converterParaCentavos(calculatedPrice.value),
+            brand: selectedCardType.value.toString(),
+          ),
+          selectedRecurrence.value);
 
       isLoadingSubscrible.value = false;
 
@@ -313,6 +311,34 @@ class PlanController extends GetxController {
       buffer.write(value[i]);
     }
     return buffer.toString();
+  }
+
+  verifyPlan() async {
+    try {
+      var response = await repository.verifyPlan();
+      if (response["success"] == true) {
+        return {
+          "success": true,
+          "exists_plan": response['exists_plan'],
+          "posts_plan": response['posts_plan'],
+          "licenses_plan": response['licenses_plan'],
+          "classifieds_registered": response['classifieds_registered'],
+          "vehicles_registered": response['vehicles_registered'],
+          "error": ""
+        };
+      }
+    } catch (e) {
+      Exception(e);
+      return {
+        "success": false,
+        "exists_plan": false,
+        "posts_plan": 0,
+        "licenses_plan": 0,
+        "classifieds_registered": 0,
+        "vehicles_registered": 0,
+        "error": e
+      };
+    }
   }
 
   void clearAllFields() {

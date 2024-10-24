@@ -108,7 +108,7 @@ class HomeView extends GetView<HomeController> {
                                     surfaceTintColor: Colors.white,
                                     padding: EdgeInsets.zero,
                                     iconColor: Colors.white,
-                                    onSelected: (String value) {
+                                    onSelected: (String value) async {
                                       switch (value) {
                                         case 'PERFIL':
                                           cityController.getCities();
@@ -121,8 +121,40 @@ class HomeView extends GetView<HomeController> {
                                           Get.toNamed(Routes.perfil);
                                           break;
                                         case 'ADICIONAR USUÁRIO':
-                                          userController.getMyEmployees();
-                                          Get.toNamed(Routes.user);
+                                          Map<String, dynamic> verifyPlan =
+                                              await planController.verifyPlan();
+                                          if (verifyPlan['exists_plan'] ==
+                                              false) {
+                                            Get.snackbar(
+                                              'Atenção!',
+                                              'Seu plano expirou e/ou nåo contempla esse módulo!',
+                                              backgroundColor:
+                                                  const Color(0xFFFF6B00),
+                                              colorText: Colors.white,
+                                              snackPosition:
+                                                  SnackPosition.BOTTOM,
+                                              duration:
+                                                  const Duration(seconds: 2),
+                                            );
+                                          } else if (verifyPlan[
+                                                  'vehicles_registered'] <=
+                                              0) {
+                                            Get.snackbar(
+                                              'Atenção!',
+                                              'Adicione um caminhao antes!',
+                                              backgroundColor:
+                                                  const Color(0xFFFF6B00),
+                                              colorText: Colors.white,
+                                              snackPosition:
+                                                  SnackPosition.BOTTOM,
+                                              duration:
+                                                  const Duration(seconds: 2),
+                                            );
+                                          } else {
+                                            userController.getMyEmployees();
+                                            Get.toNamed(Routes.user);
+                                          }
+
                                           break;
                                         case 'SAIR':
                                           final loginController =
@@ -323,21 +355,19 @@ class HomeView extends GetView<HomeController> {
                                           : Colors.grey.shade700,
                                       imagePath: 'assets/images/caminhao.png',
                                       label: 'Caminhões',
-                                      onTap: () {
-                                        if (ServiceStorage.isRotaPermitida(
-                                            "vehicle")) {
+                                      onTap: () async {
+                                        Map<String, dynamic> verifyPlan =
+                                            await planController.verifyPlan();
+
+                                        if (verifyPlan['exists_plan'] == true &&
+                                            ServiceStorage.isRotaPermitida(
+                                                "vehicle")) {
                                           vehicleController.isLoading.value =
                                               false;
                                           vehicleController.getAll();
                                           Get.toNamed(Routes.vehicle);
                                         } else {
-                                          Get.snackbar(
-                                            'Atenção!',
-                                            'Seu plano nao contempla esse módulo!',
-                                            backgroundColor:
-                                                const Color(0xFFFF6B00),
-                                            colorText: Colors.white,
-                                          );
+                                          snackExistsPlan();
                                         }
                                       },
                                     ),
@@ -351,20 +381,19 @@ class HomeView extends GetView<HomeController> {
                                             : Colors.grey.shade700,
                                         imagePath: 'assets/images/frete.png',
                                         label: 'Financeiro',
-                                        onTap: () {
-                                          if (ServiceStorage.isRotaPermitida(
-                                              "financial")) {
+                                        onTap: () async {
+                                          Map<String, dynamic> verifyPlan =
+                                              await planController.verifyPlan();
+
+                                          if (verifyPlan['exists_plan'] ==
+                                                  true &&
+                                              ServiceStorage.isRotaPermitida(
+                                                  "financial")) {
                                             transactionController.getAll();
                                             transactionController.getSaldo();
                                             Get.toNamed(Routes.financial);
                                           } else {
-                                            Get.snackbar(
-                                              'Atenção!',
-                                              'Seu plano nao contempla esse módulo!',
-                                              backgroundColor:
-                                                  const Color(0xFFFF6B00),
-                                              colorText: Colors.white,
-                                            );
+                                            snackExistsPlan();
                                           }
                                         },
                                       ),
@@ -379,19 +408,16 @@ class HomeView extends GetView<HomeController> {
                                             : Colors.grey.shade700,
                                         imagePath: 'assets/images/estrada.png',
                                         label: 'Fretes',
-                                        onTap: () {
-                                          if (ServiceStorage.isRotaPermitida(
-                                              "freight")) {
+                                        onTap: () async {
+                                          Map<String, dynamic> verifyPlan =
+                                              await planController.verifyPlan();
+                                          if (verifyPlan['exists_plan'] &&
+                                              ServiceStorage.isRotaPermitida(
+                                                  "freight")) {
                                             freightController.getAll();
                                             Get.toNamed(Routes.freight);
                                           } else {
-                                            Get.snackbar(
-                                              'Atenção!',
-                                              'Seu plano nao contempla esse módulo!',
-                                              backgroundColor:
-                                                  const Color(0xFFFF6B00),
-                                              colorText: Colors.white,
-                                            );
+                                            snackExistsPlan();
                                           }
                                         },
                                       ),
@@ -404,19 +430,17 @@ class HomeView extends GetView<HomeController> {
                                               : Colors.grey.shade700,
                                       imagePath: 'assets/images/trecho.png',
                                       label: 'Trechos',
-                                      onTap: () {
-                                        if (ServiceStorage.isRotaPermitida(
-                                            "trip")) {
+                                      onTap: () async {
+                                        Map<String, dynamic> verifyPlan =
+                                            await planController.verifyPlan();
+
+                                        if (verifyPlan['exists_plan'] &&
+                                            ServiceStorage.isRotaPermitida(
+                                                "trip")) {
                                           tripController.getAll();
                                           Get.toNamed(Routes.trip);
                                         } else {
-                                          Get.snackbar(
-                                            'Atenção!',
-                                            'Seu plano nao contempla esse módulo!',
-                                            backgroundColor:
-                                                const Color(0xFFFF6B00),
-                                            colorText: Colors.white,
-                                          );
+                                          snackExistsPlan();
                                         }
                                       },
                                     ),
@@ -428,19 +452,16 @@ class HomeView extends GetView<HomeController> {
                                           : Colors.grey.shade700,
                                       imagePath: 'assets/images/documento.png',
                                       label: 'Documentos',
-                                      onTap: () {
-                                        if (ServiceStorage.isRotaPermitida(
-                                            "document")) {
+                                      onTap: () async {
+                                        Map<String, dynamic> verifyPlan =
+                                            await planController.verifyPlan();
+                                        if (verifyPlan['exists_plan'] == true &&
+                                            ServiceStorage.isRotaPermitida(
+                                                "document")) {
                                           documentController.getAll();
                                           Get.toNamed(Routes.document);
                                         } else {
-                                          Get.snackbar(
-                                            'Atenção!',
-                                            'Seu plano nao contempla esse módulo!',
-                                            backgroundColor:
-                                                const Color(0xFFFF6B00),
-                                            colorText: Colors.white,
-                                          );
+                                          snackExistsPlan();
                                         }
                                       },
                                     ),
@@ -452,9 +473,12 @@ class HomeView extends GetView<HomeController> {
                                           : Colors.grey.shade700,
                                       imagePath: 'assets/images/indicador.png',
                                       label: 'Indicador',
-                                      onTap: () {
-                                        if (ServiceStorage.isRotaPermitida(
-                                            "indicator")) {
+                                      onTap: () async {
+                                        Map<String, dynamic> verifyPlan =
+                                            await planController.verifyPlan();
+                                        if (verifyPlan['exists_plan'] == true &&
+                                            ServiceStorage.isRotaPermitida(
+                                                "indicator")) {
                                           comissionIndicatorController
                                               .getAllToReceive();
                                           comissionIndicatorController
@@ -462,13 +486,7 @@ class HomeView extends GetView<HomeController> {
                                           indicationController.getAll();
                                           Get.toNamed(Routes.indicator);
                                         } else {
-                                          Get.snackbar(
-                                            'Atenção!',
-                                            'Seu plano nao contempla esse módulo!',
-                                            backgroundColor:
-                                                const Color(0xFFFF6B00),
-                                            colorText: Colors.white,
-                                          );
+                                          snackExistsPlan();
                                         }
                                       },
                                     ),
@@ -498,19 +516,16 @@ class HomeView extends GetView<HomeController> {
                                           : Colors.grey.shade700,
                                       imagePath: 'assets/images/classific.png',
                                       label: 'Classificados',
-                                      onTap: () {
-                                        if (ServiceStorage.isRotaPermitida(
-                                            "classified")) {
+                                      onTap: () async {
+                                        Map<String, dynamic> verifyPlan =
+                                            await planController.verifyPlan();
+                                        if (verifyPlan['exists_plan'] == true &&
+                                            ServiceStorage.isRotaPermitida(
+                                                "classified")) {
                                           classifiedsController.getAll();
                                           Get.toNamed(Routes.classified);
                                         } else {
-                                          Get.snackbar(
-                                            'Atenção!',
-                                            'Seu plano nao contempla esse módulo!',
-                                            backgroundColor:
-                                                const Color(0xFFFF6B00),
-                                            colorText: Colors.white,
-                                          );
+                                          snackExistsPlan();
                                         }
                                       },
                                     ),
@@ -522,19 +537,16 @@ class HomeView extends GetView<HomeController> {
                                           : Colors.grey.shade700,
                                       imagePath: 'assets/images/curso.png',
                                       label: 'Cursos',
-                                      onTap: () {
-                                        if (ServiceStorage.isRotaPermitida(
-                                            "course")) {
+                                      onTap: () async {
+                                        Map<String, dynamic> verifyPlan =
+                                            await planController.verifyPlan();
+                                        if (verifyPlan['exists_plan'] == true &&
+                                            ServiceStorage.isRotaPermitida(
+                                                "course")) {
                                           coursesController.getAll();
                                           Get.toNamed(Routes.course);
                                         } else {
-                                          Get.snackbar(
-                                            'Atenção!',
-                                            'Seu plano nao contempla esse módulo!',
-                                            backgroundColor:
-                                                const Color(0xFFFF6B00),
-                                            colorText: Colors.white,
-                                          );
+                                          snackExistsPlan();
                                         }
                                       },
                                     ),
@@ -740,6 +752,17 @@ class HomeView extends GetView<HomeController> {
           );
         },
       ),
+    );
+  }
+
+  void snackExistsPlan() {
+    Get.snackbar(
+      'Atenção!',
+      'Seu plano expirou e/ou nåo contempla esse módulo!',
+      backgroundColor: const Color(0xFFFF6B00),
+      colorText: Colors.white,
+      snackPosition: SnackPosition.BOTTOM,
+      duration: const Duration(seconds: 2),
     );
   }
 }
