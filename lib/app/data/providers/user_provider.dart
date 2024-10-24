@@ -225,4 +225,25 @@ class UserApiClient {
     }
     return null;
   }
+
+  delete(User user) async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+
+      var userUrl = Uri.parse('$baseUrl/v1/usuario/destroy/${user.id}');
+
+      var response = await httpClient.delete(
+        userUrl,
+        headers: {
+          "Accept": "application/json",
+          "Authorization": token,
+        },
+      );
+      print(response.body);
+      return json.decode(response.body);
+    } catch (err) {
+      Exception(err);
+    }
+    return null;
+  }
 }

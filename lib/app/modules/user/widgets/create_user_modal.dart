@@ -97,6 +97,12 @@ class CreateUserModal extends GetView<UserController> {
                           prefixIcon: Icon(Icons.person),
                           labelText: 'NOME COMPLETO',
                         ),
+                        onChanged: (text) {
+                          controller.txtNomeController.value = TextEditingValue(
+                            text: text.toUpperCase(),
+                            selection: controller.txtNomeController.selection,
+                          );
+                        },
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return "Digite o nome completo";
@@ -159,6 +165,14 @@ class CreateUserModal extends GetView<UserController> {
                           prefixIcon: Icon(Icons.message_rounded),
                           labelText: 'APELIDO OU TRANSPORTADORA',
                         ),
+                        onChanged: (text) {
+                          controller.txtApelidoController.value =
+                              TextEditingValue(
+                            text: text.toUpperCase(),
+                            selection:
+                                controller.txtApelidoController.selection,
+                          );
+                        },
                       ),
                       const SizedBox(height: 10),
                       Focus(
@@ -286,16 +300,11 @@ class CreateUserModal extends GetView<UserController> {
                       const SizedBox(height: 10),
                       TextFormField(
                         controller: controller.houseNumberController,
+                        keyboardType: TextInputType.number,
                         decoration: const InputDecoration(
                           prefixIcon: Icon(Icons.numbers),
                           labelText: 'NÚMERO',
                         ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Digite o número da casa';
-                          }
-                          return null;
-                        },
                       ),
                       const SizedBox(height: 10),
                       TextFormField(

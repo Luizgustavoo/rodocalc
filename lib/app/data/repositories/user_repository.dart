@@ -40,4 +40,13 @@ class UserRepository {
     var response = await apiClient.getQuantityLicences();
     return response['data'];
   }
+
+  delete(User user) async {
+    try {
+      var response = await apiClient.delete(user);
+      return response;
+    } catch (e) {
+      Exception(e);
+    }
+  }
 }

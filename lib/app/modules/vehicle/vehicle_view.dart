@@ -39,139 +39,151 @@ class VehiclesView extends GetView<VehicleController> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(
-                  height: MediaQuery.sizeOf(context).height,
-                  child: Card(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    elevation: 5,
-                    margin: const EdgeInsets.all(12.0),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 5),
-                          TextFormField(
-                            controller: controller.searchController,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide.none,
+                RefreshIndicator(
+                  onRefresh: () async {
+                    controller.searchController.clear();
+                    controller.listVehicles.clear();
+                    controller.getAll();
+                  },
+                  child: SizedBox(
+                    height: MediaQuery.sizeOf(context).height,
+                    child: Card(
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      elevation: 5,
+                      margin: const EdgeInsets.all(12.0),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 5),
+                            TextFormField(
+                              controller: controller.searchController,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide.none,
+                                ),
+                                suffixIcon: const Icon(Icons.search_rounded),
+                                labelText: 'PESQUISAR VEÍCULO',
                               ),
-                              suffixIcon: const Icon(Icons.search_rounded),
-                              labelText: 'PESQUISAR VEÍCULO',
+                              onChanged: (value) {
+                                controller.filterVehicles(value);
+                              },
                             ),
-                            onChanged: (value) {
-                              controller.filterVehicles(value);
-                            },
-                          ),
-                          const SizedBox(height: 16),
-                          Obx(() {
-                            if (controller.isLoading.value) {
-                              return const Column(
-                                children: [
-                                  Text('Carregando...'),
-                                  SizedBox(height: 20.0),
-                                  CircularProgressIndicator(),
-                                ],
-                              );
-                            } else if (!controller.isLoading.value &&
-                                controller.listVehicles.isNotEmpty) {
-                              return Expanded(
-                                  child: ListView.builder(
-                                padding: EdgeInsets.only(
-                                    bottom: MediaQuery.of(context).size.height *
-                                        .25),
-                                shrinkWrap: true,
-                                physics: const AlwaysScrollableScrollPhysics(),
-                                itemCount: controller.filteredVehicles.length,
-                                itemBuilder: (context, index) {
-                                  final Vehicle vehicle =
-                                      controller.filteredVehicles[index];
-                                  return Dismissible(
-                                    key: UniqueKey(),
-                                    direction: DismissDirection.endToStart,
-                                    confirmDismiss:
-                                        (DismissDirection direction) async {
-                                      if (direction ==
-                                          DismissDirection.endToStart) {
-                                        showDialog(
-                                            context, vehicle, controller);
-                                      }
-                                      return false;
-                                    },
-                                    background: Container(
-                                      margin: const EdgeInsets.all(5),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: Colors.red,
-                                      ),
-                                      child: const Align(
-                                        alignment: Alignment.centerRight,
-                                        child: Padding(
-                                            padding: EdgeInsets.all(10),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: [
-                                                Icon(
-                                                  Icons.check_rounded,
-                                                  size: 25,
-                                                  color: Colors.white,
-                                                ),
-                                                SizedBox(width: 10),
-                                                Text(
-                                                  'EXCLUIR',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ],
-                                            )),
-                                      ),
-                                    ),
-                                    child: InkWell(
-                                      onTap: () {
-                                        final box = GetStorage('rodocalc');
-                                        box.write('vehicle', vehicle.toJson());
-
-                                        Get.offAllNamed(Routes.home);
+                            const SizedBox(height: 16),
+                            Obx(() {
+                              if (controller.isLoading.value) {
+                                return const Column(
+                                  children: [
+                                    Text('Carregando...'),
+                                    SizedBox(height: 20.0),
+                                    CircularProgressIndicator(),
+                                  ],
+                                );
+                              } else if (!controller.isLoading.value &&
+                                  controller.listVehicles.isNotEmpty) {
+                                return Expanded(
+                                    child: ListView.builder(
+                                  padding: EdgeInsets.only(
+                                      bottom:
+                                          MediaQuery.of(context).size.height *
+                                              .25),
+                                  shrinkWrap: true,
+                                  physics:
+                                      const AlwaysScrollableScrollPhysics(),
+                                  itemCount: controller.filteredVehicles.length,
+                                  itemBuilder: (context, index) {
+                                    final Vehicle vehicle =
+                                        controller.filteredVehicles[index];
+                                    return Dismissible(
+                                      key: UniqueKey(),
+                                      direction: DismissDirection.endToStart,
+                                      confirmDismiss:
+                                          (DismissDirection direction) async {
+                                        if (direction ==
+                                            DismissDirection.endToStart) {
+                                          showDialog(
+                                              context, vehicle, controller);
+                                        }
+                                        return false;
                                       },
-                                      child: CustomVehicleCard(
-                                        editVehicle: () {
-                                          controller.isLoading.value = true;
-                                          controller.selectedVehicle = vehicle;
-                                          controller.getAllUserPlans();
-
-                                          controller.fillInFields();
-                                          controller.isLoading.value = false;
-                                          controller.setImage.value = true;
-                                          showModalBottomSheet(
-                                            isScrollControlled: true,
-                                            context: context,
-                                            builder: (context) =>
-                                                CreateVehicleModal(
-                                              vehicle: vehicle,
-                                              update: true,
-                                            ),
-                                          );
-                                        },
-                                        vehicle: vehicle,
+                                      background: Container(
+                                        margin: const EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: Colors.red,
+                                        ),
+                                        child: const Align(
+                                          alignment: Alignment.centerRight,
+                                          child: Padding(
+                                              padding: EdgeInsets.all(10),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  Icon(
+                                                    Icons.check_rounded,
+                                                    size: 25,
+                                                    color: Colors.white,
+                                                  ),
+                                                  SizedBox(width: 10),
+                                                  Text(
+                                                    'EXCLUIR',
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                },
-                              ));
-                            } else {
-                              return const Center(
-                                child: Text('NENHUM VEÍCULO CADASTRADO!'),
-                              );
-                            }
-                          }),
-                        ],
+                                      child: InkWell(
+                                        onTap: () {
+                                          final box = GetStorage('rodocalc');
+                                          box.write(
+                                              'vehicle', vehicle.toJson());
+
+                                          Get.offAllNamed(Routes.home);
+                                        },
+                                        child: CustomVehicleCard(
+                                          editVehicle: () {
+                                            controller.isLoading.value = true;
+                                            controller.selectedVehicle =
+                                                vehicle;
+                                            controller.getAllUserPlans();
+
+                                            controller.fillInFields();
+                                            controller.isLoading.value = false;
+                                            controller.setImage.value = true;
+                                            showModalBottomSheet(
+                                              isScrollControlled: true,
+                                              context: context,
+                                              builder: (context) =>
+                                                  CreateVehicleModal(
+                                                vehicle: vehicle,
+                                                update: true,
+                                              ),
+                                            );
+                                          },
+                                          vehicle: vehicle,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ));
+                              } else {
+                                return const Center(
+                                  child: Text('NENHUM VEÍCULO CADASTRADO!'),
+                                );
+                              }
+                            }),
+                          ],
+                        ),
                       ),
                     ),
                   ),
