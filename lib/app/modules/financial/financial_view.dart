@@ -3,6 +3,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/controllers/city_state_controller.dart';
+import 'package:rodocalc/app/data/controllers/home_controller.dart';
 import 'package:rodocalc/app/data/controllers/plan_controller.dart';
 import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
 import 'package:rodocalc/app/data/models/transactions_model.dart';
@@ -79,7 +80,10 @@ class FinancialView extends GetView<TransactionController> {
             child: Builder(
               builder: (context) => IconButton(
                 icon: const Icon(Icons.arrow_back),
-                onPressed: () => Get.back(),
+                onPressed: () {
+                  Get.find<HomeController>().getLast();
+                  Get.back();
+                },
               ),
             ),
           ),

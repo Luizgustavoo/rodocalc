@@ -231,7 +231,7 @@ class FreightView extends GetView<FreightController> {
           onPressed: () {
             final cityController = Get.put(CityStateController());
             cityController.getCities();
-            controller.priceTollsController.text = "0,00";
+            controller.priceTollsController.text = "";
             showModalBottomSheet(
               isScrollControlled: true,
               context: context,

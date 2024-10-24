@@ -142,17 +142,15 @@ class DocumentController extends GetxController {
 
   void filterDocuments(String query) {
     if (query.isEmpty) {
-      // Se a busca estiver vazia, mostra todos os fretes
       filteredDocuments.assignAll(listDocuments);
     } else {
-      // Filtra os fretes com base no campo "origem", "destino" ou qualquer outro
       filteredDocuments.assignAll(
         listDocuments
             .where((document) =>
                 document.descricao!
                     .toLowerCase()
                     .contains(query.toLowerCase()) ||
-                document.nomeDocumento!
+                document.documentType!.descricao!
                     .toLowerCase()
                     .contains(query.toLowerCase()))
             .toList(),

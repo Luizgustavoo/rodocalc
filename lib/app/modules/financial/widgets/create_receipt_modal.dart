@@ -9,6 +9,7 @@ import 'package:rodocalc/app/modules/vehicle/widgets/photo_item_network.dart';
 import 'package:rodocalc/app/routes/app_routes.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
+import 'package:rodocalc/app/utils/services.dart';
 import 'package:searchfield/searchfield.dart';
 
 class CreateReceiptModal extends GetView<TransactionController> {
@@ -278,7 +279,7 @@ class CreateReceiptModal extends GetView<TransactionController> {
                           return DropdownMenuItem<int>(
                             value: charge.id,
                             child: Text(
-                              charge.descricao!,
+                              Services.capitalizeWords(charge.descricao!),
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                   fontFamily: 'Inter-Bold',

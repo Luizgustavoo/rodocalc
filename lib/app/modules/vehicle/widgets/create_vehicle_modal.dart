@@ -174,15 +174,19 @@ class CreateVehicleModal extends GetView<VehicleController> {
                 TextFormField(
                   controller: controller.txtFipeController,
                   keyboardType: TextInputType.number,
+                  maxLength: 8,
                   decoration: const InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.star_border,
-                    ),
-                    labelText: 'FIPE',
+                    counterText: '',
+                    prefixIcon: Icon(Icons.star_border),
+                    labelText: 'CÓDIGO FIPE',
                   ),
+                  onChanged: (value) {
+                    FormattedInputers.onFipeCodeChanged(
+                        value, controller.txtFipeController);
+                  },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Por favor, insira a fipe';
+                      return 'Por favor, insira o código FIPE';
                     }
                     return null;
                   },

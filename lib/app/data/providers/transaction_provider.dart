@@ -181,10 +181,19 @@ class TransactionApiClient {
               .add(await http.MultipartFile.fromPath('fotos[]', foto.arquivo!));
         }
       }
+
+      String descricao = transacoes.descricao.toString();
+
+      if ((transacoes.descricao == null || transacoes.descricao!.isEmpty)) {
+        if (transacoes.tipoTransacao == 'entrada') {
+          descricao = "FRETE";
+        } else {
+          descricao = "NÃO INFORMADA";
+        }
+      }
+
       final requestBody = {
-        "descricao": (transacoes.descricao == null || transacoes.descricao!.isEmpty)
-            ? 'NÃO INFORMADA'
-            : transacoes.descricao.toString(),
+        "descricao": descricao.toString(),
         "valor": transacoes.valor.toString(),
         "empresa": transacoes.empresa.toString(),
         "cidade": transacoes.cidade.toString(),
@@ -437,10 +446,18 @@ class TransactionApiClient {
         }
       }
 
+      String descricao = transacoes.descricao.toString();
+
+      if ((transacoes.descricao == null || transacoes.descricao!.isEmpty)) {
+        if (transacoes.tipoTransacao == 'entrada') {
+          descricao = "FRETE";
+        } else {
+          descricao = "NÃO INFORMADA";
+        }
+      }
+
       var requestBody = {
-        "descricao": (transacoes.descricao == null || transacoes.descricao!.isEmpty)
-            ? 'NÃO INFORMADA'
-            : transacoes.descricao.toString(),
+        "descricao": descricao.toString(),
         "valor": transacoes.valor.toString(),
         "empresa": transacoes.empresa.toString(),
         "cidade": transacoes.cidade.toString(),

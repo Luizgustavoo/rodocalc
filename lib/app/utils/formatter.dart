@@ -272,7 +272,7 @@ abstract class FormattedInputers {
     return true;
   }
 
-   static String formatCurrency(double value) {
+  static String formatCurrency(double value) {
     final format = NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$');
     return format.format(value);
   }
@@ -469,5 +469,23 @@ abstract class FormattedInputers {
     } else {
       throw const FormatException('Formato de data inválido. Use dd/mm/yyyy.');
     }
+  }
+
+  static String formatFipeCode(String value) {
+    value = value.replaceAll(RegExp(r'\D'), ''); // Remove tudo que não é número
+
+    if (value.length > 6) {
+      value = '${value.substring(0, 6)}-${value.substring(6, value.length)}';
+    }
+
+    return value;
+  }
+
+  static void onFipeCodeChanged(
+      String value, TextEditingController textEditingController) {
+    textEditingController.value = textEditingController.value.copyWith(
+      text: formatFipeCode(value),
+      selection: TextSelection.collapsed(offset: formatFipeCode(value).length),
+    );
   }
 }

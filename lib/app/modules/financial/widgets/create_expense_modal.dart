@@ -13,6 +13,8 @@ import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:searchfield/searchfield.dart';
 
+import '../../../utils/services.dart';
+
 class CreateExpenseModal extends GetView<TransactionController> {
   CreateExpenseModal({super.key, required this.isUpdate, this.idTransaction});
 
@@ -186,7 +188,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
                         child: Container(
                           constraints: BoxConstraints(maxWidth: Get.width * .7),
                           child: Text(
-                            category.descricao!,
+                            Services.capitalizeWords(category.descricao!),
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
                                 fontFamily: 'Inter-Bold',
@@ -260,7 +262,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
                         child: Container(
                           constraints: BoxConstraints(maxWidth: Get.width * .7),
                           child: Text(
-                            specific.descricao!,
+                            Services.capitalizeWords(specific.descricao!),
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
                                 fontFamily: 'Inter-Bold',
@@ -580,9 +582,8 @@ class CreateExpenseModal extends GetView<TransactionController> {
                               child: Container(
                                 constraints:
                                     BoxConstraints(maxWidth: Get.width * .7),
-                                // Limita a largura
                                 child: Text(
-                                  category.descricao!,
+                                  Services.capitalizeWords(category.descricao!),
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
                                     fontFamily: 'Inter-Bold',
