@@ -684,8 +684,17 @@ class TransactionController extends GetxController {
       if (mensagem != null) {
         retorno = {
           'success': mensagem['success'],
-          'message': mensagem['message']
+          'message': mensagem['message'],
         };
+        if(mensagem['success'] == true){
+          if(type == "categoriadespesa"){
+            selectedCategory.value = mensagem['data']['id'];
+          }else{
+            selectedSpecificType.value = mensagem['data']['id'];
+          }
+        }
+
+
         getMyCategories();
         getMySpecifics(selectedCategoryCadSpecificType.value!);
       } else {
@@ -708,6 +717,9 @@ class TransactionController extends GetxController {
           'success': mensagem['success'],
           'message': mensagem['message']
         };
+        if(mensagem['success'] == true){
+          selectedCargoType.value = mensagem['data']['id'];
+        }
         getMyChargeTypes();
       } else {
         retorno = {

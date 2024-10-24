@@ -328,18 +328,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
                   onSuggestionTap: (suggestion) {
                     controller.txtCityController.text = suggestion.searchKey;
                   },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, selecione a cidade';
-                    }
-                    // Verifica se a cidade está na lista de sugestões
-                    /* bool isValidCity = cityController.listCities
-                        .any((city) => city.cidadeEstado == value);
-                    if (cityController.listCities.isNotEmpty && !isValidCity) {
-                      return 'Cidade não encontrada na lista';
-                    }*/
-                    return null;
-                  },
+
                 ),
               ),
               const SizedBox(height: 10),
