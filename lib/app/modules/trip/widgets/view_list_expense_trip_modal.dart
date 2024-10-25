@@ -68,96 +68,145 @@ class ViewListExpenseTripModal extends GetView<TripController> {
                 itemCount: trip.expenseTrip!.length,
                 itemBuilder: (ctx, index) {
                   final ExpenseTrip expense = trip.expenseTrip![index];
-                  return Card(
-                    elevation: 1,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    margin: const EdgeInsets.only(bottom: 10),
-                    child: ListTile(
-                      trailing: IconButton(
-                        onPressed: () {
-                          showDialog(context, expense, controller);
-                        },
-                        icon: const Icon(Icons.delete),
+                  return Dismissible(
+                    key: UniqueKey(),
+                    direction: DismissDirection.endToStart,
+                    confirmDismiss: (DismissDirection direction) async {
+                      if (direction == DismissDirection.endToStart) {
+                        showDialog(context, expense, controller);
+                      }
+                      return false;
+                    },
+                    background: Container(
+                      margin: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.red,
                       ),
-                      title: RichText(
-                        text: TextSpan(
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.black,
-                            fontFamily: 'Inter-Regular',
+                      child: const Align(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                            padding: EdgeInsets.all(10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Icon(
+                                  Icons.check_rounded,
+                                  size: 25,
+                                  color: Colors.white,
+                                ),
+                                SizedBox(width: 10),
+                                Text(
+                                  'EXCLUIR',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            )),
+                      ),
+                    ),
+                    child: Card(
+                      elevation: 1,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      margin: const EdgeInsets.only(bottom: 10),
+                      child: ListTile(
+                        trailing: IconButton(
+                          onPressed: () {
+                            Get.back();
+                            controller.clearAllFieldsExpense();
+                            controller.fillInFieldsExpenseTrip(expense);
+                            showModalBottomSheet(
+                              isScrollControlled: true,
+                              context: context,
+                              builder: (context) => CreateExpenseTripModal(
+                                isUpdate: true,
+                                trip: trip,
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.edit),
+                        ),
+                        title: RichText(
+                          text: TextSpan(
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.black,
+                              fontFamily: 'Inter-Regular',
+                            ),
+                            children: [
+                              const TextSpan(
+                                text: 'DESCRIÇÃO: ',
+                                style: TextStyle(
+                                  fontFamily: 'Inter-Bold',
+                                ),
+                              ),
+                              TextSpan(
+                                text: expense.descricao,
+                                style: const TextStyle(
+                                  fontFamily: 'Inter',
+                                ),
+                              ),
+                            ],
                           ),
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const TextSpan(
-                              text: 'DESCRIÇÃO: ',
-                              style: TextStyle(
-                                fontFamily: 'Inter-Bold',
+                            const SizedBox(height: 5),
+                            RichText(
+                              text: TextSpan(
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black,
+                                  fontFamily: 'Inter-Regular',
+                                ),
+                                children: [
+                                  const TextSpan(
+                                    text: 'DATA: ',
+                                    style: TextStyle(
+                                      fontFamily: 'Inter-Bold',
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: FormattedInputers.formatApiDateHour(
+                                        expense.dataHora!),
+                                    style: const TextStyle(
+                                      fontFamily: 'Inter',
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            TextSpan(
-                              text: expense.descricao,
-                              style: const TextStyle(
-                                fontFamily: 'Inter',
+                            const SizedBox(height: 5),
+                            RichText(
+                              text: TextSpan(
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black,
+                                  fontFamily: 'Inter-Regular',
+                                ),
+                                children: [
+                                  const TextSpan(
+                                    text: 'VALOR: ',
+                                    style: TextStyle(
+                                      fontFamily: 'Inter-Bold',
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text:
+                                        "R\$${FormattedInputers.formatValuePTBR((expense.valorDespesa! / 100).toString())}",
+                                    style: const TextStyle(
+                                      fontFamily: 'Inter',
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
+                            )
                           ],
                         ),
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 5),
-                          RichText(
-                            text: TextSpan(
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Colors.black,
-                                fontFamily: 'Inter-Regular',
-                              ),
-                              children: [
-                                const TextSpan(
-                                  text: 'DATA: ',
-                                  style: TextStyle(
-                                    fontFamily: 'Inter-Bold',
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: FormattedInputers.formatApiDateHour(
-                                      expense.dataHora!),
-                                  style: const TextStyle(
-                                    fontFamily: 'Inter',
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 5),
-                          RichText(
-                            text: TextSpan(
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Colors.black,
-                                fontFamily: 'Inter-Regular',
-                              ),
-                              children: [
-                                const TextSpan(
-                                  text: 'VALOR: ',
-                                  style: TextStyle(
-                                    fontFamily: 'Inter-Bold',
-                                  ),
-                                ),
-                                TextSpan(
-                                  text:
-                                      "R\$${FormattedInputers.formatValuePTBR((expense.valorDespesa! / 100).toString())}",
-                                  style: const TextStyle(
-                                    fontFamily: 'Inter',
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
                       ),
                     ),
                   );

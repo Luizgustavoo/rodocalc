@@ -296,8 +296,13 @@ class PlanController extends GetxController {
           .toString()
           .replaceAll('R\$ ', '')
           .replaceAll(',', '.'));
-      calculatedPrice.value =
-          'R\$ ${(pricePerLicense * selectedLicenses.value).toStringAsFixed(2)}';
+
+      double total = pricePerLicense * selectedLicenses.value;
+      if (selectedRecurrence.value == 'ANUAL') {
+        total = total * (1 - (selectedPlan.value!.descontoAnual! / 100));
+      }
+
+      calculatedPrice.value = 'R\$ ${(total).toStringAsFixed(2)}';
     }
   }
 

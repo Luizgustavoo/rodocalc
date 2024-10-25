@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
+import 'package:rodocalc/app/utils/formatter.dart';
 
 class CustomPlanCard extends StatelessWidget {
   final String? name;
   final String? description;
-  final String? price;
+  final double? price;
+  final String? desconto;
   final int? minLicencas;
 
-  final VoidCallback onPressed;
+  final VoidCallback onPressedMonth;
+  final VoidCallback onPressedYear;
   final String? corTexto;
   final String? corCard;
 
@@ -16,7 +19,9 @@ class CustomPlanCard extends StatelessWidget {
       required this.name,
       required this.description,
       required this.price,
-      required this.onPressed,
+      required this.desconto,
+      required this.onPressedMonth,
+      required this.onPressedYear,
       required this.minLicencas,
       required this.corTexto,
       required this.corCard});
@@ -26,6 +31,13 @@ class CustomPlanCard extends StatelessWidget {
     List<String> lines = description!.split('\n') ?? [];
     Color cardColor = Color(int.parse("0xFF$corCard"));
     Color colorText = Color(int.parse("0xFF$corTexto"));
+
+    double precoDesconto = price!;
+
+    if (double.parse(desconto!) > 0) {
+      precoDesconto = (price! * (1 - (double.parse(desconto!) / 100)));
+    }
+
     return Card(
       color: cardColor,
       margin: const EdgeInsets.symmetric(
@@ -43,67 +55,120 @@ class CustomPlanCard extends StatelessWidget {
               style: TextStyle(
                   fontFamily: 'Inter-Black', fontSize: 18.0, color: colorText),
             ),
-            const Divider(
-              thickness: 4,
+            Divider(
+              thickness: 2,
+              color: Colors.grey.shade200,
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Baseline(
-                      baseline: 15.0,
-                      baselineType: TextBaseline.alphabetic,
-                      child: Text(
-                        'R\$',
-                        style: TextStyle(
-                          fontFamily: 'Inter-Regular',
-                          fontSize: 15.0,
-                          color: colorText,
-                        ),
-                      ),
-                    ),
-                    Text(
-                      price!, // O preço maior
-                      style: TextStyle(
-                          fontFamily: 'Inter-Black',
-                          fontSize: 32.0,
-                          color: colorText),
-                    ),
-                    const SizedBox(width: 10),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          'Por placa\nVALOR MENSAL',
-                          style: TextStyle(
-                              fontFamily: 'Inter-Regular',
-                              fontSize: 12.0,
-                              color: colorText),
-                        ),
+                        Column(
+                          children: [
+                            Row(
+                              children: [
+                                Baseline(
+                                  baseline: 10,
+                                  baselineType: TextBaseline.alphabetic,
+                                  child: Text(
+                                    'R\$',
+                                    style: TextStyle(
+                                      fontFamily: 'Inter-Regular',
+                                      fontSize: 10,
+                                      color: colorText,
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  FormattedInputers.formatValuePTBR(
+                                      price), // O preço maior
+                                  style: TextStyle(
+                                      fontFamily: 'Inter-Black',
+                                      fontSize: 20,
+                                      color: colorText),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              'Por placa / MENSAL',
+                              style: TextStyle(
+                                  fontFamily: 'Inter-Regular',
+                                  fontSize: 10,
+                                  color: colorText),
+                            ),
+                          ],
+                        )
                       ],
-                    )
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Column(
+                          children: [
+                            Row(
+                              children: [
+                                Baseline(
+                                  baseline: 10,
+                                  baselineType: TextBaseline.alphabetic,
+                                  child: Text(
+                                    'R\$',
+                                    style: TextStyle(
+                                      fontFamily: 'Inter-Regular',
+                                      fontSize: 10,
+                                      color: colorText,
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  FormattedInputers.formatValuePTBR(
+                                      precoDesconto), // O preço maior
+                                  style: TextStyle(
+                                    fontFamily: 'Inter-Black',
+                                    fontSize: 32,
+                                    color: Colors.orange.shade900,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              'Por placa / ANUAL',
+                              style: TextStyle(
+                                  fontFamily: 'Inter-Regular',
+                                  fontSize: 10,
+                                  color: colorText),
+                            ),
+                            Text(
+                              '$desconto% OFF',
+                              style: TextStyle(
+                                  fontFamily: 'Inter-Regular',
+                                  fontSize: 14,
+                                  color: colorText),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
                   ],
                 ),
-                const SizedBox(height: 4.0),
-                Text(
-                  'Contratação mínima $minLicencas placa(s)',
-                  style: TextStyle(
-                    fontFamily: 'Inter-Regular',
-                    fontSize: 12.0,
-                    color: colorText,
-                  ),
-                  textAlign: TextAlign
-                      .center, // Centralizar o texto de contratação mínima
-                ),
+                // const SizedBox(height: 10.0),
+
+                const SizedBox(height: 10.0),
               ],
             ),
             const SizedBox(height: 16.0),
             SizedBox(
-              height: 250,
+              height: MediaQuery.sizeOf(context).height * .32,
               child: ListView(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -152,15 +217,41 @@ class CustomPlanCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 CustomElevatedButton(
-                  width: 200,
-                  onPressed: onPressed,
+                  gradient: const LinearGradient(colors: [
+                    Color(0xFFFF6B00),
+                    Colors.orange,
+                  ]),
+                  width: MediaQuery.of(context).size.width * .35,
+                  onPressed: onPressedMonth,
                   child: const Text(
-                    'SELECIONAR',
+                    'CONTRATAR MENSAL',
+                    textAlign: TextAlign.center,
                     style: TextStyle(
-                        fontFamily: 'Inter-Bold', color: Colors.white),
+                        fontSize: 12,
+                        fontFamily: 'Inter-Bold',
+                        color: Colors.white),
+                  ),
+                ),
+                CustomElevatedButton(
+                  gradient: const LinearGradient(colors: [
+                    Color(0xFFFF6B00),
+                    Colors.orange,
+                  ]),
+                  width: MediaQuery.of(context).size.width * .35,
+                  onPressed: onPressedYear,
+                  child: const Text(
+                    textAlign: TextAlign.center,
+                    'CONTRATAR ANUAL',
+                    style: TextStyle(
+                        fontSize: 12,
+                        fontFamily: 'Inter-Bold',
+                        color: Colors.white),
                   ),
                 ),
               ],
+            ),
+            const SizedBox(
+              height: 20,
             )
           ],
         ),

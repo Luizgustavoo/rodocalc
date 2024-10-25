@@ -5,8 +5,6 @@ import 'package:rodocalc/app/data/models/plan_model.dart';
 import 'package:rodocalc/app/global/custom_app_bar.dart';
 import 'package:rodocalc/app/modules/plan/widgets/create_plan_modal.dart';
 import 'package:rodocalc/app/modules/plan/widgets/custom_plan_card.dart';
-// import 'package:rodocalc/app/routes/app_routes.dart';
-import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 
 class PlanView extends GetView<PlanController> {
@@ -166,23 +164,18 @@ class PlanView extends GetView<PlanController> {
                                 (userTypeId != 3 &&
                                     (plan.id == 13 || plan.id == 14))) {
                               return CustomPlanCard(
+                                desconto: plan.descontoAnual.toString(),
                                 minLicencas: plan.minLicencas,
                                 name: plan.descricao,
                                 corCard: plan.corCard,
                                 corTexto: plan.corTexto,
                                 description: plan.observacoes,
-                                price: FormattedInputers.formatValuePTBR(
-                                    plan.valor),
-                                onPressed: () {
-                                  controller.updateSelectedPlan(plan);
-                                  controller.selectedLicenses.value =
-                                      plan.minLicencas!;
-                                  controller.updatePrice();
-                                  showModalBottomSheet(
-                                    context: context,
-                                    builder: (_) => const CreatePlanModal(),
-                                    isScrollControlled: true,
-                                  );
+                                price: plan.valor,
+                                onPressedMonth: () {
+                                  assignPlan(plan, context, 'MENSAL');
+                                },
+                                onPressedYear: () {
+                                  assignPlan(plan, context, 'ANUAL');
                                 },
                               );
                             } else {
@@ -199,6 +192,20 @@ class PlanView extends GetView<PlanController> {
           ),
         ],
       ),
+    );
+  }
+
+  void assignPlan(Plan plan, BuildContext context, String recurrence) {
+    controller.updateSelectedPlan(plan);
+    controller.selectedLicenses.value = plan.minLicencas!;
+    controller.selectedRecurrence.value = recurrence;
+    controller.updatePrice();
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => CreatePlanModal(
+        recurrence: recurrence,
+      ),
+      isScrollControlled: true,
     );
   }
 }

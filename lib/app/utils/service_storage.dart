@@ -94,6 +94,9 @@ class ServiceStorage {
     if (existUser()) {
       Map<String, dynamic> authJson = _box.read('auth');
       Auth auth = Auth.fromJson(authJson);
+      if (auth.rotas == null || auth.rotas!.isEmpty) {
+        return list;
+      }
       list = auth.rotas!.map((rota) => rota.rota).toList();
     }
     return list;

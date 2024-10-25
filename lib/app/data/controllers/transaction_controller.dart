@@ -265,7 +265,7 @@ class TransactionController extends GetxController {
                           color: PdfColors.red,
                         )),
                     pw.Text(
-                        'CIDADE: ${transaction.cidade!.toUpperCase() ?? 'N/A'}',
+                        'CIDADE: ${transaction.cidade?.toUpperCase() ?? 'N/A'}',
                         style: const pw.TextStyle(
                           color: PdfColors.red,
                         )),

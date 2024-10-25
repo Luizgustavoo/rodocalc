@@ -59,7 +59,6 @@ class CreateExpenseTripModal extends GetView<TripController> {
                     counterText: '',
                     prefixIcon: Icon(
                       Icons.calendar_today,
-                      size: 25,
                     ),
                     labelText: 'DATA E HORA',
                   ),
@@ -164,9 +163,9 @@ class CreateExpenseTripModal extends GetView<TripController> {
                           }
                         }
                       },
-                      child: const Text(
-                        'SALVAR',
-                        style: TextStyle(
+                      child: Text(
+                        isUpdate ? 'ALTERAR' : 'SALVAR',
+                        style: const TextStyle(
                             fontFamily: 'Inter-Bold', color: Colors.white),
                       ),
                     ),

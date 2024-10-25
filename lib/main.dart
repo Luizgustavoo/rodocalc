@@ -11,6 +11,7 @@ import 'package:rodocalc/app/routes/app_pages.dart';
 import 'package:rodocalc/app/routes/app_routes.dart';
 import 'package:rodocalc/app/theme/app_theme.dart';
 import 'package:rodocalc/app/utils/dynamic_link_handler.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 void main() async {
   await GetStorage.init('rodocalc');
@@ -20,7 +21,7 @@ void main() async {
   ]);
   DynamicLinkHandler.instance.initialize();
 
-  /*final storage = GetStorage('rodocalc');
+  final storage = GetStorage('rodocalc');
   final packageInfo = await PackageInfo.fromPlatform();
   final currentVersion = packageInfo.version;
   final storedVersion = storage.read('app_version');
@@ -29,7 +30,7 @@ void main() async {
     await storage.erase();
 
     storage.write('app_version', currentVersion);
-  }*/
+  }
 
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,

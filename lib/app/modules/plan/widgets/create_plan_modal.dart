@@ -7,7 +7,9 @@ import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/services.dart';
 
 class CreatePlanModal extends GetView<PlanController> {
-  const CreatePlanModal({super.key});
+  final String? recurrence;
+
+  const CreatePlanModal({super.key, this.recurrence});
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +24,15 @@ class CreatePlanModal extends GetView<PlanController> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              const SizedBox(height: 10),
               Obx(() => Text(
-                    controller.selectedPlan.value!.descricao ?? '',
+                    "${controller.selectedPlan.value!.descricao ?? ''} - $recurrence",
                     style: const TextStyle(
                         fontFamily: 'Inter-Bold',
                         fontSize: 20,
                         color: Color(0xFFFF6B00)),
                   )),
+              const SizedBox(height: 20),
               const Divider(
                 endIndent: 20,
                 indent: 20,
@@ -36,7 +40,7 @@ class CreatePlanModal extends GetView<PlanController> {
                 thickness: 2,
                 color: Colors.black,
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 20),
               Obx(
                 () {
                   // Obtém o valor mínimo de licenças
@@ -68,34 +72,34 @@ class CreatePlanModal extends GetView<PlanController> {
                   );
                 },
               ),
-              const SizedBox(height: 15.0),
-              Obx(
-                () => DropdownButtonFormField<String>(
-                  value: controller.selectedRecurrence.value.isEmpty
-                      ? null
-                      : controller.selectedRecurrence.value,
-                  items:
-                      ['MENSAL', 'SEMESTRAL', 'ANUAL'].map((String recurrence) {
-                    return DropdownMenuItem<String>(
-                      value: recurrence,
-                      child: Text(recurrence),
-                    );
-                  }).toList(),
-                  onChanged: (newValue) {
-                    controller.updateRecurrence(newValue);
-                  },
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.calendar_today),
-                    labelText: 'RECORRÊNCIA',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, selecione uma recorrência';
-                    }
-                    return null;
-                  },
-                ),
-              ),
+              // const SizedBox(height: 15.0),
+              // Obx(
+              //   () => DropdownButtonFormField<String>(
+              //     value: controller.selectedRecurrence.value.isEmpty
+              //         ? null
+              //         : controller.selectedRecurrence.value,
+              //     items:
+              //         ['MENSAL', 'SEMESTRAL', 'ANUAL'].map((String recurrence) {
+              //       return DropdownMenuItem<String>(
+              //         value: recurrence,
+              //         child: Text(recurrence),
+              //       );
+              //     }).toList(),
+              //     onChanged: (newValue) {
+              //       controller.updateRecurrence(newValue);
+              //     },
+              //     decoration: const InputDecoration(
+              //       prefixIcon: Icon(Icons.calendar_today),
+              //       labelText: 'RECORRÊNCIA',
+              //     ),
+              //     validator: (value) {
+              //       if (value == null || value.isEmpty) {
+              //         return 'Por favor, selecione uma recorrência';
+              //       }
+              //       return null;
+              //     },
+              //   ),
+              // ),
               const SizedBox(height: 15.0),
               TextFormField(
                 controller: controller.numberCardController,

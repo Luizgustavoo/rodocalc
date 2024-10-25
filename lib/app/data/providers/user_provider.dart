@@ -239,7 +239,6 @@ class UserApiClient {
           "Authorization": token,
         },
       );
-      print(response.body);
       return json.decode(response.body);
     } catch (err) {
       Exception(err);

@@ -190,6 +190,24 @@ class TripController extends GetxController {
     }
   }
 
+  void fillInFieldsExpenseTrip(ExpenseTrip expenseTrip) {
+    if (expenseTrip.dataHora != null && expenseTrip.dataHora!.isNotEmpty) {
+      try {
+        DateTime date = DateTime.parse(expenseTrip.dataHora!);
+        txtDateExpenseTripController.text =
+            DateFormat('dd/MM/yyyy H:mm').format(date);
+      } catch (e) {
+        txtDateExpenseTripController.clear();
+      }
+    } else {
+      txtDateExpenseTripController.clear();
+    }
+    txtDescriptionExpenseTripController.text = expenseTrip.descricao.toString();
+
+    txtAmountExpenseTripController.text =
+        'R\$${FormattedInputers.formatValuePTBR((expenseTrip.valorDespesa! / 100).toString())}';
+  }
+
   void fillInFields(Trip trip) {
     selectedOption.value = trip.tipoSaidaChegada.toString();
 

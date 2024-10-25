@@ -160,14 +160,22 @@ class PlanViewOld extends GetView<PlanController> {
                           itemBuilder: (context, index) {
                             final Plan plan = controller.listPlans[index];
                             return CustomPlanCard(
+                              desconto: plan.descontoAnual.toString(),
                               corCard: plan.corCard,
                               corTexto: plan.corTexto,
                               minLicencas: plan.minLicencas,
                               name: plan.descricao,
                               description: plan.observacoes,
-                              price:
-                                  "R\$ ${FormattedInputers.formatValuePTBR(plan.valor)}",
-                              onPressed: () {
+                              price: plan.valor,
+                              onPressedMonth: () {
+                                controller.updateSelectedPlan(plan);
+                                showModalBottomSheet(
+                                  context: context,
+                                  builder: (_) => const CreatePlanModal(),
+                                  isScrollControlled: true,
+                                );
+                              },
+                              onPressedYear: () {
                                 controller.updateSelectedPlan(plan);
                                 showModalBottomSheet(
                                   context: context,
