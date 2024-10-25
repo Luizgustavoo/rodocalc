@@ -98,6 +98,7 @@ class CreateReceiptModal extends GetView<TransactionController> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 5),
                               child: PhotoItemNetwork(
+                                url: 'transacoes',
                                 photo: path,
                                 onDelete: () {
                                   controller.removeImageApi(path);

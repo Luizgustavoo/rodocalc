@@ -217,6 +217,7 @@ class AuthApiClient {
         Map<String, dynamic> newAuth = {};
 
         newAuth["user"] = responseData["user"];
+        newAuth["rotas"] = responseData["rotas"];
         newAuth["access_token"] = responseData["access_token"];
         newAuth["token_type"] = responseData["token_type"];
         newAuth["expires_in"] = responseData["expires_in"];
@@ -225,6 +226,7 @@ class AuthApiClient {
 
         Get.find<HomeController>().updateUserPhoto();
       }
+      print(httpResponse.body);
       return json.decode(httpResponse.body);
     } catch (err) {
       Exception('Error: $err');

@@ -518,7 +518,6 @@ class PerfilView extends GetView<PerfilController> {
                               } else {
                                 Map<String, dynamic> retorno =
                                     await controller.updateUser();
-
                                 if (retorno['success'] == true) {
                                   Get.back();
                                   Get.snackbar(

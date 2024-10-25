@@ -213,16 +213,19 @@ class TransactionApiClient {
         requestBody["quantidade_tonelada"] =
             transacoes.quantidadeTonelada.toString();
       }
-      if (transacoes.tipoCargaId != null) {
+      if (transacoes.tipoCargaId != null &&
+          transacoes.tipoTransacao == 'entrada') {
         requestBody["tipocarga_id"] = transacoes.tipoCargaId.toString();
       }
 
-      if (transacoes.tipoEspecificoDespesaId != null) {
+      if (transacoes.tipoEspecificoDespesaId != null &&
+          transacoes.tipoTransacao == 'saida') {
         requestBody["tipoespecificodespesa_id"] =
             transacoes.tipoEspecificoDespesaId.toString();
       }
 
-      if (transacoes.categoriaDespesaId != null) {
+      if (transacoes.categoriaDespesaId != null &&
+          transacoes.tipoTransacao == 'saida') {
         requestBody["categoriadespesa_id"] =
             transacoes.categoriaDespesaId.toString();
       }
@@ -478,16 +481,19 @@ class TransactionApiClient {
         requestBody["quantidade_tonelada"] =
             transacoes.quantidadeTonelada.toString();
       }
-      if (transacoes.tipoCargaId != null) {
+      if (transacoes.tipoCargaId != null &&
+          transacoes.tipoTransacao == 'entrada') {
         requestBody["tipocarga_id"] = transacoes.tipoCargaId.toString();
       }
 
-      if (transacoes.tipoEspecificoDespesaId != null) {
+      if (transacoes.tipoEspecificoDespesaId != null &&
+          transacoes.tipoTransacao == 'saida') {
         requestBody["tipoespecificodespesa_id"] =
             transacoes.tipoEspecificoDespesaId.toString();
       }
 
-      if (transacoes.categoriaDespesaId != null) {
+      if (transacoes.categoriaDespesaId != null &&
+          transacoes.tipoTransacao == 'saida') {
         requestBody["categoriadespesa_id"] =
             transacoes.categoriaDespesaId.toString();
       }

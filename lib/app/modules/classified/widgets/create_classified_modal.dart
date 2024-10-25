@@ -95,6 +95,7 @@ class CreateClassifiedModal extends GetView<ClassifiedController> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 5),
                               child: PhotoItemNetwork(
+                                url: 'classificados',
                                 photo: path,
                                 onDelete: () {
                                   controller.removeImageApi(path);

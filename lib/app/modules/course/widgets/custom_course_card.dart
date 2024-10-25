@@ -1,20 +1,21 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:rodocalc/app/modules/course/widgets/detail_course_view.dart';
 
 import '../../../data/base_url.dart';
 
 class CustomCourseCard extends StatelessWidget {
-  const CustomCourseCard(
-      {super.key,
-      required this.titulo,
-      required this.descricao,
-      required this.imagem,
-      required this.duracao,
-      required this.valor,
-      required this.link,
-      required this.linkVideo});
+  const CustomCourseCard({
+    super.key,
+    required this.titulo,
+    required this.descricao,
+    required this.imagem,
+    required this.duracao,
+    required this.valor,
+    required this.link,
+    required this.linkVideo,
+  });
 
   final String titulo;
   final String descricao;
@@ -34,35 +35,43 @@ class CustomCourseCard extends StatelessWidget {
       ),
       margin: const EdgeInsets.only(bottom: 10),
       child: InkWell(
-        onTap: () async {
-          if (linkVideo.isEmpty) {
-            Get.snackbar(
-              'Atenção',
-              'Link do curso não disponível!',
-              backgroundColor: Colors.orange,
-              colorText: Colors.white,
-              snackPosition: SnackPosition.BOTTOM,
-            );
-          } else {
-            await launchUrl(Uri.parse(link));
-          }
+        onTap: () {
+          // Navega para a tela de detalhes do curso com o Hero
+          Get.to(
+            () => DetailCourseView(
+              titulo: titulo,
+              descricao: descricao,
+              linkVideo: linkVideo,
+              imagem: imagem,
+              link: link,
+            ),
+            transition: Transition.fadeIn,
+          );
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(8),
-                topRight: Radius.circular(8),
-              ),
-              child: CachedNetworkImage(
-                imageUrl: "$urlImagem/storage/fotos/cursos/$imagem",
-                placeholder: (context, url) =>
-                    const CircularProgressIndicator(),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
-                height: 150,
-                width: double.infinity,
-                fit: BoxFit.cover,
+            Hero(
+              tag: 'course_image_$titulo', // Tag do Hero para a imagem
+              child: ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(8),
+                  topRight: Radius.circular(8),
+                ),
+                child: CachedNetworkImage(
+                  imageUrl: "$urlImagem/storage/fotos/cursos/$imagem",
+                  placeholder: (context, url) => const Center(
+                    child: SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                  height: 150,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             Padding(

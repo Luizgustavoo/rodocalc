@@ -5,9 +5,13 @@ import 'package:rodocalc/app/data/base_url.dart';
 class PhotoItemNetwork extends StatelessWidget {
   final String photo;
   final VoidCallback onDelete;
+  final String url;
 
   const PhotoItemNetwork(
-      {required this.photo, required this.onDelete, super.key});
+      {required this.photo,
+      required this.onDelete,
+      super.key,
+      required this.url});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +34,7 @@ class PhotoItemNetwork extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                   image: DecorationImage(
                     image: CachedNetworkImageProvider(
-                      "$urlImagem/storage/fotos/transacoes/$photo",
+                      "$urlImagem/storage/fotos/$url/$photo",
                       maxWidth: 100,
                       maxHeight: 100,
                     ),

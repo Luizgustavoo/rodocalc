@@ -101,6 +101,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
                           return Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 5),
                             child: PhotoItemNetwork(
+                              url: 'transacoes',
                               photo: path,
                               onDelete: () {
                                 controller.removeImageApi(path);

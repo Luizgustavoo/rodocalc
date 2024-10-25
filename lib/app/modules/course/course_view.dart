@@ -74,29 +74,32 @@ class CourseView extends GetView<CourseController> {
                                 );
                               } else if (!controller.isLoading.value &&
                                   controller.listCourses.isNotEmpty) {
-                                return ListView.builder(
-                                  padding: EdgeInsets.only(
-                                      bottom:
-                                          MediaQuery.of(context).size.height *
-                                              .25),
-                                  shrinkWrap: true,
-                                  physics:
-                                      const AlwaysScrollableScrollPhysics(),
-                                  itemCount: controller.filteredCourses.length,
-                                  itemBuilder: (context, index) {
-                                    final Courses curso =
-                                        controller.filteredCourses[index];
-                                    return CustomCourseCard(
-                                      descricao: curso.descricao.toString(),
-                                      duracao: curso.duracao.toString(),
-                                      linkVideo: curso.linkVideo.toString(),
-                                      valor:
-                                          "R\$${FormattedInputers.formatValuePTBR(curso.valor.toString())}",
-                                      link: curso.link.toString(),
-                                      imagem: curso.imagem!,
-                                      titulo: curso.titulo!,
-                                    );
-                                  },
+                                return Expanded(
+                                  child: ListView.builder(
+                                    padding: EdgeInsets.only(
+                                        bottom:
+                                            MediaQuery.of(context).size.height *
+                                                .25),
+                                    shrinkWrap: true,
+                                    physics:
+                                        const AlwaysScrollableScrollPhysics(),
+                                    itemCount:
+                                        controller.filteredCourses.length,
+                                    itemBuilder: (context, index) {
+                                      final Courses curso =
+                                          controller.filteredCourses[index];
+                                      return CustomCourseCard(
+                                        descricao: curso.descricao.toString(),
+                                        duracao: curso.duracao.toString(),
+                                        linkVideo: curso.linkVideo.toString(),
+                                        valor:
+                                            "R\$${FormattedInputers.formatValuePTBR(curso.valor.toString())}",
+                                        link: curso.link.toString(),
+                                        imagem: curso.imagem!,
+                                        titulo: curso.titulo!,
+                                      );
+                                    },
+                                  ),
                                 );
                               } else {
                                 return const Center(
