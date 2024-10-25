@@ -124,6 +124,7 @@ class ViewListExpenseTripModal extends GetView<TripController> {
                               builder: (context) => CreateExpenseTripModal(
                                 isUpdate: true,
                                 trip: trip,
+                                expenseTrip: expense,
                               ),
                             );
                           },

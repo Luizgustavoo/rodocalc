@@ -6,6 +6,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:rodocalc/app/data/controllers/vehicle_controller.dart';
 import 'package:rodocalc/app/data/models/vehicle_model.dart';
 import 'package:rodocalc/app/global/custom_app_bar.dart';
+import 'package:rodocalc/app/modules/global/custom_search_field.dart';
 import 'package:rodocalc/app/modules/vehicle/widgets/create_vehicle_modal.dart';
 import 'package:rodocalc/app/modules/vehicle/widgets/custom_vehicle_card.dart';
 import 'package:rodocalc/app/routes/app_routes.dart';
@@ -59,16 +60,9 @@ class VehiclesView extends GetView<VehicleController> {
                         child: Column(
                           children: [
                             const SizedBox(height: 5),
-                            TextFormField(
+                            CustomSearchField(
+                              labelText: 'PESQUISAR CAMINHÕES',
                               controller: controller.searchController,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide.none,
-                                ),
-                                suffixIcon: const Icon(Icons.search_rounded),
-                                labelText: 'PESQUISAR VEÍCULO',
-                              ),
                               onChanged: (value) {
                                 controller.filterVehicles(value);
                               },

@@ -6,6 +6,7 @@ import 'package:rodocalc/app/data/controllers/comission_indicator_controller.dar
 import 'package:rodocalc/app/data/controllers/indicator_controller.dart';
 import 'package:rodocalc/app/data/models/indication_model.dart';
 import 'package:rodocalc/app/global/custom_app_bar.dart';
+import 'package:rodocalc/app/modules/global/custom_search_field.dart';
 import 'package:rodocalc/app/modules/indicator/widgets/create_indicator_modal.dart';
 import 'package:rodocalc/app/modules/indicator/widgets/custom_indicator_card.dart';
 import 'package:rodocalc/app/modules/indicator/widgets/withdrawal_request_modal.dart';
@@ -120,7 +121,7 @@ class IndicatorView extends GetView<IndicationController> {
                                       ),
                                       onPressed: () async {
                                         String linkWhatsApp =
-                                            "CÓDIGO DE CONVITE: $cupom . Link: https://painel.rodocalc.com.br/redirect/?code=$cupom";
+                                            "CÓDIGO DE CONVITE: $cupom . Link: https://painel.rodocalc.com.br/register/$cupom";
 
                                         var androidUrl =
                                             "whatsapp://send?text=$linkWhatsApp";
@@ -267,16 +268,9 @@ class IndicatorView extends GetView<IndicationController> {
                                   })),
                             ),
                             const SizedBox(height: 10),
-                            TextFormField(
+                            CustomSearchField(
+                              labelText: 'PESQUISAR INDICAÇÃO',
                               controller: controller.searchIndicatorController,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide.none,
-                                ),
-                                suffixIcon: const Icon(Icons.search_rounded),
-                                labelText: 'PESQUISAR INDICAÇÃO',
-                              ),
                               onChanged: (value) {
                                 controller.filterIndications(value);
                               },

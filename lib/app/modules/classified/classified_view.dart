@@ -7,6 +7,7 @@ import 'package:rodocalc/app/data/models/classifieds_model.dart';
 import 'package:rodocalc/app/global/custom_app_bar.dart';
 import 'package:rodocalc/app/modules/classified/widgets/create_classified_modal.dart';
 import 'package:rodocalc/app/modules/classified/widgets/custom_classified_card.dart';
+import 'package:rodocalc/app/modules/global/custom_search_field.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 
 class ClassifiedView extends GetView<ClassifiedController> {
@@ -55,16 +56,9 @@ class ClassifiedView extends GetView<ClassifiedController> {
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Column(children: [
-                          TextFormField(
+                          CustomSearchField(
+                            labelText: 'PESQUISAR CLASSIFICADO',
                             controller: controller.searchClassifiedController,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide.none,
-                              ),
-                              suffixIcon: const Icon(Icons.search_rounded),
-                              labelText: 'PESQUISAR CLASSIFICADO',
-                            ),
                             onChanged: (value) {
                               controller.filterClassifieds(value);
                             },

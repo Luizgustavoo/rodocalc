@@ -147,7 +147,7 @@ class ClassifiedController extends GetxController {
                 classified.descricao!
                     .toLowerCase()
                     .contains(query.toLowerCase()) ||
-                classified.observacoes!
+                classified.user!.people!.nome!
                     .toLowerCase()
                     .contains(query.toLowerCase()))
             .toList(),

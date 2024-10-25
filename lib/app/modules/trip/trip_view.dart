@@ -4,6 +4,7 @@ import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/controllers/city_state_controller.dart';
 import 'package:rodocalc/app/data/controllers/trip_controller.dart';
 import 'package:rodocalc/app/data/models/trip_model.dart';
+import 'package:rodocalc/app/modules/global/custom_search_field.dart';
 import 'package:rodocalc/app/modules/trip/widgets/create_trip_modal.dart';
 import 'package:rodocalc/app/modules/trip/widgets/custom_trip_card.dart';
 import 'package:rodocalc/app/modules/trip/widgets/view_list_expense_trip_modal.dart';
@@ -114,16 +115,9 @@ class TripView extends GetView<TripController> {
                       padding: const EdgeInsets.all(16.0),
                       child: Column(mainAxisSize: MainAxisSize.min, children: [
                         const SizedBox(height: 5),
-                        TextFormField(
+                        CustomSearchField(
+                          labelText: 'PESQUISAR TRECHOS',
                           controller: controller.searchTripController,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide.none,
-                            ),
-                            suffixIcon: const Icon(Icons.search_rounded),
-                            labelText: 'PESQUISAR TRECHOS',
-                          ),
                           onChanged: (value) {
                             controller.filterTrips(value);
                           },

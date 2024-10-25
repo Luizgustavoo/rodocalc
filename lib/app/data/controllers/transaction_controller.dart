@@ -237,6 +237,11 @@ class TransactionController extends GetxController {
                           color: PdfColors.green,
                         )),
                     pw.Text(
+                        'SALDO: ${transaction.saldo != null ? FormattedInputers.formatCurrency(transaction.saldo.toDouble()) : 'N/A'}',
+                        style: const pw.TextStyle(
+                          color: PdfColors.green,
+                        )),
+                    pw.Text(
                         'DATA: ${transaction.data != null ? FormattedInputers.formatApiDate(transaction.data!) : 'N/A'}',
                         style: const pw.TextStyle(
                           color: PdfColors.green,
@@ -275,6 +280,11 @@ class TransactionController extends GetxController {
                         )),
                     pw.Text(
                         'VALOR: ${transaction.valor != null ? FormattedInputers.formatCurrency(transaction.valor.toDouble()) : 'N/A'}',
+                        style: const pw.TextStyle(
+                          color: PdfColors.red,
+                        )),
+                    pw.Text(
+                        'SALDO: ${transaction.saldo != null ? FormattedInputers.formatCurrency(transaction.saldo.toDouble()) : 'N/A'}',
                         style: const pw.TextStyle(
                           color: PdfColors.red,
                         )),

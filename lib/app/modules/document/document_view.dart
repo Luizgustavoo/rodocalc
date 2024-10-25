@@ -7,6 +7,7 @@ import 'package:rodocalc/app/data/models/document_model.dart';
 import 'package:rodocalc/app/global/custom_app_bar.dart';
 import 'package:rodocalc/app/modules/document/widgets/create_document_modal.dart';
 import 'package:rodocalc/app/modules/document/widgets/custom_document_card.dart';
+import 'package:rodocalc/app/modules/global/custom_search_field.dart';
 
 class DocumentView extends GetView<DocumentController> {
   const DocumentView({super.key});
@@ -57,16 +58,9 @@ class DocumentView extends GetView<DocumentController> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             const SizedBox(height: 5),
-                            TextFormField(
+                            CustomSearchField(
+                              labelText: 'PESQUISAR DOCUMENTO',
                               controller: controller.searchDocumentController,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide.none,
-                                ),
-                                suffixIcon: const Icon(Icons.search_rounded),
-                                labelText: 'PESQUISAR DOCUMENTO',
-                              ),
                               onChanged: (value) {
                                 controller.filterDocuments(value);
                               },

@@ -7,6 +7,7 @@ class Courses {
   String? duracao;
   double? valor;
   int? status;
+  String? linkVideo;
   String? createdAt;
   String? updatedAt;
 
@@ -20,6 +21,7 @@ class Courses {
       this.valor,
       this.status,
       this.createdAt,
+      this.linkVideo,
       this.updatedAt});
 
   Courses.fromJson(Map<String, dynamic> json) {
@@ -31,6 +33,7 @@ class Courses {
     duracao = json['duracao'];
     valor = json['valor']?.toDouble();
     status = json['status'];
+    linkVideo = json['link_video'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
   }
@@ -45,6 +48,7 @@ class Courses {
     data['duracao'] = duracao;
     data['valor'] = valor;
     data['status'] = status;
+    data['link_video'] = linkVideo;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
     return data;

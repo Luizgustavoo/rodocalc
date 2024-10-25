@@ -27,12 +27,12 @@ class CustomCourseCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       color: Colors.orange.shade50,
-      elevation: 2,
+      elevation: 3,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5),
+        borderRadius: BorderRadius.circular(8),
       ),
       margin: const EdgeInsets.only(bottom: 10),
-      child: ListTile(
+      child: InkWell(
         onTap: () async {
           if (link.isEmpty) {
             Get.snackbar(
@@ -46,102 +46,50 @@ class CustomCourseCard extends StatelessWidget {
             await launchUrl(Uri.parse(link));
           }
         },
-        horizontalTitleGap: 10,
-        dense: true,
-        contentPadding:
-            const EdgeInsets.only(bottom: 5, top: 5, left: 10, right: 10),
-        leading: Container(
-          width: 60,
-          height: 70,
-          decoration: BoxDecoration(
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(5),
-            image: DecorationImage(
-              image: imagem.isNotEmpty
-                  ? CachedNetworkImageProvider(
-                      "$urlImagem/storage/fotos/cursos/$imagem")
-                  : const AssetImage('assets/images/logo.png') as ImageProvider,
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        title: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          RichText(
-            text: TextSpan(
-              style: const TextStyle(
-                fontSize: 12,
-                color: Colors.black,
-                fontFamily: 'Inter-Regular',
-              ),
-              children: [
-                const TextSpan(
-                  text: 'TITULO: ',
-                  style: TextStyle(
-                    fontFamily: 'Inter-Bold',
-                  ),
-                ),
-                TextSpan(text: titulo.toUpperCase()),
-              ],
-            ),
-          ),
-          const SizedBox(height: 5),
-          RichText(
-            text: TextSpan(
-              style: const TextStyle(
-                fontSize: 12,
-                color: Colors.black,
-                fontFamily: 'Inter-Regular',
-              ),
-              children: [
-                const TextSpan(
-                  text: 'DESCRIÇÃO: ',
-                  style: TextStyle(
-                    fontFamily: 'Inter-Bold',
-                  ),
-                ),
-                TextSpan(text: descricao.toUpperCase()),
-              ],
-            ),
-          ),
-        ]),
-        subtitle: Column(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 5),
-            RichText(
-              text: TextSpan(
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Colors.black,
-                  fontFamily: 'Inter-Regular',
-                ),
-                children: [
-                  const TextSpan(
-                    text: 'DURAÇÃO: ',
-                    style: TextStyle(
-                      fontFamily: 'Inter-Bold',
-                    ),
-                  ),
-                  TextSpan(text: '$duracao HORAS'),
-                ],
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(8),
+                topRight: Radius.circular(8),
+              ),
+              child: CachedNetworkImage(
+                imageUrl: "$urlImagem/storage/fotos/cursos/$imagem",
+                placeholder: (context, url) =>
+                    const CircularProgressIndicator(),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
+                height: 150,
+                width: double.infinity,
+                fit: BoxFit.cover,
               ),
             ),
-            const SizedBox(height: 5),
-            RichText(
-              text: TextSpan(
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Colors.black,
-                  fontFamily: 'Inter-Regular',
-                ),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const TextSpan(
-                    text: 'VALOR: ',
-                    style: TextStyle(
-                      fontFamily: 'Inter-Bold',
+                  Text(
+                    titulo.toUpperCase(),
+                    style: const TextStyle(
+                        fontSize: 16, fontFamily: 'Inter-Black'),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Duração: $duracao horas',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.black54,
                     ),
                   ),
-                  TextSpan(text: valor),
+                  Text(
+                    'Valor: $valor',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.green,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ],
               ),
             ),

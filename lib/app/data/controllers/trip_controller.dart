@@ -379,7 +379,8 @@ class TripController extends GetxController {
       trechoPercorridoId: trechoPercorridoId,
       dataHora: txtDateExpenseTripController.text,
       descricao: txtDescriptionExpenseTripController.text,
-      valorDespesa: int.parse(txtAmountExpenseTripController.text),
+      valorDespesa: FormattedInputers.convertForCents(
+          txtAmountExpenseTripController.text),
       status: 1,
     ));
 

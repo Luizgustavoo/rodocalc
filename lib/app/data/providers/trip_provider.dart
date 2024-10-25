@@ -111,7 +111,7 @@ class TripApiClient {
         'status': expense.status.toString(),
       };
 
-      final response = await http.put(
+      final response = await http.post(
         tripUrl,
         headers: {
           'Accept': 'application/json',

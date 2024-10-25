@@ -25,12 +25,15 @@ class CustomIndicatorCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 10),
       child: ListTile(
         horizontalTitleGap: 5,
-        trailing: IconButton(
-          onPressed: functionUpdate,
-          icon: const Icon(Icons.edit),
+        trailing: InkWell(
+          onTap: functionUpdate,
+          child: const Padding(
+            padding: EdgeInsets.all(5), // Ajusta o espaçamento interno
+            child: Icon(Icons.edit, size: 20), // Reduz o tamanho do ícone
+          ),
         ),
-        leading: IconButton(
-          onPressed: () async {
+        leading: InkWell(
+          onTap: () async {
             String phone = indication.telefone!
                 .replaceAll('(', '')
                 .replaceAll(')', '')
@@ -38,7 +41,7 @@ class CustomIndicatorCard extends StatelessWidget {
                 .replaceAll(' ', '');
             String cupom = ServiceStorage.getUserId().toString();
             String linkWhatsApp =
-                "https://painel.rodocalc.com.br/redirect/?code=$cupom";
+                "https://painel.rodocalc.com.br/register/$cupom";
 
             var contact = phone;
             var androidUrl =
@@ -57,10 +60,11 @@ class CustomIndicatorCard extends StatelessWidget {
                   colorText: Colors.white,
                   snackPosition: SnackPosition.BOTTOM);
             }
-
-            //Share.share(linkWhatsApp);
           },
-          icon: const Icon(Icons.share),
+          child: const Padding(
+            padding: EdgeInsets.all(10), // Ajusta o espaçamento interno
+            child: Icon(Icons.share, size: 20), // Reduz o tamanho do ícone
+          ),
         ),
         title: RichText(
           text: TextSpan(

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/course_controller.dart';
 import 'package:rodocalc/app/global/custom_app_bar.dart';
 import 'package:rodocalc/app/modules/course/widgets/custom_course_card.dart';
+import 'package:rodocalc/app/modules/global/custom_search_field.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 
 import '../../data/models/courses_model.dart';
@@ -53,16 +54,9 @@ class CourseView extends GetView<CourseController> {
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Column(children: [
-                          TextFormField(
+                          CustomSearchField(
+                            labelText: 'PESQUISAR CURSO',
                             controller: controller.searchCourseController,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide.none,
-                              ),
-                              suffixIcon: const Icon(Icons.search_rounded),
-                              labelText: 'PESQUISAR CURSO',
-                            ),
                             onChanged: (value) {
                               controller.filterCourses(value);
                             },

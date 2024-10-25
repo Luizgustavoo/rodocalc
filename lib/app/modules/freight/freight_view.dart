@@ -6,6 +6,7 @@ import 'package:rodocalc/app/data/controllers/freight_controller.dart';
 import 'package:rodocalc/app/data/models/freight_model.dart';
 import 'package:rodocalc/app/modules/freight/widgets/create_freight_modal.dart';
 import 'package:rodocalc/app/modules/freight/widgets/custom_freight_card.dart';
+import 'package:rodocalc/app/modules/global/custom_search_field.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 
 class FreightView extends GetView<FreightController> {
@@ -113,16 +114,9 @@ class FreightView extends GetView<FreightController> {
                       padding: const EdgeInsets.all(16.0),
                       child: Column(mainAxisSize: MainAxisSize.min, children: [
                         const SizedBox(height: 5),
-                        TextFormField(
+                        CustomSearchField(
+                          labelText: 'PESQUISAR FRETE',
                           controller: controller.searchFreightController,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide.none,
-                            ),
-                            suffixIcon: const Icon(Icons.search_rounded),
-                            labelText: 'PESQUISAR FRETE',
-                          ),
                           onChanged: (value) {
                             controller.filterFreights(value);
                           },

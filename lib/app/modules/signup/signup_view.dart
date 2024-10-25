@@ -304,12 +304,6 @@ class SignUpView extends GetView<SignUpController> {
                               prefixIcon: Icon(Icons.numbers),
                               labelText: 'NÚMERO',
                             ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Digite o número da casa';
-                              }
-                              return null;
-                            },
                           ),
                           const SizedBox(height: 10),
                           TextFormField(
