@@ -6,15 +6,15 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../data/base_url.dart';
 
 class CustomCourseCard extends StatelessWidget {
-  const CustomCourseCard({
-    super.key,
-    required this.titulo,
-    required this.descricao,
-    required this.imagem,
-    required this.duracao,
-    required this.valor,
-    required this.link,
-  });
+  const CustomCourseCard(
+      {super.key,
+      required this.titulo,
+      required this.descricao,
+      required this.imagem,
+      required this.duracao,
+      required this.valor,
+      required this.link,
+      required this.linkVideo});
 
   final String titulo;
   final String descricao;
@@ -22,6 +22,7 @@ class CustomCourseCard extends StatelessWidget {
   final String valor;
   final String duracao;
   final String link;
+  final String linkVideo;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,7 @@ class CustomCourseCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 10),
       child: InkWell(
         onTap: () async {
-          if (link.isEmpty) {
+          if (linkVideo.isEmpty) {
             Get.snackbar(
               'Atenção',
               'Link do curso não disponível!',
@@ -47,7 +48,7 @@ class CustomCourseCard extends StatelessWidget {
           }
         },
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             ClipRRect(
               borderRadius: const BorderRadius.only(
@@ -65,23 +66,34 @@ class CustomCourseCard extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     titulo.toUpperCase(),
+                    textAlign: TextAlign.center,
                     style: const TextStyle(
                         fontSize: 16, fontFamily: 'Inter-Black'),
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    'Duração: $duracao horas',
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.black54,
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      'Duração: $duracao horas',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 3),
                   Text(
                     'Valor: $valor',
                     style: const TextStyle(

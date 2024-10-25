@@ -89,8 +89,9 @@ class CourseView extends GetView<CourseController> {
                                     return CustomCourseCard(
                                       descricao: curso.descricao.toString(),
                                       duracao: curso.duracao.toString(),
+                                      linkVideo: curso.linkVideo.toString(),
                                       valor:
-                                          "R\$ ${FormattedInputers.formatValuePTBR(curso.valor.toString())}",
+                                          "R\$${FormattedInputers.formatValuePTBR(curso.valor.toString())}",
                                       link: curso.link.toString(),
                                       imagem: curso.imagem!,
                                       titulo: curso.titulo!,
