@@ -13,6 +13,7 @@ class CreatePlanModal extends GetView<PlanController> {
 
   @override
   Widget build(BuildContext context) {
+    int multiplicacao = recurrence == "ANUAL" ? 12 : 1;
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: SingleChildScrollView(

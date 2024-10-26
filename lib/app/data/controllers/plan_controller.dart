@@ -299,7 +299,7 @@ class PlanController extends GetxController {
 
       double total = pricePerLicense * selectedLicenses.value;
       if (selectedRecurrence.value == 'ANUAL') {
-        total = total * (1 - (selectedPlan.value!.descontoAnual! / 100));
+        total = (total * 12) * (1 - (selectedPlan.value!.descontoAnual! / 100));
       }
 
       calculatedPrice.value = 'R\$ ${(total).toStringAsFixed(2)}';

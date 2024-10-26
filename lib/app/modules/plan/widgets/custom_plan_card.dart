@@ -131,7 +131,7 @@ class CustomPlanCard extends StatelessWidget {
                                 ),
                                 Text(
                                   FormattedInputers.formatValuePTBR(
-                                      precoDesconto), // O preço maior
+                                      precoDesconto * 12), // O preço maior
                                   style: TextStyle(
                                     fontFamily: 'Inter-Black',
                                     fontSize: 32,

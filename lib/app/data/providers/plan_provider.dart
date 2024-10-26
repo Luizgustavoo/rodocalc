@@ -277,6 +277,9 @@ class PlanApiClient {
       box.write('auth', authh.toJson());
       //FINAL DA ATUALIZAÇÃO DO STORAGE.
 
+      print(response.body);
+      return;
+
       return json.decode(response.body);
     } catch (err) {
       return null;
