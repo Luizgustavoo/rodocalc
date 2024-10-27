@@ -158,6 +158,7 @@ class VehicleApiClient {
         "modelo": vehicle.modelo.toString(),
         "placa": vehicle.placa.toString(),
         "fipe": vehicle.fipe.toString(),
+        "valor_fipe": vehicle.valorFipe.toString(),
         "reboque": vehicle.reboque.toString(),
         "status": "1",
         "planousuario_id": vehicle.planoUsuarioId.toString(),
@@ -172,7 +173,6 @@ class VehicleApiClient {
 
       var responseStream = await response.stream.bytesToString();
       var httpResponse = http.Response(responseStream, response.statusCode);
-
 
       if (httpResponse.statusCode == 201 ||
           httpResponse.statusCode == 422 ||
@@ -210,6 +210,7 @@ class VehicleApiClient {
         "modelo": vehicle.modelo.toString(),
         "placa": vehicle.placa.toString(),
         "fipe": vehicle.fipe.toString(),
+        "valor_fipe": vehicle.valorFipe.toString(),
         "reboque": vehicle.reboque.toString(),
         "user_id": ServiceStorage.getUserId().toString(),
         "status": "1",
@@ -259,7 +260,8 @@ class VehicleApiClient {
       // final token = "Bearer ${ServiceStorage.getToken()}";
 
       Uri vehicleUrl;
-      String url = '$buscarPlacaUrl/$plate';
+      String url =
+          'https://placas.fipeapi.com.br/placas/$plate?key=4eaee9cc36d4204e92f6e9bec62ecf94';
       vehicleUrl = Uri.parse(url);
       var response = await httpClient.get(
         vehicleUrl,

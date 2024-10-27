@@ -75,7 +75,17 @@ class CreateVehicleModal extends GetView<VehicleController> {
                       )),
                 ),
                 const SizedBox(height: 10),
-                Obx(() => TextFormField(
+                Obx(
+                  () => Focus(
+                    onFocusChange: (hasFocus) async {
+                      if (!hasFocus) {
+                        controller.isLoading.value = true;
+                        controller.searchPlates().then((_) {
+                          controller.isLoading.value = false;
+                        });
+                      }
+                    },
+                    child: TextFormField(
                       controller: controller.txtPlateController,
                       onChanged: (text) {
                         controller.txtPlateController.value = TextEditingValue(
@@ -120,7 +130,9 @@ class CreateVehicleModal extends GetView<VehicleController> {
                         }
                         return null;
                       },
-                    )),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 10),
                 TextFormField(
                   controller: controller.txtBrandController,
@@ -187,6 +199,25 @@ class CreateVehicleModal extends GetView<VehicleController> {
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Por favor, insira o código FIPE';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: controller.txtFipeValueController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.monetization_on),
+                    labelText: 'VALOR DA FIPE',
+                  ),
+                  onChanged: (value) {
+                    FormattedInputers.onformatValueChanged(
+                        value, controller.txtFipeValueController);
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira o valor FIPE';
                     }
                     return null;
                   },

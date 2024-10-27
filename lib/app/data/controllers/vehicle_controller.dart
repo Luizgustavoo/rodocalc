@@ -3,11 +3,14 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:rodocalc/app/data/models/search_plate.dart';
 import 'package:rodocalc/app/data/models/user_plan_dropdown.dart';
 import 'package:rodocalc/app/data/models/vehicle_model.dart';
 import 'package:rodocalc/app/data/repositories/vehicle_repository.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
+
+import '../../utils/formatter.dart';
 
 class VehicleController extends GetxController {
   final box = GetStorage('rodocalc');
@@ -29,6 +32,7 @@ class VehicleController extends GetxController {
   final txtYearController = TextEditingController();
   final txtModelController = TextEditingController();
   final txtFipeController = TextEditingController();
+  final txtFipeValueController = TextEditingController();
   final txtTrailerController = TextEditingController();
   final searchController = TextEditingController();
 
@@ -173,11 +177,38 @@ class VehicleController extends GetxController {
   Future<void> searchPlates() async {
     isLoading.value = true;
     try {
-      searchPlate = await repository.searchPlate(txtPlateController.text);
-      txtBrandController.text = searchPlate.marca.toString();
-      txtYearController.text = searchPlate.anoModelo.toString();
-      txtModelController.text = searchPlate.modelo.toString();
-      txtFipeController.text = searchPlate.codigoFipe.toString();
+      var response = await repository.searchPlate(txtPlateController.text);
+
+      String marcaModelo = response["veiculo"]["marca_modelo"];
+      List<String> partes = marcaModelo.split('/');
+
+      if (partes.length >= 2) {
+        txtBrandController.text = partes[0].trim(); // Marca
+        txtModelController.text = partes[1].trim(); // Modelo
+      } else {
+        txtBrandController.text =
+            marcaModelo; // Atribui a string inteira se não puder separar
+        txtModelController.text = ''; // Limpa o modelo
+      }
+
+      print(response["fipes"][0]["valor"]);
+      txtYearController.text = response["veiculo"]["ano"];
+      txtFipeController.text = response["fipes"][0]["codigo"];
+      // Acessando o valor da jipe
+      int fipeValue = response["fipes"][0]["valor"];
+
+      if (fipeValue > 0) {
+        double formattedValue = fipeValue * 100 / 100;
+        String formattedCurrency = NumberFormat.currency(
+          locale: 'pt_BR',
+          symbol: 'R\$',
+          decimalDigits: 2,
+        ).format(formattedValue);
+        txtFipeValueController.text = (formattedCurrency).toString();
+      } else {
+        txtFipeValueController.text =
+            '0'; // Ou qualquer valor padrão que você desejar
+      }
     } catch (e) {
       Exception(e);
     }
@@ -193,6 +224,8 @@ class VehicleController extends GetxController {
         modelo: txtModelController.text,
         placa: txtPlateController.text,
         fipe: txtFipeController.text,
+        valorFipe:
+            FormattedInputers.convertForCents(txtFipeValueController.text),
         reboque: trailerCheckboxValue.value ? 'sim' : 'nao',
         foto: selectedImagePath.value,
         status: 1,
@@ -228,6 +261,9 @@ class VehicleController extends GetxController {
       setImage(true);
       selectedImagePath.value = selectedVehicle.foto!;
     }
+
+    txtFipeValueController.text =
+        'R\$${FormattedInputers.formatValuePTBR((selectedVehicle.valorFipe! / 100).toString())}';
   }
 
   void clearAllFields() {
@@ -237,6 +273,7 @@ class VehicleController extends GetxController {
       txtYearController,
       txtModelController,
       txtFipeController,
+      txtFipeValueController,
       txtTrailerController
     ];
 
@@ -258,6 +295,8 @@ class VehicleController extends GetxController {
         modelo: txtModelController.text,
         placa: txtPlateController.text,
         fipe: txtFipeController.text,
+        valorFipe:
+            FormattedInputers.convertForCents(txtFipeValueController.text),
         reboque: trailerCheckboxValue.value ? 'sim' : 'nao',
         foto: selectedImagePath.value,
         status: 1,

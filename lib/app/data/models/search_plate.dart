@@ -1,84 +1,108 @@
 class SearchPlate {
-  String? categoria;
-  String? tipo;
-  String? marca;
-  String? modelo;
-  int? anoModelo;
+  String? procedencia;
+  String? municipio;
+  String? uf;
+  String? placa;
+  String? chassi;
+  Null? situacaoDoChassi;
+  String? marcaModelo;
+  String? ano;
+  Null? capacidadeDeCarga;
   String? combustivel;
-  String? mesReferencia;
-  String? codigoFipe;
-  int? valor;
-  Null chassi;
-  Null renavam;
-  bool? depreciado;
-  String? categoriaVeiculoSGA;
-  int? valorOriginal;
-  int? mensalidade;
-  int? cotaParticipativa;
-  int? cotaMinima;
-  int? valorProtegido;
+  String? cor;
+  String? potencia;
+  String? cilindradas;
+  String? quantidadePassageiro;
+  String? tipoMontagem;
+  String? quantidadeDeEixos;
+  String? pbt;
+  String? cmt;
+  String? tipoDeVeiculo;
+  String? tipoCarroceria;
+  String? nMotor;
+  Null? caixaCambio;
+  Null? eixoTraseiroDif;
+  Null? carroceria;
 
   SearchPlate(
-      {this.categoria,
-      this.tipo,
-      this.marca,
-      this.modelo,
-      this.anoModelo,
-      this.combustivel,
-      this.mesReferencia,
-      this.codigoFipe,
-      this.valor,
+      {this.procedencia,
+      this.municipio,
+      this.uf,
+      this.placa,
       this.chassi,
-      this.renavam,
-      this.depreciado,
-      this.categoriaVeiculoSGA,
-      this.valorOriginal,
-      this.mensalidade,
-      this.cotaParticipativa,
-      this.cotaMinima,
-      this.valorProtegido});
+      this.situacaoDoChassi,
+      this.marcaModelo,
+      this.ano,
+      this.capacidadeDeCarga,
+      this.combustivel,
+      this.cor,
+      this.potencia,
+      this.cilindradas,
+      this.quantidadePassageiro,
+      this.tipoMontagem,
+      this.quantidadeDeEixos,
+      this.pbt,
+      this.cmt,
+      this.tipoDeVeiculo,
+      this.tipoCarroceria,
+      this.nMotor,
+      this.caixaCambio,
+      this.eixoTraseiroDif,
+      this.carroceria});
 
   SearchPlate.fromJson(Map<String, dynamic> json) {
-    categoria = json['Categoria'];
-    tipo = json['Tipo'];
-    marca = json['Marca'];
-    modelo = json['Modelo'];
-    anoModelo = json['AnoModelo'];
-    combustivel = json['Combustivel'];
-    mesReferencia = json['MesReferencia'];
-    codigoFipe = json['CodigoFipe'];
-    valor = json['Valor'];
-    chassi = json['Chassi'];
-    renavam = json['Renavam'];
-    depreciado = json['Depreciado'];
-    categoriaVeiculoSGA = json['CategoriaVeiculoSGA'];
-    valorOriginal = json['ValorOriginal'];
-    mensalidade = json['Mensalidade'];
-    cotaParticipativa = json['CotaParticipativa'];
-    cotaMinima = json['CotaMinima'];
-    valorProtegido = json['ValorProtegido'];
+    procedencia = json['procedencia'];
+    municipio = json['municipio'];
+    uf = json['uf'];
+    placa = json['placa'];
+    chassi = json['chassi'];
+    situacaoDoChassi = json['situacao_do_chassi'];
+    marcaModelo = json['marca_modelo'];
+    ano = json['ano'];
+    capacidadeDeCarga = json['capacidade_de_carga'];
+    combustivel = json['combustivel'];
+    cor = json['cor'];
+    potencia = json['potencia'];
+    cilindradas = json['cilindradas'];
+    quantidadePassageiro = json['quantidade_passageiro'];
+    tipoMontagem = json['tipo_montagem'];
+    quantidadeDeEixos = json['quantidade_de_eixos'];
+    pbt = json['pbt'];
+    cmt = json['cmt'];
+    tipoDeVeiculo = json['tipo_de_veiculo'];
+    tipoCarroceria = json['tipo_carroceria'];
+    nMotor = json['n_motor'];
+    caixaCambio = json['caixa_cambio'];
+    eixoTraseiroDif = json['eixo_traseiro_dif'];
+    carroceria = json['carroceria'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['Categoria'] = categoria;
-    data['Tipo'] = tipo;
-    data['Marca'] = marca;
-    data['Modelo'] = modelo;
-    data['AnoModelo'] = anoModelo;
-    data['Combustivel'] = combustivel;
-    data['MesReferencia'] = mesReferencia;
-    data['CodigoFipe'] = codigoFipe;
-    data['Valor'] = valor;
-    data['Chassi'] = chassi;
-    data['Renavam'] = renavam;
-    data['Depreciado'] = depreciado;
-    data['CategoriaVeiculoSGA'] = categoriaVeiculoSGA;
-    data['ValorOriginal'] = valorOriginal;
-    data['Mensalidade'] = mensalidade;
-    data['CotaParticipativa'] = cotaParticipativa;
-    data['CotaMinima'] = cotaMinima;
-    data['ValorProtegido'] = valorProtegido;
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['procedencia'] = this.procedencia;
+    data['municipio'] = this.municipio;
+    data['uf'] = this.uf;
+    data['placa'] = this.placa;
+    data['chassi'] = this.chassi;
+    data['situacao_do_chassi'] = this.situacaoDoChassi;
+    data['marca_modelo'] = this.marcaModelo;
+    data['ano'] = this.ano;
+    data['capacidade_de_carga'] = this.capacidadeDeCarga;
+    data['combustivel'] = this.combustivel;
+    data['cor'] = this.cor;
+    data['potencia'] = this.potencia;
+    data['cilindradas'] = this.cilindradas;
+    data['quantidade_passageiro'] = this.quantidadePassageiro;
+    data['tipo_montagem'] = this.tipoMontagem;
+    data['quantidade_de_eixos'] = this.quantidadeDeEixos;
+    data['pbt'] = this.pbt;
+    data['cmt'] = this.cmt;
+    data['tipo_de_veiculo'] = this.tipoDeVeiculo;
+    data['tipo_carroceria'] = this.tipoCarroceria;
+    data['n_motor'] = this.nMotor;
+    data['caixa_cambio'] = this.caixaCambio;
+    data['eixo_traseiro_dif'] = this.eixoTraseiroDif;
+    data['carroceria'] = this.carroceria;
     return data;
   }
 }

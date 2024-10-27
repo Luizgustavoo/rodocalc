@@ -1,4 +1,3 @@
-import 'package:rodocalc/app/data/models/search_plate.dart';
 import 'package:rodocalc/app/data/models/vehicle_model.dart';
 import 'package:rodocalc/app/data/providers/vehicle_provider.dart';
 
@@ -87,8 +86,8 @@ class VehicleRepository {
   searchPlate(String plate) async {
     try {
       var response = await apiClient.searchPlate(plate);
-      if (response != null) {
-        return SearchPlate.fromJson(response['Veiculo']);
+      if (response["data"] != null) {
+        return response["data"];
       }
     } catch (e) {
       Exception(e);

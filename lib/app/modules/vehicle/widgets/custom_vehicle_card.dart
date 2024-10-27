@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/models/vehicle_model.dart';
 
+import '../../../utils/formatter.dart';
+
 class CustomVehicleCard extends StatelessWidget {
   final Vehicle vehicle;
   final VoidCallback editVehicle;
@@ -112,12 +114,33 @@ class CustomVehicleCard extends StatelessWidget {
                       ),
                       children: [
                         const TextSpan(
-                          text: 'FIPE: ',
+                          text: 'CODIGO FIPE: ',
                           style: TextStyle(
                             fontFamily: 'Inter-Bold',
                           ),
                         ),
                         TextSpan(text: vehicle.fipe),
+                      ],
+                    ),
+                  ),
+
+                  RichText(
+                    text: TextSpan(
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.black,
+                        fontFamily: 'Inter-Regular',
+                      ),
+                      children: [
+                        const TextSpan(
+                          text: 'VALOR FIPE: ',
+                          style: TextStyle(
+                            fontFamily: 'Inter-Bold',
+                          ),
+                        ),
+                        TextSpan(
+                            text:
+                                "R\$${FormattedInputers.formatValuePTBR((vehicle.valorFipe! / 100).toString())}"),
                       ],
                     ),
                   ),

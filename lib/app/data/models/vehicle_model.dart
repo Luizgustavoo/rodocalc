@@ -6,6 +6,7 @@ class Vehicle {
   String? modelo;
   String? placa;
   String? fipe;
+  int? valorFipe;
   String? reboque;
   String? foto;
   String? createdAt;
@@ -23,6 +24,7 @@ class Vehicle {
     this.modelo,
     this.placa,
     this.fipe,
+    this.valorFipe,
     this.reboque,
     this.foto,
     this.createdAt,
@@ -41,6 +43,7 @@ class Vehicle {
     modelo = json['modelo'];
     placa = json['placa'];
     fipe = json['fipe'];
+    valorFipe = json['valor_fipe'];
     reboque = json['reboque'];
     foto = json['foto'];
     createdAt = json['created_at'];
@@ -62,6 +65,7 @@ class Vehicle {
     data['modelo'] = modelo;
     data['placa'] = placa;
     data['fipe'] = fipe;
+    data['valor_fipe'] = valorFipe;
     data['reboque'] = reboque;
     data['foto'] = foto;
     data['created_at'] = createdAt;

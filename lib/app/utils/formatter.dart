@@ -297,6 +297,7 @@ abstract class FormattedInputers {
       String valorSemMoeda = valorString.replaceAll("R\$ ", "").trim();
 
       // Remove os pontos de separação de milhares
+      valorSemMoeda = valorSemMoeda.replaceAll('R\$', '');
       valorSemMoeda = valorSemMoeda.replaceAll('.', '');
 
       // Substitui a vírgula por ponto para transformar em número decimal
@@ -304,11 +305,11 @@ abstract class FormattedInputers {
 
       // Converte para double e multiplica por 100 para obter os centavos
       double valorDouble = double.parse(valorSemMoeda) * 100;
-
+      print(valorDouble.round());
       // Converte para int, que representa os centavos
       return valorDouble.round();
     } catch (e) {
-      throw Exception("Erro ao converter o valor: $e");
+      throw Exception("Erro ao converter o valor $valorString: $e");
     }
   }
 

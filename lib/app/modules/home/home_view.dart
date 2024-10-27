@@ -467,18 +467,13 @@ class HomeView extends GetView<HomeController> {
                                     ),
                                     const SizedBox(width: 5),
                                     CustomHomeCard(
-                                      color: ServiceStorage.isRotaPermitida(
-                                              "indicator")
-                                          ? const Color(0xFFFF6B00)
-                                          : Colors.grey.shade700,
+                                      color: Color(0xFF348004),
                                       imagePath: 'assets/images/indicador.png',
-                                      label: 'Indicador',
+                                      label: 'Indicações',
                                       onTap: () async {
                                         Map<String, dynamic> verifyPlan =
                                             await planController.verifyPlan();
-                                        if (verifyPlan['exists_plan'] == true &&
-                                            ServiceStorage.isRotaPermitida(
-                                                "indicator")) {
+                                        if (verifyPlan['exists_plan'] == true) {
                                           comissionIndicatorController
                                               .getAllToReceive();
                                           comissionIndicatorController
