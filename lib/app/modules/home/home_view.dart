@@ -289,38 +289,36 @@ class HomeView extends GetView<HomeController> {
                                                 fontSize: 14,
                                               ),
                                             ),
-                                            Obx(() {
-                                              return ServiceStorage
-                                                          .getUserTypeId() ==
-                                                      4
-                                                  ? SizedBox(
-                                                      child: Icon(
-                                                          Icons.visibility_off))
-                                                  : SingleChildScrollView(
-                                                      scrollDirection:
-                                                          Axis.horizontal,
-                                                      child: Text(
-                                                        "R\$${FormattedInputers.formatValuePTBR(transactionController.balance.value)}",
-                                                        style: TextStyle(
-                                                          color: transactionController
+                                            if (ServiceStorage
+                                                    .getUserTypeId() ==
+                                                4) ...[
+                                              SizedBox(child: Icon(Icons.lock)),
+                                            ] else ...[
+                                              Obx(() {
+                                                return SingleChildScrollView(
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  child: Text(
+                                                    "R\$${FormattedInputers.formatValuePTBR(transactionController.balance.value)}",
+                                                    style: TextStyle(
+                                                      color: transactionController
+                                                                  .balance
+                                                                  .value ==
+                                                              0
+                                                          ? Colors.black
+                                                          : (transactionController
                                                                       .balance
-                                                                      .value ==
+                                                                      .value <
                                                                   0
-                                                              ? Colors.black
-                                                              : (transactionController
-                                                                          .balance
-                                                                          .value <
-                                                                      0
-                                                                  ? Colors.red
-                                                                  : Colors
-                                                                      .green),
-                                                          fontSize: 24,
-                                                          fontFamily:
-                                                              'Inter-Black',
-                                                        ),
-                                                      ),
-                                                    );
-                                            }),
+                                                              ? Colors.red
+                                                              : Colors.green),
+                                                      fontSize: 24,
+                                                      fontFamily: 'Inter-Black',
+                                                    ),
+                                                  ),
+                                                );
+                                              }),
+                                            ],
                                             Obx(() {
                                               return SizedBox(
                                                 width: MediaQuery.of(context)
@@ -475,13 +473,13 @@ class HomeView extends GetView<HomeController> {
                                     ),
                                     const SizedBox(width: 5),
                                     CustomHomeCard(
-                                      color: Color(0xFF348004),
+                                      color: Colors.green,
                                       imagePath: 'assets/images/cifra.png',
                                       label: 'Indicações',
                                       onTap: () async {
                                         Map<String, dynamic> verifyPlan =
                                             await planController.verifyPlan();
-                                        if (1 > 0) {
+                                        if (verifyPlan['exists_plan'] == true) {
                                           comissionIndicatorController
                                               .getAllToReceive();
                                           comissionIndicatorController
