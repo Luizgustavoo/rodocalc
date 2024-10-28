@@ -226,7 +226,6 @@ class AuthApiClient {
 
         Get.find<HomeController>().updateUserPhoto();
       }
-      print(httpResponse.body);
       return json.decode(httpResponse.body);
     } catch (err) {
       Exception('Error: $err');

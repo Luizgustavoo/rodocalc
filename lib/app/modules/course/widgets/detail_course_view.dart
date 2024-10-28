@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:rodocalc/app/global/custom_app_bar.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class DetailCourseView extends StatelessWidget {
   const DetailCourseView(
@@ -21,14 +22,14 @@ class DetailCourseView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final videoId = YoutubePlayer.convertUrlToId(linkVideo);
-    // final controller = YoutubePlayerController(
-    //     initialVideoId: videoId!,
-    //     flags: const YoutubePlayerFlags(
-    //       autoPlay: true,
-    //       mute: false,
-    //       showLiveFullscreenButton: true,
-    //     ));
+    final videoId = YoutubePlayer.convertUrlToId(linkVideo);
+    final controller = YoutubePlayerController(
+        initialVideoId: videoId!,
+        flags: const YoutubePlayerFlags(
+          autoPlay: true,
+          mute: false,
+          showLiveFullscreenButton: true,
+        ));
     return Scaffold(
       appBar: CustomAppBar(title: titulo.toUpperCase()),
       body: SingleChildScrollView(
@@ -38,10 +39,10 @@ class DetailCourseView extends StatelessWidget {
           children: [
             Hero(tag: 'course_image_$titulo', child: Container()),
             const SizedBox(height: 10),
-            // YoutubePlayer(
-            //   controller: controller,
-            //   showVideoProgressIndicator: true,
-            // ),
+            YoutubePlayer(
+              controller: controller,
+              showVideoProgressIndicator: true,
+            ),
             const SizedBox(height: 15),
             CustomElevatedButton(
                 onPressed: () async {

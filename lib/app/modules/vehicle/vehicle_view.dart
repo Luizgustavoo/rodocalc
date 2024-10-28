@@ -109,7 +109,8 @@ class VehiclesView extends GetView<VehicleController> {
                                             "Você não tem permissão para realizar esta ação",
                                             snackPosition: SnackPosition.BOTTOM,
                                             backgroundColor: Colors.orange,
-                                            duration: Duration(seconds: 2),
+                                            duration:
+                                                const Duration(seconds: 2),
                                           );
                                         }
                                         return false;

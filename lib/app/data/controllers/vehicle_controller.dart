@@ -191,7 +191,6 @@ class VehicleController extends GetxController {
         txtModelController.text = ''; // Limpa o modelo
       }
 
-      print(response["fipes"][0]["valor"]);
       txtYearController.text = response["veiculo"]["ano"];
       txtFipeController.text = response["fipes"][0]["codigo"];
       // Acessando o valor da jipe

@@ -292,7 +292,8 @@ class HomeView extends GetView<HomeController> {
                                             if (ServiceStorage
                                                     .getUserTypeId() ==
                                                 4) ...[
-                                              SizedBox(child: Icon(Icons.lock)),
+                                              const SizedBox(
+                                                  child: Icon(Icons.lock)),
                                             ] else ...[
                                               Obx(() {
                                                 return SingleChildScrollView(

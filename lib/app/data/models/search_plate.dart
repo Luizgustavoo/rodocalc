@@ -4,10 +4,10 @@ class SearchPlate {
   String? uf;
   String? placa;
   String? chassi;
-  Null? situacaoDoChassi;
+  Null situacaoDoChassi;
   String? marcaModelo;
   String? ano;
-  Null? capacidadeDeCarga;
+  Null capacidadeDeCarga;
   String? combustivel;
   String? cor;
   String? potencia;
@@ -20,9 +20,9 @@ class SearchPlate {
   String? tipoDeVeiculo;
   String? tipoCarroceria;
   String? nMotor;
-  Null? caixaCambio;
-  Null? eixoTraseiroDif;
-  Null? carroceria;
+  Null caixaCambio;
+  Null eixoTraseiroDif;
+  Null carroceria;
 
   SearchPlate(
       {this.procedencia,
@@ -78,31 +78,31 @@ class SearchPlate {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['procedencia'] = this.procedencia;
-    data['municipio'] = this.municipio;
-    data['uf'] = this.uf;
-    data['placa'] = this.placa;
-    data['chassi'] = this.chassi;
-    data['situacao_do_chassi'] = this.situacaoDoChassi;
-    data['marca_modelo'] = this.marcaModelo;
-    data['ano'] = this.ano;
-    data['capacidade_de_carga'] = this.capacidadeDeCarga;
-    data['combustivel'] = this.combustivel;
-    data['cor'] = this.cor;
-    data['potencia'] = this.potencia;
-    data['cilindradas'] = this.cilindradas;
-    data['quantidade_passageiro'] = this.quantidadePassageiro;
-    data['tipo_montagem'] = this.tipoMontagem;
-    data['quantidade_de_eixos'] = this.quantidadeDeEixos;
-    data['pbt'] = this.pbt;
-    data['cmt'] = this.cmt;
-    data['tipo_de_veiculo'] = this.tipoDeVeiculo;
-    data['tipo_carroceria'] = this.tipoCarroceria;
-    data['n_motor'] = this.nMotor;
-    data['caixa_cambio'] = this.caixaCambio;
-    data['eixo_traseiro_dif'] = this.eixoTraseiroDif;
-    data['carroceria'] = this.carroceria;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['procedencia'] = procedencia;
+    data['municipio'] = municipio;
+    data['uf'] = uf;
+    data['placa'] = placa;
+    data['chassi'] = chassi;
+    data['situacao_do_chassi'] = situacaoDoChassi;
+    data['marca_modelo'] = marcaModelo;
+    data['ano'] = ano;
+    data['capacidade_de_carga'] = capacidadeDeCarga;
+    data['combustivel'] = combustivel;
+    data['cor'] = cor;
+    data['potencia'] = potencia;
+    data['cilindradas'] = cilindradas;
+    data['quantidade_passageiro'] = quantidadePassageiro;
+    data['tipo_montagem'] = tipoMontagem;
+    data['quantidade_de_eixos'] = quantidadeDeEixos;
+    data['pbt'] = pbt;
+    data['cmt'] = cmt;
+    data['tipo_de_veiculo'] = tipoDeVeiculo;
+    data['tipo_carroceria'] = tipoCarroceria;
+    data['n_motor'] = nMotor;
+    data['caixa_cambio'] = caixaCambio;
+    data['eixo_traseiro_dif'] = eixoTraseiroDif;
+    data['carroceria'] = carroceria;
     return data;
   }
 }

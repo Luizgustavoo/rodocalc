@@ -171,10 +171,11 @@ class CustomVehicleCard extends StatelessWidget {
           InkWell(
             onTap: ServiceStorage.getUserTypeId() == 4 ? null : editVehicle,
             child: Padding(
-              padding: EdgeInsets.all(5), // Ajusta o espaçamento interno
+              padding: const EdgeInsets.all(5), // Ajusta o espaçamento interno
               child: ServiceStorage.getUserTypeId() == 4
-                  ? Icon(Icons.block, size: 20)
-                  : Icon(Icons.edit, size: 20), // Reduz o tamanho do ícone
+                  ? const Icon(Icons.block, size: 20)
+                  : const Icon(Icons.edit,
+                      size: 20), // Reduz o tamanho do ícone
             ),
           ),
         ]),

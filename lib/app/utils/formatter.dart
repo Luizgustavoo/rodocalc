@@ -305,7 +305,6 @@ abstract class FormattedInputers {
 
       // Converte para double e multiplica por 100 para obter os centavos
       double valorDouble = double.parse(valorSemMoeda) * 100;
-      print(valorDouble.round());
       // Converte para int, que representa os centavos
       return valorDouble.round();
     } catch (e) {
