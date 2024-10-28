@@ -345,84 +345,86 @@ class PerfilView extends GetView<PerfilController> {
                               textAlign: TextAlign.center,
                             ),
                           ),
-                          const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text(
-                              'Altere a opção abaixo apenas se desejar modificar seu tipo de conta. Essa ação cancelará sua assinatura atual e exigirá que você assine uma nova.',
-                              style: TextStyle(
-                                color: Colors.red,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          Obx(
-                            () => Card(
-                              color: Colors.black,
-                              surfaceTintColor: Colors.black,
-                              margin: const EdgeInsets.only(
-                                  left: 10, right: 10, bottom: 10),
-                              child: DropdownButtonFormField<int?>(
-                                decoration: InputDecoration(
-                                  prefixIcon: const Icon(Icons.people),
-                                  labelText: 'ALTERAR TIPO DE CONTA',
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: Colors.grey.shade400,
-                                      // Borda cinza clara
-                                      width:
-                                          1.0, // Ajuste a espessura da borda se necessário
-                                    ),
-                                    borderRadius: BorderRadius.circular(
-                                        8.0), // Ajuste o raio da borda
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: Colors.grey.shade400,
-                                      // Borda cinza mais escura ao focar
-                                      width: 1.0,
-                                    ),
-                                    borderRadius: BorderRadius.circular(8.0),
-                                  ),
+                          if (ServiceStorage.getUserTypeId() != 4) ...[
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text(
+                                'Altere a opção abaixo apenas se desejar modificar seu tipo de conta. Essa ação cancelará sua assinatura atual e exigirá que você assine uma nova.',
+                                style: TextStyle(
+                                  color: Colors.red,
                                 ),
-                                items: [
-                                  const DropdownMenuItem<int?>(
-                                    value: 0,
-                                    child: Text('Selecione um tipo'),
-                                  ),
-                                  ...Get.put(SignUpController())
-                                      .listUserTypes
-                                      .map((UserType type) {
-                                    // Verifique se plan.id é nulo e use um valor padrão se necessário
-                                    if (type.id == null) {
-                                      return DropdownMenuItem<int?>(
-                                        value: null,
-                                        // Ou qualquer outro valor que não conflite
-                                        child: Text(type.descricao ??
-                                            'Descrição não disponível'),
-                                      );
-                                    }
-
-                                    return DropdownMenuItem<int?>(
-                                      value: type.id,
-                                      child: Container(
-                                        constraints: BoxConstraints(
-                                            maxWidth: Get.width * .7),
-                                        child: Text(
-                                          "${type.descricao}",
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    );
-                                  }),
-                                ],
-                                onChanged: (newValue) {
-                                  controller.userTypeUpdateController.value =
-                                      newValue!;
-                                },
+                                textAlign: TextAlign.center,
                               ),
                             ),
-                          ),
+                            const SizedBox(height: 20),
+                            Obx(
+                              () => Card(
+                                color: Colors.black,
+                                surfaceTintColor: Colors.black,
+                                margin: const EdgeInsets.only(
+                                    left: 10, right: 10, bottom: 10),
+                                child: DropdownButtonFormField<int?>(
+                                  decoration: InputDecoration(
+                                    prefixIcon: const Icon(Icons.people),
+                                    labelText: 'ALTERAR TIPO DE CONTA',
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.grey.shade400,
+                                        // Borda cinza clara
+                                        width:
+                                            1.0, // Ajuste a espessura da borda se necessário
+                                      ),
+                                      borderRadius: BorderRadius.circular(
+                                          8.0), // Ajuste o raio da borda
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.grey.shade400,
+                                        // Borda cinza mais escura ao focar
+                                        width: 1.0,
+                                      ),
+                                      borderRadius: BorderRadius.circular(8.0),
+                                    ),
+                                  ),
+                                  items: [
+                                    const DropdownMenuItem<int?>(
+                                      value: 0,
+                                      child: Text('Selecione um tipo'),
+                                    ),
+                                    ...Get.put(SignUpController())
+                                        .listUserTypes
+                                        .map((UserType type) {
+                                      // Verifique se plan.id é nulo e use um valor padrão se necessário
+                                      if (type.id == null) {
+                                        return DropdownMenuItem<int?>(
+                                          value: null,
+                                          // Ou qualquer outro valor que não conflite
+                                          child: Text(type.descricao ??
+                                              'Descrição não disponível'),
+                                        );
+                                      }
+
+                                      return DropdownMenuItem<int?>(
+                                        value: type.id,
+                                        child: Container(
+                                          constraints: BoxConstraints(
+                                              maxWidth: Get.width * .7),
+                                          child: Text(
+                                            "${type.descricao}",
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                                  ],
+                                  onChanged: (newValue) {
+                                    controller.userTypeUpdateController.value =
+                                        newValue!;
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
                           const Divider(
                             color: Colors.orange,
                             thickness: 2,

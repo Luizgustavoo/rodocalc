@@ -98,9 +98,19 @@ class VehiclesView extends GetView<VehicleController> {
                                       confirmDismiss:
                                           (DismissDirection direction) async {
                                         if (direction ==
-                                            DismissDirection.endToStart) {
+                                                DismissDirection.endToStart &&
+                                            ServiceStorage.getUserTypeId() !=
+                                                4) {
                                           showDialog(
                                               context, vehicle, controller);
+                                        } else {
+                                          Get.snackbar(
+                                            "Atenção",
+                                            "Você não tem permissão para realizar esta ação",
+                                            snackPosition: SnackPosition.BOTTOM,
+                                            backgroundColor: Colors.orange,
+                                            duration: Duration(seconds: 2),
+                                          );
                                         }
                                         return false;
                                       },

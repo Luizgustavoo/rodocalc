@@ -5,6 +5,7 @@ import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/models/vehicle_model.dart';
 
 import '../../../utils/formatter.dart';
+import '../../../utils/service_storage.dart';
 
 class CustomVehicleCard extends StatelessWidget {
   final Vehicle vehicle;
@@ -168,10 +169,12 @@ class CustomVehicleCard extends StatelessWidget {
             ),
           ),
           InkWell(
-            onTap: editVehicle,
-            child: const Padding(
+            onTap: ServiceStorage.getUserTypeId() == 4 ? null : editVehicle,
+            child: Padding(
               padding: EdgeInsets.all(5), // Ajusta o espaçamento interno
-              child: Icon(Icons.edit, size: 20), // Reduz o tamanho do ícone
+              child: ServiceStorage.getUserTypeId() == 4
+                  ? Icon(Icons.block, size: 20)
+                  : Icon(Icons.edit, size: 20), // Reduz o tamanho do ícone
             ),
           ),
         ]),
