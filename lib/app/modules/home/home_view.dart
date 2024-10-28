@@ -290,28 +290,36 @@ class HomeView extends GetView<HomeController> {
                                               ),
                                             ),
                                             Obx(() {
-                                              return SingleChildScrollView(
-                                                scrollDirection:
-                                                    Axis.horizontal,
-                                                child: Text(
-                                                  "R\$${FormattedInputers.formatValuePTBR(transactionController.balance.value)}",
-                                                  style: TextStyle(
-                                                    color: transactionController
-                                                                .balance
-                                                                .value ==
-                                                            0
-                                                        ? Colors.black
-                                                        : (transactionController
-                                                                    .balance
-                                                                    .value <
-                                                                0
-                                                            ? Colors.red
-                                                            : Colors.green),
-                                                    fontSize: 24,
-                                                    fontFamily: 'Inter-Black',
-                                                  ),
-                                                ),
-                                              );
+                                              return ServiceStorage
+                                                          .getUserTypeId() ==
+                                                      4
+                                                  ? SizedBox(
+                                                      child: Icon(
+                                                          Icons.visibility_off))
+                                                  : SingleChildScrollView(
+                                                      scrollDirection:
+                                                          Axis.horizontal,
+                                                      child: Text(
+                                                        "R\$${FormattedInputers.formatValuePTBR(transactionController.balance.value)}",
+                                                        style: TextStyle(
+                                                          color: transactionController
+                                                                      .balance
+                                                                      .value ==
+                                                                  0
+                                                              ? Colors.black
+                                                              : (transactionController
+                                                                          .balance
+                                                                          .value <
+                                                                      0
+                                                                  ? Colors.red
+                                                                  : Colors
+                                                                      .green),
+                                                          fontSize: 24,
+                                                          fontFamily:
+                                                              'Inter-Black',
+                                                        ),
+                                                      ),
+                                                    );
                                             }),
                                             Obx(() {
                                               return SizedBox(
@@ -468,7 +476,7 @@ class HomeView extends GetView<HomeController> {
                                     const SizedBox(width: 5),
                                     CustomHomeCard(
                                       color: Color(0xFF348004),
-                                      imagePath: 'assets/images/indicador.png',
+                                      imagePath: 'assets/images/cifra.png',
                                       label: 'Indicações',
                                       onTap: () async {
                                         Map<String, dynamic> verifyPlan =

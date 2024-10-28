@@ -209,7 +209,7 @@ class CreateVehicleModal extends GetView<VehicleController> {
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(Icons.monetization_on),
-                    labelText: 'VALOR DA FIPE',
+                    labelText: 'VALOR FIPE',
                   ),
                   onChanged: (value) {
                     FormattedInputers.onformatValueChanged(
