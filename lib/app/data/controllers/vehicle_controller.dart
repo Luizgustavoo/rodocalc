@@ -261,8 +261,9 @@ class VehicleController extends GetxController {
       selectedImagePath.value = selectedVehicle.foto!;
     }
 
-    txtFipeValueController.text =
-        'R\$${FormattedInputers.formatValuePTBR((selectedVehicle.valorFipe! / 100).toString())}';
+    txtFipeValueController.text = selectedVehicle.valorFipe != null
+        ? 'R\$${FormattedInputers.formatValuePTBR((selectedVehicle.valorFipe! / 100).toString())}'
+        : '0';
   }
 
   void clearAllFields() {

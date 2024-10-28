@@ -20,7 +20,7 @@ class CustomVehicleCard extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       margin: const EdgeInsets.all(5),
       child: Container(
-        height: Get.height * .14,
+        height: Get.height * .16,
         padding: const EdgeInsets.all(12),
         child: Row(children: [
           Expanded(
@@ -140,8 +140,10 @@ class CustomVehicleCard extends StatelessWidget {
                           ),
                         ),
                         TextSpan(
-                            text:
-                                "R\$${FormattedInputers.formatValuePTBR((vehicle.valorFipe! / 100).toString())}"),
+                          text: vehicle.valorFipe != null
+                              ? "R\$${FormattedInputers.formatValuePTBR((vehicle.valorFipe! / 100).toString())}"
+                              : "INDISPONÍVEL",
+                        ),
                       ],
                     ),
                   ),
