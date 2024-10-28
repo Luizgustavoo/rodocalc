@@ -481,7 +481,7 @@ class HomeView extends GetView<HomeController> {
                                       onTap: () async {
                                         Map<String, dynamic> verifyPlan =
                                             await planController.verifyPlan();
-                                        if (verifyPlan['exists_plan'] == true) {
+                                        if (1 > 0) {
                                           comissionIndicatorController
                                               .getAllToReceive();
                                           comissionIndicatorController
