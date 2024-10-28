@@ -476,19 +476,13 @@ class HomeView extends GetView<HomeController> {
                                       color: Colors.green,
                                       imagePath: 'assets/images/cifra.png',
                                       label: 'Indicações',
-                                      onTap: () async {
-                                        Map<String, dynamic> verifyPlan =
-                                            await planController.verifyPlan();
-                                        if (verifyPlan['exists_plan'] == true) {
-                                          comissionIndicatorController
-                                              .getAllToReceive();
-                                          comissionIndicatorController
-                                              .getExistsPedidoSaque();
-                                          indicationController.getAll();
-                                          Get.toNamed(Routes.indicator);
-                                        } else {
-                                          snackExistsPlan();
-                                        }
+                                      onTap: () {
+                                        comissionIndicatorController
+                                            .getAllToReceive();
+                                        comissionIndicatorController
+                                            .getExistsPedidoSaque();
+                                        indicationController.getAll();
+                                        Get.toNamed(Routes.indicator);
                                       },
                                     ),
                                     if (ServiceStorage.getUserTypeId() !=
