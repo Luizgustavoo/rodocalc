@@ -78,6 +78,24 @@ class CustomDocumentCard extends StatelessWidget {
                   ],
                 ),
               ),
+              RichText(
+                text: TextSpan(
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                    fontFamily: 'Inter-Regular',
+                  ),
+                  children: [
+                    const TextSpan(
+                      text: 'MOTORISTA: ',
+                      style: TextStyle(
+                        fontFamily: 'Inter-Bold',
+                      ),
+                    ),
+                    TextSpan(text: document!.people!.nome!.toUpperCase()),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
