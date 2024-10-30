@@ -4,12 +4,14 @@ import 'package:rodocalc/app/data/models/document_model.dart';
 class CustomDocumentCard extends StatelessWidget {
   final DocumentModel? document;
   final VoidCallback? editDocument;
+  final VoidCallback? removeDocument;
   final VoidCallback? onTap; // Novo parâmetro para visualizar o documento
 
   const CustomDocumentCard({
     super.key,
     this.document,
     this.editDocument,
+    this.removeDocument,
     required this.onTap, // Exige o onTap
   });
 
@@ -24,6 +26,13 @@ class CustomDocumentCard extends StatelessWidget {
         ),
         margin: const EdgeInsets.only(bottom: 10),
         child: ListTile(
+          leading: IconButton(
+            onPressed: removeDocument,
+            icon: const Icon(
+              Icons.delete,
+              color: Colors.red,
+            ),
+          ),
           trailing: IconButton(
             onPressed: editDocument,
             icon: const Icon(Icons.edit),

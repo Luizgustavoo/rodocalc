@@ -143,68 +143,26 @@ class FreightView extends GetView<FreightController> {
                               itemBuilder: (context, index) {
                                 Freight frete =
                                     controller.filteredFreights[index];
-                                return Dismissible(
-                                  key: UniqueKey(),
-                                  direction: DismissDirection.endToStart,
-                                  confirmDismiss:
-                                      (DismissDirection direction) async {
-                                    if (direction ==
-                                        DismissDirection.endToStart) {
-                                      showDialog(context, frete, controller);
-                                    }
-                                    return false;
+                                return CustomFreightCard(
+                                  functionRemove: () {
+                                    showDialog(context, frete, controller);
                                   },
-                                  background: Container(
-                                    margin: const EdgeInsets.all(5),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.red,
-                                    ),
-                                    child: const Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Padding(
-                                          padding: EdgeInsets.all(10),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              Icon(
-                                                Icons.check_rounded,
-                                                size: 25,
-                                                color: Colors.white,
-                                              ),
-                                              SizedBox(width: 10),
-                                              Text(
-                                                'EXCLUIR',
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ],
-                                          )),
-                                    ),
-                                  ),
-                                  child: CustomFreightCard(
-                                    origin:
-                                        "${frete.origem!}-${frete.ufOrigem}",
-                                    destination:
-                                        "${frete.destino!}-${frete.ufDestino}",
-                                    distance: frete.distanciaKm.toString(),
-                                    value: frete.valorRecebido.toString(),
-                                    functionEdit: () {
-                                      controller.fillInFields(frete);
-                                      showModalBottomSheet(
-                                        isScrollControlled: true,
-                                        context: context,
-                                        builder: (context) =>
-                                            CreateFreightModal(
-                                          isUpdate: true,
-                                          freight: frete,
-                                        ),
-                                      );
-                                    },
-                                  ),
+                                  origin: "${frete.origem!}-${frete.ufOrigem}",
+                                  destination:
+                                      "${frete.destino!}-${frete.ufDestino}",
+                                  distance: frete.distanciaKm.toString(),
+                                  value: frete.valorRecebido.toString(),
+                                  functionEdit: () {
+                                    controller.fillInFields(frete);
+                                    showModalBottomSheet(
+                                      isScrollControlled: true,
+                                      context: context,
+                                      builder: (context) => CreateFreightModal(
+                                        isUpdate: true,
+                                        freight: frete,
+                                      ),
+                                    );
+                                  },
                                 );
                               },
                             );

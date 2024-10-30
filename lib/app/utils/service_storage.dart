@@ -34,6 +34,13 @@ class ServiceStorage {
     return 0;
   }
 
+  static String getUserCupom() {
+    if (existUser()) {
+      return _box.read('auth')['user']['cupom_para_indicar'];
+    }
+    return "";
+  }
+
   static int getUserTypeId() {
     if (existUser()) {
       return _box.read('auth')['user']['usertype_id'];

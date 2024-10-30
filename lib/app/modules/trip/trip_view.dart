@@ -143,75 +143,34 @@ class TripView extends GetView<TripController> {
                               itemCount: controller.filteredTrips.length,
                               itemBuilder: (context, index) {
                                 Trip trip = controller.filteredTrips[index];
-                                return Dismissible(
-                                  key: UniqueKey(),
-                                  direction: DismissDirection.endToStart,
-                                  confirmDismiss:
-                                      (DismissDirection direction) async {
-                                    controller.clearAllFields();
-                                    if (direction ==
-                                        DismissDirection.endToStart) {
-                                      showDialog(context, trip, controller);
-                                    }
-
-                                    return false;
+                                return InkWell(
+                                  onTap: () {
+                                    showModalBottomSheet(
+                                      isScrollControlled: true,
+                                      context: context,
+                                      builder: (context) =>
+                                          ViewListExpenseTripModal(
+                                        trip: trip,
+                                      ),
+                                    );
                                   },
-                                  background: Container(
-                                    margin: const EdgeInsets.all(5),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.red,
-                                    ),
-                                    child: const Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Padding(
-                                          padding: EdgeInsets.all(10),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              Icon(
-                                                Icons.check_rounded,
-                                                size: 25,
-                                                color: Colors.white,
-                                              ),
-                                              SizedBox(width: 10),
-                                              Text(
-                                                'EXCLUIR',
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ],
-                                          )),
-                                    ),
-                                  ),
-                                  child: InkWell(
-                                    onTap: () {
+                                  child: CustomTripCard(
+                                    trip: trip,
+                                    functionRemove: () {
+                                      controller.clearAllFields();
+                                      showDialog(context, trip, controller);
+                                    },
+                                    functionEdit: () {
+                                      controller.fillInFields(trip);
                                       showModalBottomSheet(
                                         isScrollControlled: true,
                                         context: context,
-                                        builder: (context) =>
-                                            ViewListExpenseTripModal(
+                                        builder: (context) => CreateTripModal(
+                                          isUpdate: true,
                                           trip: trip,
                                         ),
                                       );
                                     },
-                                    child: CustomTripCard(
-                                      trip: trip,
-                                      functionEdit: () {
-                                        controller.fillInFields(trip);
-                                        showModalBottomSheet(
-                                          isScrollControlled: true,
-                                          context: context,
-                                          builder: (context) => CreateTripModal(
-                                            isUpdate: true,
-                                            trip: trip,
-                                          ),
-                                        );
-                                      },
-                                    ),
                                   ),
                                 );
                               },

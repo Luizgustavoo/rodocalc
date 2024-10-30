@@ -91,182 +91,129 @@ class DocumentView extends GetView<DocumentController> {
                                   itemBuilder: (context, index) {
                                     DocumentModel document =
                                         controller.filteredDocuments[index];
-                                    return Dismissible(
-                                        key: UniqueKey(),
-                                        direction: DismissDirection.endToStart,
-                                        confirmDismiss:
-                                            (DismissDirection direction) async {
-                                          if (direction ==
-                                              DismissDirection.endToStart) {
-                                            showDialogDelete(
-                                                context, document, controller);
-                                          }
-                                          return false;
-                                        },
-                                        background: Container(
-                                          margin: const EdgeInsets.all(5),
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            color: Colors.red,
+                                    return CustomDocumentCard(
+                                      document: document,
+                                      removeDocument: () {
+                                        showDialogDelete(
+                                            context, document, controller);
+                                      },
+                                      editDocument: () {
+                                        controller.selectedDocument = document;
+                                        controller.getAllDocumentType();
+                                        controller.fillInFields();
+                                        showModalBottomSheet(
+                                          isScrollControlled: true,
+                                          context: context,
+                                          builder: (context) =>
+                                              CreateDocumentModal(
+                                            update: true,
+                                            document: document,
                                           ),
-                                          child: const Align(
-                                            alignment: Alignment.centerRight,
-                                            child: Padding(
-                                                padding: EdgeInsets.all(10),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.end,
+                                        );
+                                      },
+                                      onTap: () {
+                                        if (document.imagemPdf == 'IMAGEM') {
+                                          // Exibir imagem
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) => Dialog(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(
+                                                    0), // Torna o Dialog quadrado
+                                              ),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          15), // Borda arredondada do conteúdo
+                                                ),
+                                                padding:
+                                                    const EdgeInsets.all(16),
+                                                // Espaçamento interno
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
                                                   children: [
-                                                    Icon(
-                                                      Icons.check_rounded,
-                                                      size: 25,
-                                                      color: Colors.white,
+                                                    Image.network(
+                                                      '$urlImagem/storage/fotos/documentos/${document.arquivo}',
+                                                      fit: BoxFit.contain,
                                                     ),
-                                                    SizedBox(width: 10),
-                                                    Text(
-                                                      'EXCLUIR',
-                                                      style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontWeight:
-                                                              FontWeight.bold),
+                                                    const SizedBox(height: 16),
+                                                    Align(
+                                                      alignment:
+                                                          Alignment.bottomRight,
+                                                      child: TextButton(
+                                                        onPressed: () =>
+                                                            Get.back(),
+                                                        child: const Text(
+                                                          'FECHAR',
+                                                          style: TextStyle(
+                                                            fontFamily:
+                                                                'Inter-Bold',
+                                                          ),
+                                                        ),
+                                                      ),
                                                     ),
                                                   ],
-                                                )),
-                                          ),
-                                        ),
-                                        child: CustomDocumentCard(
-                                          document: document,
-                                          editDocument: () {
-                                            controller.selectedDocument =
-                                                document;
-                                            controller.getAllDocumentType();
-                                            controller.fillInFields();
-                                            showModalBottomSheet(
-                                              isScrollControlled: true,
-                                              context: context,
-                                              builder: (context) =>
-                                                  CreateDocumentModal(
-                                                update: true,
-                                                document: document,
+                                                ),
                                               ),
-                                            );
-                                          },
-                                          onTap: () {
-                                            if (document.imagemPdf ==
-                                                'IMAGEM') {
-                                              // Exibir imagem
-                                              showDialog(
-                                                context: context,
-                                                builder: (context) => Dialog(
+                                            ),
+                                          );
+                                        } else if (document.imagemPdf ==
+                                            'PDF') {
+                                          // Exibir PDF
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) => Dialog(
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             0), // Torna o Dialog quadrado
                                                   ),
                                                   child: Container(
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              15), // Borda arredondada do conteúdo
-                                                    ),
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            16),
-                                                    // Espaçamento interno
-                                                    child: Column(
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
-                                                      children: [
-                                                        Image.network(
-                                                          '$urlImagem/storage/fotos/documentos/${document.arquivo}',
-                                                          fit: BoxFit.contain,
-                                                        ),
-                                                        const SizedBox(
-                                                            height: 16),
-                                                        Align(
-                                                          alignment: Alignment
-                                                              .bottomRight,
-                                                          child: TextButton(
-                                                            onPressed: () =>
-                                                                Get.back(),
-                                                            child: const Text(
-                                                              'FECHAR',
-                                                              style: TextStyle(
-                                                                fontFamily:
-                                                                    'Inter-Bold',
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                                15), // Borda arredondada do conteúdo
+                                                      ),
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              16),
+                                                      // Espaçamento interno
+                                                      child: Column(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          SizedBox(
+                                                            height: 500,
+                                                            child: PdfViewPage(
+                                                              pdfUrl:
+                                                                  '$urlImagem/storage/fotos/documentos/${document.arquivo}',
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 16),
+                                                          Align(
+                                                            alignment: Alignment
+                                                                .bottomRight,
+                                                            child: TextButton(
+                                                              onPressed: () =>
+                                                                  Get.back(),
+                                                              child: const Text(
+                                                                'FECHAR',
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontFamily:
+                                                                      'Inter-Bold',
+                                                                ),
                                                               ),
                                                             ),
                                                           ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              );
-                                            } else if (document.imagemPdf ==
-                                                'PDF') {
-                                              // Exibir PDF
-                                              showDialog(
-                                                  context: context,
-                                                  builder: (context) => Dialog(
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                                0), // Torna o Dialog quadrado
-                                                      ),
-                                                      child: Container(
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        15), // Borda arredondada do conteúdo
-                                                          ),
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(16),
-                                                          // Espaçamento interno
-                                                          child: Column(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .min,
-                                                            children: [
-                                                              SizedBox(
-                                                                height: 500,
-                                                                child:
-                                                                    PdfViewPage(
-                                                                  pdfUrl:
-                                                                      '$urlImagem/storage/fotos/documentos/${document.arquivo}',
-                                                                ),
-                                                              ),
-                                                              const SizedBox(
-                                                                  height: 16),
-                                                              Align(
-                                                                alignment: Alignment
-                                                                    .bottomRight,
-                                                                child:
-                                                                    TextButton(
-                                                                  onPressed:
-                                                                      () => Get
-                                                                          .back(),
-                                                                  child:
-                                                                      const Text(
-                                                                    'FECHAR',
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontFamily:
-                                                                          'Inter-Bold',
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ))));
-                                            }
-                                          },
-                                        ));
+                                                        ],
+                                                      ))));
+                                        }
+                                      },
+                                    );
                                   },
                                 ));
                               } else {

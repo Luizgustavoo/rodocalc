@@ -7,6 +7,7 @@ class CustomFreightCard extends StatelessWidget {
   final String distance;
   final String value;
   final VoidCallback functionEdit;
+  final VoidCallback functionRemove;
 
   const CustomFreightCard({
     super.key,
@@ -15,6 +16,7 @@ class CustomFreightCard extends StatelessWidget {
     required this.distance,
     required this.value,
     required this.functionEdit,
+    required this.functionRemove,
   });
 
   @override
@@ -26,6 +28,13 @@ class CustomFreightCard extends StatelessWidget {
       ),
       margin: const EdgeInsets.only(bottom: 10),
       child: ListTile(
+        leading: IconButton(
+          onPressed: functionRemove,
+          icon: const Icon(
+            Icons.delete,
+            color: Colors.red,
+          ),
+        ),
         trailing: IconButton(
           onPressed: functionEdit,
           icon: const Icon(Icons.edit),
