@@ -36,17 +36,17 @@ class LastExpenseTrip {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['data_hora'] = this.dataHora;
-    data['trechopercorrido_id'] = this.trechopercorridoId;
-    data['descricao'] = this.descricao;
-    data['valor_despesa'] = this.valorDespesa;
-    data['status'] = this.status;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    data['origem'] = this.origem;
-    data['destino'] = this.destino;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['data_hora'] = dataHora;
+    data['trechopercorrido_id'] = trechopercorridoId;
+    data['descricao'] = descricao;
+    data['valor_despesa'] = valorDespesa;
+    data['status'] = status;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    data['origem'] = origem;
+    data['destino'] = destino;
     return data;
   }
 }

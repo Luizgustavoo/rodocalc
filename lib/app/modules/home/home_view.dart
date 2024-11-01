@@ -611,107 +611,107 @@ class HomeView extends GetView<HomeController> {
                             () {
                               if (ServiceStorage.getUserTypeId() == 4) {
                                 return Column(
-                                  children: controller
-                                          .listLastExpenseTrip.isNotEmpty
-                                      ? controller.listLastExpenseTrip
-                                          .map((expenseTrip) {
-                                          String stringValor = "";
-                                          String subtitulo = "";
+                                  children:
+                                      controller.listLastExpenseTrip.isNotEmpty
+                                          ? controller.listLastExpenseTrip
+                                              .map((expenseTrip) {
+                                              String stringValor = "";
+                                              String subtitulo = "";
 
-                                          stringValor =
-                                              "-R\$ ${FormattedInputers.formatValuePTBR((expenseTrip.valorDespesa! / 100).toString())}";
-                                          subtitulo =
-                                              "${expenseTrip.origem}-${expenseTrip.destino}";
+                                              stringValor =
+                                                  "-R\$ ${FormattedInputers.formatValuePTBR((expenseTrip.valorDespesa! / 100).toString())}";
+                                              subtitulo =
+                                                  "${expenseTrip.origem}-${expenseTrip.destino}";
 
-                                          return Card(
-                                            surfaceTintColor: Colors.white,
-                                            color: Colors.white,
-                                            elevation: 0,
-                                            margin: const EdgeInsets.symmetric(
-                                                vertical: 8.0),
-                                            child: Column(
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
+                                              return Card(
+                                                surfaceTintColor: Colors.white,
+                                                color: Colors.white,
+                                                elevation: 0,
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 8.0),
+                                                child: Column(
                                                   children: [
-                                                    // Primeira coluna
-                                                    Expanded(
-                                                      flex: 1,
-                                                      // Controla a proporção de espaço ocupado
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Text(
-                                                            expenseTrip
-                                                                    .descricao ??
-                                                                "",
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            maxLines: 1,
-                                                            style:
-                                                                const TextStyle(
-                                                                    fontSize:
-                                                                        16),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        // Primeira coluna
+                                                        Expanded(
+                                                          flex: 1,
+                                                          // Controla a proporção de espaço ocupado
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Text(
+                                                                expenseTrip
+                                                                        .descricao ??
+                                                                    "",
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                maxLines: 1,
+                                                                style:
+                                                                    const TextStyle(
+                                                                        fontSize:
+                                                                            16),
+                                                              ),
+                                                              SingleChildScrollView(
+                                                                scrollDirection:
+                                                                    Axis.horizontal,
+                                                                child: Text(
+                                                                  subtitulo,
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                  maxLines: 1,
+                                                                  style: const TextStyle(
+                                                                      color: Colors
+                                                                          .grey),
+                                                                ),
+                                                              ),
+                                                            ],
                                                           ),
-                                                          SingleChildScrollView(
-                                                            scrollDirection:
-                                                                Axis.horizontal,
-                                                            child: Text(
-                                                              subtitulo,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              maxLines: 1,
-                                                              style: const TextStyle(
-                                                                  color: Colors
-                                                                      .grey),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
+                                                        ),
 
-                                                    // Segunda coluna (lado direito)
-                                                    Expanded(
-                                                      flex: 1,
-                                                      // Controla a proporção de espaço ocupado
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .end,
-                                                        children: [
-                                                          Text(
-                                                            stringValor,
-                                                            style: TextStyle(
-                                                                color:
-                                                                    Colors.red),
-                                                          ),
-                                                          Text(
-                                                            FormattedInputers
-                                                                .formatApiDate(
-                                                                    expenseTrip
-                                                                        .dataHora!),
-                                                            style:
-                                                                const TextStyle(
+                                                        // Segunda coluna (lado direito)
+                                                        Expanded(
+                                                          flex: 1,
+                                                          // Controla a proporção de espaço ocupado
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .end,
+                                                            children: [
+                                                              Text(
+                                                                stringValor,
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .red),
+                                                              ),
+                                                              Text(
+                                                                FormattedInputers
+                                                                    .formatApiDate(
+                                                                        expenseTrip
+                                                                            .dataHora!),
+                                                                style: const TextStyle(
                                                                     color: Colors
                                                                         .grey),
+                                                              ),
+                                                            ],
                                                           ),
-                                                        ],
-                                                      ),
+                                                        ),
+                                                      ],
                                                     ),
+                                                    const Divider(),
                                                   ],
                                                 ),
-                                                const Divider(),
-                                              ],
-                                            ),
-                                          );
-                                        }).toList()
-                                      : [],
+                                              );
+                                            }).toList()
+                                          : [],
                                 );
                               } else {
                                 return Column(
