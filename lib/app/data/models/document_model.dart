@@ -1,3 +1,5 @@
+import 'package:rodocalc/app/data/models/people_model.dart';
+
 import 'document_type_model.dart';
 
 class DocumentModel {
@@ -16,6 +18,7 @@ class DocumentModel {
   String? dataVencimento;
 
   DocumentType? documentType;
+  People? people;
 
   DocumentModel({
     this.id,
@@ -31,6 +34,7 @@ class DocumentModel {
     this.base64Content,
     this.dataVencimento,
     this.documentType,
+    this.people,
   });
 
   DocumentModel.fromJson(Map<String, dynamic> json) {
@@ -46,6 +50,8 @@ class DocumentModel {
     documentType = json['tipodocumento'] != null
         ? DocumentType.fromJson(json['tipodocumento'])
         : null;
+
+    people = json['pessoa'] != null ? People.fromJson(json['pessoa']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -61,6 +67,10 @@ class DocumentModel {
     data['updated_at'] = updatedAt;
     if (documentType != null) {
       data['tipodocumento'] = documentType!.toJson();
+    }
+
+    if (people != null) {
+      data['pessoa'] = people!.toJson();
     }
 
     return data;

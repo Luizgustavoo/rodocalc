@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:rodocalc/app/data/models/last_expense_trip_model.dart';
 import 'package:rodocalc/app/data/models/transactions_model.dart';
 import 'package:rodocalc/app/data/repositories/plan_repository.dart';
 import 'package:rodocalc/app/data/repositories/transaction_repository.dart';
@@ -19,6 +20,7 @@ class HomeController extends GetxController {
   }
 
   RxList<Transacoes> listLastTransactions = RxList<Transacoes>([]);
+  RxList<LastExpenseTrip> listLastExpenseTrip = RxList<LastExpenseTrip>([]);
 
   final repositoryTransaction = Get.put(TransactionRepository());
   final repositoryPlan = Get.put(PlanRepository());
@@ -54,6 +56,17 @@ class HomeController extends GetxController {
     isLoadingLast.value = true;
     try {
       listLastTransactions.value = await repositoryTransaction.getLast();
+    } catch (e) {
+      Exception(e);
+    }
+    isLoadingLast.value = false;
+  }
+
+  getLastExpenseTrip() async {
+    isLoadingLast.value = true;
+    try {
+      listLastExpenseTrip.value =
+          await repositoryTransaction.getLastExpenseTrip();
     } catch (e) {
       Exception(e);
     }

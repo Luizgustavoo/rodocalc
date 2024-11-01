@@ -5,11 +5,13 @@ import 'package:rodocalc/app/utils/formatter.dart';
 class CustomTripCard extends StatelessWidget {
   final Trip trip;
   final VoidCallback functionEdit;
+  final VoidCallback functionRemove;
 
   const CustomTripCard({
     super.key,
     required this.trip,
     required this.functionEdit,
+    required this.functionRemove,
   });
 
   @override
@@ -27,6 +29,13 @@ class CustomTripCard extends StatelessWidget {
       ),
       margin: const EdgeInsets.only(bottom: 10),
       child: ListTile(
+        leading: IconButton(
+          onPressed: functionRemove,
+          icon: const Icon(
+            Icons.delete,
+            color: Colors.red,
+          ),
+        ),
         trailing: IconButton(
           onPressed: functionEdit,
           icon: const Icon(Icons.edit),

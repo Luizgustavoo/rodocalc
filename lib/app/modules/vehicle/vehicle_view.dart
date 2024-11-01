@@ -92,91 +92,50 @@ class VehiclesView extends GetView<VehicleController> {
                                   itemBuilder: (context, index) {
                                     final Vehicle vehicle =
                                         controller.filteredVehicles[index];
-                                    return Dismissible(
-                                      key: UniqueKey(),
-                                      direction: DismissDirection.endToStart,
-                                      confirmDismiss:
-                                          (DismissDirection direction) async {
-                                        if (direction ==
-                                                DismissDirection.endToStart &&
-                                            ServiceStorage.getUserTypeId() !=
-                                                4) {
-                                          showDialog(
-                                              context, vehicle, controller);
-                                        } else {
-                                          Get.snackbar(
-                                            "Atenção",
-                                            "Você não tem permissão para realizar esta ação",
-                                            snackPosition: SnackPosition.BOTTOM,
-                                            backgroundColor: Colors.orange,
-                                            duration:
-                                                const Duration(seconds: 2),
-                                          );
-                                        }
-                                        return false;
+                                    return InkWell(
+                                      onTap: () {
+                                        final box = GetStorage('rodocalc');
+                                        box.write('vehicle', vehicle.toJson());
+
+                                        Get.offAllNamed(Routes.home);
                                       },
-                                      background: Container(
-                                        margin: const EdgeInsets.all(5),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          color: Colors.red,
-                                        ),
-                                        child: const Align(
-                                          alignment: Alignment.centerRight,
-                                          child: Padding(
-                                              padding: EdgeInsets.all(10),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                children: [
-                                                  Icon(
-                                                    Icons.check_rounded,
-                                                    size: 25,
-                                                    color: Colors.white,
-                                                  ),
-                                                  SizedBox(width: 10),
-                                                  Text(
-                                                    'EXCLUIR',
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                ],
-                                              )),
-                                        ),
-                                      ),
-                                      child: InkWell(
-                                        onTap: () {
-                                          final box = GetStorage('rodocalc');
-                                          box.write(
-                                              'vehicle', vehicle.toJson());
-
-                                          Get.offAllNamed(Routes.home);
-                                        },
-                                        child: CustomVehicleCard(
-                                          editVehicle: () {
-                                            controller.isLoading.value = true;
-                                            controller.selectedVehicle =
-                                                vehicle;
-                                            controller.getAllUserPlans();
-
-                                            controller.fillInFields();
-                                            controller.isLoading.value = false;
-                                            controller.setImage.value = true;
-                                            showModalBottomSheet(
-                                              isScrollControlled: true,
-                                              context: context,
-                                              builder: (context) =>
-                                                  CreateVehicleModal(
-                                                vehicle: vehicle,
-                                                update: true,
-                                              ),
+                                      child: CustomVehicleCard(
+                                        removeVehicle: () {
+                                          if (ServiceStorage.getUserTypeId() !=
+                                              4) {
+                                            showDialog(
+                                                context, vehicle, controller);
+                                          } else {
+                                            Get.snackbar(
+                                              "Atenção",
+                                              "Você não tem permissão para realizar esta ação",
+                                              snackPosition:
+                                                  SnackPosition.BOTTOM,
+                                              backgroundColor: Colors.orange,
+                                              duration:
+                                                  const Duration(seconds: 2),
                                             );
-                                          },
-                                          vehicle: vehicle,
-                                        ),
+                                          }
+                                        },
+                                        editVehicle: () {
+                                          controller.isLoading.value = true;
+                                          controller.selectedVehicle = vehicle;
+                                          controller.getAllUserPlans();
+
+                                          controller.fillInFields();
+                                          controller.isLoading.value = false;
+                                          controller.setImage.value = true;
+                                          showModalBottomSheet(
+                                            isScrollControlled: true,
+                                            context: context,
+                                            builder: (context) =>
+                                                CreateVehicleModal(
+                                              vehicle: vehicle,
+                                              update: true,
+                                            ),
+                                          );
+                                        },
+                                        vehicle: vehicle,
                                       ),
                                     );
                                   },

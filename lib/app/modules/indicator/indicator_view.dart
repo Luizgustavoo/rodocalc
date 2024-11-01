@@ -21,7 +21,7 @@ class IndicatorView extends GetView<IndicationController> {
 
   @override
   Widget build(BuildContext context) {
-    String cupom = ServiceStorage.getUserId().toString();
+    String cupom = ServiceStorage.getUserCupom().toString();
     return Scaffold(
       appBar: const CustomAppBar(title: 'INDICAÇÕES'),
       body: Stack(
@@ -165,8 +165,9 @@ class IndicatorView extends GetView<IndicationController> {
                                     return Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceAround,
-                                      crossAxisAlignment: CrossAxisAlignment
-                                          .start, // Garante alinhamento superior
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      // Garante alinhamento superior
                                       children: [
                                         Column(
                                           crossAxisAlignment:
@@ -192,9 +193,8 @@ class IndicatorView extends GetView<IndicationController> {
                                           ],
                                         ),
                                         if (showButton)
-                                          const SizedBox(
-                                              width:
-                                                  10), // Adiciona espaçamento entre o texto e o botão
+                                          const SizedBox(width: 10),
+                                        // Adiciona espaçamento entre o texto e o botão
                                         // Exibe o botão "SOLICITAR SAQUE" se o valor for >= 25000
                                         if (showButton)
                                           Obx(
