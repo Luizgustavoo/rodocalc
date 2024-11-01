@@ -593,7 +593,8 @@ class HomeView extends GetView<HomeController> {
                                 style: TextStyle(
                                     fontSize: 18.0, fontFamily: 'Inter-Bold'),
                               ),
-                              if (ServiceStorage.getUserTypeId() != 4) ...[
+                              if (ServiceStorage.getUserTypeId() != 4 &&
+                                  controller.diasRestantes > 0) ...[
                                 IconButton(
                                   onPressed: () {
                                     transactionController.getAll();
