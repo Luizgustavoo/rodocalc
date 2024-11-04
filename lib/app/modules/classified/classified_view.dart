@@ -76,14 +76,18 @@ class ClassifiedView extends GetView<ClassifiedController> {
                             } else if (!controller.isLoading.value &&
                                 controller.listClassifieds.isNotEmpty) {
                               return Expanded(
-                                child: ListView.builder(
+                                child: GridView.builder(
                                   padding: EdgeInsets.only(
                                       bottom:
                                           MediaQuery.of(context).size.height *
                                               .25),
-                                  shrinkWrap: true,
-                                  physics:
-                                      const AlwaysScrollableScrollPhysics(),
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    childAspectRatio: 0.6,
+                                    crossAxisSpacing: 10,
+                                    mainAxisSpacing: 10,
+                                  ),
                                   itemCount:
                                       controller.filteredClassifieds.length,
                                   itemBuilder: (context, index) {
@@ -99,10 +103,7 @@ class ClassifiedView extends GetView<ClassifiedController> {
                                       confirmDismiss:
                                           (DismissDirection direction) async {
                                         if (direction ==
-                                            DismissDirection.endToStart) {
-                                          showDialog(context, classificado,
-                                              controller);
-                                        }
+                                            DismissDirection.endToStart) {}
                                         return false;
                                       },
                                       background: Container(
@@ -115,26 +116,27 @@ class ClassifiedView extends GetView<ClassifiedController> {
                                         child: const Align(
                                           alignment: Alignment.centerRight,
                                           child: Padding(
-                                              padding: EdgeInsets.all(10),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                children: [
-                                                  Icon(
-                                                    Icons.check_rounded,
-                                                    size: 25,
+                                            padding: EdgeInsets.all(10),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                Icon(
+                                                  Icons.check_rounded,
+                                                  size: 25,
+                                                  color: Colors.white,
+                                                ),
+                                                SizedBox(width: 10),
+                                                Text(
+                                                  'EXCLUIR',
+                                                  style: TextStyle(
                                                     color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
                                                   ),
-                                                  SizedBox(width: 10),
-                                                  Text(
-                                                    'EXCLUIR',
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                ],
-                                              )),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                         ),
                                       ),
                                       child: InkWell(
@@ -196,7 +198,6 @@ class ClassifiedView extends GetView<ClassifiedController> {
                 backgroundColor: const Color(0xFFFF6B00),
                 onPressed: () async {
                   await controller.getQuantityLicences();
-                  await controller.getQuantityLicences();
                   if (controller.classificadosCadastrados.value >=
                       controller.postsPermitidos.value) {
                     Get.snackbar('Atenção!',
@@ -224,57 +225,4 @@ class ClassifiedView extends GetView<ClassifiedController> {
             ),
     );
   }
-}
-
-void showDialog(
-    context, Classifieds classificado, ClassifiedController controller) {
-  Get.defaultDialog(
-    titlePadding: const EdgeInsets.all(16),
-    contentPadding: const EdgeInsets.all(16),
-    title: "Confirmação",
-    content: Text(
-      textAlign: TextAlign.center,
-      "Tem certeza que deseja excluir o anúncio ${classificado.descricao}?",
-      style: const TextStyle(
-        fontFamily: 'Inter-Regular',
-        fontSize: 18,
-      ),
-    ),
-    actions: [
-      ElevatedButton(
-        onPressed: () async {
-          Map<String, dynamic> retorno =
-              await controller.deleteClassificado(classificado.id!);
-
-          if (retorno['success'] == true) {
-            Get.back();
-            Get.snackbar('Sucesso!', retorno['message'].join('\n'),
-                backgroundColor: Colors.green,
-                colorText: Colors.white,
-                duration: const Duration(seconds: 2),
-                snackPosition: SnackPosition.BOTTOM);
-          } else {
-            Get.snackbar('Falha!', retorno['message'].join('\n'),
-                backgroundColor: Colors.red,
-                colorText: Colors.white,
-                duration: const Duration(seconds: 2),
-                snackPosition: SnackPosition.BOTTOM);
-          }
-        },
-        child: const Text(
-          "CONFIRMAR",
-          style: TextStyle(fontFamily: 'Poppinss', color: Colors.white),
-        ),
-      ),
-      TextButton(
-        onPressed: () {
-          Get.back();
-        },
-        child: const Text(
-          "CANCELAR",
-          style: TextStyle(fontFamily: 'Poppinss'),
-        ),
-      ),
-    ],
-  );
 }

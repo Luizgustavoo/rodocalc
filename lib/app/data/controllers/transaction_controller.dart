@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -19,6 +20,7 @@ import 'package:rodocalc/app/data/repositories/transaction_repository.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TransactionController extends GetxController {
   RxBool trailerCheckboxValue = false.obs;
@@ -311,6 +313,49 @@ class TransactionController extends GetxController {
     );
   }
 
+  Future<void> exportToExcel() async {
+    var excel = Excel.createExcel(); // Cria um novo arquivo Excel
+    Sheet sheet = excel['Transações']; // Nome da planilha
+
+    for (var transaction in listTransactions) {
+      List<dynamic?> row = [];
+      row.add((transaction.origem?.toUpperCase() ?? ''));
+      sheet.appendRow(row); // Adiciona a linha ao Excel
+    }
+
+    // Obtém o diretório para salvar o arquivo
+    Directory directory = await getApplicationDocumentsDirectory();
+    String filePath = '${directory.path}/transacoes.xlsx';
+
+    // Salva o arquivo
+    var file = File(filePath);
+    await file.writeAsBytes(excel.encode()!);
+
+    /*final output = await excel.save();
+    final int randomNum = Random().nextInt(100000);
+    await shareExcel(
+      'Relatório_Transacao_$randomNum',
+      output!,
+    );*/
+
+    Get.snackbar(
+      'Exportação Completa',
+      'Arquivo salvo com sucesso! Clique para abrir.',
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.green,
+      mainButton: TextButton(
+        onPressed: () async {
+          if (await canLaunch(filePath)) {
+            await launch(filePath);
+          } else {
+            Get.snackbar('Erro', 'Não foi possível abrir o arquivo.');
+          }
+        },
+        child: Text('Abrir'),
+      ),
+    );
+  }
+
   Future<void> sharePdf(String fileName, List<int> pdfData) async {
     try {
       final directory =
@@ -332,6 +377,33 @@ class TransactionController extends GetxController {
       Get.snackbar(
         'Erro',
         'Ocorreu um erro ao compartilhar o arquivo.',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  Future<void> shareExcel(String fileName, List<int> excelData) async {
+    try {
+      final directory =
+          await getExternalStorageDirectory(); // Diretório seguro para armazenar arquivos externos
+      final filePath = '${directory!.path}/$fileName.xlsx';
+      final file = File(filePath);
+
+      await file.writeAsBytes(excelData);
+
+      // Compartilhando o arquivo diretamente via Share+
+      await Share.shareXFiles([XFile(file.path)],
+          text: 'Segue em anexo o relatório.');
+
+      Get.snackbar('Sucesso', 'Arquivo compartilhado com sucesso!',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM);
+    } catch (e) {
+      Get.snackbar(
+        'Erro',
+        'Ocorreu um erro ao compartilhar o arquivo. ${e}',
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );

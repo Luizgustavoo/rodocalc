@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/login_controller.dart';
 import 'package:rodocalc/app/data/controllers/signup_controller.dart';
 import 'package:rodocalc/app/modules/login/widgets/forgot_password_modal.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginView extends GetView<LoginController> {
   const LoginView({super.key});
@@ -190,6 +191,20 @@ class LoginView extends GetView<LoginController> {
                                 style: TextStyle(
                                   color: Color(0xFFFF6B00),
                                   fontFamily: 'Inter-Bold',
+                                ),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                String linkTermos =
+                                    "https://rodocalc.com.br/termos-e-condicoes/";
+                                await launchUrl(Uri.parse(linkTermos));
+                              },
+                              child: Text(
+                                "Termos de uso Rodo Calc.",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.grey.shade800,
                                 ),
                               ),
                             ),

@@ -70,7 +70,7 @@ class CustomCourseCard extends StatelessWidget {
                   errorWidget: (context, url, error) => const Icon(Icons.error),
                   height: 150,
                   width: double.infinity,
-                  fit: BoxFit.cover,
+                  fit: BoxFit.fill,
                 ),
               ),
             ),

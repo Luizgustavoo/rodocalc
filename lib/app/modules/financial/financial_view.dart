@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/controllers/city_state_controller.dart';
@@ -134,30 +135,24 @@ class FinancialView extends GetView<TransactionController> {
         floatingActionButton: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Obx(() => Padding(
-                  padding: const EdgeInsets.only(right: 8, bottom: 5),
-                  child: controller.listTransactions.isEmpty
-                      ? const SizedBox.shrink()
-                      : FloatingActionButton(
-                          backgroundColor: Colors.grey.shade300,
-                          mini: true,
-                          onPressed: () async {
-                            final planController = Get.put(PlanController());
-                            await planController.getMyPlans();
-                            List<UserPlan> listplan = planController.myPlans();
-                            if (listplan.isNotEmpty) {
-                              if (planController.myPlans.first.plano!.id ==
-                                      14 ||
-                                  planController.myPlans.first.plano!.id ==
-                                      15) {
-                                await controller.generateAndSharePdf();
-                              } else {
-                                Get.snackbar('Erro',
-                                    "Atualize o plano para usar esse recurso!",
-                                    colorText: Colors.white,
-                                    backgroundColor: Colors.red,
-                                    snackPosition: SnackPosition.BOTTOM);
-                              }
+            Obx(
+              () => Padding(
+                padding: const EdgeInsets.only(right: 8, bottom: 5),
+                child: controller.listTransactions.isEmpty
+                    ? const SizedBox.shrink()
+                    : FloatingActionButton(
+                        backgroundColor: Colors.green.shade300,
+                        mini: true,
+                        onPressed: () async {
+                          final planController = Get.put(PlanController());
+                          await planController.getMyPlans();
+                          await controller.exportToExcel();
+
+                          List<UserPlan> listplan = planController.myPlans();
+                          if (listplan.isNotEmpty) {
+                            if (planController.myPlans.first.plano!.id == 14 ||
+                                planController.myPlans.first.plano!.id == 15) {
+                              await controller.exportToExcel();
                             } else {
                               Get.snackbar('Erro',
                                   "Atualize o plano para usar esse recurso!",
@@ -165,10 +160,56 @@ class FinancialView extends GetView<TransactionController> {
                                   backgroundColor: Colors.red,
                                   snackPosition: SnackPosition.BOTTOM);
                             }
-                          },
-                          child: const Icon(Icons.download),
+                          } else {
+                            Get.snackbar('Erro',
+                                "Atualize o plano para usar esse recurso!",
+                                colorText: Colors.white,
+                                backgroundColor: Colors.red,
+                                snackPosition: SnackPosition.BOTTOM);
+                          }
+                        },
+                        child: const Icon(
+                          FontAwesomeIcons.fileLines,
+                          color: Colors.white,
                         ),
-                )),
+                      ),
+              ),
+            ),
+            Obx(
+              () => Padding(
+                padding: const EdgeInsets.only(right: 8, bottom: 5),
+                child: controller.listTransactions.isEmpty
+                    ? const SizedBox.shrink()
+                    : FloatingActionButton(
+                        backgroundColor: Colors.grey.shade300,
+                        mini: true,
+                        onPressed: () async {
+                          final planController = Get.put(PlanController());
+                          await planController.getMyPlans();
+                          List<UserPlan> listplan = planController.myPlans();
+                          if (listplan.isNotEmpty) {
+                            if (planController.myPlans.first.plano!.id == 14 ||
+                                planController.myPlans.first.plano!.id == 15) {
+                              await controller.generateAndSharePdf();
+                            } else {
+                              Get.snackbar('Erro',
+                                  "Atualize o plano para usar esse recurso!",
+                                  colorText: Colors.white,
+                                  backgroundColor: Colors.red,
+                                  snackPosition: SnackPosition.BOTTOM);
+                            }
+                          } else {
+                            Get.snackbar('Erro',
+                                "Atualize o plano para usar esse recurso!",
+                                colorText: Colors.white,
+                                backgroundColor: Colors.red,
+                                snackPosition: SnackPosition.BOTTOM);
+                          }
+                        },
+                        child: const Icon(Icons.download),
+                      ),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.only(right: 8, bottom: 36),
               child: SpeedDial(
