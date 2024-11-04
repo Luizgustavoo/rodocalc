@@ -355,12 +355,12 @@ class TransactionController extends GetxController {
     var file = File(filePath);
     await file.writeAsBytes(excel.encode()!);
 
-    /*final output = await excel.save();
+    final output = await excel.save();
     final int randomNum = Random().nextInt(100000);
     await shareExcel(
       'Relatório_Transacao_$randomNum',
       output!,
-    );*/
+    );
 
     Get.snackbar(
       'Exportação Completa',
@@ -369,7 +369,6 @@ class TransactionController extends GetxController {
       backgroundColor: Colors.green,
       mainButton: TextButton(
         onPressed: () async {
-          print(filePath);
           if (await canLaunchUrl(Uri.parse(filePath))) {
             try {
               await launchUrl(Uri.parse(filePath));
