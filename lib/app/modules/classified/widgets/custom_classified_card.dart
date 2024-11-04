@@ -93,7 +93,7 @@ class CustomClassifiedCard extends StatelessWidget {
                 child: SingleChildScrollView(
                   scrollDirection: Axis.vertical,
                   child: Container(
-                    constraints: BoxConstraints(
+                    constraints: const BoxConstraints(
                       maxHeight:
                           100, // Set a maximum height for the scrollable area
                     ),

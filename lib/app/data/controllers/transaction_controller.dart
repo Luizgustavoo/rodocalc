@@ -317,9 +317,33 @@ class TransactionController extends GetxController {
     var excel = Excel.createExcel(); // Cria um novo arquivo Excel
     Sheet sheet = excel['Transações']; // Nome da planilha
 
+    List<dynamic?> cabecalho = [
+      "Descricao",
+      "Data",
+      "Categoria",
+      "Tipo Especifico",
+      "Origem",
+      "Destino",
+    ];
+
+    sheet.appendRow(cabecalho);
+
     for (var transaction in listTransactions) {
       List<dynamic?> row = [];
+      row.add((transaction.descricao?.toUpperCase() ?? ''));
+      row.add((transaction.data?.toUpperCase() ?? ''));
+      if (transaction.tipoTransacao == "saida" &&
+          transaction.expenseCategory != null) {
+        row.add((transaction.expenseCategory!.descricao?.toUpperCase() ?? ''));
+        row.add(
+            (transaction.specificTypeExpense!.descricao?.toUpperCase() ?? ''));
+      } else {
+        row.add((''));
+        row.add((''));
+      }
+
       row.add((transaction.origem?.toUpperCase() ?? ''));
+      row.add((transaction.destino?.toUpperCase() ?? ''));
       sheet.appendRow(row); // Adiciona a linha ao Excel
     }
 
@@ -345,8 +369,14 @@ class TransactionController extends GetxController {
       backgroundColor: Colors.green,
       mainButton: TextButton(
         onPressed: () async {
-          if (await canLaunch(filePath)) {
-            await launch(filePath);
+          print(filePath);
+          if (await canLaunchUrl(Uri.parse(filePath))) {
+            try {
+              await launchUrl(Uri.parse(filePath));
+              print(filePath);
+            } catch (e) {
+              print(e);
+            }
           } else {
             Get.snackbar('Erro', 'Não foi possível abrir o arquivo.');
           }

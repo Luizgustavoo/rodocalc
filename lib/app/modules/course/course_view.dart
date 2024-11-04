@@ -75,14 +75,18 @@ class CourseView extends GetView<CourseController> {
                               } else if (!controller.isLoading.value &&
                                   controller.listCourses.isNotEmpty) {
                                 return Expanded(
-                                  child: ListView.builder(
+                                  child: GridView.builder(
                                     padding: EdgeInsets.only(
                                         bottom:
                                             MediaQuery.of(context).size.height *
                                                 .25),
-                                    shrinkWrap: true,
-                                    physics:
-                                        const AlwaysScrollableScrollPhysics(),
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2,
+                                      childAspectRatio: .53,
+                                      crossAxisSpacing: 10,
+                                      mainAxisSpacing: 10,
+                                    ),
                                     itemCount:
                                         controller.filteredCourses.length,
                                     itemBuilder: (context, index) {

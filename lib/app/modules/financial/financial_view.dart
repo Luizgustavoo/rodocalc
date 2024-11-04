@@ -141,6 +141,7 @@ class FinancialView extends GetView<TransactionController> {
                 child: controller.listTransactions.isEmpty
                     ? const SizedBox.shrink()
                     : FloatingActionButton(
+                        heroTag: "export_excel",
                         backgroundColor: Colors.green.shade300,
                         mini: true,
                         onPressed: () async {
@@ -181,6 +182,7 @@ class FinancialView extends GetView<TransactionController> {
                 child: controller.listTransactions.isEmpty
                     ? const SizedBox.shrink()
                     : FloatingActionButton(
+                        heroTag: "export_pdf",
                         backgroundColor: Colors.grey.shade300,
                         mini: true,
                         onPressed: () async {

@@ -50,6 +50,7 @@ class CustomCourseCard extends StatelessWidget {
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Hero(
               tag: 'course_image_$titulo', // Tag do Hero para a imagem
@@ -81,9 +82,11 @@ class CustomCourseCard extends StatelessWidget {
                 children: [
                   Text(
                     titulo.toUpperCase(),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                        fontSize: 16, fontFamily: 'Inter-Black'),
+                        fontSize: 14, fontFamily: 'Inter-Black'),
                   ),
                   const SizedBox(height: 8),
                   Container(
@@ -104,10 +107,18 @@ class CustomCourseCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 3),
                   Text(
-                    'Valor: $valor',
+                    'apenas',
                     style: const TextStyle(
-                      fontSize: 14,
+                      fontSize: 12,
                       color: Colors.green,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    '$valor',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      color: Colors.orange,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
