@@ -20,7 +20,6 @@ import 'package:rodocalc/app/data/repositories/transaction_repository.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class TransactionController extends GetxController {
   RxBool trailerCheckboxValue = false.obs;
@@ -317,13 +316,36 @@ class TransactionController extends GetxController {
     var excel = Excel.createExcel(); // Cria um novo arquivo Excel
     Sheet sheet = excel['Transações']; // Nome da planilha
 
+    List<dynamic?> titulo = [
+      "Transações do veículo ${ServiceStorage.titleSelectedVehicle().toUpperCase()}"
+    ];
+
+    sheet.merge(CellIndex.indexByString('A1'), CellIndex.indexByString('K1'),
+        customValue: titulo);
+
+    CellStyle cellStyle =
+        CellStyle(bold: true, horizontalAlign: HorizontalAlign.Center);
+
+    sheet.appendRow(titulo);
+
+    var cell = sheet.cell(CellIndex.indexByString('A1'));
+    var cell2 = sheet.cell(CellIndex.indexByString('A2'));
+
+    cell.cellStyle = cellStyle;
+    cell2.cellStyle = cellStyle;
+
     List<dynamic?> cabecalho = [
       "Descricao",
+      "Tipo",
       "Data",
       "Categoria",
       "Tipo Especifico",
       "Origem",
       "Destino",
+      "Valor",
+      "Empresa",
+      "Cidade",
+      "SALDO",
     ];
 
     sheet.appendRow(cabecalho);
@@ -331,7 +353,8 @@ class TransactionController extends GetxController {
     for (var transaction in listTransactions) {
       List<dynamic?> row = [];
       row.add((transaction.descricao?.toUpperCase() ?? ''));
-      row.add((transaction.data?.toUpperCase() ?? ''));
+      row.add((transaction.tipoTransacao?.toUpperCase() ?? ''));
+      row.add((FormattedInputers.formatApiDate(transaction.data!) ?? ''));
       if (transaction.tipoTransacao == "saida" &&
           transaction.expenseCategory != null) {
         row.add((transaction.expenseCategory!.descricao?.toUpperCase() ?? ''));
@@ -341,9 +364,40 @@ class TransactionController extends GetxController {
         row.add((''));
         row.add((''));
       }
+      String? origem =
+          transaction.origem != null && transaction.origem != "null"
+              ? transaction.origem?.toUpperCase()
+              : '';
+      row.add(origem);
+      String? destino =
+          transaction.destino != null && transaction.destino != "null"
+              ? transaction.destino?.toUpperCase()
+              : '';
+      row.add(destino);
+      row.add(("R\$ ${FormattedInputers.formatValuePTBR(transaction.valor)}" ??
+          ''));
 
-      row.add((transaction.origem?.toUpperCase() ?? ''));
-      row.add((transaction.destino?.toUpperCase() ?? ''));
+      String? empresa =
+          transaction.empresa != null && transaction.empresa != "null"
+              ? transaction.empresa?.toUpperCase()
+              : '';
+      row.add(empresa);
+
+      String? cidade =
+          transaction.cidade != null && transaction.cidade != "null"
+              ? transaction.cidade?.toUpperCase()
+              : '';
+      String? uf = transaction.uf != null && transaction.uf != "null"
+          ? transaction.uf?.toUpperCase()
+          : '';
+
+      String? cidade_uf =
+          cidade!.isNotEmpty && uf!.isNotEmpty ? "$cidade - $uf" : "";
+      row.add(cidade_uf);
+
+      row.add((("R\$ ${FormattedInputers.formatValuePTBR(transaction.saldo)}" ??
+          '')));
+
       sheet.appendRow(row); // Adiciona a linha ao Excel
     }
 
@@ -362,7 +416,7 @@ class TransactionController extends GetxController {
       output!,
     );
 
-    Get.snackbar(
+    /*Get.snackbar(
       'Exportação Completa',
       'Arquivo salvo com sucesso! Clique para abrir.',
       snackPosition: SnackPosition.BOTTOM,
@@ -382,7 +436,7 @@ class TransactionController extends GetxController {
         },
         child: Text('Abrir'),
       ),
-    );
+    );*/
   }
 
   Future<void> sharePdf(String fileName, List<int> pdfData) async {

@@ -147,8 +147,6 @@ class FinancialView extends GetView<TransactionController> {
                         onPressed: () async {
                           final planController = Get.put(PlanController());
                           await planController.getMyPlans();
-                          await controller.exportToExcel();
-
                           List<UserPlan> listplan = planController.myPlans();
                           if (listplan.isNotEmpty) {
                             if (planController.myPlans.first.plano!.id == 14 ||
