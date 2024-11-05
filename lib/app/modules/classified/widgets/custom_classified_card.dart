@@ -31,20 +31,20 @@ class CustomClassifiedCard extends StatelessWidget {
     String status = "";
 
     if (classificado!.status == 1) {
-      corCard = Colors.green.shade100;
+      corCard = Colors.white;
       status = "ATIVO";
     } else if (classificado!.status == 2) {
-      corCard = Colors.orange.shade100;
+      corCard = Colors.orange.shade50;
       status = "EM ANÁLISE";
     } else {
-      corCard = Colors.red.shade100;
+      corCard = Colors.red.shade50;
       status = "NEGADO";
       observacoes = classificado!.observacoes;
     }
 
     return Card(
       color: corCard,
-      elevation: 2,
+      elevation: 5,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5),
       ),
@@ -99,7 +99,8 @@ class CustomClassifiedCard extends StatelessWidget {
                     ),
                     child: Text(
                       '${classificado!.descricao!.toUpperCase()}',
-                      overflow: TextOverflow.visible,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 3,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                           fontFamily: 'Inter-Regular', fontSize: 12),

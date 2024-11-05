@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:rodocalc/app/data/controllers/trip_controller.dart';
 import 'package:rodocalc/app/data/models/charge_type_model.dart';
 import 'package:rodocalc/app/data/models/expense_category_model.dart';
 import 'package:rodocalc/app/data/models/specific_type_expense_model.dart';
@@ -313,8 +314,9 @@ class TransactionController extends GetxController {
   }
 
   Future<void> exportToExcel() async {
-    var excel = Excel.createExcel(); // Cria um novo arquivo Excel
-    Sheet sheet = excel['Transações']; // Nome da planilha
+    var excel = Excel.createExcel();
+
+    Sheet sheet = excel['Sheet1']; // Nome da planilha
 
     List<dynamic?> titulo = [
       "Transações do veículo ${ServiceStorage.titleSelectedVehicle().toUpperCase()}"
@@ -401,16 +403,74 @@ class TransactionController extends GetxController {
       sheet.appendRow(row); // Adiciona a linha ao Excel
     }
 
+    //TRECHOS E DESPESAS COM CADA TRECHO
+    final TripController tripController = Get.put(TripController());
+    tripController.getAll();
+
+    if (tripController.listTrip.isNotEmpty) {
+      Sheet sheet2 = excel['Trechos'];
+
+      List<dynamic?> titulo2 = [
+        "Trechos percorrido veiculo: ${ServiceStorage.titleSelectedVehicle().toUpperCase()}"
+      ];
+
+      sheet2.merge(CellIndex.indexByString('A1'), CellIndex.indexByString('E1'),
+          customValue: titulo2);
+
+      sheet2.appendRow(titulo2);
+
+      List<dynamic?> cabecalho2 = [
+        "Data",
+        "Tipo",
+        "Origem",
+        "Destino",
+        "Distancia",
+      ];
+
+      int cont = 3;
+      for (var trip in tripController.listTrip) {
+        sheet2.appendRow(cabecalho2);
+        List<dynamic?> rowTrip = [];
+        rowTrip
+            .add((FormattedInputers.formatApiDateTime(trip.dataHora!) ?? ''));
+        rowTrip.add((trip.tipoSaidaChegada?.toUpperCase() ?? ''));
+        rowTrip.add((trip.origem?.toUpperCase() ?? ''));
+        rowTrip.add((trip.destino?.toUpperCase() ?? ''));
+        rowTrip.add(("${trip.distancia} km" ?? ''));
+        sheet2.appendRow(rowTrip);
+        cont++;
+
+        if (trip.expenseTrip!.isNotEmpty) {
+          sheet2.appendRow(["", "", "", "", ""]);
+          sheet2.appendRow(["Despesas do trecho:"]);
+          for (var expenseTrip in trip.expenseTrip!) {
+            List<dynamic?> rowExpenseTrip = [];
+            rowExpenseTrip.add((expenseTrip.descricao?.toUpperCase() ?? ''));
+            rowExpenseTrip.add(
+                (("R\$ ${FormattedInputers.formatValuePTBR((expenseTrip.valorDespesa! / 100).toString())}" ??
+                    '')));
+            rowExpenseTrip.add(
+                (FormattedInputers.formatApiDateTime(expenseTrip.dataHora!) ??
+                    ''));
+            sheet2.appendRow(rowExpenseTrip);
+          }
+        }
+
+        sheet2.appendRow([""]);
+        sheet2.appendRow([""]);
+        sheet2.appendRow([""]);
+      }
+    }
+    // FINALIZAR TRECHOS E DESPESAS
+    final output = await excel.save();
+    final int randomNum = Random().nextInt(100000);
     // Obtém o diretório para salvar o arquivo
     Directory directory = await getApplicationDocumentsDirectory();
-    String filePath = '${directory.path}/transacoes.xlsx';
-
+    String filePath = '${directory.path}/Relatório_Transacao_$randomNum.xlsx';
     // Salva o arquivo
     var file = File(filePath);
     await file.writeAsBytes(excel.encode()!);
 
-    final output = await excel.save();
-    final int randomNum = Random().nextInt(100000);
     await shareExcel(
       'Relatório_Transacao_$randomNum',
       output!,

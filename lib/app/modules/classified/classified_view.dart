@@ -84,7 +84,7 @@ class ClassifiedView extends GetView<ClassifiedController> {
                                   gridDelegate:
                                       const SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 2,
-                                    childAspectRatio: 0.6,
+                                    childAspectRatio: 0.66,
                                     crossAxisSpacing: 10,
                                     mainAxisSpacing: 10,
                                   ),

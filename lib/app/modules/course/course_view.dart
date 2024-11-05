@@ -83,7 +83,7 @@ class CourseView extends GetView<CourseController> {
                                     gridDelegate:
                                         const SliverGridDelegateWithFixedCrossAxisCount(
                                       crossAxisCount: 2,
-                                      childAspectRatio: .53,
+                                      childAspectRatio: .49,
                                       crossAxisSpacing: 10,
                                       mainAxisSpacing: 10,
                                     ),
