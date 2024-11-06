@@ -33,6 +33,8 @@ import 'package:rodocalc/app/modules/user/user_view.dart';
 import 'package:rodocalc/app/modules/vehicle/vehicle_view.dart';
 import 'package:rodocalc/app/routes/app_routes.dart';
 
+import '../modules/indicator/my_indications_view.dart';
+
 class AppPages {
   static final routes = [
     GetPage(
@@ -119,6 +121,11 @@ class AppPages {
       name: Routes.newplanview,
       page: () => const NewPlanView(),
       binding: PlanBinding(),
+    ),
+    GetPage(
+      name: Routes.myIndications,
+      page: () => MyIndicationsView(),
+      binding: IndicatorBinding(),
     ),
   ];
 }

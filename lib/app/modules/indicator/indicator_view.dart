@@ -14,6 +14,8 @@ import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../routes/app_routes.dart';
+
 class IndicatorView extends GetView<IndicationController> {
   IndicatorView({super.key});
 
@@ -157,10 +159,15 @@ class IndicatorView extends GetView<IndicationController> {
                               child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Obx(() {
+                                    // bool showButton =
+                                    //     comissionIndicatorController
+                                    //             .sumComissions.value >=
+                                    //         25000;
+
                                     bool showButton =
                                         comissionIndicatorController
                                                 .sumComissions.value >=
-                                            25000;
+                                            20;
 
                                     return Row(
                                       mainAxisAlignment:
@@ -187,6 +194,26 @@ class IndicatorView extends GetView<IndicationController> {
                                                 style: const TextStyle(
                                                   fontSize: 18,
                                                   fontFamily: 'Inter-Black',
+                                                ),
+                                              ),
+                                            ),
+                                            InkWell(
+                                              onTap: () {
+                                                final indicationController =
+                                                    Get.put(
+                                                        IndicationController());
+                                                indicationController
+                                                    .getMyIndications();
+                                                Get.toNamed(
+                                                    Routes.myIndications);
+                                              },
+                                              child: const Padding(
+                                                padding:
+                                                    EdgeInsets.only(top: 8),
+                                                child: Text(
+                                                  "Ver assinantes",
+                                                  style: TextStyle(
+                                                      color: Colors.deepOrange),
                                                 ),
                                               ),
                                             )

@@ -5,6 +5,8 @@ import 'package:rodocalc/app/data/models/indication_model.dart';
 import 'package:rodocalc/app/data/repositories/Indication_repository.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 
+import '../models/user_model.dart';
+
 class IndicationController extends GetxController {
   final box = GetStorage('rodocalc');
 
@@ -14,9 +16,12 @@ class IndicationController extends GetxController {
   final txtNomeIndication = TextEditingController();
   final txtTelefoneIndication = TextEditingController();
   final searchIndicatorController = TextEditingController();
+  final searchMyIndicatorController = TextEditingController();
 
   RxList<Indication> listIndications = RxList<Indication>([]);
+  RxList<User> listMyIndications = RxList<User>([]);
   RxList<Indication> filteredIndications = RxList<Indication>([]);
+  RxList<User> filteredMyIndications = RxList<User>([]);
 
   final repository = Get.put(IndicationRepository());
 
@@ -28,6 +33,7 @@ class IndicationController extends GetxController {
 
   dynamic mensagem;
   RxBool isLoading = true.obs;
+  RxBool isLoadingMyIndications = true.obs;
 
   @override
   void onInit() {
@@ -49,6 +55,20 @@ class IndicationController extends GetxController {
     isLoading.value = false;
   }
 
+  Future<void> getMyIndications() async {
+    isLoadingMyIndications.value = true;
+    try {
+      searchMyIndicatorController.clear();
+      listMyIndications.value = await repository.getMyIndications();
+      filteredMyIndications.assignAll(listMyIndications);
+    } catch (e) {
+      listMyIndications.clear();
+      filteredMyIndications.clear();
+      Exception(e);
+    }
+    isLoadingMyIndications.value = false;
+  }
+
   void filterIndications(String query) {
     if (query.isEmpty) {
       // Se a busca estiver vazia, mostra todos os fretes
@@ -60,6 +80,22 @@ class IndicationController extends GetxController {
             .where((indicator) =>
                 indicator.nome!.toLowerCase().contains(query.toLowerCase()) ||
                 indicator.telefone!.toLowerCase().contains(query.toLowerCase()))
+            .toList(),
+      );
+    }
+  }
+
+  void filterMinhasIndications(String query) {
+    if (query.isEmpty) {
+      // Se a busca estiver vazia, mostra todos os fretes
+      filteredMyIndications.assignAll(listMyIndications);
+    } else {
+      // Filtra os fretes com base no campo "origem", "destino" ou qualquer outro
+      filteredMyIndications.assignAll(
+        listMyIndications
+            .where((indicator) => indicator.people!.nome!
+                .toLowerCase()
+                .contains(query.toLowerCase()))
             .toList(),
       );
     }

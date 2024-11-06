@@ -1,6 +1,8 @@
 import 'package:rodocalc/app/data/models/indication_model.dart';
 import 'package:rodocalc/app/data/providers/indication_provider.dart';
 
+import '../models/user_model.dart';
+
 class IndicationRepository {
   final IndicationApiClient apiClient = IndicationApiClient();
 
@@ -12,6 +14,21 @@ class IndicationRepository {
     if (response != null) {
       response['data'].forEach((e) {
         list.add(Indication.fromJson(e));
+      });
+    } else {
+      return null;
+    }
+    return list;
+  }
+
+  getMyIndications() async {
+    List<User> list = <User>[];
+
+    var response = await apiClient.getMyIndications();
+
+    if (response != null) {
+      response['data'].forEach((e) {
+        list.add(User.fromJson(e));
       });
     } else {
       return null;

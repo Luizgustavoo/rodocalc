@@ -103,4 +103,13 @@ class PlanRepository {
       Exception(e);
     }
   }
+
+  createTokenCard(CreditCard creditCard) async {
+    try {
+      var response = await apiClient.createTokenCard(creditCard);
+      return response;
+    } catch (e) {
+      Exception(e);
+    }
+  }
 }

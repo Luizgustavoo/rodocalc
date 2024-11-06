@@ -6,8 +6,6 @@ import 'package:rodocalc/app/data/models/indication_model.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../utils/formatter.dart';
-
 class CustomIndicatorCard extends StatelessWidget {
   final VoidCallback functionUpdate;
   final Indication indication;
@@ -24,15 +22,9 @@ class CustomIndicatorCard extends StatelessWidget {
       ),
       margin: const EdgeInsets.only(bottom: 10),
       child: ListTile(
+        onTap: functionUpdate,
         horizontalTitleGap: 5,
         trailing: InkWell(
-          onTap: functionUpdate,
-          child: const Padding(
-            padding: EdgeInsets.all(5), // Ajusta o espaçamento interno
-            child: Icon(Icons.edit, size: 20), // Reduz o tamanho do ícone
-          ),
-        ),
-        leading: InkWell(
           onTap: () async {
             String phone = indication.telefone!
                 .replaceAll('(', '')
@@ -62,8 +54,14 @@ class CustomIndicatorCard extends StatelessWidget {
             }
           },
           child: const Padding(
-            padding: EdgeInsets.all(10), // Ajusta o espaçamento interno
+            padding: EdgeInsets.all(5), // Ajusta o espaçamento interno
             child: Icon(Icons.share, size: 20), // Reduz o tamanho do ícone
+          ),
+        ),
+        leading: CircleAvatar(
+          child: Text(
+            indication.nome![0].toUpperCase(),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
         ),
         title: RichText(
@@ -84,69 +82,23 @@ class CustomIndicatorCard extends StatelessWidget {
             ],
           ),
         ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 5),
-            RichText(
-              text: TextSpan(
-                style: const TextStyle(
-                  fontSize: 13,
-                  color: Colors.black,
-                  fontFamily: 'Inter-Regular',
-                ),
-                children: [
-                  const TextSpan(
-                    text: 'TELEFONE: ',
-                    style: TextStyle(
-                      fontFamily: 'Inter-Bold',
-                    ),
-                  ),
-                  TextSpan(text: indication.telefone!.toUpperCase()),
-                ],
-              ),
+        subtitle: RichText(
+          text: TextSpan(
+            style: const TextStyle(
+              fontSize: 13,
+              color: Colors.black,
+              fontFamily: 'Inter-Regular',
             ),
-            const SizedBox(height: 5),
-            RichText(
-              text: TextSpan(
-                style: const TextStyle(
-                  fontSize: 13,
-                  color: Colors.black,
-                  fontFamily: 'Inter-Regular',
+            children: [
+              const TextSpan(
+                text: 'TELEFONE: ',
+                style: TextStyle(
+                  fontFamily: 'Inter-Bold',
                 ),
-                children: [
-                  const TextSpan(
-                    text: 'STATUS: ',
-                    style: TextStyle(
-                      fontFamily: 'Inter-Bold',
-                    ),
-                  ),
-                  TextSpan(text: indication.status!.toUpperCase()),
-                ],
               ),
-            ),
-            const SizedBox(height: 5),
-            RichText(
-              text: TextSpan(
-                style: const TextStyle(
-                  fontSize: 13,
-                  color: Colors.black,
-                  fontFamily: 'Inter-Regular',
-                ),
-                children: [
-                  const TextSpan(
-                    text: 'DATA: ',
-                    style: TextStyle(
-                      fontFamily: 'Inter-Bold',
-                    ),
-                  ),
-                  TextSpan(
-                      text: FormattedInputers.formatApiDate(
-                          indication.createdAt!)),
-                ],
-              ),
-            ),
-          ],
+              TextSpan(text: indication.telefone!.toUpperCase()),
+            ],
+          ),
         ),
       ),
     );

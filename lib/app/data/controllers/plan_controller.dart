@@ -114,6 +114,41 @@ class PlanController extends GetxController {
     return retorno;
   }
 
+  Future<Map<String, dynamic>> createTokenCard() async {
+    if (planKey.currentState!.validate()) {
+      isLoadingSubscrible.value = true;
+      mensagem = await repository.createTokenCard(
+        CreditCard(
+          cardName: nameCardController.text,
+          validate: validateController.text,
+          cpf: cpfController.text,
+          cvv: cvvController.text,
+          cardNumber: numberCardController.text,
+          valor: Services.converterParaCentavos(calculatedPrice.value),
+          brand: selectedCardType.value.toString(),
+        ),
+      );
+
+      isLoadingSubscrible.value = false;
+
+      if (mensagem != null) {
+        retorno = {
+          'success': mensagem['success'],
+          'message': mensagem['message']
+        };
+
+        getMyPlans();
+      } else {
+        retorno = {
+          'success': false,
+          'message': ['Falha ao realizar a operação!']
+        };
+      }
+    }
+    isLoadingSubscrible.value = false;
+    return retorno;
+  }
+
   Future<Map<String, dynamic>> updateSubscribe(UserPlan planoUsuario) async {
     if (planKey.currentState!.validate()) {
       isLoadingSubscrible.value = true;

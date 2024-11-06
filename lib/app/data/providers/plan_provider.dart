@@ -144,10 +144,63 @@ class PlanApiClient {
     return null;
   }
 
+  createTokenCard(CreditCard creditCard) async {
+    final token = "Bearer ${ServiceStorage.getToken()}";
+    final publicKeyUrl = Uri.parse('$baseUrl/v1/planousuario/get-public-key');
+    var tokenId = "";
+    Map<String, String> mesAno =
+        Services.mesAnoValidateCreditCart(creditCard.validate.toString());
+
+    var requestBody = {
+      "type": "card",
+      "card": {
+        "holder_name": creditCard.cardName.toString(),
+        "number":
+            Services.sanitizarCartaoCredito(creditCard.cardNumber.toString()),
+        'exp_month': mesAno['mes'],
+        'exp_year': mesAno['ano'],
+        'cvv': creditCard.cvv.toString(),
+      }
+    };
+
+    var response = await httpClient.get(
+      publicKeyUrl,
+      headers: {
+        "Accept": "application/json",
+        "Authorization": token,
+      },
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      var retorno = json.decode(response.body);
+      final urlPagameToken = Uri.parse(
+          'https://api.pagar.me/core/v5/tokens?appId=${retorno['data']}');
+      final responsePagarme = await http.post(
+        urlPagameToken,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(requestBody),
+      );
+      if (responsePagarme.statusCode == 200 ||
+          responsePagarme.statusCode == 201) {
+        tokenId = json.decode(responsePagarme.body)["id"];
+      }
+    }
+    return tokenId;
+  }
+
   subscribe(UserPlan userPlan, CreditCard creditCard, String recurrence) async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
       final indicatorUrl = Uri.parse('$baseUrl/v1/planousuario/contratar');
+
+      var cardToken = await createTokenCard(creditCard);
+
+      if (cardToken.isBlank || cardToken == "") {
+        return null;
+      }
 
       final Auth auth = ServiceStorage.getAuth();
 
@@ -186,6 +239,7 @@ class PlanApiClient {
         'recorrencia': recurrenceDays.toString(),
         'usuario_id': userPlan.usuarioId.toString(),
         'plano_id': userPlan.planoId.toString(),
+        'token_card': cardToken.toString(),
         'quantidade_licencas': userPlan.quantidadeLicencas.toString(),
         /*--------DADOS DO CARTÃO--------*/
         'number':
@@ -233,9 +287,7 @@ class PlanApiClient {
         "payment_method": "credit_card",
         "card_token": "token_RYV93LKFvFPpq6nX",
         "start_at": Services.obterDataHoraAtualISO(),
-        "credit_card": {
-          "installments": "1",
-          "statement_descriptor": "RODOCALC",
+        "card_address": {
           "billing_address": {
             "line_1": enderecoCompleto,
             "zip_code": cep,
