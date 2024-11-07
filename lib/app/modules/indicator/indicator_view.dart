@@ -159,15 +159,10 @@ class IndicatorView extends GetView<IndicationController> {
                               child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Obx(() {
-                                    // bool showButton =
-                                    //     comissionIndicatorController
-                                    //             .sumComissions.value >=
-                                    //         25000;
-
                                     bool showButton =
                                         comissionIndicatorController
                                                 .sumComissions.value >=
-                                            20;
+                                            25000;
 
                                     return Row(
                                       mainAxisAlignment:
