@@ -92,7 +92,7 @@ class IndicatorView extends GetView<IndicationController> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             const Text(
-                                              'Código de convite',
+                                              'Indicação por link',
                                               style: TextStyle(
                                                   fontSize: 12,
                                                   color: Colors.white,
@@ -102,7 +102,7 @@ class IndicatorView extends GetView<IndicationController> {
                                               cupom,
                                               style: const TextStyle(
                                                   fontSize: 25,
-                                                  color: Colors.white,
+                                                  color: Colors.orange,
                                                   fontFamily: 'Inter-Black'),
                                             ),
                                           ],
@@ -128,7 +128,7 @@ class IndicatorView extends GetView<IndicationController> {
                                         var androidUrl =
                                             "whatsapp://send?text=$linkWhatsApp";
                                         var iosUrl =
-                                            "https://wa.me/text=$linkWhatsApp";
+                                            "https://api.whatsapp.com/send?text=$linkWhatsApp";
 
                                         try {
                                           if (Platform.isIOS) {
@@ -316,81 +316,89 @@ class IndicatorView extends GetView<IndicationController> {
                                 } else if (controller.isLoading.value ==
                                         false &&
                                     controller.listIndications.isNotEmpty) {
-                                  return ListView.builder(
-                                    padding: EdgeInsets.only(
-                                        bottom:
-                                            MediaQuery.of(context).size.height *
-                                                .25),
-                                    shrinkWrap: true,
-                                    physics:
-                                        const AlwaysScrollableScrollPhysics(),
-                                    itemCount:
-                                        controller.filteredIndications.length,
-                                    itemBuilder: (context, index) {
-                                      Indication indication =
-                                          controller.filteredIndications[index];
+                                  return SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.5,
+                                    child: ListView.builder(
+                                      padding: EdgeInsets.only(
+                                          bottom: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              .25),
+                                      shrinkWrap: true,
+                                      physics:
+                                          const AlwaysScrollableScrollPhysics(),
+                                      itemCount:
+                                          controller.filteredIndications.length,
+                                      itemBuilder: (context, index) {
+                                        Indication indication = controller
+                                            .filteredIndications[index];
 
-                                      return Dismissible(
-                                        key: UniqueKey(),
-                                        direction: DismissDirection.endToStart,
-                                        confirmDismiss:
-                                            (DismissDirection direction) async {
-                                          if (direction ==
-                                              DismissDirection.endToStart) {
-                                            showDialog(context, indication,
-                                                controller);
-                                          }
-                                          return false;
-                                        },
-                                        background: Container(
-                                          margin: const EdgeInsets.all(5),
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            color: Colors.red,
-                                          ),
-                                          child: const Align(
-                                            alignment: Alignment.centerRight,
-                                            child: Padding(
-                                                padding: EdgeInsets.all(10),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.end,
-                                                  children: [
-                                                    Icon(
-                                                      Icons.check_rounded,
-                                                      size: 25,
-                                                      color: Colors.white,
-                                                    ),
-                                                    SizedBox(width: 10),
-                                                    Text(
-                                                      'EXCLUIR',
-                                                      style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ),
-                                                  ],
-                                                )),
-                                          ),
-                                        ),
-                                        child: CustomIndicatorCard(
-                                          functionUpdate: () {
-                                            controller.fillInFields(indication);
-                                            showModalBottomSheet(
-                                              isScrollControlled: true,
-                                              context: context,
-                                              builder: (context) =>
-                                                  CreateIndicatorModal(
-                                                isUpdate: true,
-                                                indication: indication,
-                                              ),
-                                            );
+                                        return Dismissible(
+                                          key: UniqueKey(),
+                                          direction:
+                                              DismissDirection.endToStart,
+                                          confirmDismiss: (DismissDirection
+                                              direction) async {
+                                            if (direction ==
+                                                DismissDirection.endToStart) {
+                                              showDialog(context, indication,
+                                                  controller);
+                                            }
+                                            return false;
                                           },
-                                          indication: indication,
-                                        ),
-                                      );
-                                    },
+                                          background: Container(
+                                            margin: const EdgeInsets.all(5),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              color: Colors.red,
+                                            ),
+                                            child: const Align(
+                                              alignment: Alignment.centerRight,
+                                              child: Padding(
+                                                  padding: EdgeInsets.all(10),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.end,
+                                                    children: [
+                                                      Icon(
+                                                        Icons.check_rounded,
+                                                        size: 25,
+                                                        color: Colors.white,
+                                                      ),
+                                                      SizedBox(width: 10),
+                                                      Text(
+                                                        'EXCLUIR',
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                    ],
+                                                  )),
+                                            ),
+                                          ),
+                                          child: CustomIndicatorCard(
+                                            functionUpdate: () {
+                                              controller
+                                                  .fillInFields(indication);
+                                              showModalBottomSheet(
+                                                isScrollControlled: true,
+                                                context: context,
+                                                builder: (context) =>
+                                                    CreateIndicatorModal(
+                                                  isUpdate: true,
+                                                  indication: indication,
+                                                ),
+                                              );
+                                            },
+                                            indication: indication,
+                                          ),
+                                        );
+                                      },
+                                    ),
                                   );
                                 } else {
                                   return const Center(

@@ -89,7 +89,7 @@ class MyIndicationsView extends GetView<IndicationController> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             const Text(
-                                              'Código de convite',
+                                              'Indicação por link',
                                               style: TextStyle(
                                                   fontSize: 12,
                                                   color: Colors.white,
@@ -99,7 +99,7 @@ class MyIndicationsView extends GetView<IndicationController> {
                                               cupom,
                                               style: const TextStyle(
                                                   fontSize: 25,
-                                                  color: Colors.white,
+                                                  color: Colors.orange,
                                                   fontFamily: 'Inter-Black'),
                                             ),
                                           ],
@@ -125,7 +125,7 @@ class MyIndicationsView extends GetView<IndicationController> {
                                         var androidUrl =
                                             "whatsapp://send?text=$linkWhatsApp";
                                         var iosUrl =
-                                            "https://wa.me/text=$linkWhatsApp";
+                                            "https://api.whatsapp.com/send?text=$linkWhatsApp";
 
                                         try {
                                           if (Platform.isIOS) {

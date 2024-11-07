@@ -6,6 +6,7 @@ class UserPlan {
   int? usuarioId;
   int? planoId;
   int? valorPlano;
+  int? valorPlano2;
   String? dataAssinaturaPlano;
   String? dataVencimentoPlano;
   String? assignatureId;
@@ -22,6 +23,7 @@ class UserPlan {
       this.quantidadeLicencas,
       this.assignatureId,
       this.valorPlano,
+      this.valorPlano2,
       this.veiculos,
       this.plano});
 
@@ -34,6 +36,7 @@ class UserPlan {
     quantidadeLicencas = json['quantidade_licencas'];
     assignatureId = json['assignature_id'];
     valorPlano = (json['valor_plano'] * 100).toInt();
+    valorPlano2 = (json['valor_plano']).toInt();
     plano = json['plano'] != null ? Plan.fromJson(json['plano']) : null;
     if (json['veiculos'] != null) {
       veiculos = <Vehicle>[];
@@ -53,6 +56,7 @@ class UserPlan {
     data['quantidade_licencas'] = quantidadeLicencas;
     data['assignature_id'] = assignatureId;
     data['valor_plano'] = valorPlano;
+    data['valor_plano'] = valorPlano2;
     if (plano != null) {
       data['plano'] = plano!.toJson();
     }

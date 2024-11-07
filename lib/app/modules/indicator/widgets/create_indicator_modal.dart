@@ -29,7 +29,9 @@ class CreateIndicatorModal extends GetView<IndicationController> {
                 Padding(
                   padding: const EdgeInsets.only(top: 10, bottom: 5),
                   child: Text(
-                    isUpdate ? 'ALTERAR INDICAÇÃO' : 'CADASTRO DE INDICAÇÃO',
+                    isUpdate
+                        ? 'ALTERAR INDICAÇÃO TELEFONE'
+                        : 'INDICAÇÃO POR TELEFONE',
                     style: const TextStyle(
                         fontFamily: 'Inter-Bold',
                         fontSize: 17,
