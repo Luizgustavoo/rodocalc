@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -91,8 +92,27 @@ class VehicleController extends GetxController {
           ),
         ],
       );
+
       if (croppedFile != null) {
-        selectedImagePath.value = croppedFile.path;
+        // Compress the image
+        final compressedFile = await FlutterImageCompress.compressAndGetFile(
+          croppedFile.path,
+          '${croppedFile.path}_compressed.jpg',
+          quality: 50, // Adjust quality as needed to get under 2 MB
+        );
+
+        if (compressedFile != null) {
+          selectedImagePath.value = compressedFile.path;
+
+          // Optional: Check the size of the compressed file
+          final fileSize = await compressedFile.length();
+          if (fileSize > 2 * 1024 * 1024) {
+            // 2 MB in bytes
+            Get.snackbar('Erro', 'Imagem ainda maior que 2 MB');
+          }
+        } else {
+          Get.snackbar('Erro', 'Falha na compressão da imagem');
+        }
       }
     } else {
       Get.snackbar('Erro', 'Nenhuma imagem selecionada');

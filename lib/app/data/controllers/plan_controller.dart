@@ -101,7 +101,6 @@ class PlanController extends GetxController {
           'success': mensagem['success'],
           'message': mensagem['message']
         };
-
         getMyPlans();
       } else {
         retorno = {
