@@ -133,38 +133,43 @@ class FreightView extends GetView<FreightController> {
                             );
                           } else if (!controller.isLoading.value &&
                               controller.listFreight.isNotEmpty) {
-                            return ListView.builder(
-                              padding: EdgeInsets.only(
-                                  bottom:
-                                      MediaQuery.of(context).size.height * .25),
-                              shrinkWrap: true,
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              itemCount: controller.filteredFreights.length,
-                              itemBuilder: (context, index) {
-                                Freight frete =
-                                    controller.filteredFreights[index];
-                                return CustomFreightCard(
-                                  functionRemove: () {
-                                    showDialog(context, frete, controller);
-                                  },
-                                  origin: "${frete.origem!}-${frete.ufOrigem}",
-                                  destination:
-                                      "${frete.destino!}-${frete.ufDestino}",
-                                  distance: frete.distanciaKm.toString(),
-                                  value: frete.valorRecebido.toString(),
-                                  functionEdit: () {
-                                    controller.fillInFields(frete);
-                                    showModalBottomSheet(
-                                      isScrollControlled: true,
-                                      context: context,
-                                      builder: (context) => CreateFreightModal(
-                                        isUpdate: true,
-                                        freight: frete,
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
+                            return SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.9,
+                              child: ListView.builder(
+                                padding: EdgeInsets.only(
+                                    bottom: MediaQuery.of(context).size.height *
+                                        .50),
+                                shrinkWrap: true,
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                itemCount: controller.filteredFreights.length,
+                                itemBuilder: (context, index) {
+                                  Freight frete =
+                                      controller.filteredFreights[index];
+                                  return CustomFreightCard(
+                                    functionRemove: () {
+                                      showDialog(context, frete, controller);
+                                    },
+                                    origin:
+                                        "${frete.origem!}-${frete.ufOrigem}",
+                                    destination:
+                                        "${frete.destino!}-${frete.ufDestino}",
+                                    distance: frete.distanciaKm.toString(),
+                                    value: frete.valorRecebido.toString(),
+                                    functionEdit: () {
+                                      controller.fillInFields(frete);
+                                      showModalBottomSheet(
+                                        isScrollControlled: true,
+                                        context: context,
+                                        builder: (context) =>
+                                            CreateFreightModal(
+                                          isUpdate: true,
+                                          freight: frete,
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
                             );
                           } else {
                             return const Center(

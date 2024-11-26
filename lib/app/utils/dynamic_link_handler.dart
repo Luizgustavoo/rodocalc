@@ -4,7 +4,7 @@ import 'package:app_links/app_links.dart';
 import 'package:get_storage/get_storage.dart';
 
 /// Provides methods to manage dynamic links.
-final class DynamicLinkHandler {
+class DynamicLinkHandler {
   DynamicLinkHandler._();
 
   static final instance = DynamicLinkHandler._();

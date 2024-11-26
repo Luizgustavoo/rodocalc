@@ -154,7 +154,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
                     context: Get.context!,
                     initialDate: DateTime.now(),
                     firstDate: DateTime(2000),
-                    lastDate: DateTime.now(),
+                    lastDate: DateTime(2050),
                     locale: const Locale('pt', 'BR'),
                   );
                   if (pickedDate != null) {
