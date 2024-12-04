@@ -240,15 +240,11 @@ class CreatePlanModal extends GetView<PlanController> {
                     prefixIcon: Icon(Icons.badge),
                     labelText: 'CPF DO TITULAR',
                     counterText: ''),
-                onChanged: (value) {
-                  FormattedInputers.onCpfChanged(
-                      value, controller.cpfController);
-                },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return "Digite seu cpf ou cnpj";
                   }
-                  if (!Services.validCPF(value)) {
+                  if (!Services.validCPF(value) && !Services.validCNPJ(value)) {
                     return "Digite um cpf ou cnpj válido";
                   }
                   return null;

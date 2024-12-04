@@ -237,13 +237,8 @@ class CreateReceiptModal extends GetView<TransactionController> {
                     ),
                     labelText: 'TONELADAS',
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, insira as toneladas';
-                    }
-                    return null;
-                  },
                 ),
+
                 const SizedBox(height: 15),
 
                 Obx(() {

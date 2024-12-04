@@ -395,7 +395,7 @@ class CreateUserModal extends GetView<UserController> {
                                   constraints:
                                       BoxConstraints(maxWidth: Get.width * .7),
                                   child: Text(
-                                    "${vehicle.modelo}",
+                                    "${vehicle.modelo} - ${vehicle.placa}",
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),

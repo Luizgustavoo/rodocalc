@@ -196,11 +196,13 @@ class PlanApiClient {
       final token = "Bearer ${ServiceStorage.getToken()}";
       final indicatorUrl = Uri.parse('$baseUrl/v1/planousuario/contratar');
 
-      var cardToken = await createTokenCard(creditCard);
+      // var cardToken = await createTokenCard(creditCard);
 
-      if (cardToken.isBlank || cardToken == "") {
-        return null;
-      }
+      // if (cardToken.isBlank || cardToken == "") {
+      //   return null;
+      // }
+
+      var cardToken = "";
 
       final Auth auth = ServiceStorage.getAuth();
 
@@ -323,6 +325,8 @@ class PlanApiClient {
           'Authorization': token,
         },
       );
+
+      print(response.body);
 
       Auth authh = Auth.fromJson(json.decode(responsePlan.body));
       final box = GetStorage('rodocalc');
