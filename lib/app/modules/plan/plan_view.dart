@@ -172,12 +172,34 @@ class PlanView extends GetView<PlanController> {
                                 description: plan.observacoes,
                                 price: plan.valor,
                                 onPressedMonth: () {
-                                  print(ServiceStorage.completedRegister());
-                                  assignPlan(plan, context, 'MENSAL');
+                                  List<String> errors =
+                                      ServiceStorage.completedRegister();
+                                  if (errors.isNotEmpty) {
+                                    Get.snackbar(
+                                      "Acesse a tela de perfil e preencha os campos listados abaixo",
+                                      errors.join(", "),
+                                      snackPosition: SnackPosition.BOTTOM,
+                                      backgroundColor: Colors.redAccent,
+                                      colorText: Colors.white,
+                                    );
+                                  } else {
+                                    assignPlan(plan, context, 'MENSAL');
+                                  }
                                 },
                                 onPressedYear: () {
-                                  print(ServiceStorage.completedRegister());
-                                  assignPlan(plan, context, 'ANUAL');
+                                  List<String> errors =
+                                      ServiceStorage.completedRegister();
+                                  if (errors.isNotEmpty) {
+                                    Get.snackbar(
+                                      "Acesse a tela de perfil e preencha os campos listados abaixo",
+                                      errors.join(", "),
+                                      snackPosition: SnackPosition.BOTTOM,
+                                      backgroundColor: Colors.redAccent,
+                                      colorText: Colors.white,
+                                    );
+                                  } else {
+                                    assignPlan(plan, context, 'ANUAL');
+                                  }
                                 },
                               );
                             } else {
