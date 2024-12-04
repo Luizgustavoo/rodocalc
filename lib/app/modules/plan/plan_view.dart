@@ -172,9 +172,11 @@ class PlanView extends GetView<PlanController> {
                                 description: plan.observacoes,
                                 price: plan.valor,
                                 onPressedMonth: () {
+                                  print(ServiceStorage.completedRegister());
                                   assignPlan(plan, context, 'MENSAL');
                                 },
                                 onPressedYear: () {
+                                  print(ServiceStorage.completedRegister());
                                   assignPlan(plan, context, 'ANUAL');
                                 },
                               );
