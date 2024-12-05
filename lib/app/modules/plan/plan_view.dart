@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:get/get.dart';
+import 'package:rodocalc/app/data/controllers/city_state_controller.dart';
+import 'package:rodocalc/app/data/controllers/perfil_controller.dart';
 import 'package:rodocalc/app/data/controllers/plan_controller.dart';
+import 'package:rodocalc/app/data/controllers/signup_controller.dart';
 import 'package:rodocalc/app/data/models/plan_model.dart';
 import 'package:rodocalc/app/global/custom_app_bar.dart';
 import 'package:rodocalc/app/modules/plan/widgets/create_plan_modal.dart';
 import 'package:rodocalc/app/modules/plan/widgets/custom_plan_card.dart';
+import 'package:rodocalc/app/routes/app_routes.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 
 class PlanView extends GetView<PlanController> {
@@ -175,13 +180,7 @@ class PlanView extends GetView<PlanController> {
                                   List<String> errors =
                                       ServiceStorage.completedRegister();
                                   if (errors.isNotEmpty) {
-                                    Get.snackbar(
-                                      "Acesse a tela de perfil e preencha os campos listados abaixo",
-                                      errors.join(", "),
-                                      snackPosition: SnackPosition.BOTTOM,
-                                      backgroundColor: Colors.redAccent,
-                                      colorText: Colors.white,
-                                    );
+                                    SnackBarPerfilPage(errors);
                                   } else {
                                     assignPlan(plan, context, 'MENSAL');
                                   }
@@ -190,13 +189,7 @@ class PlanView extends GetView<PlanController> {
                                   List<String> errors =
                                       ServiceStorage.completedRegister();
                                   if (errors.isNotEmpty) {
-                                    Get.snackbar(
-                                      "Acesse a tela de perfil e preencha os campos listados abaixo",
-                                      errors.join(", "),
-                                      snackPosition: SnackPosition.BOTTOM,
-                                      backgroundColor: Colors.redAccent,
-                                      colorText: Colors.white,
-                                    );
+                                    SnackBarPerfilPage(errors);
                                   } else {
                                     assignPlan(plan, context, 'ANUAL');
                                   }
@@ -216,6 +209,46 @@ class PlanView extends GetView<PlanController> {
           ),
         ],
       ),
+    );
+  }
+
+  void SnackBarPerfilPage(List<String> errors) {
+    Get.put(CityStateController()).getCities();
+    Get.put(PerfilController()).fillInFields();
+    Get.put(SignUpController()).getUserTypes();
+
+    Get.rawSnackbar(
+      messageText: RichText(
+        text: TextSpan(
+          style: const TextStyle(color: Colors.white),
+          children: [
+            const TextSpan(
+              text: "Acesse a tela de ",
+            ),
+            TextSpan(
+              text: "perfil",
+              style: const TextStyle(
+                color: Colors.blue,
+                decoration: TextDecoration.underline,
+              ),
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  Get.toNamed(Routes.perfil);
+                },
+            ),
+            const TextSpan(
+              text: " e preencha os campos: ",
+            ),
+            TextSpan(
+              text: errors.join(", "),
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ),
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.redAccent,
+      duration: const Duration(seconds: 5),
     );
   }
 

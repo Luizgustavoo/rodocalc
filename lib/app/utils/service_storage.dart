@@ -96,20 +96,24 @@ class ServiceStorage {
     return "";
   }
 
+  static bool isNullOrEmpty(String? value) {
+    return value == null || value.trim().isEmpty;
+  }
+
   static List<String> completedRegister() {
     if (existUser()) {
       Map<String, dynamic> authJson = _box.read('auth');
       Auth auth = Auth.fromJson(authJson);
       List<String> errors = [];
 
-      if (auth.user!.people!.nome!.trim().isEmpty) errors.add("Nome");
-      if (auth.user!.people!.telefone!.trim().isEmpty) errors.add("Telefone");
-      if (auth.user!.people!.cpf!.trim().isEmpty) errors.add("Cpf");
-      if (auth.user!.people!.cep!.trim().isEmpty) errors.add("Cep");
-      if (auth.user!.people!.cidade!.trim().isEmpty) errors.add("Cidade");
-      if (auth.user!.people!.endereco!.trim().isEmpty) errors.add("Endereco");
-      if (auth.user!.people!.bairro!.trim().isEmpty) errors.add("Bairro");
-      if (auth.user!.email!.trim().isEmpty) errors.add("Email");
+      if (isNullOrEmpty(auth.user?.people?.nome)) errors.add("Nome");
+      if (isNullOrEmpty(auth.user?.people?.telefone)) errors.add("Telefone");
+      if (isNullOrEmpty(auth.user?.people?.cpf)) errors.add("Cpf");
+      if (isNullOrEmpty(auth.user?.people?.cep)) errors.add("Cep");
+      if (isNullOrEmpty(auth.user?.people?.cidade)) errors.add("Cidade");
+      if (isNullOrEmpty(auth.user?.people?.endereco)) errors.add("Endereco");
+      if (isNullOrEmpty(auth.user?.people?.bairro)) errors.add("Bairro");
+      if (isNullOrEmpty(auth.user?.email)) errors.add("Email");
 
       return errors;
     }
