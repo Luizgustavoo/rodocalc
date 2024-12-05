@@ -60,6 +60,7 @@ class IndicationController extends GetxController {
     try {
       searchMyIndicatorController.clear();
       listMyIndications.value = await repository.getMyIndications();
+      print(listMyIndications);
       filteredMyIndications.assignAll(listMyIndications);
     } catch (e) {
       listMyIndications.clear();

@@ -21,7 +21,7 @@ class CustomMyIndicationsCard extends StatelessWidget {
           leading: CircleAvatar(
             child: Text(
               user.people!.nome![0].toUpperCase(),
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
           ),
           title: RichText(
@@ -82,11 +82,15 @@ class CustomMyIndicationsCard extends StatelessWidget {
                       ),
                     ),
                     TextSpan(
-                        text: user.planos!.isNotEmpty
-                            ? FormattedInputers.formatValuePTBR(
-                                ((user.planos!.first.valorPlano2! / 100) * .2)
-                                    .toString())
-                            : ''),
+                      text: user.comissoesIndicador != null &&
+                              user.comissoesIndicador!.isNotEmpty
+                          ? user.comissoesIndicador!.map((comissao) {
+                              return FormattedInputers.formatValuePTBR(
+                                  ((comissao.valorComissao! / 100).toString()));
+                            }).join(
+                              ", ") // Junta todos os valores formatados em uma única string, separados por vírgulas
+                          : '',
+                    ),
                   ],
                 ),
               ),

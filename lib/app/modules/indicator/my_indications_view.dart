@@ -173,7 +173,7 @@ class MyIndicationsView extends GetView<IndicationController> {
                                 } else if (controller
                                             .isLoadingMyIndications.value ==
                                         false &&
-                                    controller.listIndications.isNotEmpty) {
+                                    controller.listMyIndications.isNotEmpty) {
                                   return ListView.builder(
                                     padding: EdgeInsets.only(
                                         bottom:

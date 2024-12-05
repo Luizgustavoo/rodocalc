@@ -1,3 +1,4 @@
+import 'package:rodocalc/app/data/models/comission_indicator_model.dart';
 import 'package:rodocalc/app/data/models/people_model.dart';
 import 'package:rodocalc/app/data/models/user_plan_model.dart';
 import 'package:rodocalc/app/data/models/vehicle_model.dart';
@@ -23,6 +24,8 @@ class User {
 
   List<Vehicle>? vehicles;
 
+  List<ComissionIndicator>? comissoesIndicador;
+
   User({
     this.id,
     this.name,
@@ -39,6 +42,7 @@ class User {
     this.cupomRecebido,
     this.userTypeId,
     this.vehicles,
+    this.comissoesIndicador,
     this.planos,
   });
 
@@ -65,6 +69,13 @@ class User {
       vehicles = <Vehicle>[];
       json['veiculoschefe'].forEach((v) {
         vehicles!.add(Vehicle.fromJson(v));
+      });
+    }
+
+    if (json['comissoes_indicador'] != null) {
+      comissoesIndicador = <ComissionIndicator>[];
+      json['comissoes_indicador'].forEach((v) {
+        comissoesIndicador!.add(ComissionIndicator.fromJson(v));
       });
     }
 
@@ -96,6 +107,11 @@ class User {
     }
     if (vehicles != null) {
       data['veiculoschefe'] = vehicles!.map((v) => v.toJson()).toList();
+    }
+
+    if (comissoesIndicador != null) {
+      data['comissoes_indicador'] =
+          comissoesIndicador!.map((v) => v.toJson()).toList();
     }
     if (planos != null) {
       data['planos'] = planos!.map((v) => v.toJson()).toList();
