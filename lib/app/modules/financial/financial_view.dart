@@ -668,6 +668,15 @@ class FinancialView extends GetView<TransactionController> {
                           fontFamily: 'Inter-Bold', fontSize: 12, color: cor),
                     ),
                   ),
+                  Services.isNull(transaction.km.toString())
+                      ? const SizedBox.shrink()
+                      : Text(
+                          "KM",
+                          style: TextStyle(
+                              fontFamily: 'Inter-Regular',
+                              fontSize: 12,
+                              color: cor),
+                        ),
                   Text(
                     "CÓDIGO",
                     style: TextStyle(
@@ -698,6 +707,16 @@ class FinancialView extends GetView<TransactionController> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       const SizedBox(height: 10),
+                      Services.isNull(transaction.km.toString())
+                          ? const SizedBox.shrink()
+                          : Text(
+                              transaction.km.toString(),
+                              style: TextStyle(
+                                fontFamily: 'Inter-Regular',
+                                fontSize: 12,
+                                color: cor,
+                              ),
+                            ),
                       Text(
                         transaction.id.toString().padLeft(5, '0'),
                         style: TextStyle(

@@ -149,4 +149,8 @@ class Services {
   static String capitalizeWords(String value) {
     return value.toUpperCase();
   }
+
+  static bool isNull(String value) {
+    return value == null || value.isEmpty || value == 'null';
+  }
 }

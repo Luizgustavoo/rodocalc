@@ -123,6 +123,24 @@ class CustomVehicleCard extends StatelessWidget {
                       ),
                       children: [
                         const TextSpan(
+                          text: 'KM INICIAL: ',
+                          style: TextStyle(
+                            fontFamily: 'Inter-Bold',
+                          ),
+                        ),
+                        TextSpan(text: vehicle.kmInicial),
+                      ],
+                    ),
+                  ),
+                  RichText(
+                    text: TextSpan(
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.black,
+                        fontFamily: 'Inter-Regular',
+                      ),
+                      children: [
+                        const TextSpan(
                           text: 'CODIGO FIPE: ',
                           style: TextStyle(
                             fontFamily: 'Inter-Bold',

@@ -76,276 +76,303 @@ class CreateVehicleModal extends GetView<VehicleController> {
                 ),
                 const SizedBox(height: 10),
                 Obx(
-                  () => Focus(
-                    onFocusChange: (hasFocus) async {
-                      if (!hasFocus) {
-                        controller.isLoading.value = true;
-                        controller.searchPlates().then((_) {
-                          controller.isLoading.value = false;
-                        });
-                      }
-                    },
-                    child: TextFormField(
-                      controller: controller.txtPlateController,
-                      onChanged: (text) {
-                        controller.txtPlateController.value = TextEditingValue(
-                          text: text.toUpperCase(),
-                          selection: controller.txtPlateController.selection,
-                        );
-                      },
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(
-                          Icons.abc_rounded,
-                          size: 25,
+                  () => Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max, // Ajuste aqui
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          controller: controller.txtPlateController,
+                          onChanged: (text) {
+                            final sanitizedText =
+                                FormattedInputers.sanitizePlate(text);
+                            controller.txtPlateController.value =
+                                TextEditingValue(
+                              text: sanitizedText,
+                              selection: TextSelection.collapsed(
+                                  offset: sanitizedText.length),
+                            );
+                          },
+                          decoration: const InputDecoration(
+                            prefixIcon: Icon(
+                              Icons.abc_rounded,
+                              size: 25,
+                            ),
+                            labelText: 'PLACA',
+                          ),
+                          validator: (value) {
+                            if (!FormattedInputers.validatePlate(value!)) {
+                              return 'Por favor, insira uma placa válida';
+                            }
+                            return null;
+                          },
                         ),
-                        labelText: 'PLACA',
-                        suffixIcon: controller.isLoading.value
-                            ? const Padding(
-                                padding: EdgeInsets.all(10.0),
-                                child: CircularProgressIndicator(),
-                              )
-                            : IconButton(
-                                onPressed: () {
-                                  if (FormattedInputers.validatePlate(
-                                      controller.txtPlateController.text)) {
-                                    controller.isLoading.value = true;
-                                    controller.searchPlates().then((_) {
-                                      controller.isLoading.value = false;
-                                    });
+                      ),
+                      const SizedBox(
+                          width: 10), // Espaço entre o campo e o botão
+                      CustomElevatedButton(
+                        onPressed: controller.isLoadingPlate.value
+                            ? () {}
+                            : () async {
+                                if (FormattedInputers.validatePlate(
+                                    controller.txtPlateController.text)) {
+                                  controller.isLoadingPlate.value = true;
+                                  controller.searchPlates().then((_) {
+                                    controller.isLoadingPlate.value = false;
+                                    controller.areFieldsVisible.value = true;
+                                  });
+                                } else {
+                                  Get.snackbar('Atenção!',
+                                      'Por favor, insira uma placa válida',
+                                      backgroundColor: Colors.orange,
+                                      colorText: Colors.white,
+                                      duration: const Duration(seconds: 2),
+                                      snackPosition: SnackPosition.BOTTOM);
+                                }
+                              },
+                        child: controller.isLoadingPlate.value
+                            ? const CircularProgressIndicator()
+                            : const Text(
+                                'Buscar',
+                                style: TextStyle(
+                                  fontFamily: 'Inter-Bold',
+                                  color: Colors.white,
+                                ),
+                              ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                Obx(() => !controller.isLoadingPlate.value
+                    ? const SizedBox.shrink()
+                    : const SizedBox(height: 40)),
+
+                //CAMPOS INVISIVEIS
+
+                Obx(
+                  () => Visibility(
+                    visible: controller.areFieldsVisible.value,
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          controller: controller.txtBrandController,
+                          decoration: const InputDecoration(
+                            prefixIcon: Icon(
+                              Icons.local_offer,
+                            ),
+                            labelText: 'MARCA',
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Por favor, insira a marca';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          controller: controller.txtYearController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            prefixIcon: Icon(
+                              Icons.calendar_month_outlined,
+                            ),
+                            labelText: 'ANO',
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Por favor, insira o ano';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          controller: controller.txtModelController,
+                          decoration: const InputDecoration(
+                            prefixIcon: Icon(
+                              Icons.directions_car_filled,
+                            ),
+                            labelText: 'MODELO',
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Por favor, insira o modelo';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          controller: controller.txtFipeController,
+                          keyboardType: TextInputType.number,
+                          maxLength: 8,
+                          decoration: const InputDecoration(
+                            counterText: '',
+                            prefixIcon: Icon(Icons.star_border),
+                            labelText: 'CÓDIGO FIPE',
+                          ),
+                          onChanged: (value) {
+                            FormattedInputers.onFipeCodeChanged(
+                                value, controller.txtFipeController);
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Por favor, insira o código FIPE';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          controller: controller.txtFipeValueController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            prefixIcon: Icon(Icons.monetization_on),
+                            labelText: 'VALOR FIPE',
+                          ),
+                          onChanged: (value) {
+                            FormattedInputers.onformatValueChanged(
+                                value, controller.txtFipeValueController);
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Por favor, insira o valor FIPE';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          controller: controller.txtKmInicialController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            counterText: '',
+                            prefixIcon: Icon(Icons.add_road_sharp),
+                            labelText: 'KM INICIAL',
+                          ),
+                          onChanged: (value) {
+                            FormattedInputers.onformatValueKM(
+                                value, controller.txtKmInicialController);
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        Obx(
+                          () {
+                            // Configura o primeiro item como selecionado automaticamente
+                            if (controller.listMyPlans.isNotEmpty &&
+                                controller.selectedPlanDropDown.value == 0) {
+                              controller.selectedPlanDropDown.value =
+                                  controller.listMyPlans.first.planousuarioId!;
+                            }
+
+                            return Visibility(
+                              visible: false, // Torna o campo invisível
+                              child: DropdownButtonFormField<int?>(
+                                decoration: const InputDecoration(
+                                  labelText: 'Plano',
+                                ),
+                                items: controller.listMyPlans
+                                    .map((UserPlanDropdown plan) {
+                                  String subtitulo = "";
+                                  if (plan.totalVeiculosAtivos! > 0) {
+                                    subtitulo =
+                                        "- ${plan.totalVeiculosAtivos} veículo(s) cadastrado(s)";
+                                  }
+                                  return DropdownMenuItem<int?>(
+                                    value: plan.planousuarioId,
+                                    child: Text(
+                                      "${plan.descricao} $subtitulo",
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  );
+                                }).toList(),
+                                onChanged: (newValue) {
+                                  controller.selectedPlanDropDown.value =
+                                      newValue ?? 0;
+                                },
+                                value: controller.selectedPlanDropDown.value,
+                                validator: (value) {
+                                  if (value == null || value == 0) {
+                                    return 'Por favor, selecione um plano';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            SizedBox(
+                              width: 120,
+                              child: TextButton(
+                                  onPressed: () {
+                                    Get.back();
+                                  },
+                                  child: const Text(
+                                    'CANCELAR',
+                                    style: TextStyle(
+                                        fontFamily: 'Inter-Bold',
+                                        color: Color(0xFFFF6B00)),
+                                  )),
+                            ),
+                            const SizedBox(width: 10),
+                            CustomElevatedButton(
+                              onPressed: () async {
+                                if (controller
+                                    .selectedImagePath.value.isEmpty) {
+                                  Get.snackbar('Atenção!',
+                                      "Selecione uma imagem para o veículo!",
+                                      backgroundColor: Colors.orange,
+                                      colorText: Colors.white,
+                                      duration: const Duration(seconds: 2),
+                                      snackPosition: SnackPosition.BOTTOM);
+                                } else {
+                                  Map<String, dynamic> retorno = update
+                                      ? await controller
+                                          .updateVehicle(vehicle!.id!)
+                                      : await controller.insertVehicle();
+
+                                  if (retorno['success'] == true) {
+                                    Get.back();
+                                    Get.snackbar('Sucesso!',
+                                        retorno['message'].join('\n'),
+                                        backgroundColor: Colors.green,
+                                        colorText: Colors.white,
+                                        duration: const Duration(seconds: 2),
+                                        snackPosition: SnackPosition.BOTTOM);
                                   } else {
-                                    Get.snackbar('Atenção!',
-                                        'Por favor, insira uma placa válida',
-                                        backgroundColor: Colors.orange,
+                                    Get.snackbar(
+                                        'Falha!', retorno['message'].join('\n'),
+                                        backgroundColor: Colors.red,
                                         colorText: Colors.white,
                                         duration: const Duration(seconds: 2),
                                         snackPosition: SnackPosition.BOTTOM);
                                   }
-                                },
-                                icon: const Icon(Icons.search),
+                                }
+                              },
+                              child: Text(
+                                vehicle == null ? 'CADASTRAR' : 'ALTERAR',
+                                style: const TextStyle(
+                                    fontFamily: 'Inter-Bold',
+                                    color: Colors.white),
                               ),
-                      ),
-                      validator: (value) {
-                        if (!FormattedInputers.validatePlate(value!)) {
-                          return 'Por favor, insira uma placa válida';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                TextFormField(
-                  controller: controller.txtBrandController,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.local_offer,
-                    ),
-                    labelText: 'MARCA',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, insira a marca';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 10),
-                TextFormField(
-                  controller: controller.txtYearController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.calendar_month_outlined,
-                    ),
-                    labelText: 'ANO',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, insira o ano';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 10),
-                TextFormField(
-                  controller: controller.txtModelController,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.directions_car_filled,
-                    ),
-                    labelText: 'MODELO',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, insira o modelo';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 10),
-                TextFormField(
-                  controller: controller.txtFipeController,
-                  keyboardType: TextInputType.number,
-                  maxLength: 8,
-                  decoration: const InputDecoration(
-                    counterText: '',
-                    prefixIcon: Icon(Icons.star_border),
-                    labelText: 'CÓDIGO FIPE',
-                  ),
-                  onChanged: (value) {
-                    FormattedInputers.onFipeCodeChanged(
-                        value, controller.txtFipeController);
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, insira o código FIPE';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 10),
-                TextFormField(
-                  controller: controller.txtFipeValueController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.monetization_on),
-                    labelText: 'VALOR FIPE',
-                  ),
-                  onChanged: (value) {
-                    FormattedInputers.onformatValueChanged(
-                        value, controller.txtFipeValueController);
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, insira o valor FIPE';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 15),
-                Obx(
-                  () => DropdownButtonFormField<int?>(
-                    decoration: const InputDecoration(
-                      labelText: 'Plano',
-                    ),
-                    items: [
-                      const DropdownMenuItem<int?>(
-                        value: 0,
-                        child: Text('Selecione um plano'),
-                      ),
-                      ...controller.listMyPlans.map((UserPlanDropdown plan) {
-                        String subtitulo = "";
-                        if (plan.totalVeiculosAtivos! > 0) {
-                          subtitulo =
-                              "- ${plan.totalVeiculosAtivos} veículo(s) cadastrado(s)";
-                        }
-                        return DropdownMenuItem<int?>(
-                          value: plan.planousuarioId,
-                          child: Container(
-                            constraints:
-                                BoxConstraints(maxWidth: Get.width * .7),
-                            child: Text(
-                              "${plan.descricao} $subtitulo",
-                              overflow: TextOverflow.ellipsis,
                             ),
-                          ),
-                        );
-                      }),
-                    ],
-                    onChanged: (newValue) {
-                      controller.selectedPlanDropDown.value = newValue ?? 0;
-                    },
-                    value: controller.listMyPlans.any((plan) =>
-                            plan.planousuarioId ==
-                            controller.selectedPlanDropDown.value)
-                        ? controller.selectedPlanDropDown.value
-                        : 0,
-                    validator: (value) {
-                      if (value == null || value == 0) {
-                        return 'Por favor, selecione um plano';
-                      }
-                      return null;
-                    },
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    Obx(() => Switch(
-                          activeColor: Colors.orange.shade700,
-                          inactiveThumbColor: Colors.orange.shade500,
-                          inactiveTrackColor: Colors.orange.shade100,
-                          value: controller.trailerCheckboxValue.value,
-                          onChanged: (value) {
-                            controller.trailerCheckboxValue.value = value;
-                          },
-                        )),
-                    const SizedBox(width: 10),
-                    const Text(
-                      'REBOQUE',
-                      style: TextStyle(
-                          fontFamily: 'Inter-Bold', color: Colors.black54),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    SizedBox(
-                      width: 120,
-                      child: TextButton(
-                          onPressed: () {
-                            Get.back();
-                          },
-                          child: const Text(
-                            'CANCELAR',
-                            style: TextStyle(
-                                fontFamily: 'Inter-Bold',
-                                color: Color(0xFFFF6B00)),
-                          )),
-                    ),
-                    const SizedBox(width: 10),
-                    CustomElevatedButton(
-                      onPressed: () async {
-                        if (controller.selectedImagePath.value.isEmpty) {
-                          Get.snackbar('Atenção!',
-                              "Selecione uma imagem para o veículo!",
-                              backgroundColor: Colors.orange,
-                              colorText: Colors.white,
-                              duration: const Duration(seconds: 2),
-                              snackPosition: SnackPosition.BOTTOM);
-                        } else {
-                          Map<String, dynamic> retorno = update
-                              ? await controller.updateVehicle(vehicle!.id!)
-                              : await controller.insertVehicle();
 
-                          if (retorno['success'] == true) {
-                            Get.back();
-                            Get.snackbar(
-                                'Sucesso!', retorno['message'].join('\n'),
-                                backgroundColor: Colors.green,
-                                colorText: Colors.white,
-                                duration: const Duration(seconds: 2),
-                                snackPosition: SnackPosition.BOTTOM);
-                          } else {
-                            Get.snackbar(
-                                'Falha!', retorno['message'].join('\n'),
-                                backgroundColor: Colors.red,
-                                colorText: Colors.white,
-                                duration: const Duration(seconds: 2),
-                                snackPosition: SnackPosition.BOTTOM);
-                          }
-                        }
-                      },
-                      child: Text(
-                        vehicle == null ? 'CADASTRAR' : 'ALTERAR',
-                        style: const TextStyle(
-                            fontFamily: 'Inter-Bold', color: Colors.white),
-                      ),
-                    ),
-                  ],
-                ),
+                const SizedBox(height: 20),
+                //FIM CAMPOS INVISIVEIS
               ],
             ),
           )),

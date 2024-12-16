@@ -138,6 +138,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
                   return null;
                 },
               ),
+
               const SizedBox(height: 15),
               TextFormField(
                 controller: controller.txtDateController,
@@ -161,6 +162,20 @@ class CreateExpenseModal extends GetView<TransactionController> {
                     controller.txtDateController.text =
                         FormattedInputers.formatDate2(pickedDate);
                   }
+                },
+              ),
+              const SizedBox(height: 15),
+              TextFormField(
+                controller: controller.txtKmController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  counterText: '',
+                  prefixIcon: Icon(Icons.add_road_sharp),
+                  labelText: 'QUILOMETRAGEM ATUAL',
+                ),
+                onChanged: (value) {
+                  FormattedInputers.onformatValueKM(
+                      value, controller.txtKmController);
                 },
               ),
               const SizedBox(height: 15),

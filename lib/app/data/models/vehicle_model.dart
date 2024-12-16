@@ -15,6 +15,7 @@ class Vehicle {
   int? planoUsuarioId;
   int? status;
   dynamic saldo;
+  String? kmInicial;
 
   Vehicle({
     this.id,
@@ -32,6 +33,7 @@ class Vehicle {
     this.motorista,
     this.status,
     this.saldo,
+    this.kmInicial,
     this.planoUsuarioId,
   });
 
@@ -50,6 +52,7 @@ class Vehicle {
     updatedAt = json['updated_at'];
     motorista = json['motorista'];
     status = json['status'];
+    kmInicial = json['km_inicial'];
     planoUsuarioId = json['planousuario_id'];
     saldo = (json['saldo'] is int
         ? (json['saldo'] as int).toDouble()
@@ -73,6 +76,7 @@ class Vehicle {
     data['motorista'] = motorista;
     data['status'] = status;
     data['saldo'] = saldo;
+    data['km_inicial'] = kmInicial;
     data['planousuario_id'] = planoUsuarioId;
     return data;
   }

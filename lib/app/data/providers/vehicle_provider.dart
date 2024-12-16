@@ -163,6 +163,7 @@ class VehicleApiClient {
         "reboque": vehicle.reboque.toString(),
         "status": "1",
         "planousuario_id": vehicle.planoUsuarioId.toString(),
+        "km_inicial": vehicle.kmInicial.toString(),
       });
 
       request.headers.addAll({
@@ -216,6 +217,7 @@ class VehicleApiClient {
         "user_id": ServiceStorage.getUserId().toString(),
         "status": "1",
         "planousuario_id": vehicle.planoUsuarioId.toString(),
+        "km_inicial": vehicle.kmInicial.toString(),
       });
 
       request.headers.addAll({

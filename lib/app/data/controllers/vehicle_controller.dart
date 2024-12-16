@@ -33,11 +33,14 @@ class VehicleController extends GetxController {
   final txtYearController = TextEditingController();
   final txtModelController = TextEditingController();
   final txtFipeController = TextEditingController();
+  final txtKmInicialController = TextEditingController();
   final txtFipeValueController = TextEditingController();
   final txtTrailerController = TextEditingController();
   final searchController = TextEditingController();
 
   RxBool isLoading = true.obs;
+  RxBool isLoadingPlate = false.obs;
+  RxBool areFieldsVisible = false.obs;
   RxBool isLoadingQuantityLicences = true.obs;
   RxBool isLoadingInitial = true.obs;
   RxBool isLoadingDropDown = true.obs;
@@ -195,7 +198,7 @@ class VehicleController extends GetxController {
   }
 
   Future<void> searchPlates() async {
-    isLoading.value = true;
+    isLoadingPlate.value = true;
     try {
       var response = await repository.searchPlate(txtPlateController.text);
 
@@ -231,7 +234,7 @@ class VehicleController extends GetxController {
     } catch (e) {
       Exception(e);
     }
-    isLoading.value = false;
+    isLoadingPlate.value = false;
   }
 
   Future<Map<String, dynamic>> insertVehicle() async {
@@ -249,6 +252,7 @@ class VehicleController extends GetxController {
         foto: selectedImagePath.value,
         status: 1,
         planoUsuarioId: selectedPlanDropDown.value,
+        kmInicial: txtKmInicialController.text,
       ));
       if (mensagem != null) {
         retorno = {
@@ -272,6 +276,7 @@ class VehicleController extends GetxController {
     txtYearController.text = selectedVehicle.ano.toString();
     txtModelController.text = selectedVehicle.modelo.toString();
     txtFipeController.text = selectedVehicle.fipe.toString();
+    txtKmInicialController.text = selectedVehicle.kmInicial.toString();
     txtTrailerController.text = selectedVehicle.reboque.toString();
     selectedPlanDropDown.value = selectedVehicle.planoUsuarioId!;
     trailerCheckboxValue.value =
@@ -294,6 +299,7 @@ class VehicleController extends GetxController {
       txtModelController,
       txtFipeController,
       txtFipeValueController,
+      txtKmInicialController,
       txtTrailerController
     ];
 
@@ -321,6 +327,7 @@ class VehicleController extends GetxController {
         foto: selectedImagePath.value,
         status: 1,
         planoUsuarioId: selectedPlanDropDown.value,
+        kmInicial: txtKmInicialController.text,
       ));
       if (mensagem != null) {
         retorno = {

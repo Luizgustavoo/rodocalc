@@ -103,6 +103,14 @@ abstract class FormattedInputers {
     );
   }
 
+  static void onformatValueKM(
+      String value, TextEditingController textEditingController) {
+    textEditingController.value = textEditingController.value.copyWith(
+      text: formatKilometers(value),
+      selection: TextSelection.collapsed(offset: formatValue(value).length),
+    );
+  }
+
   static String getCardType(String cardNumber) {
     // Remove todos os espaços e traços do número do cartão
     String cleanedNumber = cardNumber.replaceAll(RegExp(r'\s+|-'), '');
@@ -213,6 +221,23 @@ abstract class FormattedInputers {
     return buffer.toString();
   }
 
+  static String formatKilometers(String value) {
+    // Remove qualquer caractere que não seja número
+    var text = value.replaceAll(RegExp(r'[^0-9]'), '');
+    var buffer = StringBuffer();
+
+    // Adiciona os separadores de milhar
+    for (int i = 0; i < text.length; i++) {
+      if (i > 0 && (text.length - i) % 3 == 0) {
+        buffer.write('.');
+      }
+      buffer.write(text[i]);
+    }
+
+    // Retorna o valor formatado com o sufixo " km"
+    return buffer.toString();
+  }
+
   static RxString formatCEP(String cep) {
     final RegExp cepRegex = RegExp(r'^(\d{5})(\d{3})$');
 
@@ -270,6 +295,10 @@ abstract class FormattedInputers {
       return false;
     }
     return true;
+  }
+
+  static String sanitizePlate(String text) {
+    return text.replaceAll(RegExp(r'[\s\-\.]'), '').toUpperCase();
   }
 
   static String formatCurrency(double value) {

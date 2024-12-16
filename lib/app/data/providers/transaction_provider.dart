@@ -263,6 +263,7 @@ class TransactionApiClient {
           transacoes.tipoTransacao == 'saida') {
         requestBody["categoriadespesa_id"] =
             transacoes.categoriaDespesaId.toString();
+        requestBody["km"] = transacoes.km.toString();
       }
 
       request.fields.addAll(requestBody);
@@ -531,6 +532,7 @@ class TransactionApiClient {
           transacoes.tipoTransacao == 'saida') {
         requestBody["categoriadespesa_id"] =
             transacoes.categoriaDespesaId.toString();
+        requestBody["km"] = transacoes.km.toString();
       }
 
       request.fields.addAll(requestBody);

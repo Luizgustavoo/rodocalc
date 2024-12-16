@@ -42,6 +42,7 @@ class TransactionController extends GetxController {
   final txtPhoneController = TextEditingController();
   final txtValueController = TextEditingController();
   final txtDateController = TextEditingController();
+  final txtKmController = TextEditingController();
   final startDateController = TextEditingController();
   final endDateController = TextEditingController();
   final txtDescriptionFilterController = TextEditingController();
@@ -318,7 +319,7 @@ class TransactionController extends GetxController {
 
     Sheet sheet = excel['Sheet1']; // Nome da planilha
 
-    List<dynamic?> titulo = [
+    List<dynamic> titulo = [
       "Transações do veículo ${ServiceStorage.titleSelectedVehicle().toUpperCase()}"
     ];
 
@@ -336,7 +337,7 @@ class TransactionController extends GetxController {
     cell.cellStyle = cellStyle;
     cell2.cellStyle = cellStyle;
 
-    List<dynamic?> cabecalho = [
+    List<dynamic> cabecalho = [
       "Descricao",
       "Tipo",
       "Data",
@@ -353,7 +354,7 @@ class TransactionController extends GetxController {
     sheet.appendRow(cabecalho);
 
     for (var transaction in listTransactions) {
-      List<dynamic?> row = [];
+      List<dynamic> row = [];
       row.add((transaction.descricao?.toUpperCase() ?? ''));
       row.add((transaction.tipoTransacao?.toUpperCase() ?? ''));
       row.add((FormattedInputers.formatApiDate(transaction.data!) ?? ''));
@@ -393,9 +394,9 @@ class TransactionController extends GetxController {
           ? transaction.uf?.toUpperCase()
           : '';
 
-      String? cidade_uf =
+      String? cidadeUf =
           cidade!.isNotEmpty && uf!.isNotEmpty ? "$cidade - $uf" : "";
-      row.add(cidade_uf);
+      row.add(cidadeUf);
 
       row.add((("R\$ ${FormattedInputers.formatValuePTBR(transaction.saldo)}" ??
           '')));
@@ -410,7 +411,7 @@ class TransactionController extends GetxController {
     if (tripController.listTrip.isNotEmpty) {
       Sheet sheet2 = excel['Trechos'];
 
-      List<dynamic?> titulo2 = [
+      List<dynamic> titulo2 = [
         "Trechos percorrido veiculo: ${ServiceStorage.titleSelectedVehicle().toUpperCase()}"
       ];
 
@@ -419,7 +420,7 @@ class TransactionController extends GetxController {
 
       sheet2.appendRow(titulo2);
 
-      List<dynamic?> cabecalho2 = [
+      List<dynamic> cabecalho2 = [
         "Data",
         "Tipo",
         "Origem",
@@ -430,7 +431,7 @@ class TransactionController extends GetxController {
       int cont = 3;
       for (var trip in tripController.listTrip) {
         sheet2.appendRow(cabecalho2);
-        List<dynamic?> rowTrip = [];
+        List<dynamic> rowTrip = [];
         rowTrip
             .add((FormattedInputers.formatApiDateTime(trip.dataHora!) ?? ''));
         rowTrip.add((trip.tipoSaidaChegada?.toUpperCase() ?? ''));
@@ -444,7 +445,7 @@ class TransactionController extends GetxController {
           sheet2.appendRow(["", "", "", "", ""]);
           sheet2.appendRow(["Despesas do trecho:"]);
           for (var expenseTrip in trip.expenseTrip!) {
-            List<dynamic?> rowExpenseTrip = [];
+            List<dynamic> rowExpenseTrip = [];
             rowExpenseTrip.add((expenseTrip.descricao?.toUpperCase() ?? ''));
             rowExpenseTrip.add(
                 (("R\$ ${FormattedInputers.formatValuePTBR((expenseTrip.valorDespesa! / 100).toString())}" ??
@@ -462,7 +463,7 @@ class TransactionController extends GetxController {
       }
     }
     // FINALIZAR TRECHOS E DESPESAS
-    final output = await excel.save();
+    final output = excel.save();
     final int randomNum = Random().nextInt(100000);
     // Obtém o diretório para salvar o arquivo
     Directory directory = await getApplicationDocumentsDirectory();
@@ -546,7 +547,7 @@ class TransactionController extends GetxController {
     } catch (e) {
       Get.snackbar(
         'Erro',
-        'Ocorreu um erro ao compartilhar o arquivo. ${e}',
+        'Ocorreu um erro ao compartilhar o arquivo. $e',
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
@@ -798,6 +799,7 @@ class TransactionController extends GetxController {
         transaction.ddd = txtDDDController.text;
         transaction.telefone = txtPhoneController.text;
         transaction.empresa = txtCompanyController.text;
+        transaction.km = txtKmController.text;
       } else if (typeTransaction == "entrada") {
         transaction.quantidadeTonelada =
             FormattedInputers.convertToDouble(txtTonController.text);
@@ -871,6 +873,7 @@ class TransactionController extends GetxController {
                 FormattedInputers.convertToDouble(txtTonController.text),
             tipoCargaId: selectedCargoType.value,
             tipoTransacao: typeTransaction,
+            km: txtKmController.text,
             photos: photos,
           ),
           selectedImagesPathsApiRemove);
@@ -996,6 +999,8 @@ class TransactionController extends GetxController {
     txtDestinyController.text =
         selected.destino != null ? selected.destino.toString() : "";
 
+    txtKmController.text = selected.km != null ? selected.km.toString() : "";
+
     txtTonController.text = selected.quantidadeTonelada != null
         ? selected.quantidadeTonelada.toString()
         : "";
@@ -1035,6 +1040,7 @@ class TransactionController extends GetxController {
       txtDescriptionFilterController,
       startDateController,
       endDateController,
+      txtKmController,
     ];
     selectedCategory.value = 0;
     selectedSpecificType.value = 0;

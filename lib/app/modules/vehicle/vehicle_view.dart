@@ -175,6 +175,8 @@ class VehiclesView extends GetView<VehicleController> {
                         snackPosition: SnackPosition.BOTTOM);
                   } else {
                     controller.isLoading.value = false;
+                    controller.isLoadingPlate.value = false;
+                    controller.areFieldsVisible.value = false;
                     controller.clearAllFields();
                     controller.getAllUserPlans();
                     showModalBottomSheet(
