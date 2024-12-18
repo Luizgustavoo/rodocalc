@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "161282938049",
+    "project_id": "rodo-calc-push-notifications",
+    "storage_bucket": "rodo-calc-push-notifications.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:161282938049:android:2c454f114ad3e286043040",
+        "android_client_info": {
+          "package_name": "br.com.rodocalc"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrrAM992tJGH7682EVJrmetQXIxZr1M-I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
