@@ -19,7 +19,7 @@ class WidgetPlan extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: Get.width,
-      color: Colors.red,
+      color: const Color.fromARGB(255, 110, 110, 110),
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -48,7 +48,7 @@ class WidgetPlan extends StatelessWidget {
             ],
           ),
           ServiceStorage.getUserTypeId() == 4
-              ? SizedBox.shrink()
+              ? const SizedBox.shrink()
               : ElevatedButton(
                   onPressed: () async {
                     await planController.getAll();

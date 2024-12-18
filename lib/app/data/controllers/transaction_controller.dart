@@ -291,6 +291,10 @@ class TransactionController extends GetxController {
                         style: const pw.TextStyle(
                           color: PdfColors.red,
                         )),
+                    pw.Text('KM: ${transaction.km ?? 'N/A'}',
+                        style: const pw.TextStyle(
+                          color: PdfColors.red,
+                        )),
                     pw.Text(
                         'DATA: ${transaction.data != null ? FormattedInputers.formatApiDate(transaction.data!) : 'N/A'}',
                         style: const pw.TextStyle(
@@ -341,6 +345,7 @@ class TransactionController extends GetxController {
       "Descricao",
       "Tipo",
       "Data",
+      "KM",
       "Categoria",
       "Tipo Especifico",
       "Origem",
@@ -358,6 +363,9 @@ class TransactionController extends GetxController {
       row.add((transaction.descricao?.toUpperCase() ?? ''));
       row.add((transaction.tipoTransacao?.toUpperCase() ?? ''));
       row.add((FormattedInputers.formatApiDate(transaction.data!) ?? ''));
+      row.add(transaction.km != null && transaction.km != 'null'
+          ? transaction.km
+          : '');
       if (transaction.tipoTransacao == "saida" &&
           transaction.expenseCategory != null) {
         row.add((transaction.expenseCategory!.descricao?.toUpperCase() ?? ''));

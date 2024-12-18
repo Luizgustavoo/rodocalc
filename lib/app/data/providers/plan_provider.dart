@@ -196,12 +196,6 @@ class PlanApiClient {
       final token = "Bearer ${ServiceStorage.getToken()}";
       final indicatorUrl = Uri.parse('$baseUrl/v1/planousuario/contratar');
 
-      // var cardToken = await createTokenCard(creditCard);
-
-      // if (cardToken.isBlank || cardToken == "") {
-      //   return null;
-      // }
-
       var cardToken = "";
 
       final Auth auth = ServiceStorage.getAuth();
@@ -458,6 +452,103 @@ class PlanApiClient {
           'Authorization': token,
         },
         body: requestBody,
+      );
+
+      return json.decode(response.body);
+    } catch (err) {
+      return null;
+    }
+  }
+
+  createPix(UserPlan userPlan, String recurrence) async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+      final indicatorUrl = Uri.parse('$baseUrl/v1/planousuario/pix');
+
+      var cardToken = "";
+
+      final Auth auth = ServiceStorage.getAuth();
+
+      Map<String, String> telefoneSplit =
+          Services.separarDDD(auth.user!.people!.telefone.toString());
+
+      String enderecoCompleto =
+          "${auth.user!.people!.numeroCasa}, ${auth.user!.people!.endereco}, ${auth.user!.people!.bairro}";
+
+      String cpf = Services.limparCPF(auth.user!.people!.cpf.toString());
+      String cep = Services.limparCEP(auth.user!.people!.cep.toString());
+      String nome = auth.user!.people!.nome.toString();
+
+      String cidade = auth.user!.people!.cidade.toString();
+      String uf = auth.user!.people!.uf.toString();
+
+      int valor = userPlan.valorPlano!;
+
+      String recurrenceDays = "0";
+
+      switch (recurrence) {
+        case 'MENSAL':
+          recurrenceDays = "30";
+          break;
+        case 'SEMESTRAL':
+          recurrenceDays = "180";
+          break;
+        case 'ANUAL':
+          recurrenceDays = "365";
+          break;
+      }
+
+      var requestBody = {
+        'recorrencia': recurrenceDays.toString(),
+        'usuario_id': userPlan.usuarioId.toString(),
+        'plano_id': userPlan.planoId.toString(),
+        'token_card': cardToken.toString(),
+        'quantidade_licencas': userPlan.quantidadeLicencas.toString(),
+        'holder_document': cpf,
+        'label': 'Rodocalc',
+        'billing_address_line_1': enderecoCompleto,
+        'billing_address_line_2': '',
+        'billing_address_zip_code': cep,
+        'billing_address_city': cidade,
+        'billing_address_state': uf,
+        'billing_address_country': 'BR',
+        /*---------FIM DADOS DO CARTÃO-------*/
+        "item_id": "123456",
+        "item_description": "Item description",
+        "item_amount": valor.toString(),
+        "item_quantity": userPlan.quantidadeLicencas.toString(),
+        "interval": "30",
+        "customer_name": nome,
+        "customer_email": auth.user!.email.toString(),
+        "customer_document": cpf,
+        "installments": "1",
+        "billing_address_line_1": enderecoCompleto,
+        "billing_address_zipcode": cep,
+        "billing_address_city": cidade,
+        "billing_address_state": uf,
+        "billing_address_country": "BR",
+        "customer_address_line_1": enderecoCompleto,
+        "customer_address_zip_code": cep,
+        "customer_address_city": cidade,
+        "customer_address_state": uf,
+        "customer_address_country": "BR",
+        "customer_phone_home_country_code": "55",
+        "customer_phone_home_area_code": telefoneSplit['ddd'],
+        "customer_phone_home_number": telefoneSplit['numero'],
+        "customer_phone_mobile_country_code": "55",
+        "customer_phone_mobile_area_code": telefoneSplit['ddd'],
+        "customer_phone_mobile_number": telefoneSplit['numero'],
+        "payment_method": "pix",
+      };
+
+      final response = await http.post(
+        indicatorUrl,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': token,
+        },
+        body: jsonEncode(requestBody),
       );
 
       return json.decode(response.body);

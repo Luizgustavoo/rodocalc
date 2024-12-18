@@ -75,6 +75,15 @@ class PlanRepository {
     }
   }
 
+  createPix(UserPlan userplan, String recurrence) async {
+    try {
+      var response = await apiClient.createPix(userplan, recurrence);
+      return response;
+    } catch (e) {
+      Exception(e);
+    }
+  }
+
   updateSubscribe(
       UserPlan userplan, CreditCard creditCard, String subscriptionId) async {
     try {

@@ -17,6 +17,8 @@ class PlanController extends GetxController {
   var selectedPlanDropDown = 0.obs;
   RxDouble licensePrice = 0.0.obs;
 
+  var paymentMethod = ''.obs;
+
   var selectedRecurrence = ''.obs;
   var shouldChangeCard = false.obs;
 
@@ -111,6 +113,72 @@ class PlanController extends GetxController {
     }
     isLoadingSubscrible.value = false;
     return retorno;
+  }
+
+  var linkQrCode = ''.obs;
+  var codeCopyPaste = ''.obs;
+  var isGeneratePix = false.obs;
+  var remainingTime = 15.obs;
+
+  Future<Map<String, dynamic>> createPix() async {
+    // Verificar se o formulário é válido
+    if (planKey.currentState!.validate()) {
+      isLoadingSubscrible.value = true;
+      linkQrCode.value = '';
+      codeCopyPaste.value = '';
+      isGeneratePix.value = false;
+
+      try {
+        // Chamar o método do repositório para criar o Pix
+        final mensagem = await repository.createPix(
+          UserPlan(
+            usuarioId: ServiceStorage.getUserId(),
+            planoId: selectedPlan.value!.id!,
+            quantidadeLicencas: selectedLicenses.value,
+            valorPlano: Services.converterParaCentavos(calculatedPrice.value),
+          ),
+          selectedRecurrence.value,
+        );
+
+        isLoadingSubscrible.value = false;
+
+        if (mensagem != null && mensagem['charges'] != null) {
+          final lastTransaction = mensagem['charges'][0]['last_transaction'];
+
+          // Armazenar o QR Code e a URL
+          codeCopyPaste.value = lastTransaction['qr_code'] ?? '';
+          linkQrCode.value = lastTransaction['qr_code_url'] ?? '';
+
+          isGeneratePix.value = true;
+
+          // Retornar sucesso
+          return {
+            'success': true,
+            'message': 'Pix gerado com sucesso!',
+          };
+        } else {
+          isGeneratePix.value = false;
+          return {
+            'success': false,
+            'message': 'Falha ao gerar o Pix!',
+          };
+        }
+      } catch (e) {
+        // Tratar erros da chamada à API
+        isGeneratePix.value = false;
+        isLoadingSubscrible.value = false;
+        return {
+          'success': false,
+          'message': 'Erro ao realizar a operação!',
+        };
+      }
+    }
+
+    // Caso o formulário não seja válido
+    return {
+      'success': false,
+      'message': 'Dados inválidos!',
+    };
   }
 
   Future<Map<String, dynamic>> createTokenCard() async {

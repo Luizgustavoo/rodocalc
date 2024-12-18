@@ -13,19 +13,22 @@ class UserPlan {
   int? quantidadeLicencas;
   Plan? plano;
   List<Vehicle>? veiculos;
+  dynamic pix;
 
-  UserPlan(
-      {this.id,
-      this.usuarioId,
-      this.planoId,
-      this.dataAssinaturaPlano,
-      this.dataVencimentoPlano,
-      this.quantidadeLicencas,
-      this.assignatureId,
-      this.valorPlano,
-      this.valorPlano2,
-      this.veiculos,
-      this.plano});
+  UserPlan({
+    this.id,
+    this.usuarioId,
+    this.planoId,
+    this.dataAssinaturaPlano,
+    this.dataVencimentoPlano,
+    this.quantidadeLicencas,
+    this.assignatureId,
+    this.valorPlano,
+    this.valorPlano2,
+    this.veiculos,
+    this.plano,
+    this.pix,
+  });
 
   UserPlan.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -37,6 +40,7 @@ class UserPlan {
     assignatureId = json['assignature_id'];
     valorPlano = (json['valor_plano'] * 100).toInt();
     valorPlano2 = (json['valor_plano']).toInt();
+    pix = (json['pix']).toInt();
     plano = json['plano'] != null ? Plan.fromJson(json['plano']) : null;
     if (json['veiculos'] != null) {
       veiculos = <Vehicle>[];
@@ -57,6 +61,7 @@ class UserPlan {
     data['assignature_id'] = assignatureId;
     data['valor_plano'] = valorPlano;
     data['valor_plano'] = valorPlano2;
+    data['pix'] = pix;
     if (plano != null) {
       data['plano'] = plano!.toJson();
     }

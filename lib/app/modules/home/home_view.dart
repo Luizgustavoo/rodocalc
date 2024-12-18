@@ -848,15 +848,14 @@ class HomeView extends GetView<HomeController> {
                       child: CircularProgressIndicator(),
                     ),
                   );
-                } else if (controller.diasRestantes.value <= 5 &&
+                } else if (controller.diasRestantes.value <= 2 &&
                     controller.diasRestantes.value >= 0) {
                   return Positioned(
                     bottom: 0,
                     left: 0,
                     child: WidgetPlan(
                       planController: planController,
-                      titulo:
-                          "${controller.diasRestantes.value} dia(s) restante(s) para o vencimento!",
+                      titulo: "Renove seu plano.",
                       data: controller.dataVencimento.value,
                     ),
                   );
