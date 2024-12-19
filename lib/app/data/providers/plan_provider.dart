@@ -320,8 +320,6 @@ class PlanApiClient {
         },
       );
 
-      print(response.body);
-
       Auth authh = Auth.fromJson(json.decode(responsePlan.body));
       final box = GetStorage('rodocalc');
       box.write('auth', authh.toJson());
@@ -331,6 +329,26 @@ class PlanApiClient {
     } catch (err) {
       return null;
     }
+  }
+
+  updateStorageUserPlan() async {
+    //MÉTODO PARA ATUALIZAR O STORAGE COM AS NOVAS ROTAS DE ACORDO COM O PLANO SELECIONADO!
+    final token = "Bearer ${ServiceStorage.getToken()}";
+    final planUserUrl = Uri.parse(
+        '$baseUrl/v1/usuario/getuserbyid/${ServiceStorage.getUserId()}');
+    final responsePlan = await http.get(
+      planUserUrl,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': token,
+      },
+    );
+
+    Auth authh = Auth.fromJson(json.decode(responsePlan.body));
+    final box = GetStorage('rodocalc');
+    box.write('auth', authh.toJson());
+    //FINAL DA ATUALIZAÇÃO DO STORAGE.
   }
 
   updateSubscribe(

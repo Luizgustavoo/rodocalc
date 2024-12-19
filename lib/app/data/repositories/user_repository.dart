@@ -49,4 +49,16 @@ class UserRepository {
       Exception(e);
     }
   }
+
+  updateFirebaseTokenUser(User user, String firebaseToken) async {
+    try {
+      var response =
+          await apiClient.updateFirebaseTokenUser(user, firebaseToken);
+
+      return response;
+    } catch (e) {
+      print('Erro ao atualizar a família: $e');
+      rethrow;
+    }
+  }
 }

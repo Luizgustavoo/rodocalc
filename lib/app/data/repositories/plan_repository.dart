@@ -75,6 +75,14 @@ class PlanRepository {
     }
   }
 
+  updateStorageUserPlan() async {
+    try {
+      return await apiClient.updateStorageUserPlan();
+    } catch (e) {
+      Exception(e);
+    }
+  }
+
   createPix(UserPlan userplan, String recurrence) async {
     try {
       var response = await apiClient.createPix(userplan, recurrence);

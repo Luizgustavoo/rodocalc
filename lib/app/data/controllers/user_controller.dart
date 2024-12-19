@@ -353,4 +353,21 @@ class UserController extends GetxController {
     selectedVehicleDropDown = 0.obs;
     setImage(false);
   }
+
+  Future<Map<String, dynamic>> updateFirebaseTokenUser(
+      {String? tokenFirebase}) async {
+    User user =
+        User(id: ServiceStorage.getUserId(), tokenFirebase: tokenFirebase);
+
+    final mensagem =
+        await repository.updateFirebaseTokenUser(user, tokenFirebase!);
+
+    if (mensagem == null) {
+      if (mensagem['message'] == 'success') {
+        retorno = {"return": 1, "message": "Falha ao cadastrar token!"};
+      }
+    }
+
+    return retorno;
+  }
 }

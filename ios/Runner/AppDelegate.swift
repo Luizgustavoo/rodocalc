@@ -9,8 +9,23 @@ import Firebase
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    FirebaseApp.configure()
     GeneratedPluginRegistrant.register(with: self)
+
+    // Solicitar permissões para notificações
+    UNUserNotificationCenter.current().delegate = self
+    let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+    UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { granted, error in
+      if let error = error {
+        print("Erro ao solicitar permissões: \(error)")
+      } else if granted {
+        print("Permissões concedidas para notificações")
+      }
+    }
+
+    application.registerForRemoteNotifications()
+
+
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
+
 }

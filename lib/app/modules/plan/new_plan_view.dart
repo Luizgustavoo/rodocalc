@@ -1,8 +1,8 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/login_controller.dart';
 import 'package:rodocalc/app/data/controllers/plan_controller.dart';
-import 'package:rodocalc/app/data/models/user_plan_model.dart';
 import 'package:rodocalc/app/global/custom_app_bar.dart';
 import 'package:rodocalc/app/modules/plan/widgets/update_plan_modal.dart';
 import 'package:rodocalc/app/routes/app_routes.dart';
@@ -14,6 +14,21 @@ class NewPlanView extends GetView<PlanController> {
 
   @override
   Widget build(BuildContext context) {
+    RxString mensagem = ''.obs;
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      String status = message.data['status'] ?? '';
+
+      mensagem.value = status.isNotEmpty
+          ? status
+          : message.notification?.body ?? 'Sem mensagem';
+
+      if (status == 'paid') {
+        Get.find<PlanController>().updateStorageUserPlan();
+        Get.offAllNamed(Routes.home);
+      }
+    });
+
     return Scaffold(
       appBar: const CustomAppBar(title: 'MEU PLANO'),
       body: Stack(
@@ -154,6 +169,21 @@ class NewPlanView extends GetView<PlanController> {
                             style: const TextStyle(fontFamily: 'Inter-Black'),
                           ),
                         ],
+                      ),
+                      Obx(
+                        () => Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              "Mensagem:",
+                              style: TextStyle(fontFamily: 'Inter-Black'),
+                            ),
+                            Text(
+                              mensagem.value,
+                              style: const TextStyle(fontFamily: 'Inter-Black'),
+                            ),
+                          ],
+                        ),
                       ),
                       const SizedBox(height: 30),
                       userPlan.pix == 1

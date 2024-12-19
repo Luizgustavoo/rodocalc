@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "161282938049",
-    "project_id": "rodo-calc-push-notifications",
-    "storage_bucket": "rodo-calc-push-notifications.firebasestorage.app"
+    "project_number": "7732356358",
+    "project_id": "rodocalc-push",
+    "storage_bucket": "rodocalc-push.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:161282938049:android:2c454f114ad3e286043040",
+        "mobilesdk_app_id": "1:7732356358:android:8224277eb5d9c8f612ea87",
         "android_client_info": {
           "package_name": "br.com.rodocalc"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBrrAM992tJGH7682EVJrmetQXIxZr1M-I"
+          "current_key": "AIzaSyDsw2EE7b2CBIZVQ8odRpu_qwr_qpbTeLE"
         }
       ],
       "services": {

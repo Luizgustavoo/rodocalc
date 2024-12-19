@@ -12,6 +12,7 @@ class User {
   String? createdAt;
   String? updatedAt;
   String? dataInicio;
+  String? tokenFirebase;
 
   String? cupomParaIndicar;
   String? cupomRecebido;
@@ -44,6 +45,7 @@ class User {
     this.vehicles,
     this.comissoesIndicador,
     this.planos,
+    this.tokenFirebase,
   });
 
   User.fromJson(Map<String, dynamic> json) {
@@ -57,6 +59,7 @@ class User {
     dataInicio = json['data_inicio'];
     cupomParaIndicar = json['cupom_para_indicar'];
     cupomRecebido = json['cupom_recebido'];
+    tokenFirebase = json['token_firebase'];
     status =
         json['status'] != null ? int.tryParse(json['status'].toString()) : null;
     userTypeId = json['usertype_id'] != null
@@ -102,6 +105,7 @@ class User {
     data['contato'] = contato;
     data['cupom_para_indicar'] = cupomParaIndicar;
     data['cupom_recebido'] = cupomRecebido;
+    data['token_firebase'] = tokenFirebase;
     if (people != null) {
       data['pessoa'] = people!.toJson();
     }

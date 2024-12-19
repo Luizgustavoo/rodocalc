@@ -63,6 +63,8 @@ class FirebaseApi {
     FirebaseMessaging.onMessageOpenedApp.listen(handleMessage);
     FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
     FirebaseMessaging.onMessage.listen((message) {
+      print("Chegou notificação");
+
       final notification = message.notification;
       if (notification == null) return;
 

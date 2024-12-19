@@ -181,6 +181,10 @@ class PlanController extends GetxController {
     };
   }
 
+  updateStorageUserPlan() async {
+    await repository.updateStorageUserPlan();
+  }
+
   Future<Map<String, dynamic>> createTokenCard() async {
     if (planKey.currentState!.validate()) {
       isLoadingSubscrible.value = true;

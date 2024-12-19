@@ -50,19 +50,19 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBrrAM992tJGH7682EVJrmetQXIxZr1M-I',
-    appId: '1:161282938049:android:2c454f114ad3e286043040',
-    messagingSenderId: '161282938049',
-    projectId: 'rodo-calc-push-notifications',
-    storageBucket: 'rodo-calc-push-notifications.firebasestorage.app',
+    apiKey: 'AIzaSyDsw2EE7b2CBIZVQ8odRpu_qwr_qpbTeLE',
+    appId: '1:7732356358:android:8224277eb5d9c8f612ea87',
+    messagingSenderId: '7732356358',
+    projectId: 'rodocalc-push',
+    storageBucket: 'rodocalc-push.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyANEpJ_xMR5qT1HKio7XLeS_fNVbDzy0uM',
-    appId: '1:161282938049:ios:744e1012c9a04bf9043040',
-    messagingSenderId: '161282938049',
-    projectId: 'rodo-calc-push-notifications',
-    storageBucket: 'rodo-calc-push-notifications.firebasestorage.app',
+    apiKey: 'AIzaSyAay_krYJMbMTfRq79JwUpgK4Dp1POva6Q',
+    appId: '1:7732356358:ios:7195da3f0d607f3912ea87',
+    messagingSenderId: '7732356358',
+    projectId: 'rodocalc-push',
+    storageBucket: 'rodocalc-push.firebasestorage.app',
     iosBundleId: 'br.com.rodocalc',
   );
 }

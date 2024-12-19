@@ -1,9 +1,14 @@
+import 'dart:io';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:rodocalc/app/data/controllers/user_controller.dart';
 import 'package:rodocalc/app/data/controllers/vehicle_controller.dart';
 import 'package:rodocalc/app/data/models/auth_model.dart';
 import 'package:rodocalc/app/data/repositories/auth_repository.dart';
+import 'package:rodocalc/app/utils/service_storage.dart';
 
 class LoginController extends GetxController {
   var isLoading = false.obs;
@@ -64,6 +69,15 @@ class LoginController extends GetxController {
         box.write('auth', auth?.toJson());
         clearAllFields();
         Get.offAllNamed('/home');
+
+        String? tokenFirebase = (Platform.isAndroid
+            ? await FirebaseMessaging.instance.getToken()
+            : await FirebaseMessaging.instance.getAPNSToken());
+
+        if (tokenFirebase!.trim().isNotEmpty) {
+          await Get.find<UserController>()
+              .updateFirebaseTokenUser(tokenFirebase: tokenFirebase);
+        }
 
         final vehicleController = Get.put(VehicleController());
         vehicleController.getAll();

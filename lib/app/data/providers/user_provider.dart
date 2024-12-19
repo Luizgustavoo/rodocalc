@@ -245,4 +245,33 @@ class UserApiClient {
     }
     return null;
   }
+
+  updateFirebaseTokenUser(User user, String tokenFirebase) async {
+    try {
+      var userUrl =
+          Uri.parse('$baseUrl/v1/usuario/update-token-firebase/${user.id}');
+
+      final token = "Bearer ${ServiceStorage.getToken()}";
+
+      var requestBody = {
+        "token_firebase": tokenFirebase,
+      };
+
+      var response = await httpClient.post(
+        userUrl,
+        headers: {
+          "Accept": "application/json",
+          "Authorization": token,
+        },
+        body: requestBody,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return json.decode(response.body);
+      }
+    } catch (err) {
+      print(err);
+    }
+    return null;
+  }
 }
