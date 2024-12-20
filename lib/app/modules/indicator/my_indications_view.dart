@@ -88,17 +88,25 @@ class MyIndicationsView extends GetView<IndicationController> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            const Text(
+                                            Text(
                                               'Indicação por link',
                                               style: TextStyle(
-                                                  fontSize: 12,
+                                                  fontSize:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .width *
+                                                          0.03,
                                                   color: Colors.white,
                                                   fontFamily: 'Inter-Regular'),
                                             ),
                                             Text(
                                               cupom,
-                                              style: const TextStyle(
-                                                  fontSize: 25,
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .width *
+                                                          0.05,
                                                   color: Colors.orange,
                                                   fontFamily: 'Inter-Black'),
                                             ),
