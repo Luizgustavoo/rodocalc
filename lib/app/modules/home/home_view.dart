@@ -72,7 +72,8 @@ class HomeView extends GetView<HomeController> {
                               Colors.black.withOpacity(0.7),
                               BlendMode.darken,
                             ),
-                            child: !ServiceStorage.existsSelectedVehicle()
+                            child: (!ServiceStorage.existsSelectedVehicle() ||
+                                    ServiceStorage.photoSelectedVehicle() == "")
                                 ? Image.asset(
                                     'assets/images/caminhao.jpg',
                                     fit: BoxFit.cover,
@@ -259,8 +260,11 @@ class HomeView extends GetView<HomeController> {
                                     const SizedBox(width: 10),
                                     CircleAvatar(
                                       radius: 40,
-                                      backgroundImage: !ServiceStorage
-                                              .existsSelectedVehicle()
+                                      backgroundImage: (!ServiceStorage
+                                                  .existsSelectedVehicle() ||
+                                              ServiceStorage
+                                                      .photoSelectedVehicle() ==
+                                                  "")
                                           ? const AssetImage(
                                                   'assets/images/caminhao.jpg')
                                               as ImageProvider

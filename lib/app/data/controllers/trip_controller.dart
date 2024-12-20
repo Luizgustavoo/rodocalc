@@ -28,6 +28,7 @@ class TripController extends GetxController {
   final priceTollsController = TextEditingController();
   final othersExpensesController = TextEditingController();
   final txtDateController = TextEditingController();
+  final txtKmController = TextEditingController();
 
   final expenseTripFormKey = GlobalKey<FormState>();
   final txtDateExpenseTripController = TextEditingController();
@@ -349,6 +350,7 @@ class TripController extends GetxController {
       valorDespesa: FormattedInputers.convertForCents(
           txtAmountExpenseTripController.text),
       status: 1,
+      km: txtKmController.text,
     ));
 
     if (mensagem != null) {
@@ -382,6 +384,7 @@ class TripController extends GetxController {
       valorDespesa: FormattedInputers.convertForCents(
           txtAmountExpenseTripController.text),
       status: 1,
+      km: txtKmController.text,
     ));
 
     if (mensagem != null) {

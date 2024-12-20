@@ -19,6 +19,8 @@ class VehicleController extends GetxController {
   var selectedImagePath = ''.obs;
   var selectedPlanDropDown = 0.obs;
   RxBool setImage = false.obs;
+  RxBool editMode = false.obs;
+  RxBool newImage = false.obs;
 
   RxBool trailerCheckboxValue = false.obs;
 
@@ -106,6 +108,7 @@ class VehicleController extends GetxController {
 
         if (compressedFile != null) {
           selectedImagePath.value = compressedFile.path;
+          newImage.value = true;
 
           // Optional: Check the size of the compressed file
           final fileSize = await compressedFile.length();
@@ -271,6 +274,7 @@ class VehicleController extends GetxController {
   }
 
   void fillInFields() {
+    editMode(true);
     txtPlateController.text = selectedVehicle.placa.toString();
     txtBrandController.text = selectedVehicle.marca.toString();
     txtYearController.text = selectedVehicle.ano.toString();
@@ -279,9 +283,11 @@ class VehicleController extends GetxController {
     txtKmInicialController.text = selectedVehicle.kmInicial.toString();
     txtTrailerController.text = selectedVehicle.reboque.toString();
     selectedPlanDropDown.value = selectedVehicle.planoUsuarioId!;
+
     trailerCheckboxValue.value =
         selectedVehicle.reboque == 'sim' ? true : false;
-    if (selectedVehicle.foto!.isNotEmpty) {
+
+    if (selectedVehicle.foto != null && selectedVehicle.foto!.isNotEmpty) {
       setImage(true);
       selectedImagePath.value = selectedVehicle.foto!;
     }

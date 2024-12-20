@@ -1,26 +1,24 @@
 // ignore_for_file: avoid_print
-
 import 'dart:convert';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
+import 'package:rodocalc/app/data/controllers/plan_controller.dart';
+import 'package:rodocalc/app/routes/app_routes.dart';
 
-Future<void> handleBackgroundMessage(message) async {
-  FirebaseMessaging.instance.getInitialMessage().then(
-    (remoteMessage) {
-      final Map<String, dynamic>? data = remoteMessage?.data;
-      if (data != null &&
-          data.containsKey('click_action') &&
-          data['click_action'] == 'FLUTTER_NOTIFICATION_CLICK') {
-        Get.toNamed('/list-message');
-      }
-    },
-  );
+Future<void> backgroundMessageHandler(RemoteMessage message) async {
+  print("Notificação em segundo plano!");
+
+  String status = message.data['status'] ?? '';
+  if (status == 'paid') {
+    await Get.find<PlanController>().updateStorageUserPlan();
+    Get.offAllNamed(Routes.home);
+  }
 }
 
 class FirebaseApi {
   final _firebaseMessaging = FirebaseMessaging.instance;
+  final _localNotifications = FlutterLocalNotificationsPlugin();
 
   final _androidChannel = const AndroidNotificationChannel(
     'high_importance_channel',
@@ -28,72 +26,82 @@ class FirebaseApi {
     description: 'This channel is used for important notifications',
     importance: Importance.defaultImportance,
   );
-  final _localNotifications = FlutterLocalNotificationsPlugin();
 
-  void handleMessage(RemoteMessage? message) {
-    if (message == null) return;
+  void _handleMessage(RemoteMessage message) {
+    print("Notificação clicou!");
 
-    Get.toNamed('/list-message');
+    //Get.toNamed('/list-message');
   }
 
-  Future initLocalNotifications() async {
+  Future<void> _initLocalNotifications() async {
+    const android =
+        AndroidInitializationSettings('@drawable/launch_background');
     const iOS = IOSInitializationSettings();
-    const android = AndroidInitializationSettings('@drawable/ic_launcher');
     const settings = InitializationSettings(android: android, iOS: iOS);
 
     await _localNotifications.initialize(settings,
         onSelectNotification: (payload) {
-      final message = RemoteMessage.fromMap(jsonDecode(payload!));
-      handleMessage(message);
+      if (payload != null) {
+        final message = RemoteMessage.fromMap(jsonDecode(payload));
+        _handleMessage(message);
+      }
     });
 
-    final plataform = _localNotifications.resolvePlatformSpecificImplementation<
+    final platform = _localNotifications.resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin>();
-    await plataform?.createNotificationChannel(_androidChannel);
+    await platform?.createNotificationChannel(_androidChannel);
   }
 
-  Future initPushNotifications() async {
-    await FirebaseMessaging.instance
-        .setForegroundNotificationPresentationOptions(
+  Future<void> _initPushNotifications() async {
+    await _firebaseMessaging.setForegroundNotificationPresentationOptions(
       alert: true,
       badge: true,
       sound: true,
     );
-    _firebaseMessaging.getInitialMessage().then(handleMessage);
-    FirebaseMessaging.onMessageOpenedApp.listen(handleMessage);
-    FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
-    FirebaseMessaging.onMessage.listen((message) {
-      print("Chegou notificação");
 
-      final notification = message.notification;
-      if (notification == null) return;
+    FirebaseMessaging.onMessage.listen((message) async {
+      print("Primeiro plano");
 
-      _localNotifications.show(
-        notification.hashCode,
-        notification.title,
-        notification.body,
-        NotificationDetails(
+      String status = message.data['status'] ?? '';
+      if (status == 'paid') {
+        await Get.find<PlanController>().updateStorageUserPlan();
+        Get.offAllNamed(Routes.home);
+      }
+
+      if (message.notification != null) {
+        _localNotifications.show(
+          message.hashCode,
+          message.notification!.title,
+          message.notification!.body,
+          NotificationDetails(
             android: AndroidNotificationDetails(
               _androidChannel.id,
               _androidChannel.name,
               channelDescription: _androidChannel.description,
-              icon: '@drawable/ic_launcher',
+              // icon: '@drawable/ic_launcher',
             ),
-            iOS: const IOSNotificationDetails(
-              presentAlert: true,
-              presentBadge: true,
-              presentSound: true,
-            )),
-        payload: jsonEncode(message.toMap()),
-      );
+            iOS: const IOSNotificationDetails(),
+          ),
+          payload: jsonEncode(message.toMap()),
+        );
+      }
     });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      print("Abriu a notificação");
+      _handleMessage(message);
+    });
+
+    FirebaseMessaging.onBackgroundMessage(backgroundMessageHandler);
   }
 
   Future<void> initNotifications() async {
-    await _firebaseMessaging.requestPermission();
-    Future.delayed(const Duration(seconds: 5), () {
-      initPushNotifications();
-    });
-    initLocalNotifications();
+    final permission = await _firebaseMessaging.requestPermission();
+    // print("Notification Permission: \${permission.authorizationStatus}");
+
+    await _initLocalNotifications();
+    await _initPushNotifications();
+
+    // print("Notification System Initialized");
   }
 }

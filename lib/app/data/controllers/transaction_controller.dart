@@ -446,11 +446,12 @@ class TransactionController extends GetxController {
         rowTrip.add((trip.origem?.toUpperCase() ?? ''));
         rowTrip.add((trip.destino?.toUpperCase() ?? ''));
         rowTrip.add(("${trip.distancia} km" ?? ''));
+
         sheet2.appendRow(rowTrip);
         cont++;
 
         if (trip.expenseTrip!.isNotEmpty) {
-          sheet2.appendRow(["", "", "", "", ""]);
+          sheet2.appendRow(["", "", "", "", "", ""]);
           sheet2.appendRow(["Despesas do trecho:"]);
           for (var expenseTrip in trip.expenseTrip!) {
             List<dynamic> rowExpenseTrip = [];
@@ -461,6 +462,7 @@ class TransactionController extends GetxController {
             rowExpenseTrip.add(
                 (FormattedInputers.formatApiDateTime(expenseTrip.dataHora!) ??
                     ''));
+            rowExpenseTrip.add((expenseTrip.km?.toUpperCase() ?? ''));
             sheet2.appendRow(rowExpenseTrip);
           }
         }

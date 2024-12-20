@@ -14,20 +14,20 @@ class NewPlanView extends GetView<PlanController> {
 
   @override
   Widget build(BuildContext context) {
-    RxString mensagem = ''.obs;
+    // RxString mensagem = ''.obs;
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      String status = message.data['status'] ?? '';
+    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    //   String status = message.data['status'] ?? '';
 
-      mensagem.value = status.isNotEmpty
-          ? status
-          : message.notification?.body ?? 'Sem mensagem';
+    //   mensagem.value = status.isNotEmpty
+    //       ? status
+    //       : message.notification?.body ?? 'Sem mensagem';
 
-      if (status == 'paid') {
-        Get.find<PlanController>().updateStorageUserPlan();
-        Get.offAllNamed(Routes.home);
-      }
-    });
+    //   if (status == 'paid') {
+    //     Get.find<PlanController>().updateStorageUserPlan();
+    //     Get.offAllNamed(Routes.home);
+    //   }
+    // });
 
     return Scaffold(
       appBar: const CustomAppBar(title: 'MEU PLANO'),
@@ -170,21 +170,6 @@ class NewPlanView extends GetView<PlanController> {
                           ),
                         ],
                       ),
-                      Obx(
-                        () => Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              "Mensagem:",
-                              style: TextStyle(fontFamily: 'Inter-Black'),
-                            ),
-                            Text(
-                              mensagem.value,
-                              style: const TextStyle(fontFamily: 'Inter-Black'),
-                            ),
-                          ],
-                        ),
-                      ),
                       const SizedBox(height: 30),
                       userPlan.pix == 1
                           ? const SizedBox.shrink()
@@ -214,25 +199,23 @@ class NewPlanView extends GetView<PlanController> {
                               ),
                             ),
                       const SizedBox(height: 15),
-                      difference == 1
-                          ? CustomElevatedButton(
-                              width: Get.width / 1,
-                              gradient: const LinearGradient(colors: [
-                                Color.fromARGB(255, 4, 157, 53),
-                                Color.fromARGB(255, 3, 109, 35),
-                              ]),
-                              onPressed: () {
-                                Get.toNamed(Routes.plan);
-                              },
-                              child: const Text(
-                                "RENOVAR CONTRATAÇAO",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            )
-                          : const SizedBox.shrink(),
+                      CustomElevatedButton(
+                        width: Get.width / 1,
+                        gradient: const LinearGradient(colors: [
+                          Color.fromARGB(255, 4, 157, 53),
+                          Color.fromARGB(255, 3, 109, 35),
+                        ]),
+                        onPressed: () {
+                          Get.toNamed(Routes.plan);
+                        },
+                        child: const Text(
+                          "RENOVAR CONTRATAÇAO",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
                       const SizedBox(height: 15),
                       TextButton(
                         onPressed: () {

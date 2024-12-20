@@ -7,6 +7,7 @@ class ExpenseTrip {
   int? status;
   String? createdAt;
   String? updatedAt;
+  String? km;
 
   ExpenseTrip({
     this.id,
@@ -17,6 +18,7 @@ class ExpenseTrip {
     this.status,
     this.createdAt,
     this.updatedAt,
+    this.km,
   });
 
   ExpenseTrip.fromJson(Map<String, dynamic> json) {
@@ -28,6 +30,7 @@ class ExpenseTrip {
     status = json['status'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    km = json['km'];
   }
 
   Map<String, dynamic> toJson() {
@@ -40,6 +43,7 @@ class ExpenseTrip {
     data['status'] = status;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
+    data['km'] = km;
     return data;
   }
 

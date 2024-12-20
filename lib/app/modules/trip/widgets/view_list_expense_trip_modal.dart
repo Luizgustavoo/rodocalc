@@ -176,6 +176,30 @@ class ViewListExpenseTripModal extends GetView<TripController> {
                                 ),
                               ],
                             ),
+                          ),
+                          const SizedBox(height: 5),
+                          RichText(
+                            text: TextSpan(
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.black,
+                                fontFamily: 'Inter-Regular',
+                              ),
+                              children: [
+                                const TextSpan(
+                                  text: 'QUILOMETRAGEM: ',
+                                  style: TextStyle(
+                                    fontFamily: 'Inter-Bold',
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: "${expense.km} Km" ?? "",
+                                  style: const TextStyle(
+                                    fontFamily: 'Inter',
+                                  ),
+                                ),
+                              ],
+                            ),
                           )
                         ],
                       ),

@@ -353,6 +353,13 @@ class CreatePlanModal extends GetView<PlanController> {
                           return Column(
                             children: [
                               const SizedBox(height: 10),
+                              const Text(
+                                "Aguardando pagamento...",
+                                style: TextStyle(
+                                    color: Colors.orange,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 10),
                               // Exibição da imagem do QR Code
                               Image.network(
                                 linkQrCode,
@@ -369,7 +376,7 @@ class CreatePlanModal extends GetView<PlanController> {
                               const SizedBox(height: 10),
                               // Texto e link para copiar
                               const Text(
-                                'Link para pagamento via PIX:',
+                                'Link copia e cola:',
                                 style: TextStyle(
                                   fontFamily: 'Inter-Bold',
                                   fontSize: 16,

@@ -120,6 +120,20 @@ class CreateExpenseTripModal extends GetView<TripController> {
                   },
                 ),
                 const SizedBox(height: 10),
+                TextFormField(
+                  controller: controller.txtKmController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    counterText: '',
+                    prefixIcon: Icon(Icons.add_road_sharp),
+                    labelText: 'Quilometragem',
+                  ),
+                  onChanged: (value) {
+                    FormattedInputers.onformatValueKM(
+                        value, controller.txtKmController);
+                  },
+                ),
+                const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [

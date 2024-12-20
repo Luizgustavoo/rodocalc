@@ -38,7 +38,7 @@ class CustomVehicleCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(5),
                 shape: BoxShape.rectangle,
                 image: DecorationImage(
-                  image: vehicle.foto!.isNotEmpty
+                  image: (vehicle.foto != null && vehicle.foto!.isNotEmpty)
                       ? CachedNetworkImageProvider(
                           "$urlImagem/storage/fotos/veiculos/${vehicle.foto}")
                       : const AssetImage('assets/images/logo.png')

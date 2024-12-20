@@ -63,7 +63,8 @@ class FinancialView extends GetView<TransactionController> {
                     Colors.black.withOpacity(0.6),
                     BlendMode.darken,
                   ),
-                  child: !ServiceStorage.existsSelectedVehicle()
+                  child: (!ServiceStorage.existsSelectedVehicle() ||
+                          ServiceStorage.photoSelectedVehicle() == "")
                       ? Image.asset(
                           'assets/images/caminhao.jpg',
                           fit: BoxFit.cover,

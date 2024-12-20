@@ -190,7 +190,7 @@ class ServiceStorage {
     String photo = "";
     Vehicle v = getVehicleStorage();
     if (!v.isEmpty()) {
-      photo = v.foto!;
+      photo = v.foto != null ? v.foto! : "";
     }
     return photo;
   }

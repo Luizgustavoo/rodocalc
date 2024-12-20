@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/controllers/document_controller.dart';
 import 'package:rodocalc/app/data/models/document_model.dart';
@@ -8,6 +11,9 @@ import 'package:rodocalc/app/global/custom_app_bar.dart';
 import 'package:rodocalc/app/modules/document/widgets/create_document_modal.dart';
 import 'package:rodocalc/app/modules/document/widgets/custom_document_card.dart';
 import 'package:rodocalc/app/modules/global/custom_search_field.dart';
+
+import 'package:share_plus/share_plus.dart';
+import 'package:http/http.dart' as http;
 
 class DocumentView extends GetView<DocumentController> {
   const DocumentView({super.key});
@@ -139,20 +145,87 @@ class DocumentView extends GetView<DocumentController> {
                                                       fit: BoxFit.contain,
                                                     ),
                                                     const SizedBox(height: 16),
-                                                    Align(
-                                                      alignment:
-                                                          Alignment.bottomRight,
-                                                      child: TextButton(
-                                                        onPressed: () =>
-                                                            Get.back(),
-                                                        child: const Text(
-                                                          'FECHAR',
-                                                          style: TextStyle(
-                                                            fontFamily:
-                                                                'Inter-Bold',
+                                                    Row(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceAround,
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        TextButton(
+                                                          onPressed: () async {
+                                                            try {
+                                                              // URL da imagem
+                                                              final imageUrl =
+                                                                  '$urlImagem/storage/fotos/documentos/${document.arquivo}';
+
+                                                              // Fazer o download da imagem
+                                                              final response =
+                                                                  await http.get(
+                                                                      Uri.parse(
+                                                                          imageUrl));
+                                                              if (response
+                                                                      .statusCode ==
+                                                                  200) {
+                                                                // Diretório temporário para salvar a imagem
+                                                                final tempDir =
+                                                                    await getTemporaryDirectory();
+                                                                final tempPath =
+                                                                    '${tempDir.path}/${document.arquivo?.split('/').last}';
+
+                                                                // Salvar a imagem como arquivo
+                                                                final file = File(
+                                                                    tempPath);
+                                                                await file
+                                                                    .writeAsBytes(
+                                                                        response
+                                                                            .bodyBytes);
+
+                                                                // Compartilhar o arquivo
+                                                                await Share
+                                                                    .shareFiles([
+                                                                  file.path
+                                                                ], text: 'Confira esta imagem!');
+                                                              } else {
+                                                                throw Exception(
+                                                                    'Falha ao baixar a imagem. Código: ${response.statusCode}');
+                                                              }
+                                                            } catch (e) {
+                                                              // Tratar erro
+                                                              Get.snackbar(
+                                                                  'Erro',
+                                                                  'Falha ao compartilhar a imagem: $e',
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .red,
+                                                                  colorText:
+                                                                      Colors
+                                                                          .white);
+                                                            }
+                                                          },
+                                                          child: const Text(
+                                                            'COMPARTILHAR',
+                                                            style: TextStyle(
+                                                              fontFamily:
+                                                                  'Inter-Bold',
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
+                                                        TextButton(
+                                                          onPressed: () =>
+                                                              Get.back(),
+                                                          child: const Text(
+                                                            'FECHAR',
+                                                            style: TextStyle(
+                                                              fontFamily:
+                                                                  'Inter-Bold',
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ],
                                                 ),
@@ -193,21 +266,91 @@ class DocumentView extends GetView<DocumentController> {
                                                           ),
                                                           const SizedBox(
                                                               height: 16),
-                                                          Align(
-                                                            alignment: Alignment
-                                                                .bottomRight,
-                                                            child: TextButton(
-                                                              onPressed: () =>
-                                                                  Get.back(),
-                                                              child: const Text(
-                                                                'FECHAR',
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontFamily:
-                                                                      'Inter-Bold',
+                                                          Row(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceAround,
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: [
+                                                              TextButton(
+                                                                onPressed:
+                                                                    () async {
+                                                                  try {
+                                                                    // URL da imagem
+                                                                    final imageUrl =
+                                                                        '$urlImagem/storage/fotos/documentos/${document.arquivo}';
+
+                                                                    // Fazer o download da imagem
+                                                                    final response =
+                                                                        await http
+                                                                            .get(Uri.parse(imageUrl));
+                                                                    if (response
+                                                                            .statusCode ==
+                                                                        200) {
+                                                                      // Diretório temporário para salvar a imagem
+                                                                      final tempDir =
+                                                                          await getTemporaryDirectory();
+                                                                      final tempPath =
+                                                                          '${tempDir.path}/${document.arquivo?.split('/').last}';
+
+                                                                      // Salvar a imagem como arquivo
+                                                                      final file =
+                                                                          File(
+                                                                              tempPath);
+                                                                      await file
+                                                                          .writeAsBytes(
+                                                                              response.bodyBytes);
+
+                                                                      // Compartilhar o arquivo
+                                                                      await Share
+                                                                          .shareFiles([
+                                                                        file.path
+                                                                      ], text: 'Confira esta imagem!');
+                                                                    } else {
+                                                                      throw Exception(
+                                                                          'Falha ao baixar a imagem. Código: ${response.statusCode}');
+                                                                    }
+                                                                  } catch (e) {
+                                                                    // Tratar erro
+                                                                    Get.snackbar(
+                                                                        'Erro',
+                                                                        'Falha ao compartilhar a imagem: $e',
+                                                                        backgroundColor:
+                                                                            Colors
+                                                                                .red,
+                                                                        colorText:
+                                                                            Colors.white);
+                                                                  }
+                                                                },
+                                                                child:
+                                                                    const Text(
+                                                                  'COMPARTILHAR',
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontFamily:
+                                                                        'Inter-Bold',
+                                                                  ),
                                                                 ),
                                                               ),
-                                                            ),
+                                                              TextButton(
+                                                                onPressed: () =>
+                                                                    Get.back(),
+                                                                child:
+                                                                    const Text(
+                                                                  'FECHAR',
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontFamily:
+                                                                        'Inter-Bold',
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
                                                           ),
                                                         ],
                                                       ))));

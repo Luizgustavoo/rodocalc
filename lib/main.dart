@@ -16,6 +16,7 @@ import 'package:rodocalc/app/routes/app_pages.dart';
 import 'package:rodocalc/app/routes/app_routes.dart';
 import 'package:rodocalc/app/theme/app_theme.dart';
 import 'package:rodocalc/app/utils/dynamic_link_handler.dart';
+import 'package:rodocalc/app/utils/firebase_push_notifications.dart';
 import 'package:rodocalc/firebase_options.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -46,15 +47,13 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  String? token = (Platform.isAndroid
-      ? await FirebaseMessaging.instance.getToken()
-      : await FirebaseMessaging.instance.getAPNSToken());
+  await FirebaseApi().initNotifications();
 
-  print("-------------");
-  print(token);
-  print("-------------");
+  // String? token = (Platform.isAndroid
+  //     ? await FirebaseMessaging.instance.getToken()
+  //     : await FirebaseMessaging.instance.getAPNSToken());
 
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  //FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,

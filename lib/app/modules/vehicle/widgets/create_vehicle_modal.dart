@@ -58,10 +58,14 @@ class CreateVehicleModal extends GetView<VehicleController> {
                           width: 100,
                           height: 100,
                           color: Colors.grey,
-                          child: controller.setImage.value == true
+                          child: controller.editMode.value &&
+                                  controller.setImage.value == true &&
+                                  controller.selectedImagePath.value != "" &&
+                                  !controller.newImage.value
                               ? Image.network(
                                   "$urlImagem/storage/fotos/veiculos/${controller.selectedImagePath.value}")
-                              : controller.selectedImagePath.value != ''
+                              : controller.selectedImagePath.value != '' &&
+                                      controller.newImage.value
                                   ? Image.file(
                                       File(controller.selectedImagePath.value),
                                       fit: BoxFit.cover,
@@ -153,7 +157,8 @@ class CreateVehicleModal extends GetView<VehicleController> {
 
                 Obx(
                   () => Visibility(
-                    visible: controller.areFieldsVisible.value,
+                    visible: controller.areFieldsVisible.value ||
+                        controller.editMode.value,
                     child: Column(
                       children: [
                         const SizedBox(height: 10),
@@ -325,36 +330,35 @@ class CreateVehicleModal extends GetView<VehicleController> {
                             const SizedBox(width: 10),
                             CustomElevatedButton(
                               onPressed: () async {
-                                if (controller
-                                    .selectedImagePath.value.isEmpty) {
-                                  Get.snackbar('Atenção!',
-                                      "Selecione uma imagem para o veículo!",
-                                      backgroundColor: Colors.orange,
+                                // if (controller
+                                //     .selectedImagePath.value.isEmpty) {
+                                //   Get.snackbar('Atenção!',
+                                //       "Selecione uma imagem para o veículo!",
+                                //       backgroundColor: Colors.orange,
+                                //       colorText: Colors.white,
+                                //       duration: const Duration(seconds: 2),
+                                //       snackPosition: SnackPosition.BOTTOM);
+                                // }
+                                Map<String, dynamic> retorno = update
+                                    ? await controller
+                                        .updateVehicle(vehicle!.id!)
+                                    : await controller.insertVehicle();
+
+                                if (retorno['success'] == true) {
+                                  Get.back();
+                                  Get.snackbar(
+                                      'Sucesso!', retorno['message'].join('\n'),
+                                      backgroundColor: Colors.green,
                                       colorText: Colors.white,
                                       duration: const Duration(seconds: 2),
                                       snackPosition: SnackPosition.BOTTOM);
                                 } else {
-                                  Map<String, dynamic> retorno = update
-                                      ? await controller
-                                          .updateVehicle(vehicle!.id!)
-                                      : await controller.insertVehicle();
-
-                                  if (retorno['success'] == true) {
-                                    Get.back();
-                                    Get.snackbar('Sucesso!',
-                                        retorno['message'].join('\n'),
-                                        backgroundColor: Colors.green,
-                                        colorText: Colors.white,
-                                        duration: const Duration(seconds: 2),
-                                        snackPosition: SnackPosition.BOTTOM);
-                                  } else {
-                                    Get.snackbar(
-                                        'Falha!', retorno['message'].join('\n'),
-                                        backgroundColor: Colors.red,
-                                        colorText: Colors.white,
-                                        duration: const Duration(seconds: 2),
-                                        snackPosition: SnackPosition.BOTTOM);
-                                  }
+                                  Get.snackbar(
+                                      'Falha!', retorno['message'].join('\n'),
+                                      backgroundColor: Colors.red,
+                                      colorText: Colors.white,
+                                      duration: const Duration(seconds: 2),
+                                      snackPosition: SnackPosition.BOTTOM);
                                 }
                               },
                               child: Text(

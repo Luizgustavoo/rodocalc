@@ -81,6 +81,7 @@ class TripApiClient {
         'valor_despesa': expense.valorDespesa.toString(),
         'status': expense.status.toString(),
         'user_id': ServiceStorage.getUserId().toString(),
+        'km': expense.km.toString(),
       };
 
       final response = await http.post(
@@ -109,6 +110,7 @@ class TripApiClient {
         'descricao': expense.descricao.toString(),
         'valor_despesa': expense.valorDespesa.toString(),
         'status': expense.status.toString(),
+        'km': expense.km.toString(),
       };
 
       final response = await http.post(

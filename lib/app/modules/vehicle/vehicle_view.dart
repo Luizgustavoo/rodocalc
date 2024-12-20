@@ -120,6 +120,7 @@ class VehiclesView extends GetView<VehicleController> {
                                         editVehicle: () {
                                           controller.isLoading.value = true;
                                           controller.selectedVehicle = vehicle;
+                                          controller.newImage.value = false;
                                           controller.getAllUserPlans();
 
                                           controller.fillInFields();
@@ -174,6 +175,7 @@ class VehiclesView extends GetView<VehicleController> {
                         duration: const Duration(seconds: 2),
                         snackPosition: SnackPosition.BOTTOM);
                   } else {
+                    controller.editMode.value = false;
                     controller.isLoading.value = false;
                     controller.isLoadingPlate.value = false;
                     controller.areFieldsVisible.value = false;
