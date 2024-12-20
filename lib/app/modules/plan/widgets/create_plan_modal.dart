@@ -359,6 +359,12 @@ class CreatePlanModal extends GetView<PlanController> {
                                     color: Colors.orange,
                                     fontWeight: FontWeight.bold),
                               ),
+                              const Text(
+                                "Caso haja cobrança e demore para atualizar o aplicativo. Saia do app e efetue login novamente.",
+                                style: TextStyle(
+                                    color: Colors.orange,
+                                    fontWeight: FontWeight.bold),
+                              ),
                               const SizedBox(height: 10),
                               // Exibição da imagem do QR Code
                               Image.network(

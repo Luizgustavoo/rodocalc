@@ -53,7 +53,7 @@ class HomeView extends GetView<HomeController> {
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
           double screenHeight = constraints.maxHeight;
-          double topPosition = screenHeight * 0.58;
+          double topPosition = screenHeight * 0.56;
 
           return Stack(
             children: [
