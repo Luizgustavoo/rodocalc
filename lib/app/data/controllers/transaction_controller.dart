@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -40,7 +41,14 @@ class TransactionController extends GetxController {
   final txtCompanyController = TextEditingController();
   final txtDDDController = TextEditingController();
   final txtPhoneController = TextEditingController();
-  final txtValueController = TextEditingController();
+  final txtValueController = MoneyMaskedTextController(
+    precision: 2,
+    initialValue: 0.0,
+    decimalSeparator: ',',
+    thousandSeparator: '.',
+    leftSymbol: 'R\$ ',
+  );
+
   final txtDateController = TextEditingController();
   final txtKmController = TextEditingController();
   final startDateController = TextEditingController();

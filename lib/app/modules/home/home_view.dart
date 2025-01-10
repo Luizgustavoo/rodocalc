@@ -218,7 +218,19 @@ class HomeView extends GetView<HomeController> {
                                               )),
                                         ),
                                         const SizedBox(width: 5),
-                                        Obx(() => CircleAvatar(
+                                        Obx(
+                                          () => InkWell(
+                                            onTap: () {
+                                              cityController.getCities();
+                                              perfilController.fillInFields();
+
+                                              final signupController =
+                                                  Get.put(SignUpController());
+                                              signupController.getUserTypes();
+
+                                              Get.toNamed(Routes.perfil);
+                                            },
+                                            child: CircleAvatar(
                                               radius: 30,
                                               backgroundImage: controller
                                                           .userPhoto
@@ -232,7 +244,9 @@ class HomeView extends GetView<HomeController> {
                                                       as ImageProvider
                                                   : const NetworkImage(
                                                       'https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133352156-stock-illustration-default-placeholder-profile-icon.jpg'),
-                                            )),
+                                            ),
+                                          ),
+                                        ),
                                       ],
                                     )),
                               ),

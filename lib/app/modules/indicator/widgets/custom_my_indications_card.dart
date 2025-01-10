@@ -10,6 +10,11 @@ class CustomMyIndicationsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double soma =
+        user.planos!.map((p) => p.valorPlano).fold(0, (a, b) => a + b!);
+
+    double valorComissao = soma * 0.2;
+
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
@@ -82,14 +87,8 @@ class CustomMyIndicationsCard extends StatelessWidget {
                       ),
                     ),
                     TextSpan(
-                      text: user.comissoesIndicador != null &&
-                              user.comissoesIndicador!.isNotEmpty
-                          ? user.comissoesIndicador!.map((comissao) {
-                              return FormattedInputers.formatValuePTBR(
-                                  ((comissao.valorComissao! / 100).toString()));
-                            }).join(
-                              ", ") // Junta todos os valores formatados em uma única string, separados por vírgulas
-                          : '',
+                      text: FormattedInputers.formatValuePTBR(
+                          ((valorComissao / 100).toString())),
                     ),
                   ],
                 ),

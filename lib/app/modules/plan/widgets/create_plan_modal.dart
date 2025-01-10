@@ -88,7 +88,49 @@ class CreatePlanModal extends GetView<PlanController> {
                       ],
                     ),
                   )),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
+              TextButton(
+                onPressed: () {
+                  controller.showCoupon(!controller.showCoupon.value);
+                },
+                child: Obx(
+                  () => Text(
+                      "${controller.showCoupon.value ? 'Remover' : 'Inserir'} cupom"),
+                ),
+              ),
+              Obx(
+                () => Visibility(
+                  visible: controller.showCoupon.value,
+                  child: SizedBox(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            controller: controller.couponController,
+                            decoration: const InputDecoration(
+                              prefixIcon: Icon(Icons.currency_exchange),
+                              labelText: 'CUPOM DE DESCONTO',
+                            ),
+                            onChanged: (text) {
+                              controller.couponController.value =
+                                  TextEditingValue(
+                                text: text.toUpperCase(),
+                                selection:
+                                    controller.couponController.selection,
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        TextButton(
+                          onPressed: () {},
+                          child: const Text('Aplicar'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
               Obx(
                 () => Visibility(
                   visible: controller.paymentMethod == 'CARD',
@@ -418,6 +460,9 @@ class CreatePlanModal extends GetView<PlanController> {
                         }
                         return const SizedBox(); // Retorna um espaço vazio caso não haja URL
                       }),
+                      const SizedBox(
+                        height: 10,
+                      ),
                       Obx(() => Text(
                             'TOTAL: ${(FormattedInputers.formatValue(controller.calculatedPrice.value))}',
                             style: const TextStyle(

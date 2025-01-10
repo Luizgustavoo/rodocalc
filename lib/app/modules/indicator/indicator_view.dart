@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:rodocalc/app/data/controllers/comission_indicator_controller.dart';
 import 'package:rodocalc/app/data/controllers/indicator_controller.dart';
 import 'package:rodocalc/app/data/models/indication_model.dart';
@@ -12,7 +14,8 @@ import 'package:rodocalc/app/modules/indicator/widgets/custom_indicator_card.dar
 import 'package:rodocalc/app/modules/indicator/widgets/withdrawal_request_modal.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:http/http.dart' as http;
 
 import '../../routes/app_routes.dart';
 
@@ -130,8 +133,11 @@ class IndicatorView extends GetView<IndicationController> {
                                         color: Colors.white,
                                       ),
                                       onPressed: () async {
+                                        const String imageUrl =
+                                            'https://painel.rodocalc.com.br/share.jpeg';
+
                                         String linkWhatsApp =
-                                            "CÓDIGO DE CONVITE: $cupom . Link: https://painel.rodocalc.com.br/register/$cupom";
+                                            "Vou te ajudar nessa missão!\nSegue seu código de convite para testar gratuitamente  RODO CALC e manter seu financeiro organizado 🚛 📱 👉\nLink: https://painel.rodocalc.com.br/register/$cupom";
 
                                         var androidUrl =
                                             "whatsapp://send?text=$linkWhatsApp";
@@ -139,16 +145,37 @@ class IndicatorView extends GetView<IndicationController> {
                                             "https://api.whatsapp.com/send?text=$linkWhatsApp";
 
                                         try {
-                                          if (Platform.isIOS) {
-                                            await launchUrl(Uri.parse(iosUrl));
+                                          // Baixar a imagem da web
+                                          final response = await http
+                                              .get(Uri.parse(imageUrl));
+
+                                          if (response.statusCode == 200) {
+                                            // Obter os bytes da imagem
+                                            final Uint8List bytes =
+                                                response.bodyBytes;
+
+                                            // Obter o diretório temporário para armazenar a imagem
+                                            final tempDir =
+                                                await getTemporaryDirectory();
+                                            final tempFile = File(
+                                                '${tempDir.path}/downloaded_image.jpeg');
+
+                                            // Salvar a imagem no diretório temporário
+                                            await tempFile.writeAsBytes(bytes);
+
+                                            // Compartilhar a imagem com o texto
+                                            await Share.shareFiles(
+                                                [tempFile.path],
+                                                text: linkWhatsApp);
                                           } else {
-                                            await launchUrl(
-                                                Uri.parse(androidUrl));
+                                            throw Exception(
+                                                'Falha ao baixar a imagem');
                                           }
-                                        } on Exception {
+                                        } catch (e) {
+                                          // Exibir o erro no snackbar
                                           Get.snackbar(
                                             'Falha',
-                                            'Whatsapp não instalado!',
+                                            'Erro: $e',
                                             backgroundColor:
                                                 Colors.red.shade500,
                                             colorText: Colors.white,

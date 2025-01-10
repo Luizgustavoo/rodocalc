@@ -260,8 +260,8 @@ class CreateVehicleModal extends GetView<VehicleController> {
                             labelText: 'KM INICIAL',
                           ),
                           onChanged: (value) {
-                            FormattedInputers.onformatValueKM(
-                                value, controller.txtKmInicialController);
+                            FormattedInputers.formatAndUpdateText(
+                                controller.txtKmInicialController);
                           },
                         ),
                         const SizedBox(height: 10),

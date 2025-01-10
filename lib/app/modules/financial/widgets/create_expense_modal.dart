@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -127,10 +128,6 @@ class CreateExpenseModal extends GetView<TransactionController> {
                   ),
                   labelText: 'VALOR',
                 ),
-                onChanged: (value) {
-                  FormattedInputers.onformatValueChanged(
-                      value, controller.txtValueController);
-                },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, insira o valor';
@@ -174,8 +171,8 @@ class CreateExpenseModal extends GetView<TransactionController> {
                   labelText: 'QUILOMETRAGEM ATUAL',
                 ),
                 onChanged: (value) {
-                  FormattedInputers.onformatValueKM(
-                      value, controller.txtKmController);
+                  FormattedInputers.formatAndUpdateText(
+                      controller.txtKmController);
                 },
               ),
               const SizedBox(height: 15),

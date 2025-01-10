@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
@@ -33,7 +34,13 @@ class TripController extends GetxController {
   final expenseTripFormKey = GlobalKey<FormState>();
   final txtDateExpenseTripController = TextEditingController();
   final txtDescriptionExpenseTripController = TextEditingController();
-  final txtAmountExpenseTripController = TextEditingController();
+  final txtAmountExpenseTripController = MoneyMaskedTextController(
+    precision: 2,
+    initialValue: 0.0,
+    decimalSeparator: ',',
+    thousandSeparator: '.',
+    leftSymbol: 'R\$ ',
+  );
 
   final searchTripController = TextEditingController();
 

@@ -111,6 +111,36 @@ abstract class FormattedInputers {
     );
   }
 
+  static void formatAndUpdateText(TextEditingController controller) {
+    String originalText = controller.text;
+
+    // Remove caracteres inválidos
+    String sanitizedText = originalText.replaceAll(RegExp(r'[^0-9]'), '');
+
+    // Formata o texto com separadores de milhar
+    String formattedText = _formatKilometers(sanitizedText);
+
+    // Atualiza o texto e sincroniza o cursor
+    controller.value = TextEditingValue(
+      text: formattedText,
+      selection: TextSelection.collapsed(offset: formattedText.length),
+    );
+  }
+
+  static String _formatKilometers(String value) {
+    var buffer = StringBuffer();
+
+    // Adiciona separadores de milhar
+    for (int i = 0; i < value.length; i++) {
+      if (i > 0 && (value.length - i) % 3 == 0) {
+        buffer.write('.');
+      }
+      buffer.write(value[i]);
+    }
+
+    return buffer.toString();
+  }
+
   static String getCardType(String cardNumber) {
     // Remove todos os espaços e traços do número do cartão
     String cleanedNumber = cardNumber.replaceAll(RegExp(r'\s+|-'), '');
@@ -181,24 +211,51 @@ abstract class FormattedInputers {
   static String formatValue(String value) {
     var text = value.replaceAll(RegExp(r'[^0-9]'), '');
     var buffer = StringBuffer();
-    var textLength = text.length;
 
-    if (textLength > 2) {
-      buffer.write('R\$ ');
-      for (var i = 0; i < textLength; i++) {
-        if (i == textLength - 2) {
+    if (text.isEmpty) {
+      return 'R\$ 0,00';
+    }
+
+    if (text.length == 1) {
+      buffer.write('R\$ 0,0$text'); // Apenas um dígito: R$ 0,0X
+    } else if (text.length == 2) {
+      buffer.write('R\$ 0,$text'); // Dois dígitos: R$ 0,XX
+    } else {
+      buffer.write('R\$ '); // Três ou mais dígitos: separação de milhares
+      for (var i = 0; i < text.length; i++) {
+        if (i == text.length - 2) {
           buffer.write(',');
-        } else if (i > 0 && (textLength - i - 2) % 3 == 0) {
+        } else if (i > 0 && (text.length - i - 2) % 3 == 0) {
           buffer.write('.');
         }
         buffer.write(text[i]);
       }
-    } else {
-      buffer.write('R\$ $text');
     }
 
     return buffer.toString();
   }
+
+  // static String formatValue(String value) {
+  //   var text = value.replaceAll(RegExp(r'[^0-9]'), '');
+  //   var buffer = StringBuffer();
+  //   var textLength = text.length;
+
+  //   if (textLength > 2) {
+  //     buffer.write('R\$ ');
+  //     for (var i = 0; i < textLength; i++) {
+  //       if (i == textLength - 2) {
+  //         buffer.write(',');
+  //       } else if (i > 0 && (textLength - i - 2) % 3 == 0) {
+  //         buffer.write('.');
+  //       }
+  //       buffer.write(text[i]);
+  //     }
+  //   } else {
+  //     buffer.write('R\$ $text');
+  //   }
+
+  //   return buffer.toString();
+  // }
 
   static String formatValueDecimal(String value) {
     var text = value.replaceAll(RegExp(r'[^0-9]'), '');
@@ -234,7 +291,7 @@ abstract class FormattedInputers {
       buffer.write(text[i]);
     }
 
-    // Retorna o valor formatado com o sufixo " km"
+    // Retorna o valor formatado
     return buffer.toString();
   }
 

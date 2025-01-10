@@ -33,7 +33,7 @@ class CustomIndicatorCard extends StatelessWidget {
                 .replaceAll(' ', '');
             String cupom = ServiceStorage.getUserId().toString();
             String linkWhatsApp =
-                "https://painel.rodocalc.com.br/register/$cupom";
+                "Vou te ajudar nessa missão!\nSegue seu código de convite para testar gratuitamente  RODO CALC e manter seu financeiro organizado 🚛 📱 👉 Link: https://painel.rodocalc.com.br/register/$cupom";
 
             var contact = phone;
             var androidUrl =
@@ -61,7 +61,7 @@ class CustomIndicatorCard extends StatelessWidget {
         leading: CircleAvatar(
           child: Text(
             indication.nome![0].toUpperCase(),
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
         ),
         title: RichText(

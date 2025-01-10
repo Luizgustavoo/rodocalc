@@ -108,10 +108,6 @@ class CreateExpenseTripModal extends GetView<TripController> {
                     ),
                     labelText: 'VALOR',
                   ),
-                  onChanged: (value) {
-                    FormattedInputers.onformatValueChanged(
-                        value, controller.txtAmountExpenseTripController);
-                  },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Por favor, insira o valor';
@@ -129,8 +125,8 @@ class CreateExpenseTripModal extends GetView<TripController> {
                     labelText: 'Quilometragem',
                   ),
                   onChanged: (value) {
-                    FormattedInputers.onformatValueKM(
-                        value, controller.txtKmController);
+                    FormattedInputers.formatAndUpdateText(
+                        controller.txtKmController);
                   },
                 ),
                 const SizedBox(height: 10),

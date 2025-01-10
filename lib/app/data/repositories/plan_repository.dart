@@ -1,3 +1,4 @@
+import 'package:rodocalc/app/data/models/coupon_model.dart';
 import 'package:rodocalc/app/data/models/credit_card_model.dart';
 import 'package:rodocalc/app/data/models/plan_model.dart';
 import 'package:rodocalc/app/data/models/planos_alter_drop_down_model.dart';
@@ -128,5 +129,18 @@ class PlanRepository {
     } catch (e) {
       Exception(e);
     }
+  }
+
+  validateCoupon(String coupon) async {
+    try {
+      var response = await apiClient.validateCoupon(coupon);
+      if (response != null && response['data'] != null) {
+        return response['data'];
+      }
+      return null;
+    } catch (e) {
+      Exception(e);
+    }
+    return null;
   }
 }

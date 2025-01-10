@@ -122,11 +122,6 @@ class CreateReceiptModal extends GetView<TransactionController> {
                     ),
                     labelText: 'VALOR RECEBIDO',
                   ),
-                  onChanged: (value) {
-                    FormattedInputers.onformatValueChanged(
-                        value, controller.txtValueController);
-                    // controller.onValueChanged(value, 'valueReceive');
-                  },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Por favor, insira o valor recebido';

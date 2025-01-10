@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rodocalc/app/data/models/coupon_model.dart';
 import 'package:rodocalc/app/data/models/credit_card_model.dart';
 import 'package:rodocalc/app/data/models/plan_model.dart';
 import 'package:rodocalc/app/data/models/planos_alter_drop_down_model.dart';
@@ -21,6 +22,7 @@ class PlanController extends GetxController {
 
   var selectedRecurrence = ''.obs;
   var shouldChangeCard = false.obs;
+  var showCoupon = false.obs;
 
   var bandeiraCartao = 'NÚMERO DO CARTÃO'.obs;
 
@@ -30,6 +32,7 @@ class PlanController extends GetxController {
   final TextEditingController cvvController = TextEditingController();
   final TextEditingController nameCardController = TextEditingController();
   final TextEditingController cpfController = TextEditingController();
+  final TextEditingController couponController = TextEditingController();
 
   List<CardType> cardTypes = [
     CardType(name: 'American Express', imagePath: 'assets/flags/amex.png'),
@@ -57,7 +60,9 @@ class PlanController extends GetxController {
   }
 
   RxList<Plan> listPlans = RxList<Plan>([]);
+
   RxList<UserPlan> myPlans = RxList<UserPlan>([]);
+
   RxList<AlterPlanDropDown> myPlansDropDownUpdate =
       RxList<AlterPlanDropDown>([]);
 
@@ -74,6 +79,7 @@ class PlanController extends GetxController {
   RxBool isLoadingMyPlan = true.obs;
   RxBool isLoadingSubscrible = false.obs;
   RxBool isLoadingUpdateVehiclePlan = false.obs;
+  RxBool isLoadingValidateCoupon = false.obs;
 
   Future<Map<String, dynamic>> subscribe() async {
     if (planKey.currentState!.validate()) {
@@ -344,6 +350,37 @@ class PlanController extends GetxController {
     isLoadingMyPlan.value = false;
   }
 
+  Future<Map<String, dynamic>> validateCoupon() async {
+    isLoadingValidateCoupon.value = true;
+
+    retorno = {
+      'success': false,
+      'message': ['Cupom inválido!'],
+      'data': null,
+    };
+
+    try {
+      if (couponController.text.trim().isNotEmpty) {
+        var couponApplied =
+            await repository.validateCoupon(couponController.text.trim());
+
+        if (couponApplied != null) {
+          retorno = {
+            'success': true,
+            'message': ['Cupom válido!'],
+            'data': couponApplied,
+          };
+        }
+      }
+    } catch (e) {
+      retorno['message'] = ['Erro ao validar cupom: $e'];
+    } finally {
+      isLoadingValidateCoupon.value = false;
+    }
+
+    return retorno;
+  }
+
   Future<void> getAllPlansAlterPlanDropDown(int plano) async {
     isLoadingMyPlan.value = true;
     try {
@@ -459,6 +496,7 @@ class PlanController extends GetxController {
       nameCardController,
       cvvController,
       validateController,
+      couponController,
     ];
 
     for (final controller in textControllers) {
