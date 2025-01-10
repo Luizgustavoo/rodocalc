@@ -66,10 +66,11 @@ class PlanRepository {
     return list;
   }
 
-  subscribe(UserPlan userplan, CreditCard creditCard, String recurrence) async {
+  subscribe(UserPlan userplan, CreditCard creditCard, String recurrence,
+      String? coupon) async {
     try {
       var response =
-          await apiClient.subscribe(userplan, creditCard, recurrence);
+          await apiClient.subscribe(userplan, creditCard, recurrence, coupon);
       return response;
     } catch (e) {
       Exception(e);
@@ -84,9 +85,9 @@ class PlanRepository {
     }
   }
 
-  createPix(UserPlan userplan, String recurrence) async {
+  createPix(UserPlan userplan, String recurrence, String? coupon) async {
     try {
-      var response = await apiClient.createPix(userplan, recurrence);
+      var response = await apiClient.createPix(userplan, recurrence, coupon);
       return response;
     } catch (e) {
       Exception(e);

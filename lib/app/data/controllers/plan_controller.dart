@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:rodocalc/app/data/models/coupon_model.dart';
 import 'package:rodocalc/app/data/models/credit_card_model.dart';
 import 'package:rodocalc/app/data/models/plan_model.dart';
@@ -17,12 +18,15 @@ class PlanController extends GetxController {
   var calculatedPrice = ''.obs;
   var selectedPlanDropDown = 0.obs;
   RxDouble licensePrice = 0.0.obs;
+  RxDouble additionalDiscount = 0.0.obs;
 
   var paymentMethod = ''.obs;
 
   var selectedRecurrence = ''.obs;
   var shouldChangeCard = false.obs;
   var showCoupon = false.obs;
+  var showPaymentMethod = true.obs;
+  var isCouponApplied = false.obs;
 
   var bandeiraCartao = 'NÚMERO DO CARTÃO'.obs;
 
@@ -85,22 +89,24 @@ class PlanController extends GetxController {
     if (planKey.currentState!.validate()) {
       isLoadingSubscrible.value = true;
       mensagem = await repository.subscribe(
-          UserPlan(
-            usuarioId: ServiceStorage.getUserId(),
-            planoId: selectedPlan.value!.id!,
-            quantidadeLicencas: selectedLicenses.value,
-            valorPlano: Services.converterParaCentavos(calculatedPrice.value),
-          ),
-          CreditCard(
-            cardName: nameCardController.text,
-            validate: validateController.text,
-            cpf: cpfController.text,
-            cvv: cvvController.text,
-            cardNumber: numberCardController.text,
-            valor: Services.converterParaCentavos(calculatedPrice.value),
-            brand: selectedCardType.value.toString(),
-          ),
-          selectedRecurrence.value);
+        UserPlan(
+          usuarioId: ServiceStorage.getUserId(),
+          planoId: selectedPlan.value!.id!,
+          quantidadeLicencas: selectedLicenses.value,
+          valorPlano: Services.converterParaCentavos(calculatedPrice.value),
+        ),
+        CreditCard(
+          cardName: nameCardController.text,
+          validate: validateController.text,
+          cpf: cpfController.text,
+          cvv: cvvController.text,
+          cardNumber: numberCardController.text,
+          valor: Services.converterParaCentavos(calculatedPrice.value),
+          brand: selectedCardType.value.toString(),
+        ),
+        selectedRecurrence.value,
+        couponController.text,
+      );
 
       isLoadingSubscrible.value = false;
 
@@ -144,6 +150,7 @@ class PlanController extends GetxController {
             valorPlano: Services.converterParaCentavos(calculatedPrice.value),
           ),
           selectedRecurrence.value,
+          couponController.text,
         );
 
         isLoadingSubscrible.value = false;
@@ -365,11 +372,18 @@ class PlanController extends GetxController {
             await repository.validateCoupon(couponController.text.trim());
 
         if (couponApplied != null) {
+          Coupon c = Coupon.fromJson(couponApplied);
+
           retorno = {
             'success': true,
-            'message': ['Cupom válido!'],
+            'message': ['Operação realizada com sucesso!'],
             'data': couponApplied,
           };
+
+          additionalDiscount.value = c.percentualDesconto!;
+
+          updatePrice();
+          isCouponApplied.value = true;
         }
       }
     } catch (e) {
@@ -441,8 +455,14 @@ class PlanController extends GetxController {
           .replaceAll(',', '.'));
 
       double total = pricePerLicense * selectedLicenses.value;
+
       if (selectedRecurrence.value == 'ANUAL') {
         total = (total * 12) * (1 - (selectedPlan.value!.descontoAnual! / 100));
+      }
+
+      // Aplica o desconto adicional, se fornecido
+      if (additionalDiscount.value > 0) {
+        total = total * (1 - (additionalDiscount.value / 100));
       }
 
       calculatedPrice.value = 'R\$ ${(total).toStringAsFixed(2)}';
@@ -510,6 +530,14 @@ class PlanController extends GetxController {
     selectedCardType = ''.obs;
     shouldChangeCard.value = false;
     addLicenses.value = 0;
+    paymentMethod.value = '';
+    linkQrCode.value = '';
+    codeCopyPaste.value = '';
+    isGeneratePix.value = false;
+    showCoupon.value = false;
+    showPaymentMethod.value = true;
+    isCouponApplied.value = false;
+    additionalDiscount = 0.0.obs;
   }
 }
 

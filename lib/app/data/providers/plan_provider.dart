@@ -191,7 +191,8 @@ class PlanApiClient {
     return tokenId;
   }
 
-  subscribe(UserPlan userPlan, CreditCard creditCard, String recurrence) async {
+  subscribe(UserPlan userPlan, CreditCard creditCard, String recurrence,
+      String? coupon) async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
       final indicatorUrl = Uri.parse('$baseUrl/v1/planousuario/contratar');
@@ -295,7 +296,8 @@ class PlanApiClient {
         "metadata": {
           "id": "my_subscription_id",
           "licenses": userPlan.quantidadeLicencas.toString()
-        }
+        },
+        "coupon": coupon.toString(),
       };
 
       final response = await http.post(
@@ -478,7 +480,7 @@ class PlanApiClient {
     }
   }
 
-  createPix(UserPlan userPlan, String recurrence) async {
+  createPix(UserPlan userPlan, String recurrence, String? coupon) async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
       final indicatorUrl = Uri.parse('$baseUrl/v1/planousuario/pix');
@@ -557,6 +559,7 @@ class PlanApiClient {
         "customer_phone_mobile_area_code": telefoneSplit['ddd'],
         "customer_phone_mobile_number": telefoneSplit['numero'],
         "payment_method": "pix",
+        "coupon": coupon.toString(),
       };
 
       final response = await http.post(

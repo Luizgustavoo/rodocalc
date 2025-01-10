@@ -182,10 +182,7 @@ class PlanView extends GetView<PlanController> {
                                   if (errors.isNotEmpty) {
                                     SnackBarPerfilPage(errors);
                                   } else {
-                                    controller.paymentMethod.value = '';
-                                    controller.linkQrCode.value = '';
-                                    controller.codeCopyPaste.value = '';
-                                    controller.isGeneratePix.value = false;
+                                    controller.clearAllFields();
                                     assignPlan(plan, context, 'MENSAL');
                                   }
                                 },
@@ -195,10 +192,7 @@ class PlanView extends GetView<PlanController> {
                                   if (errors.isNotEmpty) {
                                     SnackBarPerfilPage(errors);
                                   } else {
-                                    controller.paymentMethod.value = '';
-                                    controller.linkQrCode.value = '';
-                                    controller.codeCopyPaste.value = '';
-                                    controller.isGeneratePix.value = false;
+                                    controller.clearAllFields();
                                     assignPlan(plan, context, 'ANUAL');
                                   }
                                 },

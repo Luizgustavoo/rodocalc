@@ -136,80 +136,72 @@ class FinancialView extends GetView<TransactionController> {
         floatingActionButton: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Obx(
-              () => Padding(
-                padding: const EdgeInsets.only(right: 8, bottom: 5),
-                child: controller.listTransactions.isEmpty
-                    ? const SizedBox.shrink()
-                    : FloatingActionButton(
-                        heroTag: "export_excel",
-                        backgroundColor: Colors.green.shade300,
-                        mini: true,
-                        onPressed: () async {
-                          final planController = Get.put(PlanController());
-                          await planController.getMyPlans();
-                          List<UserPlan> listplan = planController.myPlans();
-                          await controller.exportToExcel();
-                          if (listplan.isNotEmpty) {
-                            if (planController.myPlans.first.plano!.id == 14 ||
-                                planController.myPlans.first.plano!.id == 15) {
-                              await controller.exportToExcel();
-                            } else {
-                              Get.snackbar('Erro',
-                                  "Atualize o plano para usar esse recurso!",
-                                  colorText: Colors.white,
-                                  backgroundColor: Colors.red,
-                                  snackPosition: SnackPosition.BOTTOM);
-                            }
-                          } else {
-                            Get.snackbar('Erro',
-                                "Atualize o plano para usar esse recurso!",
-                                colorText: Colors.white,
-                                backgroundColor: Colors.red,
-                                snackPosition: SnackPosition.BOTTOM);
-                          }
-                        },
-                        child: const Icon(
-                          FontAwesomeIcons.fileLines,
-                          color: Colors.white,
-                        ),
-                      ),
+            Padding(
+              padding: const EdgeInsets.only(right: 8, bottom: 5),
+              child: FloatingActionButton(
+                heroTag: "export_excel",
+                backgroundColor: Colors.green.shade300,
+                mini: true,
+                onPressed: () async {
+                  final planController = Get.put(PlanController());
+                  await planController.getMyPlans();
+                  List<UserPlan> listplan = planController.myPlans();
+                  await controller.exportToExcel();
+                  if (listplan.isNotEmpty) {
+                    if (planController.myPlans.first.plano!.id == 14 ||
+                        planController.myPlans.first.plano!.id == 15) {
+                      await controller.exportToExcel();
+                    } else {
+                      Get.snackbar(
+                          'Erro', "Atualize o plano para usar esse recurso!",
+                          colorText: Colors.white,
+                          backgroundColor: Colors.red,
+                          snackPosition: SnackPosition.BOTTOM);
+                    }
+                  } else {
+                    Get.snackbar(
+                        'Erro', "Atualize o plano para usar esse recurso!",
+                        colorText: Colors.white,
+                        backgroundColor: Colors.red,
+                        snackPosition: SnackPosition.BOTTOM);
+                  }
+                },
+                child: const Icon(
+                  FontAwesomeIcons.fileLines,
+                  color: Colors.white,
+                ),
               ),
             ),
-            Obx(
-              () => Padding(
-                padding: const EdgeInsets.only(right: 8, bottom: 5),
-                child: controller.listTransactions.isEmpty
-                    ? const SizedBox.shrink()
-                    : FloatingActionButton(
-                        heroTag: "export_pdf",
-                        backgroundColor: Colors.grey.shade300,
-                        mini: true,
-                        onPressed: () async {
-                          final planController = Get.put(PlanController());
-                          await planController.getMyPlans();
-                          List<UserPlan> listplan = planController.myPlans();
-                          if (listplan.isNotEmpty) {
-                            if (planController.myPlans.first.plano!.id == 14 ||
-                                planController.myPlans.first.plano!.id == 15) {
-                              await controller.generateAndSharePdf();
-                            } else {
-                              Get.snackbar('Erro',
-                                  "Atualize o plano para usar esse recurso!",
-                                  colorText: Colors.white,
-                                  backgroundColor: Colors.red,
-                                  snackPosition: SnackPosition.BOTTOM);
-                            }
-                          } else {
-                            Get.snackbar('Erro',
-                                "Atualize o plano para usar esse recurso!",
-                                colorText: Colors.white,
-                                backgroundColor: Colors.red,
-                                snackPosition: SnackPosition.BOTTOM);
-                          }
-                        },
-                        child: const Icon(Icons.download),
-                      ),
+            Padding(
+              padding: const EdgeInsets.only(right: 8, bottom: 5),
+              child: FloatingActionButton(
+                heroTag: "export_pdf",
+                backgroundColor: Colors.grey.shade300,
+                mini: true,
+                onPressed: () async {
+                  final planController = Get.put(PlanController());
+                  await planController.getMyPlans();
+                  List<UserPlan> listplan = planController.myPlans();
+                  if (listplan.isNotEmpty) {
+                    if (planController.myPlans.first.plano!.id == 14 ||
+                        planController.myPlans.first.plano!.id == 15) {
+                      await controller.generateAndSharePdf();
+                    } else {
+                      Get.snackbar(
+                          'Erro', "Atualize o plano para usar esse recurso!",
+                          colorText: Colors.white,
+                          backgroundColor: Colors.red,
+                          snackPosition: SnackPosition.BOTTOM);
+                    }
+                  } else {
+                    Get.snackbar(
+                        'Erro', "Atualize o plano para usar esse recurso!",
+                        colorText: Colors.white,
+                        backgroundColor: Colors.red,
+                        snackPosition: SnackPosition.BOTTOM);
+                  }
+                },
+                child: const Icon(Icons.download),
               ),
             ),
             Padding(
