@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/models/freight_model.dart';
 import 'package:rodocalc/app/data/repositories/freight_repository.dart';
@@ -14,7 +15,14 @@ class FreightController extends GetxController {
   final freightKey = GlobalKey<FormState>();
   final originController = TextEditingController();
   final destinyController = TextEditingController();
-  final valueReceiveController = TextEditingController();
+  //final valueReceiveController = TextEditingController();
+  final valueReceiveController = MoneyMaskedTextController(
+    precision: 2,
+    initialValue: 0.0,
+    decimalSeparator: ',',
+    thousandSeparator: '.',
+    leftSymbol: 'R\$ ',
+  );
   final distanceController = TextEditingController();
   final averageController = TextEditingController();
   final priceDieselController = TextEditingController();

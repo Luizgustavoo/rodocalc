@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:rodocalc/app/data/controllers/plan_controller.dart';
 import 'package:rodocalc/app/routes/app_routes.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
@@ -76,6 +77,9 @@ class CreatePlanModal extends GetView<PlanController> {
                                             Color.fromARGB(255, 195, 194, 194)
                                           ]),
                                 onPressed: () {
+                                  controller
+                                      .checkAndRequestNotificationPermission();
+
                                   controller.paymentMethod('PIX');
                                 },
                                 child: const Text("PIX"),

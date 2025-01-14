@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:rodocalc/app/data/models/coupon_model.dart';
 import 'package:rodocalc/app/data/models/credit_card_model.dart';
 import 'package:rodocalc/app/data/models/plan_model.dart';
@@ -152,6 +153,7 @@ class PlanController extends GetxController {
           selectedRecurrence.value,
           couponController.text,
         );
+        print(mensagem);
 
         isLoadingSubscrible.value = false;
 
@@ -538,6 +540,39 @@ class PlanController extends GetxController {
     showPaymentMethod.value = true;
     isCouponApplied.value = false;
     additionalDiscount = 0.0.obs;
+  }
+
+  Future<void> checkAndRequestNotificationPermission() async {
+    final status = await Permission.notification.status;
+
+    if (status.isDenied || status.isPermanentlyDenied) {
+      showDialog(
+        context: Get.context!,
+        builder: (context) => AlertDialog(
+          title: const Text("Permissão Necessária"),
+          content: const Text(
+              "Este recurso depende de notificações para funcionar corretamente. Deseja ativar as notificações?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("Cancelar"),
+            ),
+            TextButton(
+              onPressed: () {
+                openAppSettings();
+                Navigator.of(context).pop();
+              },
+              child: const Text("Ativar"),
+            ),
+          ],
+        ),
+      );
+    } else if (status.isGranted) {
+      // Notificação já permitida
+      print("Notificações já estão permitidas.");
+    }
   }
 }
 

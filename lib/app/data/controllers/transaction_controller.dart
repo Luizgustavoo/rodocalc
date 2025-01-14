@@ -520,16 +520,17 @@ class TransactionController extends GetxController {
 
   Future<void> sharePdf(String fileName, List<int> pdfData) async {
     try {
-      final directory =
-          await getExternalStorageDirectory(); // Diretório seguro para armazenar arquivos externos
-      final filePath = '${directory!.path}/$fileName.pdf';
+      final tempDir =
+          await getTemporaryDirectory(); // Diretório seguro para armazenar arquivos externos
+      final filePath = '${tempDir.path}/$fileName.pdf';
       final file = File(filePath);
 
       await file.writeAsBytes(pdfData);
 
       // Compartilhando o arquivo diretamente via Share+
-      await Share.shareXFiles([XFile(file.path)],
-          text: 'Segue em anexo o relatório.');
+      await Share.shareFiles([file.path], text: 'Segue em anexo o relatório.');
+      // await Share.shareXFiles([XFile(file.path)],
+      //     text: 'Segue em anexo o relatório.');
 
       Get.snackbar('Sucesso', 'Arquivo compartilhado com sucesso!',
           backgroundColor: Colors.green,
@@ -547,16 +548,14 @@ class TransactionController extends GetxController {
 
   Future<void> shareExcel(String fileName, List<int> excelData) async {
     try {
-      final directory =
-          await getExternalStorageDirectory(); // Diretório seguro para armazenar arquivos externos
-      final filePath = '${directory!.path}/$fileName.xlsx';
+      final tempDir = await getTemporaryDirectory();
+      final filePath = '${tempDir.path}/$fileName.xlsx';
       final file = File(filePath);
 
       await file.writeAsBytes(excelData);
 
       // Compartilhando o arquivo diretamente via Share+
-      await Share.shareXFiles([XFile(file.path)],
-          text: 'Segue em anexo o relatório.');
+      await Share.shareFiles([file.path], text: 'Segue em anexo o relatório.');
 
       Get.snackbar('Sucesso', 'Arquivo compartilhado com sucesso!',
           backgroundColor: Colors.green,
