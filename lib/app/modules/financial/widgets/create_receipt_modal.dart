@@ -386,7 +386,7 @@ class CreateReceiptModal extends GetView<TransactionController> {
                             Get.back();
                           },
                           child: const Text(
-                            'CANCELAR',
+                            'Cancelar',
                             style: TextStyle(
                               fontFamily: 'Inter-Bold',
                               color: Color(0xFFFF6B00),

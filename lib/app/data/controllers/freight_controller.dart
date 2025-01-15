@@ -25,11 +25,35 @@ class FreightController extends GetxController {
   );
   final distanceController = TextEditingController();
   final averageController = TextEditingController();
-  final priceDieselController = TextEditingController();
+  final priceDieselController = MoneyMaskedTextController(
+    precision: 2,
+    initialValue: 0.0,
+    decimalSeparator: ',',
+    thousandSeparator: '.',
+    leftSymbol: 'R\$ ',
+  );
   final totalTiresController = TextEditingController();
-  final priceTiresController = TextEditingController();
-  final priceTollsController = TextEditingController(text: "0,00");
-  final othersExpensesController = TextEditingController();
+  final priceTiresController = MoneyMaskedTextController(
+    precision: 2,
+    initialValue: 0.0,
+    decimalSeparator: ',',
+    thousandSeparator: '.',
+    leftSymbol: 'R\$ ',
+  );
+  final priceTollsController = MoneyMaskedTextController(
+    precision: 2,
+    initialValue: 0.0,
+    decimalSeparator: ',',
+    thousandSeparator: '.',
+    leftSymbol: 'R\$ ',
+  );
+  final othersExpensesController = MoneyMaskedTextController(
+    precision: 2,
+    initialValue: 0.0,
+    decimalSeparator: ',',
+    thousandSeparator: '.',
+    leftSymbol: 'R\$ ',
+  );
   final searchFreightController = TextEditingController();
 
   final selectedStateOrigin = ''.obs;

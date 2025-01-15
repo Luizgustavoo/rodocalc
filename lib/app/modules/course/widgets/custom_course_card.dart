@@ -106,18 +106,18 @@ class CustomCourseCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 3),
-                  Text(
+                  const Text(
                     'apenas',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
                       color: Colors.green,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
-                    '$valor',
-                    style: const TextStyle(
-                      fontSize: 20,
+                    valor,
+                    style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.width * 0.05,
                       color: Colors.orange,
                       fontWeight: FontWeight.bold,
                     ),

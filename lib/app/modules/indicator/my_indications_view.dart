@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:rodocalc/app/data/controllers/comission_indicator_controller.dart';
 import 'package:rodocalc/app/data/controllers/indicator_controller.dart';
 import 'package:rodocalc/app/data/models/indication_model.dart';
+import 'package:rodocalc/app/data/models/indicators_details.dart';
 import 'package:rodocalc/app/global/custom_app_bar.dart';
 import 'package:rodocalc/app/modules/global/custom_search_field.dart';
 import 'package:rodocalc/app/modules/indicator/widgets/custom_my_indications_card.dart';
@@ -210,7 +211,8 @@ class MyIndicationsView extends GetView<IndicationController> {
                                 } else if (controller
                                             .isLoadingMyIndications.value ==
                                         false &&
-                                    controller.listMyIndications.isNotEmpty) {
+                                    controller
+                                        .listMyIndicationsDetails.isNotEmpty) {
                                   return Expanded(
                                     child: ListView.builder(
                                       padding: EdgeInsets.only(
@@ -222,10 +224,11 @@ class MyIndicationsView extends GetView<IndicationController> {
                                       physics:
                                           const AlwaysScrollableScrollPhysics(),
                                       itemCount: controller
-                                          .filteredMyIndications.length,
+                                          .filteredMyIndicationsDetails.length,
                                       itemBuilder: (context, index) {
-                                        User user = controller
-                                            .filteredMyIndications[index];
+                                        IndicacoesComDetalhes user = controller
+                                                .filteredMyIndicationsDetails[
+                                            index];
 
                                         return CustomMyIndicationsCard(
                                           user: user,

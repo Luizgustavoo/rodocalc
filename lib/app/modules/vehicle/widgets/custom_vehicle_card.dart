@@ -151,29 +151,31 @@ class CustomVehicleCard extends StatelessWidget {
                     ),
                   ),
 
-                  RichText(
-                    text: TextSpan(
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.black,
-                        fontFamily: 'Inter-Regular',
-                      ),
-                      children: [
-                        const TextSpan(
-                          text: 'VALOR FIPE: ',
-                          style: TextStyle(
-                            fontFamily: 'Inter-Bold',
+                  Flexible(
+                    child: RichText(
+                      text: TextSpan(
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.black,
+                          fontFamily: 'Inter-Regular',
+                        ),
+                        children: [
+                          const TextSpan(
+                            text: 'VALOR FIPE: ',
+                            style: TextStyle(
+                              fontFamily: 'Inter-Bold',
+                            ),
                           ),
-                        ),
-                        TextSpan(
-                          text: vehicle.valorFipe != null
-                              ? "R\$${FormattedInputers.formatValuePTBR((vehicle.valorFipe! / 100).toString())}"
-                              : "INDISPONÍVEL",
-                        ),
-                      ],
+                          TextSpan(
+                            text: vehicle.valorFipe != null
+                                ? "R\$${FormattedInputers.formatValuePTBR((vehicle.valorFipe! / 100).toString())}"
+                                : "INDISPONÍVEL",
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 5),
+
                   // RichText(
                   //   text: TextSpan(
                   //     style: const TextStyle(

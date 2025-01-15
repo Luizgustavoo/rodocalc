@@ -187,7 +187,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
                     DropdownMenuItem<int>(
                       value: null,
                       child: SizedBox(
-                        width: Get.width * 0.7,
+                        width: Get.width * 0.7, // Limita a largura do item
                         child: const Text(
                           'SELECIONE OU CADASTRE UMA CATEGORIA',
                           overflow: TextOverflow.ellipsis,
@@ -199,14 +199,15 @@ class CreateExpenseModal extends GetView<TransactionController> {
                         .map((ExpenseCategory category) {
                       return DropdownMenuItem<int>(
                         value: category.id!,
-                        child: Container(
-                          constraints: BoxConstraints(maxWidth: Get.width * .7),
+                        child: SizedBox(
+                          width: Get.width * 0.7, // Limita a largura do item
                           child: Text(
                             Services.capitalizeWords(category.descricao!),
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
-                                fontFamily: 'Inter-Bold',
-                                color: Colors.black54),
+                              fontFamily: 'Inter-Bold',
+                              color: Colors.black54,
+                            ),
                           ),
                         ),
                       );
@@ -216,6 +217,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
                       child: Align(
                         alignment: Alignment.center,
                         child: SizedBox(
+                          width: Get.width * 0.7, // Limita a largura do botão
                           child: TextButton(
                             onPressed: () {
                               controller.selectedCategory.value = null;
@@ -226,9 +228,12 @@ class CreateExpenseModal extends GetView<TransactionController> {
                             },
                             child: const Text(
                               "CADASTRAR NOVA CATEGORIA...",
+                              overflow: TextOverflow
+                                  .ellipsis, // Evita texto muito longo
                               style: TextStyle(
-                                  color: Color(0xFFFF6B00),
-                                  fontFamily: 'Inter-Bold'),
+                                color: Color(0xFFFF6B00),
+                                fontFamily: 'Inter-Bold',
+                              ),
                             ),
                           ),
                         ),
@@ -253,6 +258,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
               ),
 
               const SizedBox(height: 15),
+
               Obx(
                 () => DropdownButtonFormField<int>(
                   decoration: const InputDecoration(
@@ -262,26 +268,30 @@ class CreateExpenseModal extends GetView<TransactionController> {
                     labelText: 'TIPO ESPECÍFICO',
                   ),
                   items: [
-                    const DropdownMenuItem<int>(
+                    DropdownMenuItem<int>(
                       value: null,
-                      child: Text(
-                        'SELECIONE OU CADASTRE UM TIPO',
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Color(0xFFFF6B00)),
+                      child: SizedBox(
+                        width: Get.width * 0.7, // Limita a largura do item
+                        child: const Text(
+                          'SELECIONE OU CADASTRE UM TIPO',
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(color: Color(0xFFFF6B00)),
+                        ),
                       ),
                     ),
                     ...controller.specificTypes
                         .map((SpecificTypeExpense specific) {
                       return DropdownMenuItem<int>(
                         value: specific.id!,
-                        child: Container(
-                          constraints: BoxConstraints(maxWidth: Get.width * .7),
+                        child: SizedBox(
+                          width: Get.width * 0.7, // Limita a largura do item
                           child: Text(
                             Services.capitalizeWords(specific.descricao!),
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
-                                fontFamily: 'Inter-Bold',
-                                color: Colors.black54),
+                              fontFamily: 'Inter-Bold',
+                              color: Colors.black54,
+                            ),
                           ),
                         ),
                       );
@@ -291,6 +301,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
                       child: Align(
                         alignment: Alignment.center,
                         child: SizedBox(
+                          width: Get.width * 0.7, // Limita a largura do botão
                           child: TextButton(
                             onPressed: () {
                               Get.back();
@@ -301,9 +312,12 @@ class CreateExpenseModal extends GetView<TransactionController> {
                             },
                             child: const Text(
                               "CADASTRAR NOVO TIPO...",
+                              overflow: TextOverflow
+                                  .ellipsis, // Evita texto muito longo
                               style: TextStyle(
-                                  color: Color(0xFFFF6B00),
-                                  fontFamily: 'Inter-Bold'),
+                                color: Color(0xFFFF6B00),
+                                fontFamily: 'Inter-Bold',
+                              ),
                             ),
                           ),
                         ),
@@ -423,7 +437,7 @@ class CreateExpenseModal extends GetView<TransactionController> {
                           Get.back();
                         },
                         child: const Text(
-                          'CANCELAR',
+                          'Cancelar',
                           style: TextStyle(
                             fontFamily: 'Inter-Bold',
                             color: Color(0xFFFF6B00),

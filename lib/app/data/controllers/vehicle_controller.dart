@@ -42,6 +42,7 @@ class VehicleController extends GetxController {
 
   RxBool isLoading = true.obs;
   RxBool isLoadingPlate = false.obs;
+  RxBool isLoadingCRUD = false.obs;
   RxBool areFieldsVisible = false.obs;
   RxBool isLoadingQuantityLicences = true.obs;
   RxBool isLoadingInitial = true.obs;
@@ -242,6 +243,7 @@ class VehicleController extends GetxController {
 
   Future<Map<String, dynamic>> insertVehicle() async {
     if (formKeyVehicle.currentState!.validate()) {
+      isLoadingCRUD.value = true;
       mensagem = await repository.insert(Vehicle(
         pessoaId: ServiceStorage.getUserId(),
         marca: txtBrandController.text,
@@ -270,6 +272,7 @@ class VehicleController extends GetxController {
         };
       }
     }
+    isLoadingCRUD.value = false;
     return retorno;
   }
 
@@ -315,10 +318,12 @@ class VehicleController extends GetxController {
     for (final controller in textControllers) {
       controller.clear();
     }
+    isLoadingCRUD.value = false;
   }
 
   Future<Map<String, dynamic>> updateVehicle(int id) async {
     if (formKeyVehicle.currentState!.validate()) {
+      isLoadingCRUD.value = true;
       mensagem = await repository.update(Vehicle(
         id: id,
         pessoaId: ServiceStorage.getUserId(),
@@ -348,11 +353,13 @@ class VehicleController extends GetxController {
         };
       }
     }
+    isLoadingCRUD.value = false;
     return retorno;
   }
 
   Future<Map<String, dynamic>> deleteVehicle(int id) async {
     if (id > 0) {
+      isLoadingCRUD.value = true;
       mensagem = await repository.delete(Vehicle(id: id));
       retorno = {
         'success': mensagem['success'],
@@ -365,7 +372,7 @@ class VehicleController extends GetxController {
         'message': ['Falha ao realizar a operação!']
       };
     }
-
+    isLoadingCRUD.value = false;
     return retorno;
   }
 }

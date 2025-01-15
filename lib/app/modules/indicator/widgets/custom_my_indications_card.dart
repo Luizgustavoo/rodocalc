@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:rodocalc/app/data/models/indicators_details.dart';
 
-import '../../../data/models/user_model.dart';
 import '../../../utils/formatter.dart';
 
 class CustomMyIndicationsCard extends StatelessWidget {
-  final User user;
+  final IndicacoesComDetalhes user;
 
   const CustomMyIndicationsCard({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
-    double soma =
-        user.planos!.map((p) => p.valorPlano).fold(0, (a, b) => a + b!);
-
-    double valorComissao = soma * 0.2;
-
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
@@ -25,7 +20,7 @@ class CustomMyIndicationsCard extends StatelessWidget {
           horizontalTitleGap: 5,
           leading: CircleAvatar(
             child: Text(
-              user.people!.nome![0].toUpperCase(),
+              user.nome![0].toUpperCase(),
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
           ),
@@ -43,7 +38,7 @@ class CustomMyIndicationsCard extends StatelessWidget {
                     fontFamily: 'Inter-Bold',
                   ),
                 ),
-                TextSpan(text: user.people!.nome!.toUpperCase()),
+                TextSpan(text: user.nome!.toUpperCase()),
               ],
             ),
           ),
@@ -65,13 +60,11 @@ class CustomMyIndicationsCard extends StatelessWidget {
                         fontFamily: 'Inter-Bold',
                       ),
                     ),
-                    TextSpan(
-                        text: user.planos!.isNotEmpty
-                            ? user.planos!.first.plano?.descricao!.toString()
-                            : ''),
+                    TextSpan(text: user.descricao!),
                   ],
                 ),
               ),
+              const SizedBox(height: 3),
               RichText(
                 text: TextSpan(
                   style: const TextStyle(
@@ -88,31 +81,8 @@ class CustomMyIndicationsCard extends StatelessWidget {
                     ),
                     TextSpan(
                       text: FormattedInputers.formatValuePTBR(
-                          ((valorComissao / 100).toString())),
+                          (user.valorComissao! / 100)),
                     ),
-                  ],
-                ),
-              ),
-              RichText(
-                text: TextSpan(
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: Colors.black,
-                    fontFamily: 'Inter-Regular',
-                  ),
-                  children: [
-                    const TextSpan(
-                      text: 'VENCIMENTO: ',
-                      style: TextStyle(
-                        fontFamily: 'Inter-Bold',
-                      ),
-                    ),
-                    TextSpan(
-                        text: user.planos!.isNotEmpty
-                            ? FormattedInputers.formatApiDate(user
-                                .planos!.first.dataVencimentoPlano!
-                                .toString())
-                            : ''),
                   ],
                 ),
               ),

@@ -233,7 +233,7 @@ class IndicatorView extends GetView<IndicationController> {
                                                     Get.put(
                                                         IndicationController());
                                                 indicationController
-                                                    .getMyIndications();
+                                                    .getMyIndicationsDetails();
                                                 Get.toNamed(
                                                     Routes.myIndications);
                                               },

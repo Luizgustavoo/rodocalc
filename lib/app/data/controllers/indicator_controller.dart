@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:rodocalc/app/data/models/indication_model.dart';
+import 'package:rodocalc/app/data/models/indicators_details.dart';
 import 'package:rodocalc/app/data/repositories/Indication_repository.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 
@@ -20,8 +21,12 @@ class IndicationController extends GetxController {
 
   RxList<Indication> listIndications = RxList<Indication>([]);
   RxList<User> listMyIndications = RxList<User>([]);
+  RxList<IndicacoesComDetalhes> listMyIndicationsDetails =
+      RxList<IndicacoesComDetalhes>([]);
   RxList<Indication> filteredIndications = RxList<Indication>([]);
   RxList<User> filteredMyIndications = RxList<User>([]);
+  RxList<IndicacoesComDetalhes> filteredMyIndicationsDetails =
+      RxList<IndicacoesComDetalhes>([]);
 
   final repository = Get.put(IndicationRepository());
 
@@ -62,6 +67,21 @@ class IndicationController extends GetxController {
       listMyIndications.value = await repository.getMyIndications();
       print(listMyIndications);
       filteredMyIndications.assignAll(listMyIndications);
+    } catch (e) {
+      listMyIndications.clear();
+      filteredMyIndications.clear();
+      Exception(e);
+    }
+    isLoadingMyIndications.value = false;
+  }
+
+  Future<void> getMyIndicationsDetails() async {
+    isLoadingMyIndications.value = true;
+    try {
+      searchMyIndicatorController.clear();
+      listMyIndicationsDetails.value =
+          await repository.getMyIndicationsDetails();
+      filteredMyIndicationsDetails.assignAll(listMyIndicationsDetails);
     } catch (e) {
       listMyIndications.clear();
       filteredMyIndications.clear();

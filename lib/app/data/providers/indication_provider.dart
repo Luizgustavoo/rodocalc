@@ -60,6 +60,32 @@ class IndicationApiClient {
     return null;
   }
 
+  getMyIndicationsDetails() async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+
+      Uri indicatorUrl;
+      String url =
+          '$baseUrl/v1/usuario/minhas-indicacoes-detalhes/${ServiceStorage.getUserId().toString()}';
+      indicatorUrl = Uri.parse(url);
+      var response = await httpClient.get(
+        indicatorUrl,
+        headers: {
+          "Accept": "application/json",
+          "Authorization": token,
+        },
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return json.decode(response.body);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      Exception(e);
+    }
+    return null;
+  }
+
   insert(Indication indicator) async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";

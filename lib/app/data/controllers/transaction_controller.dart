@@ -69,6 +69,7 @@ class TransactionController extends GetxController {
 
   RxBool isLoadingChargeTypes = true.obs;
   RxBool isLoadingBalance = true.obs;
+  RxBool isLoadingCRUD = false.obs;
 
   late Transacoes selectedTransaction;
 
@@ -748,6 +749,7 @@ class TransactionController extends GetxController {
 
   Future<Map<String, dynamic>> insertTransaction(String typeTransaction) async {
     isLoadingInsertUpdate.value = true;
+    isLoadingCRUD.value = true;
 
     if (formKeyTransaction.currentState!.validate()) {
       final RegExp cidadeUfRegex = RegExp(r'^[A-Za-zÀ-ÿ\s]+-[A-Z]{2}$');
@@ -1046,7 +1048,6 @@ class TransactionController extends GetxController {
       txtCompanyController,
       txtDDDController,
       txtPhoneController,
-      txtValueController,
       txtDateController,
       txtOriginController,
       txtDestinyController,
@@ -1065,6 +1066,7 @@ class TransactionController extends GetxController {
     for (final controller in textControllers) {
       controller.clear();
     }
+    txtValueController.text = '';
     selectedImagesPaths.clear();
     selectedImagesPathsApi.clear();
     selectedImagesPathsApiRemove.clear();

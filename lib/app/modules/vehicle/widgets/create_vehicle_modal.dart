@@ -329,44 +329,52 @@ class CreateVehicleModal extends GetView<VehicleController> {
                             ),
                             const SizedBox(width: 10),
                             CustomElevatedButton(
-                              onPressed: () async {
-                                // if (controller
-                                //     .selectedImagePath.value.isEmpty) {
-                                //   Get.snackbar('Atenção!',
-                                //       "Selecione uma imagem para o veículo!",
-                                //       backgroundColor: Colors.orange,
-                                //       colorText: Colors.white,
-                                //       duration: const Duration(seconds: 2),
-                                //       snackPosition: SnackPosition.BOTTOM);
-                                // }
-                                Map<String, dynamic> retorno = update
-                                    ? await controller
-                                        .updateVehicle(vehicle!.id!)
-                                    : await controller.insertVehicle();
+                              onPressed: controller.isLoadingCRUD.value
+                                  ? () {}
+                                  : () async {
+                                      // if (controller
+                                      //     .selectedImagePath.value.isEmpty) {
+                                      //   Get.snackbar('Atenção!',
+                                      //       "Selecione uma imagem para o veículo!",
+                                      //       backgroundColor: Colors.orange,
+                                      //       colorText: Colors.white,
+                                      //       duration: const Duration(seconds: 2),
+                                      //       snackPosition: SnackPosition.BOTTOM);
+                                      // }
+                                      Map<String, dynamic> retorno = update
+                                          ? await controller
+                                              .updateVehicle(vehicle!.id!)
+                                          : await controller.insertVehicle();
 
-                                if (retorno['success'] == true) {
-                                  Get.back();
-                                  Get.snackbar(
-                                      'Sucesso!', retorno['message'].join('\n'),
-                                      backgroundColor: Colors.green,
-                                      colorText: Colors.white,
-                                      duration: const Duration(seconds: 2),
-                                      snackPosition: SnackPosition.BOTTOM);
-                                } else {
-                                  Get.snackbar(
-                                      'Falha!', retorno['message'].join('\n'),
-                                      backgroundColor: Colors.red,
-                                      colorText: Colors.white,
-                                      duration: const Duration(seconds: 2),
-                                      snackPosition: SnackPosition.BOTTOM);
-                                }
-                              },
-                              child: Text(
-                                vehicle == null ? 'CADASTRAR' : 'ALTERAR',
-                                style: const TextStyle(
-                                    fontFamily: 'Inter-Bold',
-                                    color: Colors.white),
-                              ),
+                                      if (retorno['success'] == true) {
+                                        Get.back();
+                                        Get.snackbar('Sucesso!',
+                                            retorno['message'].join('\n'),
+                                            backgroundColor: Colors.green,
+                                            colorText: Colors.white,
+                                            duration:
+                                                const Duration(seconds: 2),
+                                            snackPosition:
+                                                SnackPosition.BOTTOM);
+                                      } else {
+                                        Get.snackbar('Falha!',
+                                            retorno['message'].join('\n'),
+                                            backgroundColor: Colors.red,
+                                            colorText: Colors.white,
+                                            duration:
+                                                const Duration(seconds: 2),
+                                            snackPosition:
+                                                SnackPosition.BOTTOM);
+                                      }
+                                    },
+                              child: controller.isLoadingCRUD.value
+                                  ? const CircularProgressIndicator()
+                                  : Text(
+                                      vehicle == null ? 'CADASTRAR' : 'ALTERAR',
+                                      style: const TextStyle(
+                                          fontFamily: 'Inter-Bold',
+                                          color: Colors.white),
+                                    ),
                             ),
                           ],
                         ),
