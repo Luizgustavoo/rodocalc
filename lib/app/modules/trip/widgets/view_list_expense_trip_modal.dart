@@ -35,20 +35,22 @@ class ViewListExpenseTripModal extends GetView<TripController> {
                         fontSize: 17,
                         color: Color(0xFFFF6B00)),
                   ),
-                  IconButton(
-                      onPressed: () {
-                        Get.back();
-                        controller.clearAllFieldsExpense();
-                        showModalBottomSheet(
-                          isScrollControlled: true,
-                          context: context,
-                          builder: (context) => CreateExpenseTripModal(
-                            isUpdate: false,
-                            trip: trip,
-                          ),
-                        );
-                      },
-                      icon: const Icon(Icons.add))
+                  trip.situacao!.toUpperCase() == "CLOSE"
+                      ? const SizedBox.shrink()
+                      : IconButton(
+                          onPressed: () {
+                            Get.back();
+                            controller.clearAllFieldsExpense();
+                            showModalBottomSheet(
+                              isScrollControlled: true,
+                              context: context,
+                              builder: (context) => CreateExpenseTripModal(
+                                isUpdate: false,
+                                trip: trip,
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.add))
                 ],
               ),
             ),
@@ -84,23 +86,25 @@ class ViewListExpenseTripModal extends GetView<TripController> {
                           color: Colors.red,
                         ),
                       ),
-                      trailing: IconButton(
-                        onPressed: () {
-                          Get.back();
-                          controller.clearAllFieldsExpense();
-                          controller.fillInFieldsExpenseTrip(expense);
-                          showModalBottomSheet(
-                            isScrollControlled: true,
-                            context: context,
-                            builder: (context) => CreateExpenseTripModal(
-                              isUpdate: true,
-                              trip: trip,
-                              expenseTrip: expense,
+                      trailing: trip.situacao!.toUpperCase() == "CLOSE"
+                          ? const SizedBox.shrink()
+                          : IconButton(
+                              onPressed: () {
+                                Get.back();
+                                controller.clearAllFieldsExpense();
+                                controller.fillInFieldsExpenseTrip(expense);
+                                showModalBottomSheet(
+                                  isScrollControlled: true,
+                                  context: context,
+                                  builder: (context) => CreateExpenseTripModal(
+                                    isUpdate: true,
+                                    trip: trip,
+                                    expenseTrip: expense,
+                                  ),
+                                );
+                              },
+                              icon: const Icon(Icons.edit),
                             ),
-                          );
-                        },
-                        icon: const Icon(Icons.edit),
-                      ),
                       title: RichText(
                         text: TextSpan(
                           style: const TextStyle(

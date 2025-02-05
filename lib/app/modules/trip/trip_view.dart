@@ -135,46 +135,53 @@ class TripView extends GetView<TripController> {
                             );
                           } else if (!controller.isLoading.value &&
                               controller.listTrip.isNotEmpty) {
-                            return ListView.builder(
-                              padding: EdgeInsets.only(
-                                  bottom:
-                                      MediaQuery.of(context).size.height * .25),
-                              shrinkWrap: true,
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              itemCount: controller.filteredTrips.length,
-                              itemBuilder: (context, index) {
-                                Trip trip = controller.filteredTrips[index];
-                                return InkWell(
-                                  onTap: () {
-                                    showModalBottomSheet(
-                                      isScrollControlled: true,
-                                      context: context,
-                                      builder: (context) =>
-                                          ViewListExpenseTripModal(
-                                        trip: trip,
-                                      ),
-                                    );
-                                  },
-                                  child: CustomTripCard(
-                                    trip: trip,
-                                    functionRemove: () {
-                                      controller.clearAllFields();
-                                      showDialog(context, trip, controller);
-                                    },
-                                    functionEdit: () {
-                                      controller.fillInFields(trip);
+                            return Expanded(
+                              child: ListView.builder(
+                                padding: EdgeInsets.only(
+                                    bottom: MediaQuery.of(context).size.height *
+                                        .30),
+                                shrinkWrap: true,
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                itemCount: controller.filteredTrips.length,
+                                itemBuilder: (context, index) {
+                                  Trip trip = controller.filteredTrips[index];
+                                  return InkWell(
+                                    onTap: () {
                                       showModalBottomSheet(
                                         isScrollControlled: true,
                                         context: context,
-                                        builder: (context) => CreateTripModal(
-                                          isUpdate: true,
+                                        builder: (context) =>
+                                            ViewListExpenseTripModal(
                                           trip: trip,
                                         ),
                                       );
                                     },
-                                  ),
-                                );
-                              },
+                                    child: CustomTripCard(
+                                      trip: trip,
+                                      functionRemove: () {
+                                        controller.isDialogOpen.value = false;
+                                        showDialog(context, trip, controller);
+                                      },
+                                      functionClose: () {
+                                        controller.isDialogOpen.value = false;
+                                        showDialogClose(
+                                            context, trip, controller);
+                                      },
+                                      functionEdit: () {
+                                        controller.fillInFields(trip);
+                                        showModalBottomSheet(
+                                          isScrollControlled: true,
+                                          context: context,
+                                          builder: (context) => CreateTripModal(
+                                            isUpdate: true,
+                                            trip: trip,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  );
+                                },
+                              ),
                             );
                           } else {
                             return const Center(
@@ -204,6 +211,7 @@ class TripView extends GetView<TripController> {
               final cityController = Get.put(CityStateController());
               cityController.getCities();
 
+              controller.clearAllFields();
               showModalBottomSheet(
                 isScrollControlled: true,
                 context: context,
@@ -228,7 +236,7 @@ void showDialog(context, Trip trip, TripController controller) {
   Get.defaultDialog(
     titlePadding: const EdgeInsets.all(16),
     contentPadding: const EdgeInsets.all(16),
-    title: "Confirmação",
+    title: "REMOVER TRECHO",
     content: const Text(
       textAlign: TextAlign.center,
       "Tem certeza que deseja excluir o trecho selecionado?",
@@ -243,6 +251,61 @@ void showDialog(context, Trip trip, TripController controller) {
           Get.back(); // Fecha o diálogo atual primeiro
           await Future.delayed(const Duration(milliseconds: 500));
           Map<String, dynamic> retorno = await controller.deleteTrip(trip.id!);
+
+          if (retorno['success'] == true) {
+            Get.snackbar('Sucesso!', retorno['message'].join('\n'),
+                backgroundColor: Colors.green,
+                colorText: Colors.white,
+                duration: const Duration(seconds: 1),
+                snackPosition: SnackPosition.BOTTOM);
+          } else {
+            Get.snackbar('Falha!', retorno['message'].join('\n'),
+                backgroundColor: Colors.red,
+                colorText: Colors.white,
+                duration: const Duration(seconds: 1),
+                snackPosition: SnackPosition.BOTTOM);
+          }
+        },
+        child: const Text(
+          "CONFIRMAR",
+          style: TextStyle(fontFamily: 'Poppinss', color: Colors.white),
+        ),
+      ),
+      TextButton(
+        onPressed: () {
+          Get.back();
+        },
+        child: const Text(
+          "CANCELAR",
+          style: TextStyle(fontFamily: 'Poppinss'),
+        ),
+      ),
+    ],
+  );
+}
+
+void showDialogClose(context, Trip trip, TripController controller) {
+  if (controller.isDialogOpen.value) return;
+
+  controller.isDialogOpen.value = true;
+  Get.defaultDialog(
+    titlePadding: const EdgeInsets.all(16),
+    contentPadding: const EdgeInsets.all(16),
+    title: "FINALIZAR TRECHO",
+    content: const Text(
+      textAlign: TextAlign.center,
+      "Tem certeza que deseja fechar o trecho selecionado? ESSA AÇÃO NÃO PODERÁ SER DESFEITA.",
+      style: TextStyle(
+        fontFamily: 'Poppins',
+        fontSize: 18,
+      ),
+    ),
+    actions: [
+      ElevatedButton(
+        onPressed: () async {
+          Get.back(); // Fecha o diálogo atual primeiro
+          await Future.delayed(const Duration(milliseconds: 500));
+          Map<String, dynamic> retorno = await controller.closeTrip(trip.id!);
 
           if (retorno['success'] == true) {
             Get.snackbar('Sucesso!', retorno['message'].join('\n'),

@@ -22,6 +22,7 @@ class TripController extends GetxController {
   final destinyController = TextEditingController();
   final valueReceiveController = TextEditingController();
   final distanceController = TextEditingController();
+  final tripNumberController = TextEditingController();
   final averageController = TextEditingController();
   final priceDieselController = TextEditingController();
   final totalTiresController = TextEditingController();
@@ -29,12 +30,14 @@ class TripController extends GetxController {
   final priceTollsController = TextEditingController();
   final othersExpensesController = TextEditingController();
   final txtDateController = TextEditingController();
+  final txtDateFinishedController = TextEditingController();
   final txtKmController = TextEditingController();
+  final txtKmInicialTrechoController = TextEditingController();
 
   final expenseTripFormKey = GlobalKey<FormState>();
   final txtDateExpenseTripController = TextEditingController();
   final txtDescriptionExpenseTripController = TextEditingController();
-  final txtAmountExpenseTripController = MoneyMaskedTextController(
+  var txtAmountExpenseTripController = MoneyMaskedTextController(
     precision: 2,
     initialValue: 0.0,
     decimalSeparator: ',',
@@ -230,15 +233,31 @@ class TripController extends GetxController {
       txtDateController.clear();
     }
 
+    if (trip.dataHoraChegada != null && trip.dataHoraChegada!.isNotEmpty) {
+      try {
+        DateTime dateFinished = DateTime.parse(trip.dataHoraChegada!);
+        txtDateFinishedController.text =
+            DateFormat('dd/MM/yyyy H:mm').format(dateFinished);
+      } catch (e) {
+        txtDateFinishedController.clear();
+      }
+    } else {
+      txtDateFinishedController.clear();
+    }
+
     originController.text =
         "${trip.origem.toString()}-${trip.ufOrigem.toString()}";
     destinyController.text =
         "${trip.destino.toString()}-${trip.ufDestino.toString()}";
     distanceController.text =
         FormattedInputers.formatDoubleForDecimal(trip.distancia!);
+
+    txtKmInicialTrechoController.text = trip.km ?? '';
+    tripNumberController.text = trip.numeroViagem ?? '';
   }
 
   void clearAllFields() {
+    isDialogOpen.value = false;
     final textControllers = [
       originController,
       destinyController,
@@ -251,10 +270,12 @@ class TripController extends GetxController {
       priceTollsController,
       othersExpensesController,
       txtDateController,
+      txtDateFinishedController,
       originController,
       txtDateExpenseTripController,
-      txtAmountExpenseTripController,
       txtDescriptionExpenseTripController,
+      txtKmInicialTrechoController,
+      tripNumberController,
     ];
 
     for (final controller in textControllers) {
@@ -263,6 +284,14 @@ class TripController extends GetxController {
     selectedStateOrigin.value = '';
     selectedStateDestiny.value = '';
     selectedOption.value = '';
+
+    txtAmountExpenseTripController = MoneyMaskedTextController(
+      precision: 2,
+      initialValue: 0.0,
+      decimalSeparator: ',',
+      thousandSeparator: '.',
+      leftSymbol: 'R\$ ',
+    );
   }
 
   void clearAllFieldsExpense() {
@@ -320,6 +349,7 @@ class TripController extends GetxController {
         userId: ServiceStorage.getUserId(),
         veiculoId: ServiceStorage.idSelectedVehicle(),
         dataHora: txtDateController.text,
+        dataHoraChegada: txtDateFinishedController.text,
         tipoSaidaChegada: selectedOption.value,
         origem: cidadeOrigem,
         ufOrigem: ufOrigem,
@@ -327,6 +357,8 @@ class TripController extends GetxController {
         ufDestino: ufDestino,
         distancia: FormattedInputers.convertToDouble(distanceController.text),
         status: 1,
+        km: txtKmInicialTrechoController.text,
+        numeroViagem: tripNumberController.text,
       ));
 
       if (mensagem != null) {
@@ -476,6 +508,7 @@ class TripController extends GetxController {
         userId: ServiceStorage.getUserId(),
         veiculoId: ServiceStorage.idSelectedVehicle(),
         dataHora: txtDateController.text,
+        dataHoraChegada: txtDateFinishedController.text,
         tipoSaidaChegada: selectedOption.value,
         origem: cidadeOrigem,
         ufOrigem: ufOrigem,
@@ -483,6 +516,8 @@ class TripController extends GetxController {
         ufDestino: ufDestino,
         distancia: FormattedInputers.convertToDouble(distanceController.text),
         status: 1,
+        km: txtKmInicialTrechoController.text,
+        numeroViagem: tripNumberController.text,
       ));
 
       if (mensagem != null) {
@@ -506,6 +541,26 @@ class TripController extends GetxController {
     isLoadingCRUD(false);
     if (id > 0) {
       mensagem = await repository.delete(Trip(id: id));
+      retorno = {
+        'success': mensagem['success'],
+        'message': mensagem['message']
+      };
+      getAll();
+      isDialogOpen.value = false;
+    } else {
+      retorno = {
+        'success': false,
+        'message': ['Falha ao realizar a operação!']
+      };
+    }
+    isLoadingCRUD(false);
+    return retorno;
+  }
+
+  Future<Map<String, dynamic>> closeTrip(int id) async {
+    isLoadingCRUD(false);
+    if (id > 0) {
+      mensagem = await repository.close(Trip(id: id));
       retorno = {
         'success': mensagem['success'],
         'message': mensagem['message']

@@ -46,6 +46,7 @@ class TripApiClient {
         'user_id': trip.userId.toString(),
         'veiculo_id': trip.veiculoId.toString(),
         'data_hora': trip.dataHora.toString(),
+        'data_hora_chegada': trip.dataHoraChegada.toString(),
         'tipo_saida_chegada': trip.tipoSaidaChegada.toString(),
         'origem': trip.origem.toString(),
         'uf_origem': trip.ufOrigem.toString(),
@@ -53,6 +54,8 @@ class TripApiClient {
         'uf_destino': trip.ufDestino.toString(),
         'distancia': trip.distancia.toString(),
         'status': trip.status.toString(),
+        'km': trip.km.toString(),
+        'numero_viagem': trip.numeroViagem.toString(),
       };
 
       final response = await http.post(
@@ -158,6 +161,7 @@ class TripApiClient {
         'user_id': trip.userId.toString(),
         'veiculo_id': trip.veiculoId.toString(),
         'data_hora': trip.dataHora.toString(),
+        'data_hora_chegada': trip.dataHoraChegada.toString(),
         'tipo_saida_chegada': trip.tipoSaidaChegada.toString(),
         'origem': trip.origem.toString(),
         'uf_origem': trip.ufOrigem.toString(),
@@ -165,6 +169,8 @@ class TripApiClient {
         'uf_destino': trip.ufDestino.toString(),
         'distancia': trip.distancia.toString(),
         'status': trip.status.toString(),
+        'km': trip.km.toString(),
+        'numero_viagem': trip.numeroViagem.toString(),
       };
 
       final response = await http.put(
@@ -197,6 +203,27 @@ class TripApiClient {
       var tripUrl = Uri.parse('$baseUrl/v1/trechopercorrido/${trip.id}');
 
       var response = await httpClient.delete(
+        tripUrl,
+        headers: {
+          "Accept": "application/json",
+          "Authorization": token,
+        },
+      );
+
+      return json.decode(response.body);
+    } catch (err) {
+      Exception(err);
+    }
+    return null;
+  }
+
+  close(Trip trip) async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+
+      var tripUrl = Uri.parse('$baseUrl/v1/trechopercorrido/close/${trip.id}');
+
+      var response = await httpClient.post(
         tripUrl,
         headers: {
           "Accept": "application/json",

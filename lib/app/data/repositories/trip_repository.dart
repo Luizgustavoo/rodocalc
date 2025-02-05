@@ -33,7 +33,7 @@ class TripRepository {
       Exception(e);
     }
   }
-  
+
   update(Trip trip) async {
     try {
       var response = await apiClient.update(trip);
@@ -46,6 +46,15 @@ class TripRepository {
   delete(Trip trip) async {
     try {
       var response = await apiClient.delete(trip);
+      return response;
+    } catch (e) {
+      Exception(e);
+    }
+  }
+
+  close(Trip trip) async {
+    try {
+      var response = await apiClient.close(trip);
       return response;
     } catch (e) {
       Exception(e);

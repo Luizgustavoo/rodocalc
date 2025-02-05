@@ -1,4 +1,5 @@
 import 'package:rodocalc/app/data/models/expense_trip_model.dart';
+import 'package:rodocalc/app/data/models/user_model.dart';
 
 class Trip {
   int? id;
@@ -6,6 +7,7 @@ class Trip {
   int? veiculoId;
 
   String? dataHora;
+  String? dataHoraChegada;
   String? tipoSaidaChegada;
 
   String? origem;
@@ -17,14 +19,20 @@ class Trip {
   int? status;
   String? createdAt;
   String? updatedAt;
+  String? km;
+  String? numeroViagem;
+  String? situacao;
 
   List<ExpenseTrip>? expenseTrip;
+
+  User? user;
 
   Trip({
     this.id,
     this.userId,
     this.veiculoId,
     this.dataHora,
+    this.dataHoraChegada,
     this.tipoSaidaChegada,
     this.origem,
     this.ufOrigem,
@@ -35,6 +43,10 @@ class Trip {
     this.createdAt,
     this.updatedAt,
     this.expenseTrip,
+    this.km,
+    this.numeroViagem,
+    this.situacao,
+    this.user,
   });
 
   Trip.fromJson(Map<String, dynamic> json) {
@@ -42,6 +54,7 @@ class Trip {
     userId = json['user_id'];
     veiculoId = json['veiculo_id'];
     dataHora = json['data_hora'];
+    dataHoraChegada = json['data_hora_chegada'];
     tipoSaidaChegada = json['tipo_saida_chegada'];
     origem = json['origem'];
     ufOrigem = json['uf_origem'];
@@ -51,6 +64,10 @@ class Trip {
     status = json['status'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    km = json['km'];
+    numeroViagem = json['numero_viagem'];
+    situacao = json['situacao'];
+    user = json['user'] != null ? User.fromJson(json['user']) : null;
     if (json['despesas'] != null) {
       expenseTrip = <ExpenseTrip>[];
       json['despesas'].forEach((v) {
@@ -65,6 +82,7 @@ class Trip {
     data['user_id'] = userId;
     data['veiculo_id'] = veiculoId;
     data['data_hora'] = dataHora;
+    data['data_hora_chegada'] = dataHoraChegada;
     data['tipo_saida_chegada'] = tipoSaidaChegada;
     data['origem'] = origem;
     data['uf_origem'] = ufOrigem;
@@ -74,8 +92,14 @@ class Trip {
     data['status'] = status;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
+    data['km'] = km;
+    data['numero_viagem'] = numeroViagem;
+    data['situacao'] = situacao;
     if (expenseTrip != null) {
       data['despesas'] = expenseTrip!.map((v) => v.toJson()).toList();
+    }
+    if (user != null) {
+      data['user'] = user!.toJson();
     }
     return data;
   }
