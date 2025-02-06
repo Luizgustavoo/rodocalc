@@ -145,8 +145,13 @@ class TripView extends GetView<TripController> {
                                 itemCount: controller.filteredTrips.length,
                                 itemBuilder: (context, index) {
                                   Trip trip = controller.filteredTrips[index];
-                                  return InkWell(
-                                    onTap: () {
+                                  return CustomTripCard(
+                                    trip: trip,
+                                    functionRemove: () {
+                                      controller.isDialogOpen.value = false;
+                                      showDialog(context, trip, controller);
+                                    },
+                                    functionExpense: () {
                                       showModalBottomSheet(
                                         isScrollControlled: true,
                                         context: context,
@@ -156,29 +161,22 @@ class TripView extends GetView<TripController> {
                                         ),
                                       );
                                     },
-                                    child: CustomTripCard(
-                                      trip: trip,
-                                      functionRemove: () {
-                                        controller.isDialogOpen.value = false;
-                                        showDialog(context, trip, controller);
-                                      },
-                                      functionClose: () {
-                                        controller.isDialogOpen.value = false;
-                                        showDialogClose(
-                                            context, trip, controller);
-                                      },
-                                      functionEdit: () {
-                                        controller.fillInFields(trip);
-                                        showModalBottomSheet(
-                                          isScrollControlled: true,
-                                          context: context,
-                                          builder: (context) => CreateTripModal(
-                                            isUpdate: true,
-                                            trip: trip,
-                                          ),
-                                        );
-                                      },
-                                    ),
+                                    functionClose: () {
+                                      controller.isDialogOpen.value = false;
+                                      showDialogClose(
+                                          context, trip, controller);
+                                    },
+                                    functionEdit: () {
+                                      controller.fillInFields(trip);
+                                      showModalBottomSheet(
+                                        isScrollControlled: true,
+                                        context: context,
+                                        builder: (context) => CreateTripModal(
+                                          isUpdate: true,
+                                          trip: trip,
+                                        ),
+                                      );
+                                    },
                                   );
                                 },
                               ),

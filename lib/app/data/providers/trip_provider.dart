@@ -55,6 +55,7 @@ class TripApiClient {
         'distancia': trip.distancia.toString(),
         'status': trip.status.toString(),
         'km': trip.km.toString(),
+        'km_final': trip.kmFinal.toString(),
         'numero_viagem': trip.numeroViagem.toString(),
       };
 
@@ -170,6 +171,7 @@ class TripApiClient {
         'distancia': trip.distancia.toString(),
         'status': trip.status.toString(),
         'km': trip.km.toString(),
+        'km_final': trip.kmFinal.toString(),
         'numero_viagem': trip.numeroViagem.toString(),
       };
 

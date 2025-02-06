@@ -33,6 +33,7 @@ class TripController extends GetxController {
   final txtDateFinishedController = TextEditingController();
   final txtKmController = TextEditingController();
   final txtKmInicialTrechoController = TextEditingController();
+  final txtKmFinalTrechoController = TextEditingController();
 
   final expenseTripFormKey = GlobalKey<FormState>();
   final txtDateExpenseTripController = TextEditingController();
@@ -275,6 +276,7 @@ class TripController extends GetxController {
       txtDateExpenseTripController,
       txtDescriptionExpenseTripController,
       txtKmInicialTrechoController,
+      txtKmFinalTrechoController,
       tripNumberController,
     ];
 
@@ -358,6 +360,7 @@ class TripController extends GetxController {
         distancia: FormattedInputers.convertToDouble(distanceController.text),
         status: 1,
         km: txtKmInicialTrechoController.text,
+        kmFinal: txtKmFinalTrechoController.text,
         numeroViagem: tripNumberController.text,
       ));
 
@@ -517,6 +520,7 @@ class TripController extends GetxController {
         distancia: FormattedInputers.convertToDouble(distanceController.text),
         status: 1,
         km: txtKmInicialTrechoController.text,
+        kmFinal: txtKmFinalTrechoController.text,
         numeroViagem: tripNumberController.text,
       ));
 

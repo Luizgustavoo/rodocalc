@@ -7,6 +7,7 @@ class CustomTripCard extends StatelessWidget {
   final VoidCallback functionEdit;
   final VoidCallback functionRemove;
   final VoidCallback functionClose;
+  final VoidCallback functionExpense;
 
   const CustomTripCard({
     super.key,
@@ -14,6 +15,7 @@ class CustomTripCard extends StatelessWidget {
     required this.functionEdit,
     required this.functionRemove,
     required this.functionClose,
+    required this.functionExpense,
   });
 
   @override
@@ -60,45 +62,77 @@ class CustomTripCard extends StatelessWidget {
             children: [
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Expanded(
-                    child: Text(
-                      "Viagem: ${trip.numeroViagem ?? 'S/N'}",
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                    ),
-                  ),
                   IconButton(
                     onPressed: functionEdit,
                     icon: const Icon(Icons.edit, color: Colors.blueAccent),
-                  ),
-                  IconButton(
-                    onPressed: functionRemove,
-                    icon: const Icon(Icons.delete, color: Colors.redAccent),
                   ),
                   closedTrip
                       ? const SizedBox.shrink()
                       : IconButton(
                           onPressed: functionClose,
-                          icon:
-                              const Icon(Icons.close, color: Colors.redAccent),
+                          icon: Icon(Icons.lock_sharp,
+                              color: Colors.grey.shade700),
                         ),
+                  IconButton(
+                    onPressed: functionExpense,
+                    icon: const Icon(Icons.monetization_on_outlined,
+                        color: Colors.orange),
+                  ),
+                  IconButton(
+                    onPressed: functionRemove,
+                    icon: const Icon(Icons.delete, color: Colors.redAccent),
+                  ),
                 ],
               ),
               const SizedBox(height: 12),
+              _buildInfoRow("Viagem", trip.numeroViagem ?? 'S/N'),
               _buildInfoRow("Motorista", motorista),
-              _buildInfoRow("KM Veículo", trip.km ?? "N/D"),
-              _buildInfoRow("Trecho", trecho),
               _buildInfoRow("Saída", dataSaida),
-              _buildInfoRow("Chegada", dataChegada),
+              _buildInfoRow("KM Inicial Veículo", trip.km ?? "N/D"),
+              Divider(
+                endIndent: 10,
+                indent: 10,
+                height: 5,
+                thickness: 1,
+                color:
+                    closedTrip ? Colors.orange.shade100 : Colors.green.shade100,
+              ),
+              _buildInfoRow("Trecho", trecho),
               _buildInfoRow("Distância", "${trip.distancia ?? 0} km"),
+              Divider(
+                endIndent: 10,
+                indent: 10,
+                height: 5,
+                thickness: 1,
+                color:
+                    closedTrip ? Colors.orange.shade100 : Colors.green.shade100,
+              ),
+              _buildInfoRow("Chegada", dataChegada),
+              _buildInfoRow("KM Final Veículo", trip.kmFinal ?? "N/D"),
+              _buildInfoRow(
+                  "KM Rodado", calcularKmRodado(trip.km, trip.kmFinal)),
               if (tempoGasto.isNotEmpty)
                 _buildInfoRow("Tempo Gasto", tempoGasto),
+              Divider(
+                endIndent: 10,
+                indent: 10,
+                height: 5,
+                thickness: 1,
+                color:
+                    closedTrip ? Colors.orange.shade100 : Colors.green.shade100,
+              ),
               if (despesasFormatadas.isNotEmpty)
                 _buildInfoRow("Despesas", "R\$ $despesasFormatadas"),
+              Divider(
+                endIndent: 10,
+                indent: 10,
+                height: 5,
+                thickness: 1,
+                color:
+                    closedTrip ? Colors.orange.shade100 : Colors.green.shade100,
+              ),
               _buildInfoRow("Situação", closedTrip ? "FECHADO" : "ABERTO"),
             ],
           ),
@@ -133,6 +167,26 @@ class CustomTripCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String calcularKmRodado(String? kmInicial, String? kmFinal) {
+    if (kmInicial == null || kmFinal == null) {
+      return "N/D";
+    }
+
+    try {
+      double kmIni = double.tryParse(kmInicial.replaceAll('.', '')) ?? 0.0;
+      double kmFin = double.tryParse(kmFinal.replaceAll('.', '')) ?? 0.0;
+
+      if (kmIni == 0 || kmFin == 0) return "N/D";
+
+      double kmRodado = (kmFin - kmIni) / 1000; // Conversão de metros para km
+      return kmRodado >= 0
+          ? "${kmRodado.toStringAsFixed(3)} km"
+          : "Erro nos dados";
+    } catch (e) {
+      return "Dados inválidos";
+    }
   }
 
   String calcularTempoGasto(String? dataSaida, String? dataChegada) {

@@ -49,6 +49,18 @@ class CreateTripModal extends GetView<TripController> {
                 color: Colors.black,
               ),
               const SizedBox(height: 15),
+
+              // Dados de Saída
+              const Padding(
+                padding: EdgeInsets.only(top: 10, bottom: 5),
+                child: Text(
+                  'DADOS DE SAÍDA',
+                  style: TextStyle(
+                      fontFamily: 'Inter-Bold',
+                      fontSize: 13,
+                      color: Colors.grey),
+                ),
+              ),
               TextFormField(
                 controller: controller.tripNumberController,
                 keyboardType: TextInputType.number,
@@ -60,35 +72,6 @@ class CreateTripModal extends GetView<TripController> {
                 ),
               ),
               const SizedBox(height: 15),
-              // Obx(() {
-              //   // Verifique se selectedOption.value está na lista de opções
-              //   if (!controller.options
-              //       .contains(controller.selectedOption.value)) {
-              //     // Defina um valor padrão se selectedOption.value não estiver na lista
-              //     controller.selectedOption.value =
-              //         controller.options.isNotEmpty
-              //             ? controller.options[0]
-              //             : '';
-              //   }
-
-              //   return DropdownButtonFormField<String>(
-              //     value: controller.selectedOption.value,
-              //     decoration: const InputDecoration(
-              //       labelText: 'Selecione uma opção',
-              //     ),
-              //     onChanged: (String? newValue) {
-              //       controller.selectedOption.value = newValue!;
-              //     },
-              //     items: controller.options
-              //         .map<DropdownMenuItem<String>>((String value) {
-              //       return DropdownMenuItem<String>(
-              //         value: value,
-              //         child: Text(value),
-              //       );
-              //     }).toList(),
-              //   );
-              // }),
-              // const SizedBox(height: 15),
               TextFormField(
                 controller: controller.txtDateController,
                 readOnly: true,
@@ -101,7 +84,6 @@ class CreateTripModal extends GetView<TripController> {
                   labelText: 'DATA E HORA DA SAÍDA',
                 ),
                 onTap: () async {
-                  // Chama o método do controller para selecionar data e hora
                   await controller.selectDateTime(controller.txtDateController);
                 },
                 validator: (value) {
@@ -112,6 +94,31 @@ class CreateTripModal extends GetView<TripController> {
                 },
               ),
               const SizedBox(height: 10),
+              TextFormField(
+                controller: controller.txtKmInicialTrechoController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  counterText: '',
+                  prefixIcon: Icon(Icons.add_road_sharp),
+                  labelText: 'KM INICIAL DO VEÍCULO',
+                ),
+                onChanged: (value) {
+                  FormattedInputers.formatAndUpdateText(
+                      controller.txtKmInicialTrechoController);
+                },
+              ),
+
+              // Dados do Trecho
+              const Padding(
+                padding: EdgeInsets.only(top: 15, bottom: 5),
+                child: Text(
+                  'DADOS DO TRECHO',
+                  style: TextStyle(
+                      fontFamily: 'Inter-Bold',
+                      fontSize: 13,
+                      color: Colors.grey),
+                ),
+              ),
               Obx(
                 () => SearchField<String>(
                   controller: controller.originController,
@@ -163,20 +170,6 @@ class CreateTripModal extends GetView<TripController> {
               ),
               const SizedBox(height: 10),
               TextFormField(
-                controller: controller.txtKmInicialTrechoController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  counterText: '',
-                  prefixIcon: Icon(Icons.add_road_sharp),
-                  labelText: 'KM INICIAL DO VEÍCULO',
-                ),
-                onChanged: (value) {
-                  FormattedInputers.formatAndUpdateText(
-                      controller.txtKmInicialTrechoController);
-                },
-              ),
-              const SizedBox(height: 10),
-              TextFormField(
                 controller: controller.distanceController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
@@ -185,14 +178,19 @@ class CreateTripModal extends GetView<TripController> {
                   ),
                   labelText: 'DISTÂNCIA EM KM',
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, insira a distância';
-                  }
-                  return null;
-                },
               ),
-              const SizedBox(height: 15),
+
+              // Dados de Chegada
+              const Padding(
+                padding: EdgeInsets.only(top: 15, bottom: 5),
+                child: Text(
+                  'DADOS DE CHEGADA',
+                  style: TextStyle(
+                      fontFamily: 'Inter-Bold',
+                      fontSize: 13,
+                      color: Colors.grey),
+                ),
+              ),
               TextFormField(
                 controller: controller.txtDateFinishedController,
                 readOnly: true,
@@ -205,12 +203,26 @@ class CreateTripModal extends GetView<TripController> {
                   labelText: 'DATA E HORA CHEGADA',
                 ),
                 onTap: () async {
-                  // Chama o método do controller para selecionar data e hora
                   await controller
                       .selectDateTime(controller.txtDateFinishedController);
                 },
               ),
               const SizedBox(height: 10),
+              TextFormField(
+                controller: controller.txtKmFinalTrechoController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  counterText: '',
+                  prefixIcon: Icon(Icons.add_road_sharp),
+                  labelText: 'KM FINAL DO VEÍCULO',
+                ),
+                onChanged: (value) {
+                  FormattedInputers.formatAndUpdateText(
+                      controller.txtKmFinalTrechoController);
+                },
+              ),
+              const SizedBox(height: 10),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [

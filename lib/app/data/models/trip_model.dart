@@ -20,6 +20,7 @@ class Trip {
   String? createdAt;
   String? updatedAt;
   String? km;
+  String? kmFinal;
   String? numeroViagem;
   String? situacao;
 
@@ -44,6 +45,7 @@ class Trip {
     this.updatedAt,
     this.expenseTrip,
     this.km,
+    this.kmFinal,
     this.numeroViagem,
     this.situacao,
     this.user,
@@ -65,6 +67,7 @@ class Trip {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     km = json['km'];
+    kmFinal = json['km_final'];
     numeroViagem = json['numero_viagem'];
     situacao = json['situacao'];
     user = json['user'] != null ? User.fromJson(json['user']) : null;
@@ -93,6 +96,7 @@ class Trip {
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
     data['km'] = km;
+    data['km_final'] = kmFinal;
     data['numero_viagem'] = numeroViagem;
     data['situacao'] = situacao;
     if (expenseTrip != null) {
