@@ -21,7 +21,12 @@ class CustomTripCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String trecho =
-        "${trip.origem?.toUpperCase() ?? 'N/D'}-${trip.ufOrigem?.toUpperCase() ?? 'N/D'} / "
+        "${trip.origem?.toUpperCase() ?? 'N/D'}-${trip.ufOrigem?.toUpperCase() ?? 'N/D'}/${trip.destino?.toUpperCase() ?? 'N/D'}-${trip.ufDestino?.toUpperCase() ?? 'N/D'}";
+
+    String origem =
+        "${trip.origem?.toUpperCase() ?? 'N/D'}-${trip.ufOrigem?.toUpperCase() ?? 'N/D'}";
+
+    String destino =
         "${trip.destino?.toUpperCase() ?? 'N/D'}-${trip.ufDestino?.toUpperCase() ?? 'N/D'}";
 
     double despesas = (trip.totalDespesas ?? 0) / 100;
@@ -36,7 +41,6 @@ class CustomTripCard extends StatelessWidget {
         ? FormattedInputers.formatApiDateHour(trip.dataHoraChegada.toString())
         : "N/D";
 
-    // Cálculo de tempo de viagem
     String tempoGasto = calcularTempoGasto(trip.dataHora, trip.dataHoraChegada);
 
     bool closedTrip = (trip.situacao?.toUpperCase() ?? "") == "CLOSE";
@@ -53,90 +57,74 @@ class CustomTripCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: SingleChildScrollView(
-          // Adicionado para permitir rolagem
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    onPressed: functionEdit,
-                    icon: const Icon(Icons.edit, color: Colors.blueAccent),
-                  ),
-                  closedTrip
-                      ? const SizedBox.shrink()
-                      : IconButton(
-                          onPressed: functionClose,
-                          icon: Icon(Icons.lock_sharp,
-                              color: Colors.grey.shade700),
-                        ),
-                  IconButton(
-                    onPressed: functionExpense,
-                    icon: const Icon(Icons.monetization_on_outlined,
-                        color: Colors.orange),
-                  ),
-                  IconButton(
-                    onPressed: functionRemove,
-                    icon: const Icon(Icons.delete, color: Colors.redAccent),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              _buildInfoRow("Viagem", trip.numeroViagem ?? 'S/N'),
-              _buildInfoRow("Motorista", motorista),
-              _buildInfoRow("Saída", dataSaida),
-              _buildInfoRow("KM Inicial Veículo", trip.km ?? "N/D"),
-              Divider(
-                endIndent: 10,
-                indent: 10,
-                height: 5,
-                thickness: 1,
-                color:
-                    closedTrip ? Colors.orange.shade100 : Colors.green.shade100,
-              ),
-              _buildInfoRow("Trecho", trecho),
-              _buildInfoRow("Distância", "${trip.distancia ?? 0} km"),
-              Divider(
-                endIndent: 10,
-                indent: 10,
-                height: 5,
-                thickness: 1,
-                color:
-                    closedTrip ? Colors.orange.shade100 : Colors.green.shade100,
-              ),
-              _buildInfoRow("Chegada", dataChegada),
-              _buildInfoRow("KM Final Veículo", trip.kmFinal ?? "N/D"),
-              _buildInfoRow(
-                  "KM Rodado", calcularKmRodado(trip.km, trip.kmFinal)),
-              if (tempoGasto.isNotEmpty)
-                _buildInfoRow("Tempo Gasto", tempoGasto),
-              Divider(
-                endIndent: 10,
-                indent: 10,
-                height: 5,
-                thickness: 1,
-                color:
-                    closedTrip ? Colors.orange.shade100 : Colors.green.shade100,
-              ),
-              if (despesasFormatadas.isNotEmpty)
-                _buildInfoRow("Despesas", "R\$ $despesasFormatadas"),
-              Divider(
-                endIndent: 10,
-                indent: 10,
-                height: 5,
-                thickness: 1,
-                color:
-                    closedTrip ? Colors.orange.shade100 : Colors.green.shade100,
-              ),
-              _buildInfoRow("Situação", closedTrip ? "FECHADO" : "ABERTO"),
-            ],
-          ),
+      child: ExpansionTile(
+        tilePadding: const EdgeInsets.symmetric(horizontal: 16),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      onPressed: functionEdit,
+                      icon: const Icon(Icons.edit, color: Colors.blueAccent),
+                    ),
+                    closedTrip
+                        ? const SizedBox.shrink()
+                        : IconButton(
+                            onPressed: functionClose,
+                            icon: Icon(Icons.lock_sharp,
+                                color: Colors.grey.shade700),
+                          ),
+                    IconButton(
+                      onPressed: functionExpense,
+                      icon: const Icon(Icons.monetization_on_outlined,
+                          color: Colors.orange),
+                    ),
+                    IconButton(
+                      onPressed: functionRemove,
+                      icon: const Icon(Icons.delete, color: Colors.redAccent),
+                    ),
+                  ],
+                ),
+                _buildInfoRow("Viagem", trip.numeroViagem ?? 'S/N'),
+                _buildInfoRow("Motorista", motorista),
+                _buildInfoRow("Trecho", trecho),
+                _buildInfoRow("Saída", dataSaida),
+              ],
+            ),
+          ],
         ),
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Divider(),
+                _buildInfoRow("Origem", "${origem ?? 0}"),
+                _buildInfoRow("Destino", "${destino ?? 0} "),
+                _buildInfoRow("Distância", "${trip.distancia ?? 0} km"),
+                const Divider(),
+                _buildInfoRow("Chegada", dataChegada),
+                _buildInfoRow("KM Final Veículo", trip.kmFinal ?? "N/D"),
+                _buildInfoRow(
+                    "KM Rodado", calcularKmRodado(trip.km, trip.kmFinal)),
+                if (tempoGasto.isNotEmpty)
+                  _buildInfoRow("Tempo Gasto", tempoGasto),
+                const Divider(),
+                if (despesasFormatadas.isNotEmpty)
+                  _buildInfoRow("Despesas", "R\$ $despesasFormatadas"),
+                const Divider(),
+                _buildInfoRow("Situação", closedTrip ? "FECHADO" : "ABERTO"),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
