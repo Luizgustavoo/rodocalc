@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/controllers/city_state_controller.dart';
 import 'package:rodocalc/app/data/controllers/trip_controller.dart';
@@ -162,9 +163,25 @@ class TripView extends GetView<TripController> {
                                       );
                                     },
                                     functionClose: () {
-                                      controller.isDialogOpen.value = false;
-                                      showDialogClose(
-                                          context, trip, controller);
+                                      if (trip.dataHoraChegada == null ||
+                                          trip.kmFinal == null ||
+                                          trip.dataHoraChegada
+                                              .toString()
+                                              .isEmpty ||
+                                          trip.kmFinal!.isEmpty) {
+                                        Get.snackbar(
+                                          'Falha!',
+                                          'Preencha uma data/hora de chegada e o km final do veículo.',
+                                          backgroundColor: Colors.orangeAccent,
+                                          colorText: Colors.black,
+                                          duration: const Duration(seconds: 3),
+                                          snackPosition: SnackPosition.BOTTOM,
+                                        );
+                                      } else {
+                                        controller.isDialogOpen.value = false;
+                                        showDialogClose(
+                                            context, trip, controller);
+                                      }
                                     },
                                     functionEdit: () {
                                       controller.fillInFields(trip);
