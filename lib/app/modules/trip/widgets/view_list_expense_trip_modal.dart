@@ -29,7 +29,7 @@ class ViewListExpenseTripModal extends GetView<TripController> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const Text(
-                    'DESPESAS DO TRECHO',
+                    'LANCAMENTOS DO TRECHO',
                     style: TextStyle(
                         fontFamily: 'Inter-Bold',
                         fontSize: 17,

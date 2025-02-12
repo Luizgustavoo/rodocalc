@@ -244,6 +244,18 @@ class TransactionApiClient {
         "tipo_transacao": transacoes.tipoTransacao.toString(),
       };
 
+      if (transacoes.km != null) {
+        requestBody["km"] = transacoes.km.toString();
+      }
+
+      if (transacoes.origemTransacao != null) {
+        requestBody["origem_transacao"] = transacoes.origemTransacao.toString();
+      }
+
+      if (transacoes.trechoId != null) {
+        requestBody["trecho_id"] = transacoes.trechoId.toString();
+      }
+
       if (transacoes.quantidadeTonelada != null) {
         requestBody["quantidade_tonelada"] =
             transacoes.quantidadeTonelada.toString();
@@ -512,6 +524,18 @@ class TransactionApiClient {
         "tipo_transacao": transacoes.tipoTransacao.toString(),
         "fotos_para_excluir": photosRemove.join(','),
       };
+
+      if (transacoes.km != null) {
+        requestBody["km"] = transacoes.km.toString();
+      }
+
+      if (transacoes.origemTransacao != null) {
+        requestBody["origem_transacao"] = transacoes.origemTransacao.toString();
+      }
+
+      if (transacoes.trechoId != null) {
+        requestBody["trecho_id"] = transacoes.trechoId.toString();
+      }
 
       if (transacoes.quantidadeTonelada != null) {
         requestBody["quantidade_tonelada"] =

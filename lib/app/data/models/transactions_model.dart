@@ -32,6 +32,8 @@ class Transacoes {
   List<TransactionsPhotos>? photos;
 
   String? km;
+  String? origemTransacao;
+  int? trechoId;
 
   Transacoes({
     this.id,
@@ -61,6 +63,8 @@ class Transacoes {
     this.chargeType,
     this.photos,
     this.km,
+    this.origemTransacao,
+    this.trechoId,
   });
 
   Transacoes.fromJson(Map<String, dynamic> json) {
@@ -85,6 +89,8 @@ class Transacoes {
     tipoCargaId = json['tipocarga_id'];
     tipoTransacao = json['tipo_transacao'];
     km = json['km'];
+    origemTransacao = json['origem_transacao'];
+    trechoId = json['trecho_id'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     chargeType = json['tipocarga'] != null
@@ -127,6 +133,8 @@ class Transacoes {
     data['quantidade_tonelada'] = quantidadeTonelada;
     data['tipocarga_id'] = tipoCargaId;
     data['km'] = km;
+    data['origem_transacao'] = origemTransacao;
+    data['trecho_id'] = trechoId;
     data['tipo_transacao'] = tipoTransacao;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;

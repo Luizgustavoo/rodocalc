@@ -37,7 +37,7 @@ class CreateExpenseTripModal extends GetView<TripController> {
                 const Padding(
                   padding: EdgeInsets.only(top: 10, bottom: 5),
                   child: Text(
-                    'LANÇAMENTO DE DESPESAS DO TRECHO',
+                    'LANÇAR TRANSAÇÃO',
                     style: TextStyle(
                         fontFamily: 'Inter-Bold',
                         fontSize: 17,
@@ -50,6 +50,29 @@ class CreateExpenseTripModal extends GetView<TripController> {
                   height: 5,
                   thickness: 2,
                   color: Colors.black,
+                ),
+                const SizedBox(height: 15),
+                DropdownButtonFormField<String>(
+                  value: controller.txtTipoLancamentoTripController.text.isEmpty
+                      ? 'entrada'
+                      : controller.txtTipoLancamentoTripController.text,
+                  items: const [
+                    DropdownMenuItem(
+                      value: 'entrada',
+                      child: Text('ENTRADA'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'saida',
+                      child: Text('SAÍDA'),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    controller.txtTipoLancamentoTripController.text = value!;
+                  },
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.sync_alt),
+                    labelText: 'TIPO DE LANÇAMENTO',
+                  ),
                 ),
                 const SizedBox(height: 15),
                 TextFormField(

@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
+import 'package:rodocalc/app/data/models/charge_type_model.dart';
+import 'package:rodocalc/app/data/models/expense_category_model.dart';
 import 'package:rodocalc/app/data/models/expense_trip_model.dart';
+import 'package:rodocalc/app/data/models/specific_type_expense_model.dart';
+import 'package:rodocalc/app/data/models/transactions_model.dart';
 import 'package:rodocalc/app/data/models/trip_model.dart';
+import 'package:rodocalc/app/data/repositories/transaction_repository.dart';
 import 'package:rodocalc/app/data/repositories/trip_repository.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
@@ -33,11 +39,23 @@ class TripController extends GetxController {
   final txtDateFinishedController = TextEditingController();
   final txtKmController = TextEditingController();
   final txtKmInicialTrechoController = TextEditingController();
+  final txtToneladasTrechoController = TextEditingController();
   final txtKmFinalTrechoController = TextEditingController();
+
+  RxList<ExpenseCategory> expenseCategories = <ExpenseCategory>[].obs;
+  RxList<SpecificTypeExpense> specificTypes = <SpecificTypeExpense>[].obs;
+  RxList<ChargeType> listChargeTypes = <ChargeType>[].obs;
+  RxBool isLoadingChargeTypes = true.obs;
+
+  var selectedSpecificType = Rxn<int>();
+  var selectedCategory = Rxn<int>();
+  var selectedCategoryCadSpecificType = Rxn<int>(0);
+  var selectedCargoType = Rxn<int>();
 
   final expenseTripFormKey = GlobalKey<FormState>();
   final txtDateExpenseTripController = TextEditingController();
   final txtDescriptionExpenseTripController = TextEditingController();
+  final txtTipoLancamentoTripController = TextEditingController();
   var txtAmountExpenseTripController = MoneyMaskedTextController(
     precision: 2,
     initialValue: 0.0,
@@ -67,6 +85,7 @@ class TripController extends GetxController {
   dynamic mensagem;
 
   final repository = Get.put(TripRepository());
+  final repositoryTransaction = Get.put(TransactionRepository());
 
   final states = [
     'AC',
@@ -274,10 +293,14 @@ class TripController extends GetxController {
       txtDateFinishedController,
       originController,
       txtDateExpenseTripController,
+      txtTipoLancamentoTripController,
       txtDescriptionExpenseTripController,
       txtKmInicialTrechoController,
       txtKmFinalTrechoController,
       tripNumberController,
+      txtDescriptionExpenseCategoryController,
+      txtChargeTypeController,
+      txtToneladasTrechoController,
     ];
 
     for (final controller in textControllers) {
@@ -286,6 +309,7 @@ class TripController extends GetxController {
     selectedStateOrigin.value = '';
     selectedStateDestiny.value = '';
     selectedOption.value = '';
+    selectedCargoType.value = null;
 
     txtAmountExpenseTripController = MoneyMaskedTextController(
       precision: 2,
@@ -299,6 +323,7 @@ class TripController extends GetxController {
   void clearAllFieldsExpense() {
     final textControllers = [
       txtDateExpenseTripController,
+      txtTipoLancamentoTripController,
       txtDescriptionExpenseTripController,
       txtAmountExpenseTripController,
     ];
@@ -362,6 +387,8 @@ class TripController extends GetxController {
         km: txtKmInicialTrechoController.text,
         kmFinal: txtKmFinalTrechoController.text,
         numeroViagem: tripNumberController.text,
+        quantidadeTonelada: txtToneladasTrechoController.text,
+        tipoCargaId: selectedCargoType.value,
       ));
 
       if (mensagem != null) {
@@ -385,15 +412,31 @@ class TripController extends GetxController {
   Future<Map<String, dynamic>> insertExpenseTrip(int trechoPercorridoId) async {
     isLoadingCRUD(false);
 
-    mensagem = await repository.insertExpenseTrip(ExpenseTrip(
-      trechoPercorridoId: trechoPercorridoId,
-      dataHora: txtDateExpenseTripController.text,
-      descricao: txtDescriptionExpenseTripController.text,
-      valorDespesa: FormattedInputers.convertForCents(
-          txtAmountExpenseTripController.text),
-      status: 1,
-      km: txtKmController.text,
-    ));
+    Transacoes transaction = Transacoes();
+
+    transaction.data = txtDateExpenseTripController.text;
+    transaction.valor =
+        FormattedInputers.convertToDouble(txtAmountExpenseTripController.text);
+    transaction.descricao = txtDescriptionExpenseTripController.text;
+    transaction.status = 1;
+    transaction.tipoTransacao = txtTipoLancamentoTripController.text;
+    transaction.km = txtKmController.text;
+    transaction.origemTransacao = "TRECHO";
+    transaction.trechoId = trechoPercorridoId;
+    transaction.pessoaId = ServiceStorage.getUserId();
+    transaction.veiculoId = ServiceStorage.idSelectedVehicle();
+
+    mensagem = await repositoryTransaction.insert(transaction);
+
+    // mensagem = await repository.insertExpenseTrip(ExpenseTrip(
+    //   trechoPercorridoId: trechoPercorridoId,
+    //   dataHora: txtDateExpenseTripController.text,
+    //   descricao: txtDescriptionExpenseTripController.text,
+    //   valorDespesa: FormattedInputers.convertForCents(
+    //       txtAmountExpenseTripController.text),
+    //   status: 1,
+    //   km: txtKmController.text,
+    // ));
 
     if (mensagem != null) {
       retorno = {
@@ -522,6 +565,8 @@ class TripController extends GetxController {
         km: txtKmInicialTrechoController.text,
         kmFinal: txtKmFinalTrechoController.text,
         numeroViagem: tripNumberController.text,
+        quantidadeTonelada: txtToneladasTrechoController.text,
+        tipoCargaId: selectedCargoType.value,
       ));
 
       if (mensagem != null) {
@@ -579,5 +624,55 @@ class TripController extends GetxController {
     }
     isLoadingCRUD(false);
     return retorno;
+  }
+
+  final txtDescriptionExpenseCategoryController = TextEditingController();
+  final txtChargeTypeController = TextEditingController();
+  final formkeyChargeType = GlobalKey<FormState>();
+
+  void clearDescriptionModal() {
+    final textControllers = [
+      txtDescriptionExpenseCategoryController,
+      txtChargeTypeController,
+    ];
+    for (final controller in textControllers) {
+      controller.clear();
+    }
+  }
+
+  final repositoryChargeType = Get.put(TransactionRepository());
+
+  Future<Map<String, dynamic>> insertChargeType() async {
+    if (formkeyChargeType.currentState!.validate()) {
+      mensagem = await repositoryChargeType.insertChargeType(
+        ChargeType(descricao: txtChargeTypeController.text, status: 1),
+      );
+      if (mensagem != null) {
+        retorno = {
+          'success': mensagem['success'],
+          'message': mensagem['message']
+        };
+        if (mensagem['success'] == true) {
+          selectedCargoType.value = mensagem['data']['id'];
+        }
+        getMyChargeTypes();
+      } else {
+        retorno = {
+          'success': false,
+          'message': ['Falha ao realizar a operação!']
+        };
+      }
+    }
+    return retorno;
+  }
+
+  Future<void> getMyChargeTypes() async {
+    isLoadingChargeTypes.value = true;
+    try {
+      listChargeTypes.value = await repositoryChargeType.getMyChargeTypes();
+    } catch (e) {
+      Exception(e);
+    }
+    isLoadingChargeTypes.value = false;
   }
 }

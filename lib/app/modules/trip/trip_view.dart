@@ -227,6 +227,7 @@ class TripView extends GetView<TripController> {
               cityController.getCities();
 
               controller.clearAllFields();
+              controller.getMyChargeTypes();
               showModalBottomSheet(
                 isScrollControlled: true,
                 context: context,

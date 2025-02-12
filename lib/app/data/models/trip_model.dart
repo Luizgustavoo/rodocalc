@@ -23,6 +23,8 @@ class Trip {
   String? kmFinal;
   String? numeroViagem;
   String? situacao;
+  String? quantidadeTonelada;
+  int? tipoCargaId;
 
   List<ExpenseTrip>? expenseTrip;
 
@@ -49,6 +51,8 @@ class Trip {
     this.numeroViagem,
     this.situacao,
     this.user,
+    this.quantidadeTonelada,
+    this.tipoCargaId,
   });
 
   Trip.fromJson(Map<String, dynamic> json) {
@@ -69,6 +73,8 @@ class Trip {
     km = json['km'];
     kmFinal = json['km_final'];
     numeroViagem = json['numero_viagem'];
+    quantidadeTonelada = json['quantidade_tonelada'];
+    tipoCargaId = json['tipocarga_id'];
     situacao = json['situacao'];
     user = json['user'] != null ? User.fromJson(json['user']) : null;
     if (json['despesas'] != null) {
@@ -99,6 +105,8 @@ class Trip {
     data['km_final'] = kmFinal;
     data['numero_viagem'] = numeroViagem;
     data['situacao'] = situacao;
+    data['quantidade_tonelada'] = quantidadeTonelada;
+    data['tipo_carga_id'] = tipoCargaId;
     if (expenseTrip != null) {
       data['despesas'] = expenseTrip!.map((v) => v.toJson()).toList();
     }

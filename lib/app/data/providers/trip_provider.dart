@@ -57,6 +57,8 @@ class TripApiClient {
         'km': trip.km.toString(),
         'km_final': trip.kmFinal.toString(),
         'numero_viagem': trip.numeroViagem.toString(),
+        'quantidade_tonelada': trip.quantidadeTonelada.toString(),
+        'tipocarga_id': trip.tipoCargaId.toString(),
       };
 
       final response = await http.post(
@@ -173,6 +175,8 @@ class TripApiClient {
         'km': trip.km.toString(),
         'km_final': trip.kmFinal.toString(),
         'numero_viagem': trip.numeroViagem.toString(),
+        'quantidade_tonelada': trip.quantidadeTonelada.toString(),
+        'tipocarga_id': trip.tipoCargaId.toString(),
       };
 
       final response = await http.put(
