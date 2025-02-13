@@ -611,19 +611,22 @@ class FinancialView extends GetView<TransactionController> {
     String stringValor = "";
     String stringTitulo = "";
     late Color cor;
-    if (transaction.tipoTransacao == 'entrada') {
-      stringTitulo =
-          "${transaction.descricao!.toUpperCase()}: ${transaction.origem!.toUpperCase()}/${transaction.destino!.toUpperCase()}";
-      stringValor =
-          "+R\$ ${FormattedInputers.formatValuePTBR(transaction.valor)}";
-      cor = Colors.green;
-    } else {
-      stringTitulo =
-          "${transaction.expenseCategory!.descricao!.toUpperCase()} - ${transaction.specificTypeExpense!.descricao!.toUpperCase()}";
-      stringValor =
-          "-R\$ ${FormattedInputers.formatValuePTBR(transaction.valor)}";
-      cor = Colors.red;
-    }
+    bool isEntrada = transaction.tipoTransacao == 'entrada';
+    bool isFinanceiro = transaction.origemTransacao == 'FINANCEIRO';
+
+    stringTitulo = isFinanceiro
+        ? (isEntrada
+            ? "${transaction.descricao?.toUpperCase() ?? 'SEM DESCRIÇÃO'}: "
+                "${transaction.origem?.toUpperCase() ?? 'N/A'}/"
+                "${transaction.destino?.toUpperCase() ?? 'N/A'}"
+            : "${transaction.expenseCategory?.descricao?.toUpperCase() ?? 'SEM CATEGORIA'} - "
+                "${transaction.specificTypeExpense?.descricao?.toUpperCase() ?? 'SEM TIPO'}")
+        : "${transaction.descricao?.toUpperCase() ?? 'SEM DESCRIÇÃO'} - TRECHO";
+
+    stringValor =
+        "${isEntrada ? "+" : "-"}R\$ ${FormattedInputers.formatValuePTBR(transaction.valor ?? 0)}";
+
+    cor = isEntrada ? Colors.green : Colors.red;
 
     return TimelineTile(
       alignment: TimelineAlign.start,

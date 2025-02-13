@@ -1,4 +1,5 @@
 import 'package:rodocalc/app/data/models/expense_trip_model.dart';
+import 'package:rodocalc/app/data/models/transactions_model.dart';
 import 'package:rodocalc/app/data/models/user_model.dart';
 
 class Trip {
@@ -27,6 +28,7 @@ class Trip {
   int? tipoCargaId;
 
   List<ExpenseTrip>? expenseTrip;
+  List<Transacoes>? transactions;
 
   User? user;
 
@@ -46,6 +48,7 @@ class Trip {
     this.createdAt,
     this.updatedAt,
     this.expenseTrip,
+    this.transactions,
     this.km,
     this.kmFinal,
     this.numeroViagem,
@@ -83,6 +86,12 @@ class Trip {
         expenseTrip!.add(ExpenseTrip.fromJson(v));
       });
     }
+    if (json['transacoes'] != null) {
+      transactions = <Transacoes>[];
+      json['transacoes'].forEach((v) {
+        transactions!.add(Transacoes.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -109,6 +118,9 @@ class Trip {
     data['tipo_carga_id'] = tipoCargaId;
     if (expenseTrip != null) {
       data['despesas'] = expenseTrip!.map((v) => v.toJson()).toList();
+    }
+    if (transactions != null) {
+      data['transacoes'] = transactions!.map((v) => v.toJson()).toList();
     }
     if (user != null) {
       data['user'] = user!.toJson();

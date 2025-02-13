@@ -55,7 +55,8 @@ class TripController extends GetxController {
   final expenseTripFormKey = GlobalKey<FormState>();
   final txtDateExpenseTripController = TextEditingController();
   final txtDescriptionExpenseTripController = TextEditingController();
-  final txtTipoLancamentoTripController = TextEditingController();
+  final txtTipoLancamentoTripController =
+      TextEditingController(text: "entrada");
   var txtAmountExpenseTripController = MoneyMaskedTextController(
     precision: 2,
     initialValue: 0.0,
@@ -221,10 +222,10 @@ class TripController extends GetxController {
     }
   }
 
-  void fillInFieldsExpenseTrip(ExpenseTrip expenseTrip) {
-    if (expenseTrip.dataHora != null && expenseTrip.dataHora!.isNotEmpty) {
+  void fillInFieldsExpenseTrip(Transacoes transacao) {
+    if (transacao.data != null && transacao.data!.isNotEmpty) {
       try {
-        DateTime date = DateTime.parse(expenseTrip.dataHora!);
+        DateTime date = DateTime.parse(transacao.data!);
         txtDateExpenseTripController.text =
             DateFormat('dd/MM/yyyy H:mm').format(date);
       } catch (e) {
@@ -233,10 +234,14 @@ class TripController extends GetxController {
     } else {
       txtDateExpenseTripController.clear();
     }
-    txtDescriptionExpenseTripController.text = expenseTrip.descricao.toString();
+
+    txtTipoLancamentoTripController.text = transacao.tipoTransacao!;
+
+    txtDescriptionExpenseTripController.text = transacao.descricao.toString();
+    txtKmController.text = transacao.km.toString();
 
     txtAmountExpenseTripController.text =
-        'R\$${FormattedInputers.formatValuePTBR((expenseTrip.valorDespesa! / 100).toString())}';
+        'R\$${FormattedInputers.formatValuePTBR((transacao.valor).toString())}';
   }
 
   void fillInFields(Trip trip) {
@@ -419,7 +424,10 @@ class TripController extends GetxController {
         FormattedInputers.convertToDouble(txtAmountExpenseTripController.text);
     transaction.descricao = txtDescriptionExpenseTripController.text;
     transaction.status = 1;
-    transaction.tipoTransacao = txtTipoLancamentoTripController.text;
+    transaction.tipoTransacao = txtTipoLancamentoTripController.text.isEmpty
+        ? "entrada"
+        : txtTipoLancamentoTripController.text;
+
     transaction.km = txtKmController.text;
     transaction.origemTransacao = "TRECHO";
     transaction.trechoId = trechoPercorridoId;

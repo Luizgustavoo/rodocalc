@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rodocalc/app/data/controllers/trip_controller.dart';
 import 'package:rodocalc/app/data/models/expense_trip_model.dart';
+import 'package:rodocalc/app/data/models/transactions_model.dart';
 import 'package:rodocalc/app/data/models/trip_model.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
@@ -13,12 +14,12 @@ class CreateExpenseTripModal extends GetView<TripController> {
     super.key,
     required this.isUpdate,
     this.trip,
-    this.expenseTrip,
+    this.transaction,
   }) : formKey = GlobalKey<FormState>();
 
   final bool isUpdate;
   final Trip? trip;
-  final ExpenseTrip? expenseTrip;
+  final Transacoes? transaction;
   final GlobalKey<FormState> formKey;
 
   @override
@@ -176,7 +177,7 @@ class CreateExpenseTripModal extends GetView<TripController> {
                             .validate()) {
                           Map<String, dynamic> retorno = isUpdate
                               ? await controller.updateExpenseTrip(
-                                  trip!.id!, expenseTrip!.id!)
+                                  trip!.id!, transaction!.id!)
                               : await controller.insertExpenseTrip(trip!.id!);
                           if (retorno['success'] == true) {
                             Get.back();
