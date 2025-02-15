@@ -547,40 +547,49 @@ class FinancialView extends GetView<TransactionController> {
             itemCount: controller.listTransactions.length,
             itemBuilder: (context, index) {
               final transaction = controller.listTransactions[index];
+              bool isTrecho = transaction.origemTransacao != 'FINANCEIRO';
               return InkWell(
                 splashColor: Colors.grey.shade50,
                 onTap: () {
-                  final cityController = Get.put(CityStateController());
-                  cityController.getCities();
-                  controller.clearAllFields();
-                  controller.fillInFields(transaction);
-                  controller.getMyCategories();
-                  controller.getMyChargeTypes();
-                  controller.getMySpecifics(
-                      controller.selectedCategoryCadSpecificType.value!);
-                  if (transaction.tipoTransacao == 'entrada') {
-                    showModalBottomSheet(
-                      isScrollControlled: true,
-                      context: context,
-                      builder: (context) => CreateReceiptModal(
-                        isUpdate: true,
-                        idTransaction: transaction.id!,
-                      ),
-                    );
-                  } else if (transaction.tipoTransacao == 'saida') {
-                    final transactionController =
-                        Get.put(TransactionController());
-                    transactionController.getMyCategories();
-                    transactionController.getMySpecifics(transactionController
-                        .selectedCategoryCadSpecificType.value!);
-                    showModalBottomSheet(
-                      isScrollControlled: true,
-                      context: context,
-                      builder: (context) => CreateExpenseModal(
-                        isUpdate: true,
-                        idTransaction: transaction.id,
-                      ),
-                    );
+                  if (isTrecho) {
+                    Get.snackbar('Atenção',
+                        "Abra o menu de trechos para alterar esta transação!",
+                        colorText: Colors.black,
+                        backgroundColor: Colors.orange,
+                        snackPosition: SnackPosition.BOTTOM);
+                  } else {
+                    final cityController = Get.put(CityStateController());
+                    cityController.getCities();
+                    controller.clearAllFields();
+                    controller.fillInFields(transaction);
+                    controller.getMyCategories();
+                    controller.getMyChargeTypes();
+                    controller.getMySpecifics(
+                        controller.selectedCategoryCadSpecificType.value!);
+                    if (transaction.tipoTransacao == 'entrada') {
+                      showModalBottomSheet(
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (context) => CreateReceiptModal(
+                          isUpdate: true,
+                          idTransaction: transaction.id!,
+                        ),
+                      );
+                    } else if (transaction.tipoTransacao == 'saida') {
+                      final transactionController =
+                          Get.put(TransactionController());
+                      transactionController.getMyCategories();
+                      transactionController.getMySpecifics(transactionController
+                          .selectedCategoryCadSpecificType.value!);
+                      showModalBottomSheet(
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (context) => CreateExpenseModal(
+                          isUpdate: true,
+                          idTransaction: transaction.id,
+                        ),
+                      );
+                    }
                   }
                 },
                 child: _buildTimelineTile(transaction, context),

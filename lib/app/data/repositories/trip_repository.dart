@@ -34,6 +34,15 @@ class TripRepository {
     }
   }
 
+  insertFotoTrecho(Trip trip) async {
+    try {
+      var response = await apiClient.insertFotoTrecho(trip);
+      return response;
+    } catch (e) {
+      Exception(e);
+    }
+  }
+
   update(Trip trip) async {
     try {
       var response = await apiClient.update(trip);
@@ -46,6 +55,15 @@ class TripRepository {
   delete(Trip trip) async {
     try {
       var response = await apiClient.delete(trip);
+      return response;
+    } catch (e) {
+      Exception(e);
+    }
+  }
+
+  deletePhotoTrip(int id) async {
+    try {
+      var response = await apiClient.deletePhotoTrip(id);
       return response;
     } catch (e) {
       Exception(e);

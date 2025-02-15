@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/controllers/city_state_controller.dart';
 import 'package:rodocalc/app/data/controllers/trip_controller.dart';
@@ -151,6 +154,10 @@ class TripView extends GetView<TripController> {
                                     functionRemove: () {
                                       controller.isDialogOpen.value = false;
                                       showDialog(context, trip, controller);
+                                    },
+                                    functionPhoto: () {
+                                      controller.selectedImagesPaths.value = [];
+                                      _showPicker(context, controller, trip);
                                     },
                                     functionExpense: () {
                                       showModalBottomSheet(
@@ -322,6 +329,192 @@ void showDialogClose(context, Trip trip, TripController controller) {
           Get.back(); // Fecha o diálogo atual primeiro
           await Future.delayed(const Duration(milliseconds: 500));
           Map<String, dynamic> retorno = await controller.closeTrip(trip.id!);
+
+          if (retorno['success'] == true) {
+            Get.snackbar('Sucesso!', retorno['message'].join('\n'),
+                backgroundColor: Colors.green,
+                colorText: Colors.white,
+                duration: const Duration(seconds: 1),
+                snackPosition: SnackPosition.BOTTOM);
+          } else {
+            Get.snackbar('Falha!', retorno['message'].join('\n'),
+                backgroundColor: Colors.red,
+                colorText: Colors.white,
+                duration: const Duration(seconds: 1),
+                snackPosition: SnackPosition.BOTTOM);
+          }
+        },
+        child: const Text(
+          "CONFIRMAR",
+          style: TextStyle(fontFamily: 'Poppinss', color: Colors.white),
+        ),
+      ),
+      TextButton(
+        onPressed: () {
+          Get.back();
+        },
+        child: const Text(
+          "CANCELAR",
+          style: TextStyle(fontFamily: 'Poppinss'),
+        ),
+      ),
+    ],
+  );
+}
+
+void _showPicker(BuildContext context, TripController controller, Trip trip) {
+  showModalBottomSheet(
+    context: context,
+    builder: (BuildContext context) {
+      return SafeArea(
+        child: Wrap(
+          children: <Widget>[
+            ListTile(
+              leading: const Icon(Icons.photo_library),
+              title: const Text('Galeria'),
+              onTap: () async {
+                await controller.pickImage(ImageSource.gallery);
+                Navigator.of(context).pop();
+                _showImagePreviewModal(controller, trip.id!);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_camera),
+              title: const Text('Câmera'),
+              onTap: () async {
+                await controller.pickImage(ImageSource.camera);
+                Navigator.of(context).pop();
+                _showImagePreviewModal(controller, trip.id!);
+              },
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+void _showImagePreviewModal(TripController controller, int tripId) {
+  Get.bottomSheet(
+    Container(
+      height: 300,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.orange.shade50,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Pré-visualização",
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 10),
+          Obx(() => Expanded(
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: controller.selectedImagesPaths.length,
+                  itemBuilder: (context, index) {
+                    return Stack(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.file(
+                              File(controller.selectedImagesPaths[index]),
+                              width: 100,
+                              height: 200,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          top: 5,
+                          right: 5,
+                          child: GestureDetector(
+                            onTap: () {
+                              controller.selectedImagesPaths.removeAt(index);
+                            },
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.red,
+                              ),
+                              padding: const EdgeInsets.all(4),
+                              child: const Icon(
+                                Icons.close,
+                                color: Colors.white,
+                                size: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              )),
+          const SizedBox(height: 10),
+          Center(
+            child: controller.selectedImagesPaths.isEmpty
+                ? const SizedBox.shrink()
+                : ElevatedButton(
+                    onPressed: () async {
+                      Map<String, dynamic> retorno =
+                          await controller.insertTripPhotos(tripId);
+
+                      if (retorno['success'] == true) {
+                        Get.back();
+                        Get.snackbar('Sucesso!', retorno['message'].join('\n'),
+                            backgroundColor: Colors.green,
+                            colorText: Colors.white,
+                            duration: const Duration(seconds: 2),
+                            snackPosition: SnackPosition.BOTTOM);
+                      } else {
+                        Get.snackbar('Falha!', retorno['message'].join('\n'),
+                            backgroundColor: Colors.red,
+                            colorText: Colors.white,
+                            duration: const Duration(seconds: 2),
+                            snackPosition: SnackPosition.BOTTOM);
+                      }
+                    },
+                    child: const Text(
+                      "Salvar Imagens",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+          ),
+        ],
+      ),
+    ),
+    isScrollControlled: true,
+  );
+}
+
+void showDialogDeleteTripPhoto(context, int id, TripController controller) {
+  if (controller.isDialogOpen.value) return;
+
+  controller.isDialogOpen.value = true;
+  Get.defaultDialog(
+    titlePadding: const EdgeInsets.all(16),
+    contentPadding: const EdgeInsets.all(16),
+    title: "REMOVER FOTO do TRECHO",
+    content: const Text(
+      textAlign: TextAlign.center,
+      "Tem certeza que deseja excluir a foto selecionada?",
+      style: TextStyle(
+        fontFamily: 'Poppins',
+        fontSize: 18,
+      ),
+    ),
+    actions: [
+      ElevatedButton(
+        onPressed: () async {
+          Get.back(); // Fecha o diálogo atual primeiro
+          await Future.delayed(const Duration(milliseconds: 500));
+          Map<String, dynamic> retorno = await controller.deletePhotoTrip(id);
 
           if (retorno['success'] == true) {
             Get.snackbar('Sucesso!', retorno['message'].join('\n'),

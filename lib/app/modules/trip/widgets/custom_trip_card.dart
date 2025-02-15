@@ -1,11 +1,23 @@
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:rodocalc/app/data/base_url.dart';
+import 'package:rodocalc/app/data/controllers/trip_controller.dart';
 import 'package:rodocalc/app/data/models/trip_model.dart';
+import 'package:rodocalc/app/data/models/trip_photos.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
+
+import 'package:share_plus/share_plus.dart';
+import 'package:http/http.dart' as http;
 
 class CustomTripCard extends StatelessWidget {
   final Trip trip;
   final VoidCallback functionEdit;
   final VoidCallback functionRemove;
+  final VoidCallback functionPhoto;
   final VoidCallback functionClose;
   final VoidCallback functionExpense;
 
@@ -14,6 +26,7 @@ class CustomTripCard extends StatelessWidget {
     required this.trip,
     required this.functionEdit,
     required this.functionRemove,
+    required this.functionPhoto,
     required this.functionClose,
     required this.functionExpense,
   });
@@ -74,7 +87,7 @@ class CustomTripCard extends StatelessWidget {
                       icon: const Icon(Icons.edit, color: Colors.blueAccent),
                     ),
                     IconButton(
-                      onPressed: functionRemove,
+                      onPressed: functionPhoto,
                       icon: const Icon(Icons.photo_camera,
                           color: Color.fromARGB(255, 252, 181, 58)),
                     ),
@@ -110,6 +123,10 @@ class CustomTripCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if (trip.photos!.isNotEmpty) ...[
+                  const Divider(),
+                  _listImages(context),
+                ],
                 const Divider(),
                 _buildInfoRow("Origem", "${origem ?? 0}"),
                 _buildInfoRow("Destino", "${destino ?? 0} "),
@@ -130,6 +147,44 @@ class CustomTripCard extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Padding _listImages(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: trip.photos?.map((foto) {
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: InkWell(
+                    onTap: () {
+                      _openImageModal(context, foto);
+                    },
+                    child: Container(
+                      width: 100, // Ajuste o tamanho conforme necessário
+                      height: 100,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        shape: BoxShape.rectangle,
+                        image: DecorationImage(
+                          image: (foto.arquivo!.isNotEmpty)
+                              ? CachedNetworkImageProvider(
+                                  "$urlImagem/storage/fotos/trechopercorrido/trecho/${foto.arquivo}")
+                              : const AssetImage('assets/images/logo.png')
+                                  as ImageProvider,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }).toList() ??
+              [],
+        ),
       ),
     );
   }
@@ -201,5 +256,155 @@ class CustomTripCard extends StatelessWidget {
     } catch (e) {
       return "Erro ao calcular";
     }
+  }
+
+  void _openImageModal(BuildContext context, TripPhotos foto) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ClipRRect(
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(16)),
+                child: Image.network(
+                  "$urlImagem/storage/fotos/trechopercorrido/trecho/${foto.arquivo}",
+                  fit: BoxFit.cover,
+                  height: 300, // Ajuste a altura da imagem conforme necessário
+                  width: double.infinity,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Column(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.share, color: Colors.blue),
+                          onPressed: () async {
+                            try {
+                              // URL da imagem
+                              final imageUrl =
+                                  '$urlImagem/storage/fotos/trechopercorrido/trecho/${foto.arquivo}';
+
+                              // Fazer o download da imagem
+                              final response =
+                                  await http.get(Uri.parse(imageUrl));
+                              if (response.statusCode == 200) {
+                                // Diretório temporário para salvar a imagem
+                                final tempDir = await getTemporaryDirectory();
+                                final tempPath =
+                                    '${tempDir.path}/${foto.arquivo?.split('/').last}';
+
+                                // Salvar a imagem como arquivo
+                                final file = File(tempPath);
+                                await file.writeAsBytes(response.bodyBytes);
+
+                                // Compartilhar o arquivo
+                                await Share.shareFiles([file.path],
+                                    text: 'Confira esta imagem!');
+                              } else {
+                                throw Exception(
+                                    'Falha ao baixar a imagem. Código: ${response.statusCode}');
+                              }
+                            } catch (e) {
+                              // Tratar erro
+                              Get.snackbar(
+                                  'Erro', 'Falha ao compartilhar a imagem: $e',
+                                  backgroundColor: Colors.red,
+                                  colorText: Colors.white);
+                            }
+                          },
+                        ),
+                        const Text("Compartilhar"),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          onPressed: () {
+                            TripController controller =
+                                Get.put(TripController());
+                            controller.isDialogOpen.value = false;
+                            showDialogDeleteTripPhoto(
+                                context, foto.id!, controller);
+                          },
+                        ),
+                        const Text("Excluir"),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void showDialogDeleteTripPhoto(context, int id, TripController controller) {
+    if (controller.isDialogOpen.value) return;
+
+    controller.isDialogOpen.value = true;
+    Get.defaultDialog(
+      titlePadding: const EdgeInsets.all(16),
+      contentPadding: const EdgeInsets.all(16),
+      title: "REMOVER FOTO DO TRECHO",
+      content: const Text(
+        textAlign: TextAlign.center,
+        "Tem certeza que deseja excluir a foto selecionada?",
+        style: TextStyle(
+          fontFamily: 'Poppins',
+          fontSize: 18,
+        ),
+      ),
+      actions: [
+        ElevatedButton(
+          onPressed: () async {
+            Get.back(); // Fecha o diálogo atual primeiro
+            await Future.delayed(const Duration(milliseconds: 500));
+            Map<String, dynamic> retorno = await controller.deletePhotoTrip(id);
+
+            if (retorno['success'] == true) {
+              Get.snackbar('Sucesso!', retorno['message'].join('\n'),
+                  backgroundColor: Colors.green,
+                  colorText: Colors.white,
+                  duration: const Duration(seconds: 1),
+                  snackPosition: SnackPosition.BOTTOM);
+              Get.back();
+              Get.back();
+            } else {
+              Get.snackbar('Falha!', retorno['message'].join('\n'),
+                  backgroundColor: Colors.red,
+                  colorText: Colors.white,
+                  duration: const Duration(seconds: 1),
+                  snackPosition: SnackPosition.BOTTOM);
+            }
+          },
+          child: const Text(
+            "CONFIRMAR",
+            style: TextStyle(fontFamily: 'Poppinss', color: Colors.white),
+          ),
+        ),
+        TextButton(
+          onPressed: () {
+            Get.back();
+          },
+          child: const Text(
+            "CANCELAR",
+            style: TextStyle(fontFamily: 'Poppinss'),
+          ),
+        ),
+      ],
+    );
   }
 }

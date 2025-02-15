@@ -1,5 +1,6 @@
 import 'package:rodocalc/app/data/models/expense_trip_model.dart';
 import 'package:rodocalc/app/data/models/transactions_model.dart';
+import 'package:rodocalc/app/data/models/trip_photos.dart';
 import 'package:rodocalc/app/data/models/user_model.dart';
 
 class Trip {
@@ -30,6 +31,8 @@ class Trip {
   List<ExpenseTrip>? expenseTrip;
   List<Transacoes>? transactions;
 
+  List<TripPhotos>? photos;
+
   User? user;
 
   Trip({
@@ -56,6 +59,7 @@ class Trip {
     this.user,
     this.quantidadeTonelada,
     this.tipoCargaId,
+    this.photos,
   });
 
   Trip.fromJson(Map<String, dynamic> json) {
@@ -92,6 +96,13 @@ class Trip {
         transactions!.add(Transacoes.fromJson(v));
       });
     }
+
+    if (json['fotostrecho'] != null) {
+      photos = <TripPhotos>[];
+      json['fotostrecho'].forEach((v) {
+        photos!.add(TripPhotos.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -124,6 +135,10 @@ class Trip {
     }
     if (user != null) {
       data['user'] = user!.toJson();
+    }
+
+    if (photos != null) {
+      data['fotostrecho'] = photos!.map((v) => v.toJson()).toList();
     }
     return data;
   }

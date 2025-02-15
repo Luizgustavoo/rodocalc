@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
 import 'package:rodocalc/app/data/models/charge_type_model.dart';
@@ -10,6 +12,7 @@ import 'package:rodocalc/app/data/models/expense_trip_model.dart';
 import 'package:rodocalc/app/data/models/specific_type_expense_model.dart';
 import 'package:rodocalc/app/data/models/transactions_model.dart';
 import 'package:rodocalc/app/data/models/trip_model.dart';
+import 'package:rodocalc/app/data/models/trip_photos.dart';
 import 'package:rodocalc/app/data/repositories/transaction_repository.dart';
 import 'package:rodocalc/app/data/repositories/trip_repository.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
@@ -21,6 +24,7 @@ class TripController extends GetxController {
   RxBool isLoading = true.obs;
   RxBool isLoadingCRUD = false.obs;
   RxBool isLoadingData = true.obs;
+  RxBool isLoadingInsertPhotos = false.obs;
 
   final tripFormKey = GlobalKey<FormState>();
   final viewTripFormKey = GlobalKey<FormState>();
@@ -41,6 +45,10 @@ class TripController extends GetxController {
   final txtKmInicialTrechoController = TextEditingController();
   final txtToneladasTrechoController = TextEditingController();
   final txtKmFinalTrechoController = TextEditingController();
+
+  var selectedImagesPaths = <String>[].obs;
+  var selectedImagesPathsApi = <String>[].obs;
+  var selectedImagesPathsApiRemove = <String>[].obs;
 
   RxList<ExpenseCategory> expenseCategories = <ExpenseCategory>[].obs;
   RxList<SpecificTypeExpense> specificTypes = <SpecificTypeExpense>[].obs;
@@ -147,6 +155,80 @@ class TripController extends GetxController {
     'SP': 'sao paulo',
     'TO': 'tocantins'
   };
+
+  pickImage(ImageSource source) async {
+    if (source == ImageSource.gallery) {
+      final List<XFile> pickedFiles = await ImagePicker().pickMultiImage();
+      for (var pickedFile in pickedFiles) {
+        final croppedFile = await ImageCropper().cropImage(
+          sourcePath: pickedFile.path,
+          uiSettings: [
+            AndroidUiSettings(
+              toolbarTitle: 'Recortar Imagem',
+              toolbarColor: Colors.deepOrange,
+              toolbarWidgetColor: Colors.white,
+              initAspectRatio: CropAspectRatioPreset.original,
+              lockAspectRatio: false,
+              aspectRatioPresets: [
+                CropAspectRatioPreset.square,
+                CropAspectRatioPreset.ratio3x2,
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.ratio4x3,
+                CropAspectRatioPreset.ratio16x9
+              ],
+            ),
+            IOSUiSettings(
+              minimumAspectRatio: 1.0,
+              title: 'Recortar Imagem',
+              aspectRatioPresets: [
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.square,
+              ],
+            ),
+          ],
+        );
+        if (croppedFile != null) {
+          selectedImagesPaths.add(croppedFile.path);
+        }
+      }
+    } else {
+      final pickedFile = await ImagePicker().pickImage(source: source);
+      if (pickedFile != null) {
+        final croppedFile = await ImageCropper().cropImage(
+          sourcePath: pickedFile.path,
+          uiSettings: [
+            AndroidUiSettings(
+              toolbarTitle: 'Recortar Imagem',
+              toolbarColor: Colors.deepOrange,
+              toolbarWidgetColor: Colors.white,
+              initAspectRatio: CropAspectRatioPreset.original,
+              lockAspectRatio: false,
+              aspectRatioPresets: [
+                CropAspectRatioPreset.square,
+                CropAspectRatioPreset.ratio3x2,
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.ratio4x3,
+                CropAspectRatioPreset.ratio16x9
+              ],
+            ),
+            IOSUiSettings(
+              minimumAspectRatio: 1.0,
+              title: 'Recortar Imagem',
+              aspectRatioPresets: [
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.square,
+              ],
+            ),
+          ],
+        );
+        if (croppedFile != null) {
+          selectedImagesPaths.add(croppedFile.path);
+        }
+      } else {
+        Get.snackbar('Erro', 'Nenhuma imagem selecionada');
+      }
+    }
+  }
 
   @override
   void onInit() {
@@ -614,6 +696,26 @@ class TripController extends GetxController {
     return retorno;
   }
 
+  Future<Map<String, dynamic>> deletePhotoTrip(int id) async {
+    isLoadingCRUD(false);
+    if (id > 0) {
+      mensagem = await repository.deletePhotoTrip(id);
+      retorno = {
+        'success': mensagem['success'],
+        'message': mensagem['message']
+      };
+      getAll();
+      isDialogOpen.value = false;
+    } else {
+      retorno = {
+        'success': false,
+        'message': ['Falha ao realizar a operação!']
+      };
+    }
+    isLoadingCRUD(false);
+    return retorno;
+  }
+
   Future<Map<String, dynamic>> closeTrip(int id) async {
     isLoadingCRUD(false);
     if (id > 0) {
@@ -682,5 +784,42 @@ class TripController extends GetxController {
       Exception(e);
     }
     isLoadingChargeTypes.value = false;
+  }
+
+  Future<Map<String, dynamic>> insertTripPhotos(int tripId) async {
+    isLoadingInsertPhotos.value = true;
+
+    List<TripPhotos>? photos = [];
+    if (selectedImagesPaths.isNotEmpty) {
+      for (var element in selectedImagesPaths) {
+        photos.add(TripPhotos(arquivo: element));
+      }
+    }
+
+    Trip trip = Trip();
+    trip.id = tripId;
+    trip.photos = photos;
+
+    mensagem = await repository.insertFotoTrecho(trip);
+
+    if (mensagem != null) {
+      retorno = {
+        'success': mensagem['success'],
+        'message': mensagem['message']
+      };
+
+      if (mensagem['success'] == true) {
+        getAll();
+        clearAllFields();
+      }
+    } else {
+      retorno = {
+        'success': false,
+        'message': ['Falha ao realizar a operação!']
+      };
+    }
+
+    isLoadingInsertPhotos.value = false;
+    return retorno;
   }
 }

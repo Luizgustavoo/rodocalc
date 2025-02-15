@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/models/expense_trip_model.dart';
+import 'package:rodocalc/app/data/models/transactions_model.dart';
 import 'package:rodocalc/app/data/models/trip_model.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 
@@ -230,6 +231,70 @@ class TripApiClient {
       var tripUrl = Uri.parse('$baseUrl/v1/trechopercorrido/close/${trip.id}');
 
       var response = await httpClient.post(
+        tripUrl,
+        headers: {
+          "Accept": "application/json",
+          "Authorization": token,
+        },
+      );
+
+      return json.decode(response.body);
+    } catch (err) {
+      Exception(err);
+    }
+    return null;
+  }
+
+  insertFotoTrecho(Trip trip) async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+
+      var tripUrl = Uri.parse('$baseUrl/v1/trechopercorrido/fotostrecho');
+
+      var request = http.MultipartRequest('POST', tripUrl);
+
+      if (trip.photos != null && trip.photos!.isNotEmpty) {
+        for (var foto in trip.photos!) {
+          request.files
+              .add(await http.MultipartFile.fromPath('fotos[]', foto.arquivo!));
+        }
+      }
+
+      final requestBody = {
+        "trecho_id": trip.id.toString(),
+      };
+
+      request.fields.addAll(requestBody);
+
+      request.headers.addAll({
+        'Accept': 'application/json',
+        'Authorization': token,
+      });
+      var response = await request.send();
+
+      var responseStream = await response.stream.bytesToString();
+      var httpResponse = http.Response(responseStream, response.statusCode);
+
+      if (httpResponse.statusCode == 201 ||
+          httpResponse.statusCode == 422 ||
+          httpResponse.statusCode == 404) {
+        return json.decode(httpResponse.body);
+      } else {
+        return null;
+      }
+    } catch (err) {
+      Exception(err);
+    }
+    return null;
+  }
+
+  deletePhotoTrip(int id) async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+
+      var tripUrl = Uri.parse('$baseUrl/v1/trechopercorrido/delete/photo/$id');
+
+      var response = await httpClient.delete(
         tripUrl,
         headers: {
           "Accept": "application/json",

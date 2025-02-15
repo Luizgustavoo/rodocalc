@@ -288,6 +288,7 @@ class TransactionApiClient {
 
       var responseStream = await response.stream.bytesToString();
       var httpResponse = http.Response(responseStream, response.statusCode);
+      print(httpResponse.body);
       if (httpResponse.statusCode == 201 ||
           httpResponse.statusCode == 422 ||
           httpResponse.statusCode == 404) {
