@@ -153,38 +153,94 @@ class CustomTripCard extends StatelessWidget {
 
   Padding _listImages(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: trip.photos?.map((foto) {
-                return Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: InkWell(
-                    onTap: () {
-                      _openImageModal(context, foto);
-                    },
-                    child: Container(
-                      width: 100, // Ajuste o tamanho conforme necessário
-                      height: 100,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        shape: BoxShape.rectangle,
-                        image: DecorationImage(
-                          image: (foto.arquivo!.isNotEmpty)
-                              ? CachedNetworkImageProvider(
-                                  "$urlImagem/storage/fotos/trechopercorrido/trecho/${foto.arquivo}")
-                              : const AssetImage('assets/images/logo.png')
-                                  as ImageProvider,
-                          fit: BoxFit.cover,
+      padding: const EdgeInsets.all(0),
+      child: Column(
+        children: [
+          Align(
+            alignment: Alignment.centerRight, // Alinha o ícone à direita
+            child: IconButton(
+              icon: const Icon(
+                Icons.share,
+                color: Colors.blue,
+              ),
+              onPressed: () async {
+                try {
+                  // Baixe todas as imagens
+                  List<File> filesToShare = [];
+
+                  for (var foto in trip.photos!) {
+                    final imageUrl =
+                        '$urlImagem/storage/fotos/trechopercorrido/trecho/${foto.arquivo}';
+                    final response = await http.get(Uri.parse(imageUrl));
+
+                    if (response.statusCode == 200) {
+                      final tempDir = await getTemporaryDirectory();
+                      final tempPath =
+                          '${tempDir.path}/${foto.arquivo?.split('/').last}';
+                      final file = File(tempPath);
+
+                      await file.writeAsBytes(response.bodyBytes);
+                      filesToShare.add(file);
+                    } else {
+                      throw Exception(
+                          'Falha ao baixar a imagem. Código: ${response.statusCode}');
+                    }
+                  }
+
+                  // Compartilhe as imagens
+                  if (filesToShare.isNotEmpty) {
+                    await Share.shareFiles(
+                      filesToShare.map((file) => file.path).toList(),
+                      text: 'Confira essas imagens!',
+                    );
+                  } else {
+                    throw Exception(
+                        'Nenhuma imagem encontrada para compartilhar.');
+                  }
+                } catch (e) {
+                  Get.snackbar(
+                    'Erro',
+                    'Falha ao compartilhar as imagens: $e',
+                    backgroundColor: Colors.red,
+                    colorText: Colors.white,
+                  );
+                }
+              },
+            ),
+          ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: trip.photos?.map((foto) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: InkWell(
+                        onTap: () {
+                          _openImageModal(context, foto);
+                        },
+                        child: Container(
+                          width: 100, // Ajuste o tamanho conforme necessário
+                          height: 100,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            shape: BoxShape.rectangle,
+                            image: DecorationImage(
+                              image: (foto.arquivo!.isNotEmpty)
+                                  ? CachedNetworkImageProvider(
+                                      "$urlImagem/storage/fotos/trechopercorrido/trecho/${foto.arquivo}")
+                                  : const AssetImage('assets/images/logo.png')
+                                      as ImageProvider,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                );
-              }).toList() ??
-              [],
-        ),
+                    );
+                  }).toList() ??
+                  [],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -370,7 +426,8 @@ class CustomTripCard extends StatelessWidget {
       actions: [
         ElevatedButton(
           onPressed: () async {
-            Get.back(); // Fecha o diálogo atual primeiro
+            Get.back(); // Fecha o diálogo atual de confirmação
+            Navigator.of(context).pop(); // Fecha o modal com a imagem maior
             await Future.delayed(const Duration(milliseconds: 500));
             Map<String, dynamic> retorno = await controller.deletePhotoTrip(id);
 
@@ -380,8 +437,6 @@ class CustomTripCard extends StatelessWidget {
                   colorText: Colors.white,
                   duration: const Duration(seconds: 1),
                   snackPosition: SnackPosition.BOTTOM);
-              Get.back();
-              Get.back();
             } else {
               Get.snackbar('Falha!', retorno['message'].join('\n'),
                   backgroundColor: Colors.red,

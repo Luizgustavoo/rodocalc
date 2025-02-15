@@ -12,6 +12,7 @@ import 'package:rodocalc/app/modules/global/custom_search_field.dart';
 import 'package:rodocalc/app/modules/trip/widgets/create_trip_modal.dart';
 import 'package:rodocalc/app/modules/trip/widgets/custom_trip_card.dart';
 import 'package:rodocalc/app/modules/trip/widgets/view_list_expense_trip_modal.dart';
+import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 
 class TripView extends GetView<TripController> {
@@ -120,13 +121,145 @@ class TripView extends GetView<TripController> {
                       padding: const EdgeInsets.all(16.0),
                       child: Column(mainAxisSize: MainAxisSize.min, children: [
                         const SizedBox(height: 5),
-                        CustomSearchField(
-                          labelText: 'PESQUISAR TRECHOS',
-                          controller: controller.searchTripController,
-                          onChanged: (value) {
-                            controller.filterTrips(value);
-                          },
+                        // CustomSearchField(
+                        //   labelText: 'PESQUISAR TRECHOS',
+                        //   controller: controller.searchTripController,
+                        //   onChanged: (value) {
+                        //     controller.filterTrips(value);
+                        //   },
+                        // ),
+
+//inicio filtro entre datas
+
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextFormField(
+                                controller: controller.txtInitialDateController,
+                                decoration: const InputDecoration(
+                                  hintText: 'DATA INICIAL',
+                                  prefixIcon: Icon(Icons.date_range),
+                                  contentPadding: EdgeInsets.symmetric(
+                                      vertical: 6.0, horizontal: 12.0),
+                                  fillColor: Colors.transparent,
+                                ),
+                                readOnly: true,
+                                onTap: () async {
+                                  DateTime? pickedDate = await showDatePicker(
+                                    context: Get.context!,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(2000),
+                                    lastDate: DateTime.now(),
+                                    locale: const Locale('pt', 'BR'),
+                                  );
+                                  if (pickedDate != null) {
+                                    controller.txtInitialDateController.text =
+                                        FormattedInputers.formatDate2(
+                                            pickedDate);
+                                    if (controller.txtFinishDateController.text
+                                        .isNotEmpty) {
+                                      DateTime endDate =
+                                          FormattedInputers.parseDate(controller
+                                              .txtFinishDateController.text);
+                                      if (pickedDate.isAfter(endDate)) {
+                                        Get.snackbar('Erro',
+                                            'A data inicial não pode ser maior que a data final',
+                                            backgroundColor: Colors.red,
+                                            colorText: Colors.white);
+                                        controller.txtInitialDateController
+                                            .clear();
+                                      }
+                                    }
+                                  }
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: TextFormField(
+                                controller: controller.txtFinishDateController,
+                                decoration: const InputDecoration(
+                                  hintText: 'DATA FINAL',
+                                  prefixIcon: Icon(Icons.date_range),
+                                  contentPadding: EdgeInsets.symmetric(
+                                      vertical: 6.0, horizontal: 12.0),
+                                  fillColor: Colors.transparent,
+                                ),
+                                readOnly: true,
+                                onTap: () async {
+                                  DateTime? pickedDate = await showDatePicker(
+                                    context: Get.context!,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(2000),
+                                    lastDate: DateTime.now(),
+                                  );
+                                  if (pickedDate != null) {
+                                    if (controller.txtFinishDateController.text
+                                        .isNotEmpty) {
+                                      DateTime startDate =
+                                          FormattedInputers.parseDate(controller
+                                              .txtFinishDateController.text);
+                                      if (pickedDate.isBefore(startDate)) {
+                                        Get.snackbar('Erro',
+                                            'A data final não pode ser menor que a data inicial',
+                                            backgroundColor: Colors.red,
+                                            colorText: Colors.white);
+                                        controller.txtFinishDateController
+                                            .clear();
+                                      } else {
+                                        controller
+                                                .txtFinishDateController.text =
+                                            FormattedInputers.formatDate2(
+                                                pickedDate);
+                                      }
+                                    } else {
+                                      controller.txtFinishDateController.text =
+                                          FormattedInputers.formatDate2(
+                                              pickedDate);
+                                    }
+                                  }
+                                },
+                              ),
+                            ),
+                          ],
                         ),
+
+//final filtro datas
+
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          height: 45,
+                          child: TextFormField(
+                            controller: controller.searchTripController,
+                            decoration: InputDecoration(
+                              fillColor: Colors.grey.shade200,
+                              labelText: 'Motorista',
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  if ((controller.txtInitialDateController.text
+                                              .isNotEmpty &&
+                                          controller.txtFinishDateController
+                                              .text.isNotEmpty) ||
+                                      controller.searchTripController.text
+                                          .isNotEmpty) {
+                                    // controller.getTransactionsWithFilter();
+                                  } else {
+                                    Get.snackbar('Atenção!',
+                                        'Selecione data inicial e final, ou um motorista!',
+                                        backgroundColor: Colors.orange,
+                                        colorText: Colors.black,
+                                        duration: const Duration(seconds: 2),
+                                        snackPosition: SnackPosition.BOTTOM);
+                                  }
+                                },
+                                icon: const Icon(Icons.search),
+                              ),
+                            ),
+                          ),
+                        ),
+
                         const SizedBox(height: 16),
                         Obx(() {
                           if (controller.isLoading.value) {
@@ -457,35 +590,50 @@ void _showImagePreviewModal(TripController controller, int tripId) {
                 ),
               )),
           const SizedBox(height: 10),
-          Center(
-            child: controller.selectedImagesPaths.isEmpty
-                ? const SizedBox.shrink()
-                : ElevatedButton(
-                    onPressed: () async {
-                      Map<String, dynamic> retorno =
-                          await controller.insertTripPhotos(tripId);
-
-                      if (retorno['success'] == true) {
-                        Get.back();
-                        Get.snackbar('Sucesso!', retorno['message'].join('\n'),
-                            backgroundColor: Colors.green,
-                            colorText: Colors.white,
-                            duration: const Duration(seconds: 2),
-                            snackPosition: SnackPosition.BOTTOM);
-                      } else {
-                        Get.snackbar('Falha!', retorno['message'].join('\n'),
-                            backgroundColor: Colors.red,
-                            colorText: Colors.white,
-                            duration: const Duration(seconds: 2),
-                            snackPosition: SnackPosition.BOTTOM);
-                      }
+          Obx(
+            () => Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                    onPressed: () {
+                      Get.back();
                     },
-                    child: const Text(
-                      "Salvar Imagens",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
+                    child: const Text("Cancelar")),
+                controller.selectedImagesPaths.isEmpty
+                    ? const SizedBox.shrink()
+                    : (controller.isLoadingInsertPhotos.value
+                        ? const CircularProgressIndicator()
+                        : ElevatedButton(
+                            onPressed: () async {
+                              Map<String, dynamic> retorno =
+                                  await controller.insertTripPhotos(tripId);
+
+                              if (retorno['success'] == true) {
+                                Get.back();
+                                Get.snackbar(
+                                    'Sucesso!', retorno['message'].join('\n'),
+                                    backgroundColor: Colors.green,
+                                    colorText: Colors.white,
+                                    duration: const Duration(seconds: 2),
+                                    snackPosition: SnackPosition.BOTTOM);
+                              } else {
+                                Get.snackbar(
+                                    'Falha!', retorno['message'].join('\n'),
+                                    backgroundColor: Colors.red,
+                                    colorText: Colors.white,
+                                    duration: const Duration(seconds: 2),
+                                    snackPosition: SnackPosition.BOTTOM);
+                              }
+                            },
+                            child: const Text(
+                              "SALVAR",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          )),
+              ],
+            ),
           ),
+          const SizedBox(height: 20),
         ],
       ),
     ),

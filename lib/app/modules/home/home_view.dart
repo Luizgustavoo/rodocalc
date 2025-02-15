@@ -463,6 +463,7 @@ class HomeView extends GetView<HomeController> {
                                             ServiceStorage.isRotaPermitida(
                                                 "trip")) {
                                           tripController.getAll();
+                                          tripController.clearAllFields();
                                           Get.toNamed(Routes.trip);
                                         } else {
                                           snackExistsPlan();
