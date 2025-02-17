@@ -290,6 +290,52 @@ class TripApiClient {
     return null;
   }
 
+  insertFotoTrechoTransaction(Transacoes transaction) async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+
+      var transactionUrl =
+          Uri.parse('$baseUrl/v1/trechopercorrido/fotostrechotransaction');
+
+      var request = http.MultipartRequest('POST', transactionUrl);
+
+      if (transaction.photos != null && transaction.photos!.isNotEmpty) {
+        for (var foto in transaction.photos!) {
+          request.files
+              .add(await http.MultipartFile.fromPath('fotos[]', foto.arquivo!));
+        }
+      }
+
+      final requestBody = {
+        "transaction_id": transaction.id.toString(),
+      };
+
+      request.fields.addAll(requestBody);
+
+      request.headers.addAll({
+        'Accept': 'application/json',
+        'Authorization': token,
+      });
+      var response = await request.send();
+
+      var responseStream = await response.stream.bytesToString();
+      var httpResponse = http.Response(responseStream, response.statusCode);
+
+      print(httpResponse.body);
+
+      if (httpResponse.statusCode == 201 ||
+          httpResponse.statusCode == 422 ||
+          httpResponse.statusCode == 404) {
+        return json.decode(httpResponse.body);
+      } else {
+        return null;
+      }
+    } catch (err) {
+      Exception(err);
+    }
+    return null;
+  }
+
   deletePhotoTrip(int id) async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";

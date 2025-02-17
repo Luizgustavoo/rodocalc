@@ -1,5 +1,10 @@
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/controllers/trip_controller.dart';
 import 'package:rodocalc/app/data/models/expense_trip_model.dart';
 import 'package:rodocalc/app/data/models/transactions_model.dart';
@@ -117,7 +122,10 @@ class ViewListExpenseTripModal extends GetView<TripController> {
                                 ),
                               IconButton(
                                 onPressed: () {
-                                  // Implementar lógica de anexar foto
+                                  controller.selectedImagesPathsTransactions
+                                      .value = [];
+                                  _showPickerTransactions(
+                                      context, controller, transacao);
                                 },
                                 icon: const Icon(Icons.camera_alt),
                               ),
@@ -224,7 +232,48 @@ class ViewListExpenseTripModal extends GetView<TripController> {
                                     ),
                                   ],
                                 ),
-                              )
+                              ),
+                              const SizedBox(height: 5),
+                              // Exibição das imagens
+                              if (transacao.photos != null &&
+                                  transacao.photos!.isNotEmpty)
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: transacao.photos?.map((foto) {
+                                          return Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 8.0),
+                                            child: InkWell(
+                                              onTap: () {
+                                                //_openImageModal(context, foto);
+                                              },
+                                              child: Container(
+                                                width:
+                                                    100, // Ajuste o tamanho conforme necessário
+                                                height: 100,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                  shape: BoxShape.rectangle,
+                                                  image: DecorationImage(
+                                                    image: (foto.arquivo!
+                                                            .isNotEmpty)
+                                                        ? CachedNetworkImageProvider(
+                                                            "$urlImagem/storage/fotos/trechopercorrido/transactions/${foto.arquivo}")
+                                                        : const AssetImage(
+                                                                'assets/images/logo.png')
+                                                            as ImageProvider,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        }).toList() ??
+                                        [],
+                                  ),
+                                ),
                             ],
                           ),
                         ),
@@ -291,5 +340,156 @@ void showDialog(context, Transacoes transacao, TripController controller) {
         ),
       ),
     ],
+  );
+}
+
+void _showPickerTransactions(
+    BuildContext context, TripController controller, Transacoes transaction) {
+  showModalBottomSheet(
+    context: context,
+    builder: (BuildContext context) {
+      return SafeArea(
+        child: Wrap(
+          children: <Widget>[
+            ListTile(
+              leading: const Icon(Icons.photo_library),
+              title: const Text('Galeria'),
+              onTap: () async {
+                await controller.pickImageTransactions(ImageSource.gallery);
+                Navigator.of(context).pop();
+                _showImagePreviewModalTransactions(controller, transaction.id!);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_camera),
+              title: const Text('Câmera'),
+              onTap: () async {
+                await controller.pickImageTransactions(ImageSource.camera);
+                Navigator.of(context).pop();
+                _showImagePreviewModalTransactions(controller, transaction.id!);
+              },
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+void _showImagePreviewModalTransactions(
+    TripController controller, int transactionId) {
+  Get.bottomSheet(
+    Container(
+      height: 300,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.orange.shade50,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Pré-visualização",
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 10),
+          Obx(() => Expanded(
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: controller.selectedImagesPathsTransactions.length,
+                  itemBuilder: (context, index) {
+                    return Stack(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.file(
+                              File(controller
+                                  .selectedImagesPathsTransactions[index]),
+                              width: 100,
+                              height: 200,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          top: 5,
+                          right: 5,
+                          child: GestureDetector(
+                            onTap: () {
+                              controller.selectedImagesPathsTransactions
+                                  .removeAt(index);
+                            },
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.red,
+                              ),
+                              padding: const EdgeInsets.all(4),
+                              child: const Icon(
+                                Icons.close,
+                                color: Colors.white,
+                                size: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              )),
+          const SizedBox(height: 10),
+          Obx(
+            () => Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    child: const Text("Cancelar")),
+                controller.selectedImagesPathsTransactions.isEmpty
+                    ? const SizedBox.shrink()
+                    : (controller.isLoadingInsertPhotos.value
+                        ? const CircularProgressIndicator()
+                        : ElevatedButton(
+                            onPressed: () async {
+                              Map<String, dynamic> retorno = await controller
+                                  .insertTripPhotosTransactions(transactionId);
+
+                              if (retorno['success'] == true) {
+                                Get.back();
+                                Get.back();
+                                Get.snackbar(
+                                    'Sucesso!', retorno['message'].join('\n'),
+                                    backgroundColor: Colors.green,
+                                    colorText: Colors.white,
+                                    duration: const Duration(seconds: 2),
+                                    snackPosition: SnackPosition.BOTTOM);
+                              } else {
+                                Get.snackbar(
+                                    'Falha!', retorno['message'].join('\n'),
+                                    backgroundColor: Colors.red,
+                                    colorText: Colors.white,
+                                    duration: const Duration(seconds: 2),
+                                    snackPosition: SnackPosition.BOTTOM);
+                              }
+                            },
+                            child: const Text(
+                              "SALVAR",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          )),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+        ],
+      ),
+    ),
+    isScrollControlled: true,
   );
 }

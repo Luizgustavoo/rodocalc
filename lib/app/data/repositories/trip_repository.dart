@@ -1,4 +1,5 @@
 import 'package:rodocalc/app/data/models/expense_trip_model.dart';
+import 'package:rodocalc/app/data/models/transactions_model.dart';
 import 'package:rodocalc/app/data/models/trip_model.dart';
 import 'package:rodocalc/app/data/providers/trip_provider.dart';
 
@@ -37,6 +38,15 @@ class TripRepository {
   insertFotoTrecho(Trip trip) async {
     try {
       var response = await apiClient.insertFotoTrecho(trip);
+      return response;
+    } catch (e) {
+      Exception(e);
+    }
+  }
+
+  insertFotoTrechoTransaction(Transacoes transaction) async {
+    try {
+      var response = await apiClient.insertFotoTrechoTransaction(transaction);
       return response;
     } catch (e) {
       Exception(e);

@@ -11,6 +11,7 @@ import 'package:rodocalc/app/data/models/charge_type_model.dart';
 import 'package:rodocalc/app/data/models/expense_category_model.dart';
 import 'package:rodocalc/app/data/models/expense_trip_model.dart';
 import 'package:rodocalc/app/data/models/specific_type_expense_model.dart';
+import 'package:rodocalc/app/data/models/transaction_photos_model.dart';
 import 'package:rodocalc/app/data/models/transactions_model.dart';
 import 'package:rodocalc/app/data/models/trip_model.dart';
 import 'package:rodocalc/app/data/models/trip_photos.dart';
@@ -51,6 +52,7 @@ class TripController extends GetxController {
   final txtFinishDateController = TextEditingController();
 
   var selectedImagesPaths = <String>[].obs;
+  var selectedImagesPathsTransactions = <String>[].obs;
   var selectedImagesPathsApi = <String>[].obs;
   var selectedImagesPathsApiRemove = <String>[].obs;
 
@@ -253,6 +255,116 @@ class TripController extends GetxController {
 
           if (compressedFile != null) {
             selectedImagesPaths.add(compressedFile.path);
+
+            // Optional: Check the size of the compressed file
+            final fileSize = await compressedFile.length();
+            if (fileSize > 2 * 1024 * 1024) {
+              // 2 MB in bytes
+              Get.snackbar('Erro', 'Imagem ainda maior que 2 MB');
+            }
+          } else {
+            Get.snackbar('Erro', 'Falha na compressão da imagem');
+          }
+        }
+      } else {
+        Get.snackbar('Erro', 'Nenhuma imagem selecionada');
+      }
+    }
+  }
+
+  pickImageTransactions(ImageSource source) async {
+    if (source == ImageSource.gallery) {
+      final List<XFile> pickedFiles = await ImagePicker().pickMultiImage();
+      for (var pickedFile in pickedFiles) {
+        final croppedFile = await ImageCropper().cropImage(
+          sourcePath: pickedFile.path,
+          uiSettings: [
+            AndroidUiSettings(
+              toolbarTitle: 'Recortar Imagem',
+              toolbarColor: Colors.deepOrange,
+              toolbarWidgetColor: Colors.white,
+              initAspectRatio: CropAspectRatioPreset.original,
+              lockAspectRatio: false,
+              aspectRatioPresets: [
+                CropAspectRatioPreset.square,
+                CropAspectRatioPreset.ratio3x2,
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.ratio4x3,
+                CropAspectRatioPreset.ratio16x9
+              ],
+            ),
+            IOSUiSettings(
+              minimumAspectRatio: 1.0,
+              title: 'Recortar Imagem',
+              aspectRatioPresets: [
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.square,
+              ],
+              doneButtonTitle: 'Concluir',
+              cancelButtonTitle: 'Cancelar',
+            ),
+          ],
+        );
+        if (croppedFile != null) {
+          final compressedFile = await FlutterImageCompress.compressAndGetFile(
+            croppedFile.path,
+            '${croppedFile.path}_compressed.jpg',
+            quality: 50, // Adjust quality as needed to get under 2 MB
+          );
+
+          if (compressedFile != null) {
+            selectedImagesPathsTransactions.add(compressedFile.path);
+
+            // Optional: Check the size of the compressed file
+            final fileSize = await compressedFile.length();
+            if (fileSize > 2 * 1024 * 1024) {
+              // 2 MB in bytes
+              Get.snackbar('Erro', 'Imagem ainda maior que 2 MB');
+            }
+          } else {
+            Get.snackbar('Erro', 'Falha na compressão da imagem');
+          }
+        }
+      }
+    } else {
+      final pickedFile = await ImagePicker().pickImage(source: source);
+      if (pickedFile != null) {
+        final croppedFile = await ImageCropper().cropImage(
+          sourcePath: pickedFile.path,
+          uiSettings: [
+            AndroidUiSettings(
+              toolbarTitle: 'Recortar Imagem',
+              toolbarColor: Colors.deepOrange,
+              toolbarWidgetColor: Colors.white,
+              initAspectRatio: CropAspectRatioPreset.original,
+              lockAspectRatio: false,
+              aspectRatioPresets: [
+                CropAspectRatioPreset.square,
+                CropAspectRatioPreset.ratio3x2,
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.ratio4x3,
+                CropAspectRatioPreset.ratio16x9
+              ],
+            ),
+            IOSUiSettings(
+              minimumAspectRatio: 1.0,
+              title: 'Recortar Imagem',
+              aspectRatioPresets: [
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.square,
+              ],
+            ),
+          ],
+        );
+        if (croppedFile != null) {
+          final compressedFile = await FlutterImageCompress.compressAndGetFile(
+            croppedFile.path,
+            '${croppedFile.path}_compressed.jpg',
+            quality: 50, // Adjust quality as needed to get under 2 MB
+          );
+
+          if (compressedFile != null) {
+            selectedImagesPathsTransactions.add(compressedFile.path);
 
             // Optional: Check the size of the compressed file
             final fileSize = await compressedFile.length();
@@ -843,6 +955,44 @@ class TripController extends GetxController {
     trip.photos = photos;
 
     mensagem = await repository.insertFotoTrecho(trip);
+
+    if (mensagem != null) {
+      retorno = {
+        'success': mensagem['success'],
+        'message': mensagem['message']
+      };
+
+      if (mensagem['success'] == true) {
+        getAll();
+        clearAllFields();
+      }
+    } else {
+      retorno = {
+        'success': false,
+        'message': ['Falha ao realizar a operação!']
+      };
+    }
+
+    isLoadingInsertPhotos.value = false;
+    return retorno;
+  }
+
+  Future<Map<String, dynamic>> insertTripPhotosTransactions(
+      int transactionId) async {
+    isLoadingInsertPhotos.value = true;
+
+    List<TransactionsPhotos>? photos = [];
+    if (selectedImagesPathsTransactions.isNotEmpty) {
+      for (var element in selectedImagesPathsTransactions) {
+        photos.add(TransactionsPhotos(arquivo: element));
+      }
+    }
+
+    Transacoes transaction = Transacoes();
+    transaction.id = transactionId;
+    transaction.photos = photos;
+
+    mensagem = await repository.insertFotoTrechoTransaction(transaction);
 
     if (mensagem != null) {
       retorno = {
