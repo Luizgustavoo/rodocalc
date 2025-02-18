@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/controllers/trip_controller.dart';
 import 'package:rodocalc/app/data/models/expense_trip_model.dart';
+import 'package:rodocalc/app/data/models/transaction_photos_model.dart';
 import 'package:rodocalc/app/data/models/transactions_model.dart';
 import 'package:rodocalc/app/data/models/trip_model.dart';
 import 'package:rodocalc/app/modules/trip/widgets/create_expense_trip_modal.dart';
@@ -69,7 +70,7 @@ class ViewListExpenseTripModal extends GetView<TripController> {
             ),
             const SizedBox(height: 15),
             SizedBox(
-              height: 200, // Defina a altura manualmente
+              height: 200,
               child: ListView.builder(
                 shrinkWrap: true,
                 physics: const AlwaysScrollableScrollPhysics(),
@@ -93,7 +94,8 @@ class ViewListExpenseTripModal extends GetView<TripController> {
                             children: [
                               IconButton(
                                 onPressed: () {
-                                  showDialog(context, transacao, controller);
+                                  showViewDialog(
+                                      context, transacao, controller);
                                 },
                                 icon: const Icon(
                                   Icons.delete,
@@ -133,147 +135,25 @@ class ViewListExpenseTripModal extends GetView<TripController> {
                           ),
                         ),
                         ListTile(
-                          title: RichText(
-                            text: TextSpan(
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Colors.black,
-                                fontFamily: 'Inter-Regular',
-                              ),
-                              children: [
-                                const TextSpan(
-                                  text: 'DESCRIÇÃO: ',
-                                  style: TextStyle(
-                                    fontFamily: 'Inter-Bold',
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: transacao.descricao,
-                                  style: const TextStyle(
-                                    fontFamily: 'Inter',
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                          leading: (transacao.photos != null &&
+                                  transacao.photos!.isNotEmpty)
+                              ? IconButton(
+                                  icon: const Icon(Icons.image,
+                                      color: Colors.blue),
+                                  onPressed: () {
+                                    _showImageModal(context, transacao.photos!);
+                                  },
+                                )
+                              : null,
+                          title: Text("DESCRIÇÃO: ${transacao.descricao}"),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const SizedBox(height: 5),
-                              RichText(
-                                text: TextSpan(
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black,
-                                    fontFamily: 'Inter-Regular',
-                                  ),
-                                  children: [
-                                    const TextSpan(
-                                      text: 'DATA: ',
-                                      style: TextStyle(
-                                        fontFamily: 'Inter-Bold',
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text: FormattedInputers.formatApiDateHour(
-                                          transacao.data!),
-                                      style: const TextStyle(
-                                        fontFamily: 'Inter',
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 5),
-                              RichText(
-                                text: TextSpan(
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black,
-                                    fontFamily: 'Inter-Regular',
-                                  ),
-                                  children: [
-                                    const TextSpan(
-                                      text: 'VALOR: ',
-                                      style: TextStyle(
-                                        fontFamily: 'Inter-Bold',
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text:
-                                          "R\$${FormattedInputers.formatValuePTBR((transacao.valor! / 100).toString())}",
-                                      style: const TextStyle(
-                                        fontFamily: 'Inter',
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 5),
-                              RichText(
-                                text: TextSpan(
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black,
-                                    fontFamily: 'Inter-Regular',
-                                  ),
-                                  children: [
-                                    const TextSpan(
-                                      text: 'KM: ',
-                                      style: TextStyle(
-                                        fontFamily: 'Inter-Bold',
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text: "${transacao.km} Km" ?? "",
-                                      style: const TextStyle(
-                                        fontFamily: 'Inter',
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 5),
-                              // Exibição das imagens
-                              if (transacao.photos != null &&
-                                  transacao.photos!.isNotEmpty)
-                                SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Row(
-                                    children: transacao.photos?.map((foto) {
-                                          return Padding(
-                                            padding: const EdgeInsets.only(
-                                                right: 8.0),
-                                            child: InkWell(
-                                              onTap: () {
-                                                //_openImageModal(context, foto);
-                                              },
-                                              child: Container(
-                                                width:
-                                                    100, // Ajuste o tamanho conforme necessário
-                                                height: 100,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(5),
-                                                  shape: BoxShape.rectangle,
-                                                  image: DecorationImage(
-                                                    image: (foto.arquivo!
-                                                            .isNotEmpty)
-                                                        ? CachedNetworkImageProvider(
-                                                            "$urlImagem/storage/fotos/trechopercorrido/transactions/${foto.arquivo}")
-                                                        : const AssetImage(
-                                                                'assets/images/logo.png')
-                                                            as ImageProvider,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        }).toList() ??
-                                        [],
-                                  ),
-                                ),
+                              Text(
+                                  "DATA: ${FormattedInputers.formatApiDateHour(transacao.data!)}"),
+                              Text(
+                                  "VALOR: R\$${FormattedInputers.formatValuePTBR((transacao.valor! / 100).toString())}"),
+                              Text("KM: ${transacao.km} Km"),
                             ],
                           ),
                         ),
@@ -291,55 +171,27 @@ class ViewListExpenseTripModal extends GetView<TripController> {
   }
 }
 
-void showDialog(context, Transacoes transacao, TripController controller) {
-  Get.defaultDialog(
-    titlePadding: const EdgeInsets.all(16),
-    contentPadding: const EdgeInsets.all(16),
-    title: "Confirmação",
-    content: const Text(
-      textAlign: TextAlign.center,
-      "Tem certeza que deseja excluir a transação selecionada?",
-      style: TextStyle(
-        fontFamily: 'Poppins',
-        fontSize: 18,
-      ),
-    ),
-    actions: [
-      ElevatedButton(
-        onPressed: () async {
-          Map<String, dynamic> retorno =
-              await controller.deleteExpenseTrip(transacao.id!);
-          Get.back();
-          if (retorno['success'] == true) {
-            Get.back();
-            Get.snackbar('Sucesso!', retorno['message'].join('\n'),
-                backgroundColor: Colors.green,
-                colorText: Colors.white,
-                duration: const Duration(seconds: 2),
-                snackPosition: SnackPosition.BOTTOM);
-          } else {
-            Get.snackbar('Falha!', retorno['message'].join('\n'),
-                backgroundColor: Colors.red,
-                colorText: Colors.white,
-                duration: const Duration(seconds: 2),
-                snackPosition: SnackPosition.BOTTOM);
-          }
-        },
-        child: const Text(
-          "CONFIRMAR",
-          style: TextStyle(fontFamily: 'Poppinss', color: Colors.white),
+void _showImageModal(BuildContext context, List<TransactionsPhotos> photos) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return Dialog(
+        child: SizedBox(
+          height: 300,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: photos.length,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image.network(
+                    "$urlImagem/storage/fotos/trechopercorrido/transactions/${photos[index].arquivo}"),
+              );
+            },
+          ),
         ),
-      ),
-      TextButton(
-        onPressed: () {
-          Get.back();
-        },
-        child: const Text(
-          "CANCELAR",
-          style: TextStyle(fontFamily: 'Poppinss'),
-        ),
-      ),
-    ],
+      );
+    },
   );
 }
 
@@ -491,5 +343,57 @@ void _showImagePreviewModalTransactions(
       ),
     ),
     isScrollControlled: true,
+  );
+}
+
+void showViewDialog(context, Transacoes transacao, TripController controller) {
+  Get.defaultDialog(
+    titlePadding: const EdgeInsets.all(16),
+    contentPadding: const EdgeInsets.all(16),
+    title: "Confirmação",
+    content: const Text(
+      textAlign: TextAlign.center,
+      "Tem certeza que deseja excluir a transação selecionada?",
+      style: TextStyle(
+        fontFamily: 'Poppins',
+        fontSize: 18,
+      ),
+    ),
+    actions: [
+      ElevatedButton(
+        onPressed: () async {
+          Map<String, dynamic> retorno =
+              await controller.deleteExpenseTrip(transacao.id!);
+          Get.back();
+          if (retorno['success'] == true) {
+            Get.back();
+            Get.snackbar('Sucesso!', retorno['message'].join('\n'),
+                backgroundColor: Colors.green,
+                colorText: Colors.white,
+                duration: const Duration(seconds: 2),
+                snackPosition: SnackPosition.BOTTOM);
+          } else {
+            Get.snackbar('Falha!', retorno['message'].join('\n'),
+                backgroundColor: Colors.red,
+                colorText: Colors.white,
+                duration: const Duration(seconds: 2),
+                snackPosition: SnackPosition.BOTTOM);
+          }
+        },
+        child: const Text(
+          "CONFIRMAR",
+          style: TextStyle(fontFamily: 'Poppinss', color: Colors.white),
+        ),
+      ),
+      TextButton(
+        onPressed: () {
+          Get.back();
+        },
+        child: const Text(
+          "CANCELAR",
+          style: TextStyle(fontFamily: 'Poppinss'),
+        ),
+      ),
+    ],
   );
 }
