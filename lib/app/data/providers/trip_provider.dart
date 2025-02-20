@@ -38,6 +38,67 @@ class TripApiClient {
     return null;
   }
 
+  getTripsWithFilter(
+      {String? dataInicial, String? dataFinal, String? search}) async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+
+      String veiculoId = ServiceStorage.idSelectedVehicle().toString();
+
+      Uri tripUrl;
+      String url = '$baseUrl/v1/trechopercorrido/withfilter/$veiculoId';
+      tripUrl = Uri.parse(url);
+      var response = await httpClient.post(tripUrl, headers: {
+        "Accept": "application/json",
+        "Authorization": token,
+      }, body: {
+        "dataInicial": dataInicial.toString(),
+        "dataFinal": dataFinal.toString(),
+        "search": search.toString(),
+      });
+
+      print(response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return json.decode(response.body);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      Exception(e);
+    }
+    return null;
+  }
+
+  generatePDF({String? dataInicial, String? dataFinal, String? search}) async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+
+      String veiculoId = ServiceStorage.idSelectedVehicle().toString();
+
+      Uri tripUrl;
+      String url = '$baseUrl/v1/trechopercorrido/generatepdf/$veiculoId';
+      tripUrl = Uri.parse(url);
+      var response = await httpClient.post(tripUrl, headers: {
+        "Accept": "application/json",
+        "Authorization": token,
+      }, body: {
+        "dataInicial": dataInicial.toString(),
+        "dataFinal": dataFinal.toString(),
+        "search": search.toString(),
+      });
+
+      print(response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return json.decode(response.body);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      Exception(e);
+    }
+    return null;
+  }
+
   insert(Trip trip) async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
@@ -134,12 +195,12 @@ class TripApiClient {
     }
   }
 
-  deleteExpenseTrip(ExpenseTrip expense) async {
+  deleteTransactionTrip(int id) async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
 
-      var tripUrl = Uri.parse(
-          '$baseUrl/v1/trechopercorrido/despesa/delete/${expense.id}');
+      var tripUrl =
+          Uri.parse('$baseUrl/v1/trechopercorrido/transaction/delete/$id');
 
       var response = await httpClient.delete(
         tripUrl,

@@ -26,6 +26,55 @@ class TripRepository {
     return list;
   }
 
+  getTripsWithFilter(
+      {String? dataInicial, String? dataFinal, String? search}) async {
+    List<Trip> list = <Trip>[];
+
+    try {
+      var response = await apiClient.getTripsWithFilter(
+        dataInicial: dataInicial,
+        dataFinal: dataFinal,
+        search: search,
+      );
+
+      if (response != null) {
+        response['data'].forEach((e) {
+          list.add(Trip.fromJson(e));
+        });
+      } else {
+        return null;
+      }
+    } catch (e) {
+      Exception(e);
+    }
+
+    return list;
+  }
+
+  generatePDF({String? dataInicial, String? dataFinal, String? search}) async {
+    List<Trip> list = <Trip>[];
+
+    try {
+      var response = await apiClient.generatePDF(
+        dataInicial: dataInicial,
+        dataFinal: dataFinal,
+        search: search,
+      );
+
+      if (response != null) {
+        response['data'].forEach((e) {
+          list.add(Trip.fromJson(e));
+        });
+      } else {
+        return null;
+      }
+    } catch (e) {
+      Exception(e);
+    }
+
+    return list;
+  }
+
   insert(Trip trip) async {
     try {
       var response = await apiClient.insert(trip);
@@ -116,9 +165,9 @@ class TripRepository {
     }
   }
 
-  deleteExpenseTrip(ExpenseTrip expense) async {
+  deleteTransactionTrip(int id) async {
     try {
-      var response = await apiClient.deleteExpenseTrip(expense);
+      var response = await apiClient.deleteTransactionTrip(id);
       return response;
     } catch (e) {
       Exception(e);

@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -245,10 +246,12 @@ class TripView extends GetView<TripController> {
                                               .text.isNotEmpty) ||
                                       controller.searchTripController.text
                                           .isNotEmpty) {
-                                    // controller.getTransactionsWithFilter();
+                                    controller.getTripsWithFilter();
+                                    controller.clearSearchFilter();
                                   } else {
-                                    Get.snackbar('Atenção!',
-                                        'Selecione data inicial e final, ou um motorista!',
+                                    controller.getAll();
+                                    Get.snackbar(
+                                        'Atenção!', 'Nenhum filtro aplicado!',
                                         backgroundColor: Colors.orange,
                                         colorText: Colors.black,
                                         duration: const Duration(seconds: 2),
@@ -261,6 +264,10 @@ class TripView extends GetView<TripController> {
                           ),
                         ),
 
+                        const SizedBox(height: 16),
+                        Obx(() => controller.searchFilter.value.isNotEmpty
+                            ? Text(controller.searchFilter.value)
+                            : const SizedBox.shrink()),
                         const SizedBox(height: 16),
                         Obx(() {
                           if (controller.isLoading.value) {
@@ -369,35 +376,64 @@ class TripView extends GetView<TripController> {
               )
             ])),
       ]),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(right: 8, bottom: 8),
-        child: FloatingActionButton(
-          backgroundColor: const Color(0xFFFF6B00),
-          onPressed: () {
-            if (ServiceStorage.idSelectedVehicle() <= 0) {
-              Get.snackbar('Atenção', 'Selecione um veículo antes!',
-                  backgroundColor: Colors.red,
-                  colorText: Colors.white,
-                  duration: const Duration(seconds: 2),
-                  snackPosition: SnackPosition.BOTTOM);
-            } else {
-              final cityController = Get.put(CityStateController());
-              cityController.getCities();
-
-              controller.clearAllFields();
-              controller.getMyChargeTypes();
-              showModalBottomSheet(
-                isScrollControlled: true,
-                context: context,
-                builder: (context) => CreateTripModal(isUpdate: false),
-              );
-            }
-          },
-          child: const Icon(
-            Icons.add,
-            color: Colors.white,
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8, bottom: 8),
+            child: FloatingActionButton(
+              heroTag: 'create_pdf',
+              mini: true,
+              backgroundColor: const Color.fromARGB(255, 255, 0, 0),
+              onPressed: () {
+                if (ServiceStorage.idSelectedVehicle() <= 0) {
+                  Get.snackbar('Atenção', 'Selecione um veículo antes!',
+                      backgroundColor: Colors.red,
+                      colorText: Colors.white,
+                      duration: const Duration(seconds: 2),
+                      snackPosition: SnackPosition.BOTTOM);
+                } else {
+                  //cria o pdf
+                }
+              },
+              child: const Icon(
+                Icons.picture_as_pdf_rounded,
+                color: Colors.white,
+              ),
+            ),
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.only(right: 8, bottom: 8),
+            child: FloatingActionButton(
+              heroTag: 'create_trip',
+              backgroundColor: const Color(0xFFFF6B00),
+              onPressed: () {
+                if (ServiceStorage.idSelectedVehicle() <= 0) {
+                  Get.snackbar('Atenção', 'Selecione um veículo antes!',
+                      backgroundColor: Colors.red,
+                      colorText: Colors.white,
+                      duration: const Duration(seconds: 2),
+                      snackPosition: SnackPosition.BOTTOM);
+                } else {
+                  final cityController = Get.put(CityStateController());
+                  cityController.getCities();
+
+                  controller.clearAllFields();
+                  controller.getMyChargeTypes();
+                  showModalBottomSheet(
+                    isScrollControlled: true,
+                    context: context,
+                    builder: (context) => CreateTripModal(isUpdate: false),
+                  );
+                }
+              },
+              child: const Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

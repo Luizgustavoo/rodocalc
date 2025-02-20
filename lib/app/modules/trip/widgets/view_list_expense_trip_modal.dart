@@ -158,7 +158,7 @@ class ViewListExpenseTripModal extends GetView<TripController> {
                               Text(
                                   "DATA: ${FormattedInputers.formatApiDateHour(transacao.data!)}"),
                               Text(
-                                  "VALOR: R\$${FormattedInputers.formatValuePTBR((transacao.valor! / 100).toString())}"),
+                                  "VALOR: R\$${FormattedInputers.formatValuePTBR((transacao.valor!).toString())}"),
                               Text("KM: ${transacao.km} Km"),
                             ],
                           ),
@@ -494,7 +494,7 @@ void showViewDialog(context, Transacoes transacao, TripController controller) {
       ElevatedButton(
         onPressed: () async {
           Map<String, dynamic> retorno =
-              await controller.deleteExpenseTrip(transacao.id!);
+              await controller.deleteTransactionTrip(transacao.id!);
           Get.back();
           if (retorno['success'] == true) {
             Get.back();

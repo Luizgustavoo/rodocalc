@@ -441,6 +441,60 @@ class TripController extends GetxController {
     isLoading.value = false;
   }
 
+  clearSearchFilter() {
+    txtFinishDateController.clear();
+    txtInitialDateController.clear();
+    searchTripController.clear();
+  }
+
+  var searchFilter = ''.obs;
+
+  Future<void> getTripsWithFilter() async {
+    String? dataInicial = txtInitialDateController.text.isNotEmpty
+        ? txtInitialDateController.text
+        : null;
+    String? dataFinal = txtFinishDateController.text.isNotEmpty
+        ? txtFinishDateController.text
+        : null;
+    String? search =
+        searchTripController.text.isNotEmpty ? searchTripController.text : null;
+
+    // Validação: Se passar uma data, a outra deve ser obrigatória
+    if ((dataInicial != null && dataFinal == null) ||
+        (dataFinal != null && dataInicial == null)) {
+      throw Exception("Se passar uma data, a outra deve ser obrigatória.");
+    }
+
+    // Define searchFilter com base nos parâmetros passados
+    if (dataInicial != null && dataFinal != null && search != null) {
+      searchFilter.value =
+          "Filtrando por datas: $dataInicial - $dataFinal e busca: $search";
+    } else if (dataInicial != null && dataFinal != null) {
+      searchFilter.value = "Filtrando por datas: $dataInicial - $dataFinal";
+    } else if (search != null) {
+      searchFilter.value = "Filtrando por busca: $search";
+    } else {
+      searchFilter.value = "Sem filtros aplicados";
+    }
+
+    isLoading.value = true;
+    try {
+      // Obtém a lista de viagens filtrada com base nos parâmetros
+      listTrip.value = await repository.getTripsWithFilter(
+        dataInicial: dataInicial,
+        dataFinal: dataFinal,
+        search: search,
+      );
+
+      filteredTrips.assignAll(listTrip);
+    } catch (e) {
+      listTrip.clear();
+      filteredTrips.clear();
+      Exception(e);
+    }
+    isLoading.value = false;
+  }
+
   void filterTrips(String query) {
     if (query.isEmpty) {
       // Se a busca estiver vazia, mostra todos os fretes
@@ -543,6 +597,9 @@ class TripController extends GetxController {
       txtToneladasTrechoController,
       txtInitialDateController,
       txtFinishDateController,
+      txtFinishDateController,
+      txtInitialDateController,
+      searchTripController,
     ];
 
     for (final controller in textControllers) {
@@ -552,6 +609,7 @@ class TripController extends GetxController {
     selectedStateDestiny.value = '';
     selectedOption.value = '';
     selectedCargoType.value = null;
+    searchFilter.value = '';
 
     txtAmountExpenseTripController = MoneyMaskedTextController(
       precision: 2,
@@ -735,10 +793,10 @@ class TripController extends GetxController {
     return retorno;
   }
 
-  Future<Map<String, dynamic>> deleteExpenseTrip(int id) async {
+  Future<Map<String, dynamic>> deleteTransactionTrip(int id) async {
     isLoadingCRUD(false);
     if (id > 0) {
-      mensagem = await repository.deleteExpenseTrip(ExpenseTrip(id: id));
+      mensagem = await repository.deleteTransactionTrip(id);
       retorno = {
         'success': mensagem['success'],
         'message': mensagem['message']
