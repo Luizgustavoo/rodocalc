@@ -1094,4 +1094,32 @@ class TripController extends GetxController {
     isLoadingCRUD(false);
     return retorno;
   }
+
+  Future<void> generatePDF() async {
+    String? dataInicial = txtInitialDateController.text.isNotEmpty
+        ? txtInitialDateController.text
+        : null;
+    String? dataFinal = txtFinishDateController.text.isNotEmpty
+        ? txtFinishDateController.text
+        : null;
+    String? search =
+        searchTripController.text.isNotEmpty ? searchTripController.text : null;
+
+    isLoading.value = true;
+    try {
+      // Obtém a lista de viagens filtrada com base nos parâmetros
+      listTrip.value = await repository.generatePDF(
+        dataInicial: dataInicial,
+        dataFinal: dataFinal,
+        search: search,
+      );
+
+      filteredTrips.assignAll(listTrip);
+    } catch (e) {
+      listTrip.clear();
+      filteredTrips.clear();
+      Exception(e);
+    }
+    isLoading.value = false;
+  }
 }

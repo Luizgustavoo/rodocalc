@@ -385,7 +385,7 @@ class TripView extends GetView<TripController> {
               heroTag: 'create_pdf',
               mini: true,
               backgroundColor: const Color.fromARGB(255, 255, 0, 0),
-              onPressed: () {
+              onPressed: () async {
                 if (ServiceStorage.idSelectedVehicle() <= 0) {
                   Get.snackbar('Atenção', 'Selecione um veículo antes!',
                       backgroundColor: Colors.red,
@@ -394,6 +394,7 @@ class TripView extends GetView<TripController> {
                       snackPosition: SnackPosition.BOTTOM);
                 } else {
                   //cria o pdf
+                  await controller.generatePDF();
                 }
               },
               child: const Icon(
