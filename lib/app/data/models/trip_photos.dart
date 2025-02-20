@@ -4,6 +4,7 @@ class TripPhotos {
   int? id;
   int? tripId;
   Trip? trips;
+  String? descricao;
   String? arquivo;
   String? createdAt;
   String? updatedAt;
@@ -13,6 +14,7 @@ class TripPhotos {
     this.tripId,
     this.trips,
     this.arquivo,
+    this.descricao,
     this.createdAt,
     this.updatedAt,
   });
@@ -22,6 +24,7 @@ class TripPhotos {
     tripId = json['trip_id'];
     trips = json['trips'] != null ? Trip.fromJson(json['trips']) : null;
     arquivo = json['arquivo'];
+    descricao = json['descricao'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
   }
@@ -34,6 +37,7 @@ class TripPhotos {
       data['trips'] = trips!.toJson();
     }
     data['arquivo'] = arquivo;
+    data['descricao'] = descricao;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
     return data;

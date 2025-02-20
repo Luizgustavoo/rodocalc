@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -288,9 +289,26 @@ class TripView extends GetView<TripController> {
                                       controller.isDialogOpen.value = false;
                                       showDialog(context, trip, controller);
                                     },
-                                    functionPhoto: () {
+                                    functionPhoto: () async {
                                       controller.selectedImagesPaths.value = [];
-                                      _showPicker(context, controller, trip);
+                                      //_showPicker(context, controller, trip);
+                                      FilePickerResult? result =
+                                          await FilePicker.platform.pickFiles(
+                                        type: FileType.custom,
+                                        allowedExtensions: [
+                                          'pdf',
+                                          'jpg',
+                                          'png',
+                                          'jpeg'
+                                        ],
+                                      );
+                                      if (result != null) {
+                                        controller.selectedImagesPaths
+                                            .add(result.files.single.path!);
+                                      }
+
+                                      _showImagePreviewModal(
+                                          controller, trip.id!);
                                     },
                                     functionExpense: () {
                                       showModalBottomSheet(
@@ -530,111 +548,154 @@ void _showPicker(BuildContext context, TripController controller, Trip trip) {
 void _showImagePreviewModal(TripController controller, int tripId) {
   Get.bottomSheet(
     Container(
-      height: 300,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.orange.shade50,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "Pré-visualização",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 10),
-          Obx(() => Expanded(
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: controller.selectedImagesPaths.length,
-                  itemBuilder: (context, index) {
-                    return Stack(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 5),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image.file(
-                              File(controller.selectedImagesPaths[index]),
-                              width: 100,
-                              height: 200,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          top: 5,
-                          right: 5,
-                          child: GestureDetector(
-                            onTap: () {
-                              controller.selectedImagesPaths.removeAt(index);
-                            },
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.red,
-                              ),
-                              padding: const EdgeInsets.all(4),
-                              child: const Icon(
-                                Icons.close,
-                                color: Colors.white,
-                                size: 16,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              )),
-          const SizedBox(height: 10),
-          Obx(
-            () => Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton(
-                    onPressed: () {
-                      Get.back();
-                    },
-                    child: const Text("Cancelar")),
-                controller.selectedImagesPaths.isEmpty
-                    ? const SizedBox.shrink()
-                    : (controller.isLoadingInsertPhotos.value
-                        ? const CircularProgressIndicator()
-                        : ElevatedButton(
-                            onPressed: () async {
-                              Map<String, dynamic> retorno =
-                                  await controller.insertTripPhotos(tripId);
-
-                              if (retorno['success'] == true) {
-                                Get.back();
-                                Get.snackbar(
-                                    'Sucesso!', retorno['message'].join('\n'),
-                                    backgroundColor: Colors.green,
-                                    colorText: Colors.white,
-                                    duration: const Duration(seconds: 2),
-                                    snackPosition: SnackPosition.BOTTOM);
-                              } else {
-                                Get.snackbar(
-                                    'Falha!', retorno['message'].join('\n'),
-                                    backgroundColor: Colors.red,
-                                    colorText: Colors.white,
-                                    duration: const Duration(seconds: 2),
-                                    snackPosition: SnackPosition.BOTTOM);
-                              }
-                            },
-                            child: const Text(
-                              "SALVAR",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          )),
-              ],
+      child: SingleChildScrollView(
+        // Adicionado para permitir o scroll
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "Pré-visualização",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-          ),
-          const SizedBox(height: 20),
-        ],
+            const SizedBox(height: 10),
+            Obx(() {
+              if (controller.selectedImagesPaths.isEmpty) {
+                return const Text("Nenhuma imagem selecionada.");
+              }
+
+              String filePath = controller.selectedImagesPaths[0];
+              String fileExtension = filePath.split('.').last.toLowerCase();
+              bool isImage = ['jpg', 'jpeg', 'png'].contains(fileExtension);
+
+              return Column(
+                children: [
+                  Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: isImage
+                            ? Image.file(
+                                File(filePath),
+                                width: 200,
+                                height: 200,
+                                fit: BoxFit.cover,
+                              )
+                            : Container(
+                                width: 200,
+                                height: 200,
+                                color: Colors.grey[300],
+                                child: const Icon(
+                                  Icons.insert_drive_file,
+                                  size: 100,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                      ),
+                      Positioned(
+                        top: 5,
+                        right: 5,
+                        child: GestureDetector(
+                          onTap: () {
+                            controller.selectedImagesPaths.clear();
+                            controller.txtFileDescriptionController.clear();
+                          },
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.red,
+                            ),
+                            padding: const EdgeInsets.all(4),
+                            child: const Icon(
+                              Icons.close,
+                              color: Colors.white,
+                              size: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  // Campo de descrição
+                  TextFormField(
+                    controller: controller.txtFileDescriptionController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(Icons.monetization_on),
+                      labelText: 'DESCRIÇÃO',
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, insira uma descrição';
+                      }
+                      return null;
+                    },
+                  ),
+                ],
+              );
+            }),
+            const SizedBox(height: 10),
+            Obx(() {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                      onPressed: () {
+                        Get.back();
+                      },
+                      child: const Text("Cancelar")),
+                  controller.selectedImagesPaths.isEmpty
+                      ? const SizedBox.shrink()
+                      : (controller.isLoadingInsertPhotos.value
+                          ? const CircularProgressIndicator()
+                          : ElevatedButton(
+                              onPressed: () async {
+                                if (controller.txtFileDescriptionController.text
+                                    .isNotEmpty) {
+                                  Map<String, dynamic> retorno =
+                                      await controller.insertTripPhotos(tripId);
+
+                                  if (retorno['success'] == true) {
+                                    Get.back();
+                                    Get.snackbar('Sucesso!',
+                                        retorno['message'].join('\n'),
+                                        backgroundColor: Colors.green,
+                                        colorText: Colors.white,
+                                        duration: const Duration(seconds: 2),
+                                        snackPosition: SnackPosition.BOTTOM);
+                                  } else {
+                                    Get.snackbar(
+                                        'Falha!', retorno['message'].join('\n'),
+                                        backgroundColor: Colors.red,
+                                        colorText: Colors.white,
+                                        duration: const Duration(seconds: 2),
+                                        snackPosition: SnackPosition.BOTTOM);
+                                  }
+                                } else {
+                                  Get.snackbar('Atenção!',
+                                      "Adicione uma descrição para o arquivo",
+                                      backgroundColor: Colors.orange,
+                                      colorText: Colors.black,
+                                      duration: const Duration(seconds: 2),
+                                      snackPosition: SnackPosition.BOTTOM);
+                                }
+                              },
+                              child: const Text(
+                                "SALVAR",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            )),
+                ],
+              );
+            }),
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
     ),
     isScrollControlled: true,

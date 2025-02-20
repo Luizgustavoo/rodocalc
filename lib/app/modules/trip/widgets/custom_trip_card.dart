@@ -88,7 +88,7 @@ class CustomTripCard extends StatelessWidget {
                     ),
                     IconButton(
                       onPressed: functionPhoto,
-                      icon: const Icon(Icons.photo_camera,
+                      icon: const Icon(Icons.attach_file,
                           color: Color.fromARGB(255, 252, 181, 58)),
                     ),
                     IconButton(
@@ -156,114 +156,127 @@ class CustomTripCard extends StatelessWidget {
       padding: const EdgeInsets.all(0),
       child: Column(
         children: [
-          Align(
-            alignment: Alignment.centerRight, // Alinha o ícone à direita
-            child: IconButton(
-              icon: const Icon(
-                Icons.share,
-                color: Colors.blue,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                "Anexo(s):",
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              onPressed: () async {
-                try {
-                  // Baixe todas as imagens
-                  List<File> filesToShare = [];
+              Align(
+                alignment: Alignment.centerRight, // Alinha o ícone à direita
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.share,
+                    color: Colors.blue,
+                  ),
+                  onPressed: () async {
+                    try {
+                      // Baixe todas as imagens
+                      List<File> filesToShare = [];
 
-                  for (var foto in trip.photos!) {
-                    final imageUrl =
-                        '$urlImagem/storage/fotos/trechopercorrido/trecho/${foto.arquivo}';
-                    final response = await http.get(Uri.parse(imageUrl));
+                      for (var foto in trip.photos!) {
+                        final imageUrl =
+                            '$urlImagem/storage/fotos/trechopercorrido/trecho/${foto.arquivo}';
+                        final response = await http.get(Uri.parse(imageUrl));
 
-                    if (response.statusCode == 200) {
-                      final tempDir = await getTemporaryDirectory();
-                      final tempPath =
-                          '${tempDir.path}/${foto.arquivo?.split('/').last}';
-                      final file = File(tempPath);
+                        if (response.statusCode == 200) {
+                          final tempDir = await getTemporaryDirectory();
+                          final tempPath =
+                              '${tempDir.path}/${foto.arquivo?.split('/').last}';
+                          final file = File(tempPath);
 
-                      await file.writeAsBytes(response.bodyBytes);
-                      filesToShare.add(file);
-                    } else {
-                      throw Exception(
-                          'Falha ao baixar a imagem. Código: ${response.statusCode}');
+                          await file.writeAsBytes(response.bodyBytes);
+                          filesToShare.add(file);
+                        } else {
+                          throw Exception(
+                              'Falha ao baixar a imagem. Código: ${response.statusCode}');
+                        }
+                      }
+
+                      // Compartilhe as imagens
+                      if (filesToShare.isNotEmpty) {
+                        await Share.shareFiles(
+                          filesToShare.map((file) => file.path).toList(),
+                          text: 'Confira essas imagens!',
+                        );
+                      } else {
+                        throw Exception(
+                            'Nenhuma imagem encontrada para compartilhar.');
+                      }
+                    } catch (e) {
+                      Get.snackbar(
+                        'Erro',
+                        'Falha ao compartilhar as imagens: $e',
+                        backgroundColor: Colors.red,
+                        colorText: Colors.white,
+                      );
                     }
-                  }
-
-                  // Compartilhe as imagens
-                  if (filesToShare.isNotEmpty) {
-                    await Share.shareFiles(
-                      filesToShare.map((file) => file.path).toList(),
-                      text: 'Confira essas imagens!',
-                    );
-                  } else {
-                    throw Exception(
-                        'Nenhuma imagem encontrada para compartilhar.');
-                  }
-                } catch (e) {
-                  Get.snackbar(
-                    'Erro',
-                    'Falha ao compartilhar as imagens: $e',
-                    backgroundColor: Colors.red,
-                    colorText: Colors.white,
-                  );
-                }
-              },
-            ),
+                  },
+                ),
+              ),
+            ],
           ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: trip.photos?.map((foto) {
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: InkWell(
-                        onTap: () {
-                          _openImageModal(context, foto);
-                        },
-                        child: Container(
-                          width: 100, // Ajuste o tamanho conforme necessário
-                          height: 100,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            shape: BoxShape.rectangle,
-                            image: DecorationImage(
-                              image: (foto.arquivo!.isNotEmpty)
-                                  ? CachedNetworkImageProvider(
-                                      "$urlImagem/storage/fotos/trechopercorrido/trecho/${foto.arquivo}")
-                                  : const AssetImage('assets/images/logo.png')
-                                      as ImageProvider,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
+
+          // Exibindo os arquivos em uma listagem vertical
+
+          const SizedBox(
+            height: 10,
+          ),
+          Column(
+            children: trip.photos?.map((foto) {
+                  String fileExtension =
+                      foto.arquivo?.split('.').last.toLowerCase() ?? '';
+                  bool isImage = ['jpg', 'jpeg', 'png'].contains(fileExtension);
+
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 5),
+                    child: InkWell(
+                      onTap: () {
+                        _openImageModal(context, foto, isImage);
+                      },
+                      child: Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildInfoRow(isImage ? "Imagem" : "Arquivo",
+                                foto.descricao ?? 'Sem descrição',
+                                cor: Colors.blue),
+                            // Não exibe nada se for imagem
+                          ],
                         ),
                       ),
-                    );
-                  }).toList() ??
-                  [],
-            ),
+                    ),
+                  );
+                }).toList() ??
+                [],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
+  Widget _buildInfoRow(String label, String value,
+      {Color cor = Colors.black87}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
           Text(
             "$label: ",
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: Colors.black87,
+              color: cor,
             ),
           ),
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
-                color: Colors.black54,
+                color: cor,
               ),
               overflow: TextOverflow.ellipsis,
             ),
@@ -314,7 +327,7 @@ class CustomTripCard extends StatelessWidget {
     }
   }
 
-  void _openImageModal(BuildContext context, TripPhotos foto) {
+  void _openImageModal(BuildContext context, TripPhotos foto, bool isImage) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -325,16 +338,23 @@ class CustomTripCard extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ClipRRect(
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(16)),
-                child: Image.network(
-                  "$urlImagem/storage/fotos/trechopercorrido/trecho/${foto.arquivo}",
-                  fit: BoxFit.cover,
-                  height: 300, // Ajuste a altura da imagem conforme necessário
-                  width: double.infinity,
-                ),
-              ),
+              isImage
+                  ? ClipRRect(
+                      borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(16)),
+                      child: Image.network(
+                        "$urlImagem/storage/fotos/trechopercorrido/trecho/${foto.arquivo}",
+                        fit: BoxFit.cover,
+                        height:
+                            300, // Ajuste a altura da imagem conforme necessário
+                        width: double.infinity,
+                      ),
+                    )
+                  : const Icon(
+                      Icons.insert_drive_file,
+                      size: 100,
+                      color: Colors.grey,
+                    ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Row(

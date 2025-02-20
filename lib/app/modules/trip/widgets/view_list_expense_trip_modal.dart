@@ -176,18 +176,101 @@ void _showImageModal(BuildContext context, List<TransactionsPhotos> photos) {
     context: context,
     builder: (context) {
       return Dialog(
-        child: SizedBox(
-          height: 300,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: photos.length,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Image.network(
-                    "$urlImagem/storage/fotos/trechopercorrido/transactions/${photos[index].arquivo}"),
-              );
-            },
+        insetPadding: const EdgeInsets.all(16), // Espaçamento ao redor do modal
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20), // Bordas arredondadas
+            color: Colors.white, // Cor de fundo do modal
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Exibe as imagens com as ações flutuantes
+              Expanded(
+                child: ListView.builder(
+                  itemCount: photos.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
+                        child: Stack(
+                          children: [
+                            // Exibe a imagem
+                            Image.network(
+                              "$urlImagem/storage/fotos/trechopercorrido/transactions/${photos[index].arquivo}",
+                              width: double.infinity,
+                              height: 250,
+                              fit: BoxFit.cover,
+                            ),
+                            // Ícones de ação sobre a imagem
+                            Positioned(
+                              top: 10,
+                              right: 10,
+                              child: Row(
+                                children: [
+                                  // Botão de compartilhar
+                                  GestureDetector(
+                                    onTap: () {
+                                      //_shareImage(photos[index].arquivo);
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        color: Colors.blueAccent,
+                                        shape: BoxShape.circle,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color:
+                                                Colors.black.withOpacity(0.3),
+                                            blurRadius: 5,
+                                            offset: const Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      child: const Icon(
+                                        Icons.share,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  // Botão de excluir
+                                  GestureDetector(
+                                    onTap: () {
+                                      //_removeImage(context, index, photos);
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        color: Colors.redAccent,
+                                        shape: BoxShape.circle,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color:
+                                                Colors.black.withOpacity(0.3),
+                                            blurRadius: 5,
+                                            offset: const Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      child: const Icon(
+                                        Icons.delete,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         ),
       );

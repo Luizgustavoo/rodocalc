@@ -47,6 +47,7 @@ class TripController extends GetxController {
   final txtKmInicialTrechoController = TextEditingController();
   final txtToneladasTrechoController = TextEditingController();
   final txtKmFinalTrechoController = TextEditingController();
+  final txtFileDescriptionController = TextEditingController();
 
   final txtInitialDateController = TextEditingController();
   final txtFinishDateController = TextEditingController();
@@ -946,7 +947,8 @@ class TripController extends GetxController {
     List<TripPhotos>? photos = [];
     if (selectedImagesPaths.isNotEmpty) {
       for (var element in selectedImagesPaths) {
-        photos.add(TripPhotos(arquivo: element));
+        photos.add(TripPhotos(
+            arquivo: element, descricao: txtFileDescriptionController.text));
       }
     }
 

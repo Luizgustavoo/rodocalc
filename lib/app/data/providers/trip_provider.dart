@@ -253,15 +253,19 @@ class TripApiClient {
 
       var request = http.MultipartRequest('POST', tripUrl);
 
+      String descricao = "";
+
       if (trip.photos != null && trip.photos!.isNotEmpty) {
         for (var foto in trip.photos!) {
           request.files
               .add(await http.MultipartFile.fromPath('fotos[]', foto.arquivo!));
+          descricao = foto.descricao.toString();
         }
       }
 
       final requestBody = {
         "trecho_id": trip.id.toString(),
+        "descricao": descricao,
       };
 
       request.fields.addAll(requestBody);
