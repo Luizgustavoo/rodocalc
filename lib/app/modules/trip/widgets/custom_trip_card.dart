@@ -93,8 +93,8 @@ class CustomTripCard extends StatelessWidget {
                     ),
                     IconButton(
                       onPressed: functionExpense,
-                      icon: const Icon(Icons.attach_money_sharp,
-                          color: Color.fromARGB(255, 20, 174, 3)),
+                      icon: const Icon(Icons.payments_outlined,
+                          size: 28, color: Color.fromARGB(255, 20, 174, 3)),
                     ),
                     closedTrip
                         ? const SizedBox.shrink()

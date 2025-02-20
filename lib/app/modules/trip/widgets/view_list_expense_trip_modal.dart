@@ -1,17 +1,19 @@
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/controllers/trip_controller.dart';
-import 'package:rodocalc/app/data/models/expense_trip_model.dart';
 import 'package:rodocalc/app/data/models/transaction_photos_model.dart';
 import 'package:rodocalc/app/data/models/transactions_model.dart';
 import 'package:rodocalc/app/data/models/trip_model.dart';
 import 'package:rodocalc/app/modules/trip/widgets/create_expense_trip_modal.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
+
+import 'package:share_plus/share_plus.dart';
+import 'package:http/http.dart' as http;
 
 class ViewListExpenseTripModal extends GetView<TripController> {
   const ViewListExpenseTripModal({super.key, required this.trip});
@@ -70,7 +72,7 @@ class ViewListExpenseTripModal extends GetView<TripController> {
             ),
             const SizedBox(height: 15),
             SizedBox(
-              height: 200,
+              height: Get.height / 2,
               child: ListView.builder(
                 shrinkWrap: true,
                 physics: const AlwaysScrollableScrollPhysics(),
@@ -79,6 +81,9 @@ class ViewListExpenseTripModal extends GetView<TripController> {
                   final Transacoes transacao = trip.transactions![index];
                   return Card(
                     elevation: 1,
+                    color: transacao.tipoTransacao == 'saida'
+                        ? Colors.red.shade100
+                        : Colors.green.shade100,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5),
                     ),
@@ -145,7 +150,8 @@ class ViewListExpenseTripModal extends GetView<TripController> {
                                   },
                                 )
                               : null,
-                          title: Text("DESCRIÇÃO: ${transacao.descricao}"),
+                          title: Text(
+                              "${transacao.tipoTransacao!.toUpperCase()}: ${transacao.descricao}"),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -177,100 +183,142 @@ void _showImageModal(BuildContext context, List<TransactionsPhotos> photos) {
     builder: (context) {
       return Dialog(
         insetPadding: const EdgeInsets.all(16), // Espaçamento ao redor do modal
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20), // Bordas arredondadas
-            color: Colors.white, // Cor de fundo do modal
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Exibe as imagens com as ações flutuantes
-              Expanded(
-                child: ListView.builder(
-                  itemCount: photos.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(15),
-                        child: Stack(
-                          children: [
-                            // Exibe a imagem
-                            Image.network(
-                              "$urlImagem/storage/fotos/trechopercorrido/transactions/${photos[index].arquivo}",
-                              width: double.infinity,
-                              height: 250,
-                              fit: BoxFit.cover,
-                            ),
-                            // Ícones de ação sobre a imagem
-                            Positioned(
-                              top: 10,
-                              right: 10,
-                              child: Row(
-                                children: [
-                                  // Botão de compartilhar
-                                  GestureDetector(
-                                    onTap: () {
-                                      //_shareImage(photos[index].arquivo);
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                        color: Colors.blueAccent,
-                                        shape: BoxShape.circle,
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color:
-                                                Colors.black.withOpacity(0.3),
-                                            blurRadius: 5,
-                                            offset: const Offset(0, 2),
+        child: SizedBox(
+          width: double.infinity, // Largura total disponível
+          height: MediaQuery.of(context).size.height * 0.5, // Metade da tela
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20), // Bordas arredondadas
+              color: Colors.white, // Cor de fundo do modal
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Exibe as imagens com as ações flutuantes
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: photos.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: Stack(
+                              children: [
+                                // Exibe a imagem
+                                Image.network(
+                                  "$urlImagem/storage/fotos/trechopercorrido/transactions/${photos[index].arquivo}",
+                                  width: double.infinity,
+                                  height: 250,
+                                  fit: BoxFit.cover,
+                                ),
+                                // Ícones de ação sobre a imagem
+                                Positioned(
+                                  top: 10,
+                                  right: 10,
+                                  child: Row(
+                                    children: [
+                                      // Botão de compartilhar
+                                      GestureDetector(
+                                        onTap: () async {
+                                          try {
+                                            // URL da imagem
+                                            final imageUrl =
+                                                '$urlImagem/storage/fotos/trechopercorrido/transactions/${photos[index].arquivo}';
+
+                                            // Fazer o download da imagem
+                                            final response = await http
+                                                .get(Uri.parse(imageUrl));
+                                            if (response.statusCode == 200) {
+                                              // Diretório temporário para salvar a imagem
+                                              final tempDir =
+                                                  await getTemporaryDirectory();
+                                              final tempPath =
+                                                  '${tempDir.path}/${photos[index].arquivo?.split('/').last}';
+
+                                              // Salvar a imagem como arquivo
+                                              final file = File(tempPath);
+                                              await file.writeAsBytes(
+                                                  response.bodyBytes);
+
+                                              // Compartilhar o arquivo
+                                              await Share.shareFiles(
+                                                  [file.path],
+                                                  text: 'Confira esta imagem!');
+                                            } else {
+                                              throw Exception(
+                                                  'Falha ao baixar a imagem. Código: ${response.statusCode}');
+                                            }
+                                          } catch (e) {
+                                            // Tratar erro
+                                            Get.snackbar('Erro',
+                                                'Falha ao compartilhar a imagem: $e',
+                                                backgroundColor: Colors.red,
+                                                colorText: Colors.white);
+                                          }
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.all(8),
+                                          decoration: BoxDecoration(
+                                            color: Colors.blueAccent,
+                                            shape: BoxShape.circle,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black
+                                                    .withOpacity(0.3),
+                                                blurRadius: 5,
+                                                offset: const Offset(0, 2),
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                      child: const Icon(
-                                        Icons.share,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  // Botão de excluir
-                                  GestureDetector(
-                                    onTap: () {
-                                      //_removeImage(context, index, photos);
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                        color: Colors.redAccent,
-                                        shape: BoxShape.circle,
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color:
-                                                Colors.black.withOpacity(0.3),
-                                            blurRadius: 5,
-                                            offset: const Offset(0, 2),
+                                          child: const Icon(
+                                            Icons.share,
+                                            color: Colors.white,
                                           ),
-                                        ],
+                                        ),
                                       ),
-                                      child: const Icon(
-                                        Icons.delete,
-                                        color: Colors.white,
+                                      const SizedBox(width: 10),
+                                      // Botão de excluir
+                                      GestureDetector(
+                                        onTap: () {
+                                          showDialogDeleteExpenseTripPhoto(
+                                              context, photos[index].id!);
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.all(8),
+                                          decoration: BoxDecoration(
+                                            color: Colors.redAccent,
+                                            shape: BoxShape.circle,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black
+                                                    .withOpacity(0.3),
+                                                blurRadius: 5,
+                                                offset: const Offset(0, 2),
+                                              ),
+                                            ],
+                                          ),
+                                          child: const Icon(
+                                            Icons.delete,
+                                            color: Colors.white,
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                    ],
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       );
@@ -479,4 +527,75 @@ void showViewDialog(context, Transacoes transacao, TripController controller) {
       ),
     ],
   );
+}
+
+void showDialogDeleteExpenseTripPhoto(context, int id) {
+  TripController controller = Get.put(TripController());
+
+  if (controller.isDialogOpen.value) return;
+
+  controller.isDialogOpen.value = true;
+
+  // Fecha todos os modais abertos antes de abrir o diálogo
+  // Fecha apenas os dois modais anteriores
+
+  Future.delayed(const Duration(milliseconds: 300), () {
+    Get.defaultDialog(
+      titlePadding: const EdgeInsets.all(16),
+      contentPadding: const EdgeInsets.all(16),
+      title: "REMOVER FOTO DA TRANSAÇÃO",
+      content: const Text(
+        textAlign: TextAlign.center,
+        "Tem certeza que deseja excluir a foto selecionada?",
+        style: TextStyle(
+          fontFamily: 'Poppins',
+          fontSize: 18,
+        ),
+      ),
+      actions: [
+        ElevatedButton(
+          onPressed: () async {
+            Get.back(); // Fecha o diálogo
+
+            Map<String, dynamic> retorno =
+                await controller.deleteExpensePhotoTrip(id);
+
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop();
+            }
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop();
+            }
+
+            if (retorno['success'] == true) {
+              Get.snackbar('Sucesso!', retorno['message'].join('\n'),
+                  backgroundColor: Colors.green,
+                  colorText: Colors.white,
+                  duration: const Duration(seconds: 1),
+                  snackPosition: SnackPosition.BOTTOM);
+            } else {
+              Get.snackbar('Falha!', retorno['message'].join('\n'),
+                  backgroundColor: Colors.red,
+                  colorText: Colors.white,
+                  duration: const Duration(seconds: 1),
+                  snackPosition: SnackPosition.BOTTOM);
+            }
+          },
+          child: const Text(
+            "CONFIRMAR",
+            style: TextStyle(fontFamily: 'Poppinss', color: Colors.white),
+          ),
+        ),
+        TextButton(
+          onPressed: () {
+            Get.back();
+          },
+          child: const Text(
+            "CANCELAR",
+            style: TextStyle(fontFamily: 'Poppinss'),
+          ),
+        ),
+      ],
+    );
+  });
 }

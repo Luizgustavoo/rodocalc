@@ -1016,4 +1016,24 @@ class TripController extends GetxController {
     isLoadingInsertPhotos.value = false;
     return retorno;
   }
+
+  Future<Map<String, dynamic>> deleteExpensePhotoTrip(int id) async {
+    isLoadingCRUD(false);
+    if (id > 0) {
+      mensagem = await repository.deleteExpensePhotoTrip(id);
+      retorno = {
+        'success': mensagem['success'],
+        'message': mensagem['message']
+      };
+      getAll();
+      isDialogOpen.value = false;
+    } else {
+      retorno = {
+        'success': false,
+        'message': ['Falha ao realizar a operação!']
+      };
+    }
+    isLoadingCRUD(false);
+    return retorno;
+  }
 }

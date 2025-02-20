@@ -709,7 +709,7 @@ void showDialogDeleteTripPhoto(context, int id, TripController controller) {
   Get.defaultDialog(
     titlePadding: const EdgeInsets.all(16),
     contentPadding: const EdgeInsets.all(16),
-    title: "REMOVER FOTO do TRECHO",
+    title: "REMOVER ANEXO DO TRECHO",
     content: const Text(
       textAlign: TextAlign.center,
       "Tem certeza que deseja excluir a foto selecionada?",

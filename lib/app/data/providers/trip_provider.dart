@@ -360,4 +360,26 @@ class TripApiClient {
     }
     return null;
   }
+
+  deleteExpensePhotoTrip(int id) async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+
+      var tripUrl =
+          Uri.parse('$baseUrl/v1/trechopercorrido/delete/expense/photo/$id');
+
+      var response = await httpClient.delete(
+        tripUrl,
+        headers: {
+          "Accept": "application/json",
+          "Authorization": token,
+        },
+      );
+
+      return json.decode(response.body);
+    } catch (err) {
+      Exception(err);
+    }
+    return null;
+  }
 }

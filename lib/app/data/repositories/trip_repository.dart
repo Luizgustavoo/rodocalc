@@ -80,6 +80,15 @@ class TripRepository {
     }
   }
 
+  deleteExpensePhotoTrip(int id) async {
+    try {
+      var response = await apiClient.deleteExpensePhotoTrip(id);
+      return response;
+    } catch (e) {
+      Exception(e);
+    }
+  }
+
   close(Trip trip) async {
     try {
       var response = await apiClient.close(trip);
