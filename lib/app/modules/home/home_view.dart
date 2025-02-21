@@ -142,7 +142,7 @@ class HomeView extends GetView<HomeController> {
                                               0) {
                                             Get.snackbar(
                                               'Atenção!',
-                                              'Adicione um caminhao antes!',
+                                              'Adicione um veículo antes!',
                                               backgroundColor:
                                                   const Color(0xFFFF6B00),
                                               colorText: Colors.white,
@@ -300,7 +300,7 @@ class HomeView extends GetView<HomeController> {
                                               CrossAxisAlignment.end,
                                           children: [
                                             const Text(
-                                              'Saldo do caminhão',
+                                              'Saldo do veículo',
                                               style: TextStyle(
                                                 fontFamily: 'Inter-Regular',
                                                 color: Colors.black,
@@ -379,7 +379,7 @@ class HomeView extends GetView<HomeController> {
                                           ? const Color(0xFFFF6B00)
                                           : Colors.grey.shade700,
                                       imagePath: 'assets/images/caminhao.png',
-                                      label: 'Caminhões',
+                                      label: 'Veículos',
                                       onTap: () async {
                                         Map<String, dynamic> verifyPlan =
                                             await planController.verifyPlan();

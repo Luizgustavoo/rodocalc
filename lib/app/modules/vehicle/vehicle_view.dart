@@ -61,7 +61,7 @@ class VehiclesView extends GetView<VehicleController> {
                           children: [
                             const SizedBox(height: 5),
                             CustomSearchField(
-                              labelText: 'PESQUISAR CAMINHÕES',
+                              labelText: 'PESQUISAR VEÍCULOS',
                               controller: controller.searchController,
                               onChanged: (value) {
                                 controller.filterVehicles(value);

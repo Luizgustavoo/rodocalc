@@ -24,7 +24,7 @@ class TripController extends GetxController {
   RxList<Trip> listTrip = RxList<Trip>([]);
   RxList<Trip> filteredTrips = RxList<Trip>([]);
   RxBool isLoading = true.obs;
-  RxBool isLoadingPDF = true.obs;
+  RxBool isLoadingPDF = false.obs;
   RxBool isLoadingCRUD = false.obs;
   RxBool isLoadingData = true.obs;
   RxBool isLoadingInsertPhotos = false.obs;
@@ -622,6 +622,7 @@ class TripController extends GetxController {
     selectedOption.value = '';
     selectedCargoType.value = null;
     searchFilter.value = '';
+    isLoadingPDF.value = false;
 
     txtAmountExpenseTripController = MoneyMaskedTextController(
       precision: 2,
@@ -776,16 +777,24 @@ class TripController extends GetxController {
       int trechoPercorridoId, int expenseTripId) async {
     isLoadingCRUD(false);
 
-    mensagem = await repository.updateExpenseTrip(ExpenseTrip(
-      id: expenseTripId,
-      trechoPercorridoId: trechoPercorridoId,
-      dataHora: txtDateExpenseTripController.text,
-      descricao: txtDescriptionExpenseTripController.text,
-      valorDespesa: FormattedInputers.convertForCents(
-          txtAmountExpenseTripController.text),
-      status: 1,
-      km: txtKmController.text,
-    ));
+    Transacoes transaction = Transacoes();
+    transaction.id = expenseTripId;
+    transaction.data = txtDateExpenseTripController.text;
+    transaction.valor =
+        FormattedInputers.convertToDouble(txtAmountExpenseTripController.text);
+    transaction.descricao = txtDescriptionExpenseTripController.text;
+    transaction.status = 1;
+    transaction.tipoTransacao = txtTipoLancamentoTripController.text.isEmpty
+        ? "entrada"
+        : txtTipoLancamentoTripController.text;
+
+    transaction.km = txtKmController.text;
+    transaction.origemTransacao = "TRECHO";
+    transaction.trechoId = trechoPercorridoId;
+    transaction.pessoaId = ServiceStorage.getUserId();
+    transaction.veiculoId = ServiceStorage.idSelectedVehicle();
+
+    mensagem = await repositoryTransaction.update(transaction, []);
 
     if (mensagem != null) {
       retorno = {

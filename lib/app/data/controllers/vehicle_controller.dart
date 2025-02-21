@@ -162,6 +162,7 @@ class VehicleController extends GetxController {
       filteredVehicles.assignAll(
         listVehicles
             .where((vehicle) =>
+                vehicle.placa!.toLowerCase().contains(query.toLowerCase()) ||
                 vehicle.modelo!.toLowerCase().contains(query.toLowerCase()) ||
                 vehicle.marca!.toLowerCase().contains(query.toLowerCase()))
             .toList(),
