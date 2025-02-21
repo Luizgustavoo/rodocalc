@@ -24,6 +24,7 @@ class TripController extends GetxController {
   RxList<Trip> listTrip = RxList<Trip>([]);
   RxList<Trip> filteredTrips = RxList<Trip>([]);
   RxBool isLoading = true.obs;
+  RxBool isLoadingPDF = true.obs;
   RxBool isLoadingCRUD = false.obs;
   RxBool isLoadingData = true.obs;
   RxBool isLoadingInsertPhotos = false.obs;
@@ -51,6 +52,10 @@ class TripController extends GetxController {
 
   final txtInitialDateController = TextEditingController();
   final txtFinishDateController = TextEditingController();
+
+  final txtInitialDateBkpController = TextEditingController();
+  final txtFinishDateBkpController = TextEditingController();
+  final searchTripBkpController = TextEditingController();
 
   var selectedImagesPaths = <String>[].obs;
   var selectedImagesPathsTransactions = <String>[].obs;
@@ -459,6 +464,10 @@ class TripController extends GetxController {
     String? search =
         searchTripController.text.isNotEmpty ? searchTripController.text : null;
 
+    txtInitialDateBkpController.text = txtInitialDateController.text;
+    txtFinishDateBkpController.text = txtFinishDateController.text;
+    searchTripBkpController.text = searchTripController.text;
+
     // Validação: Se passar uma data, a outra deve ser obrigatória
     if ((dataInicial != null && dataFinal == null) ||
         (dataFinal != null && dataInicial == null)) {
@@ -600,6 +609,9 @@ class TripController extends GetxController {
       txtFinishDateController,
       txtInitialDateController,
       searchTripController,
+      txtInitialDateBkpController,
+      txtFinishDateBkpController,
+      searchTripBkpController,
     ];
 
     for (final controller in textControllers) {
@@ -1095,31 +1107,32 @@ class TripController extends GetxController {
     return retorno;
   }
 
-  Future<void> generatePDF() async {
-    String? dataInicial = txtInitialDateController.text.isNotEmpty
-        ? txtInitialDateController.text
+  Future<String?> generatePDF() async {
+    String? dataInicial = txtInitialDateBkpController.text.isNotEmpty
+        ? txtInitialDateBkpController.text
         : null;
-    String? dataFinal = txtFinishDateController.text.isNotEmpty
-        ? txtFinishDateController.text
+    String? dataFinal = txtFinishDateBkpController.text.isNotEmpty
+        ? txtFinishDateBkpController.text
         : null;
-    String? search =
-        searchTripController.text.isNotEmpty ? searchTripController.text : null;
+    String? search = searchTripBkpController.text.isNotEmpty
+        ? searchTripBkpController.text
+        : null;
 
-    isLoading.value = true;
+    isLoadingPDF.value = true;
+
     try {
-      // Obtém a lista de viagens filtrada com base nos parâmetros
-      listTrip.value = await repository.generatePDF(
+      String? pdfPath = await repository.generatePDF(
         dataInicial: dataInicial,
         dataFinal: dataFinal,
         search: search,
       );
 
-      filteredTrips.assignAll(listTrip);
+      isLoadingPDF.value = false;
+      return pdfPath;
     } catch (e) {
-      listTrip.clear();
-      filteredTrips.clear();
-      Exception(e);
+      print("Erro ao gerar PDF: $e");
+      isLoadingPDF.value = false;
+      return null;
     }
-    isLoading.value = false;
   }
 }

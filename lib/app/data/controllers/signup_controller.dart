@@ -20,6 +20,8 @@ class SignUpController extends GetxController {
   var selectedUserType = 0.obs;
   var indicatorName = "".obs;
 
+  var isPasswordHidden = true.obs;
+
   final TextEditingController txtNomeController = TextEditingController();
   final TextEditingController txtTelefoneController = TextEditingController();
   final TextEditingController txtDDDController = TextEditingController();

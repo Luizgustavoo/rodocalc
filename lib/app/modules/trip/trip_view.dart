@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
@@ -16,6 +17,7 @@ import 'package:rodocalc/app/modules/trip/widgets/custom_trip_card.dart';
 import 'package:rodocalc/app/modules/trip/widgets/view_list_expense_trip_modal.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
+import 'package:share_plus/share_plus.dart';
 
 class TripView extends GetView<TripController> {
   const TripView({super.key});
@@ -379,27 +381,50 @@ class TripView extends GetView<TripController> {
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(right: 8, bottom: 8),
-            child: FloatingActionButton(
-              heroTag: 'create_pdf',
-              mini: true,
-              backgroundColor: const Color.fromARGB(255, 255, 0, 0),
-              onPressed: () async {
-                if (ServiceStorage.idSelectedVehicle() <= 0) {
-                  Get.snackbar('Atenção', 'Selecione um veículo antes!',
-                      backgroundColor: Colors.red,
-                      colorText: Colors.white,
-                      duration: const Duration(seconds: 2),
-                      snackPosition: SnackPosition.BOTTOM);
-                } else {
-                  //cria o pdf
-                  await controller.generatePDF();
-                }
-              },
-              child: const Icon(
-                Icons.picture_as_pdf_rounded,
-                color: Colors.white,
+          Obx(
+            () => Padding(
+              padding: const EdgeInsets.only(right: 8, bottom: 8),
+              child: FloatingActionButton(
+                heroTag: 'create_pdf',
+                mini: true,
+                backgroundColor: const Color.fromARGB(255, 255, 0, 0),
+                onPressed: controller.isLoadingPDF.value
+                    ? () {}
+                    : () async {
+                        if (ServiceStorage.idSelectedVehicle() <= 0) {
+                          Get.snackbar(
+                            'Atenção',
+                            'Selecione um veículo antes!',
+                            backgroundColor: Colors.red,
+                            colorText: Colors.white,
+                            duration: const Duration(seconds: 2),
+                            snackPosition: SnackPosition.BOTTOM,
+                          );
+                        } else {
+                          String? pdfPath = await controller.generatePDF();
+
+                          if (pdfPath != null) {
+                            showPdfDialog(pdfPath);
+                          } else {
+                            Get.snackbar('Erro', 'Falha ao gerar PDF!',
+                                backgroundColor: Colors.red,
+                                colorText: Colors.white);
+                          }
+                        }
+                      },
+                child: controller.isLoadingPDF.value
+                    ? const SizedBox(
+                        width: 15,
+                        height: 15,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 3.0,
+                        ),
+                      )
+                    : const Icon(
+                        Icons.picture_as_pdf_rounded,
+                        color: Colors.white,
+                      ),
               ),
             ),
           ),
@@ -791,5 +816,66 @@ void showDialogDeleteTripPhoto(context, int id, TripController controller) {
         ),
       ),
     ],
+  );
+}
+
+void showPdfDialog(String pdfPath) {
+  Get.dialog(
+    Dialog(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.0)), // Bordas arredondadas
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // AppBar personalizada dentro do Dialog
+          Container(
+            decoration: const BoxDecoration(
+              color: Colors.deepOrange, // Cor da barra superior
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
+              ),
+            ),
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Relatório de trechos',
+                  style: TextStyle(color: Colors.white, fontSize: 18),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close, color: Colors.white),
+                  onPressed: () => Get.back(),
+                ),
+              ],
+            ),
+          ),
+
+          // Corpo do PDF
+          SizedBox(
+            height: 400,
+            width: 300,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(
+                  12), // Bordas arredondadas na visualização do PDF
+              child: PDFView(filePath: pdfPath),
+            ),
+          ),
+
+          const SizedBox(height: 10),
+
+          IconButton(
+            icon: const Icon(Icons.share, color: Colors.blue, size: 30),
+            onPressed: () async {
+              await Share.shareXFiles([XFile(pdfPath)]);
+            },
+          ),
+
+          const SizedBox(height: 10),
+        ],
+      ),
+    ),
+    barrierDismissible: false, // Impede fechamento ao tocar fora
   );
 }

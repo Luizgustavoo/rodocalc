@@ -55,19 +55,11 @@ class TripRepository {
     List<Trip> list = <Trip>[];
 
     try {
-      var response = await apiClient.generatePDF(
+      return await apiClient.generatePDF(
         dataInicial: dataInicial,
         dataFinal: dataFinal,
         search: search,
       );
-
-      if (response != null) {
-        response['data'].forEach((e) {
-          list.add(Trip.fromJson(e));
-        });
-      } else {
-        return null;
-      }
     } catch (e) {
       Exception(e);
     }

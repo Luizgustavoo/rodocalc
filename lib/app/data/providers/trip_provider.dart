@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/models/expense_trip_model.dart';
 import 'package:rodocalc/app/data/models/transactions_model.dart';
@@ -69,34 +71,44 @@ class TripApiClient {
     return null;
   }
 
-  generatePDF({String? dataInicial, String? dataFinal, String? search}) async {
+  Future<String?> generatePDF(
+      {String? dataInicial, String? dataFinal, String? search}) async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
-
       String veiculoId = ServiceStorage.idSelectedVehicle().toString();
 
-      Uri tripUrl;
       String url = '$baseUrl/v1/trechopercorrido/generatepdf/$veiculoId';
-      tripUrl = Uri.parse(url);
-      var response = await httpClient.post(tripUrl, headers: {
-        "Accept": "application/json",
-        "Authorization": token,
-      }, body: {
-        "dataInicial": dataInicial.toString(),
-        "dataFinal": dataFinal.toString(),
-        "search": search.toString(),
-      });
+      Uri tripUrl = Uri.parse(url);
 
-      print(response.body);
+      var response = await httpClient.post(
+        tripUrl,
+        headers: {
+          "Accept":
+              "application/pdf", // Importante garantir que a API retorne um PDF
+          "Authorization": token,
+        },
+        body: {
+          "dataInicial": dataInicial.toString(),
+          "dataFinal": dataFinal.toString(),
+          "search": search.toString(),
+        },
+      );
+
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return json.decode(response.body);
+        // Salvar temporariamente o PDF
+        Directory tempDir = await getTemporaryDirectory();
+        String filePath = '${tempDir.path}/relatorio.pdf';
+        File file = File(filePath);
+        await file.writeAsBytes(response.bodyBytes);
+
+        return filePath; // Retorna o caminho do arquivo salvo
       } else {
         return null;
       }
     } catch (e) {
-      Exception(e);
+      print("Erro ao gerar PDF: $e");
+      return null;
     }
-    return null;
   }
 
   insert(Trip trip) async {

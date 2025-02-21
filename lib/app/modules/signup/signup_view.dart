@@ -324,22 +324,34 @@ class SignUpView extends GetView<SignUpController> {
                             },
                           ),
                           const SizedBox(height: 10),
-                          TextFormField(
-                            controller: controller.txtSenhaController,
-                            obscureText: true,
-                            decoration: const InputDecoration(
-                              prefixIcon: Icon(Icons.key),
-                              labelText: 'SENHA',
+                          Obx(
+                            () => TextFormField(
+                              controller: controller.txtSenhaController,
+                              obscureText: controller.isPasswordHidden.value,
+                              decoration: InputDecoration(
+                                  prefixIcon: const Icon(Icons.key),
+                                  labelText: 'SENHA',
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      controller.isPasswordHidden.value
+                                          ? Icons.visibility
+                                          : Icons.visibility_off,
+                                    ),
+                                    onPressed: () {
+                                      controller.isPasswordHidden.value =
+                                          !controller.isPasswordHidden.value;
+                                    },
+                                  )),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Por favor, insira sua senha';
+                                }
+                                if (value.length < 6) {
+                                  return 'A senha deve ter pelo menos 6 caracteres';
+                                }
+                                return null;
+                              },
                             ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Por favor, insira sua senha';
-                              }
-                              if (value.length < 6) {
-                                return 'A senha deve ter pelo menos 6 caracteres';
-                              }
-                              return null;
-                            },
                           ),
                           const SizedBox(height: 10),
                           TextFormField(
