@@ -75,15 +75,11 @@ class TripController extends GetxController {
   final expenseTripFormKey = GlobalKey<FormState>();
   final txtDateExpenseTripController = TextEditingController();
   final txtDescriptionExpenseTripController = TextEditingController();
+
   final txtTipoLancamentoTripController =
       TextEditingController(text: "entrada");
-  var txtAmountExpenseTripController = MoneyMaskedTextController(
-    precision: 2,
-    initialValue: 0.0,
-    decimalSeparator: ',',
-    thousandSeparator: '.',
-    leftSymbol: 'R\$ ',
-  );
+
+  late MoneyMaskedTextController txtAmountExpenseTripController;
 
   final searchTripController = TextEditingController();
 
@@ -392,6 +388,16 @@ class TripController extends GetxController {
   void onInit() {
     super.onInit();
     filteredTrips.assignAll(listTrip);
+
+    //teste
+
+    txtAmountExpenseTripController = MoneyMaskedTextController(
+      precision: 2,
+      initialValue: 0.0,
+      decimalSeparator: ',',
+      thousandSeparator: '.',
+      leftSymbol: 'R\$ ',
+    );
   }
 
   String cleanValue(String value) {
@@ -568,6 +574,8 @@ class TripController extends GetxController {
       txtDateFinishedController.clear();
     }
 
+    selectedCargoType.value = trip.tipoCargaId;
+
     originController.text =
         "${trip.origem.toString()}-${trip.ufOrigem.toString()}";
     destinyController.text =
@@ -576,7 +584,9 @@ class TripController extends GetxController {
         FormattedInputers.formatDoubleForDecimal(trip.distancia!);
 
     txtKmInicialTrechoController.text = trip.km ?? '';
+    txtKmFinalTrechoController.text = trip.kmFinal ?? '';
     tripNumberController.text = trip.numeroViagem ?? '';
+    txtToneladasTrechoController.text = trip.quantidadeTonelada.toString();
   }
 
   void clearAllFields() {
@@ -624,13 +634,7 @@ class TripController extends GetxController {
     searchFilter.value = '';
     isLoadingPDF.value = false;
 
-    txtAmountExpenseTripController = MoneyMaskedTextController(
-      precision: 2,
-      initialValue: 0.0,
-      decimalSeparator: ',',
-      thousandSeparator: '.',
-      leftSymbol: 'R\$ ',
-    );
+    txtAmountExpenseTripController.updateValue(0.0);
   }
 
   void clearAllFieldsExpense() {

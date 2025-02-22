@@ -97,16 +97,17 @@ class ViewListExpenseTripModal extends GetView<TripController> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              IconButton(
-                                onPressed: () {
-                                  showViewDialog(
-                                      context, transacao, controller);
-                                },
-                                icon: const Icon(
-                                  Icons.delete,
-                                  color: Colors.red,
+                              if (trip.situacao!.toUpperCase() != "CLOSE")
+                                IconButton(
+                                  onPressed: () {
+                                    showViewDialog(
+                                        context, transacao, controller);
+                                  },
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                  ),
                                 ),
-                              ),
                               if (trip.situacao!.toUpperCase() != "CLOSE")
                                 IconButton(
                                   onPressed: () {
@@ -127,15 +128,18 @@ class ViewListExpenseTripModal extends GetView<TripController> {
                                   },
                                   icon: const Icon(Icons.edit),
                                 ),
-                              IconButton(
-                                onPressed: () {
-                                  controller.selectedImagesPathsTransactions
-                                      .value = [];
-                                  _showPickerTransactions(
-                                      context, controller, transacao);
-                                },
-                                icon: const Icon(Icons.camera_alt),
-                              ),
+                              trip.situacao!.toUpperCase() == "CLOSE"
+                                  ? const SizedBox.shrink()
+                                  : IconButton(
+                                      onPressed: () {
+                                        controller
+                                            .selectedImagesPathsTransactions
+                                            .value = [];
+                                        _showPickerTransactions(
+                                            context, controller, transacao);
+                                      },
+                                      icon: const Icon(Icons.camera_alt),
+                                    ),
                             ],
                           ),
                         ),
@@ -155,6 +159,8 @@ class ViewListExpenseTripModal extends GetView<TripController> {
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Text(
+                                  "DESCRIÇÃO: ${transacao.descricao.toString()}"),
                               Text(
                                   "DATA: ${FormattedInputers.formatApiDateHour(transacao.data!)}"),
                               Text(

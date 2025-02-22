@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -41,13 +42,19 @@ class TransactionController extends GetxController {
   final txtCompanyController = TextEditingController();
   final txtDDDController = TextEditingController();
   final txtPhoneController = TextEditingController();
-  final txtValueController = MoneyMaskedTextController(
-    precision: 2,
-    initialValue: 0.0,
-    decimalSeparator: ',',
-    thousandSeparator: '.',
-    leftSymbol: 'R\$ ',
-  );
+
+  late MoneyMaskedTextController txtValueController;
+  @override
+  void onInit() {
+    super.onInit();
+    txtValueController = MoneyMaskedTextController(
+      precision: 2,
+      initialValue: 0.0,
+      decimalSeparator: ',',
+      thousandSeparator: '.',
+      leftSymbol: 'R\$ ',
+    );
+  }
 
   final txtDateController = TextEditingController();
   final txtKmController = TextEditingController();
@@ -696,7 +703,24 @@ class TransactionController extends GetxController {
           ],
         );
         if (croppedFile != null) {
-          selectedImagesPaths.add(croppedFile.path);
+          final compressedFile = await FlutterImageCompress.compressAndGetFile(
+            croppedFile.path,
+            '${croppedFile.path}_compressed.jpg',
+            quality: 50, // Adjust quality as needed to get under 2 MB
+          );
+
+          if (compressedFile != null) {
+            selectedImagesPaths.add(compressedFile.path);
+
+            // Optional: Check the size of the compressed file
+            final fileSize = await compressedFile.length();
+            if (fileSize > 2 * 1024 * 1024) {
+              // 2 MB in bytes
+              Get.snackbar('Erro', 'Imagem ainda maior que 2 MB');
+            }
+          } else {
+            Get.snackbar('Erro', 'Falha na compressão da imagem');
+          }
         }
       }
     } else {
@@ -730,7 +754,24 @@ class TransactionController extends GetxController {
           ],
         );
         if (croppedFile != null) {
-          selectedImagesPaths.add(croppedFile.path);
+          final compressedFile = await FlutterImageCompress.compressAndGetFile(
+            croppedFile.path,
+            '${croppedFile.path}_compressed.jpg',
+            quality: 50, // Adjust quality as needed to get under 2 MB
+          );
+
+          if (compressedFile != null) {
+            selectedImagesPaths.add(compressedFile.path);
+
+            // Optional: Check the size of the compressed file
+            final fileSize = await compressedFile.length();
+            if (fileSize > 2 * 1024 * 1024) {
+              // 2 MB in bytes
+              Get.snackbar('Erro', 'Imagem ainda maior que 2 MB');
+            }
+          } else {
+            Get.snackbar('Erro', 'Falha na compressão da imagem');
+          }
         }
       } else {
         Get.snackbar('Erro', 'Nenhuma imagem selecionada');
@@ -1066,7 +1107,7 @@ class TransactionController extends GetxController {
     for (final controller in textControllers) {
       controller.clear();
     }
-    txtValueController.text = '';
+    txtValueController.updateValue(0.0);
     selectedImagesPaths.clear();
     selectedImagesPathsApi.clear();
     selectedImagesPathsApiRemove.clear();

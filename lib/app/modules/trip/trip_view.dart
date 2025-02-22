@@ -351,6 +351,7 @@ class TripView extends GetView<TripController> {
                                       }
                                     },
                                     functionEdit: () {
+                                      controller.getMyChargeTypes();
                                       controller.fillInFields(trip);
                                       showModalBottomSheet(
                                         isScrollControlled: true,
