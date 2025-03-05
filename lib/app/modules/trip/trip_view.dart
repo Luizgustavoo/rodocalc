@@ -687,7 +687,6 @@ void _showImagePreviewModal(TripController controller, int tripId) {
                   // Campo de descrição
                   TextFormField(
                     controller: controller.txtFileDescriptionController,
-                    keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
                       prefixIcon: Icon(Icons.monetization_on),
                       labelText: 'DESCRIÇÃO',

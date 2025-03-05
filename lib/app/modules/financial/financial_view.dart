@@ -550,7 +550,7 @@ class FinancialView extends GetView<TransactionController> {
               bool isTrecho = transaction.origemTransacao != 'FINANCEIRO';
               return InkWell(
                 splashColor: Colors.grey.shade50,
-                onTap: () {
+                onTap: () async {
                   if (isTrecho) {
                     Get.snackbar('Atenção',
                         "Abra o menu de trechos para alterar esta transação!",
@@ -564,8 +564,8 @@ class FinancialView extends GetView<TransactionController> {
                     controller.fillInFields(transaction);
                     controller.getMyCategories();
                     controller.getMyChargeTypes();
-                    controller.getMySpecifics(
-                        controller.selectedCategoryCadSpecificType.value!);
+                    controller
+                        .getMySpecifics(controller.selectedCategory.value!);
                     if (transaction.tipoTransacao == 'entrada') {
                       showModalBottomSheet(
                         isScrollControlled: true,

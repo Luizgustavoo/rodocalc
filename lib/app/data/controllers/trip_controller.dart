@@ -29,6 +29,8 @@ class TripController extends GetxController {
   RxBool isLoadingData = true.obs;
   RxBool isLoadingInsertPhotos = false.obs;
 
+  var selectedCategory = Rxn<int>();
+
   final tripFormKey = GlobalKey<FormState>();
   final viewTripFormKey = GlobalKey<FormState>();
   final originController = TextEditingController();
@@ -68,7 +70,7 @@ class TripController extends GetxController {
   RxBool isLoadingChargeTypes = true.obs;
 
   var selectedSpecificType = Rxn<int>();
-  var selectedCategory = Rxn<int>();
+
   var selectedCategoryCadSpecificType = Rxn<int>(0);
   var selectedCargoType = Rxn<int>();
 
@@ -78,6 +80,8 @@ class TripController extends GetxController {
 
   final txtTipoLancamentoTripController =
       TextEditingController(text: "entrada");
+
+  var tipoLancamento = 'entrada'.obs;
 
   late MoneyMaskedTextController txtAmountExpenseTripController;
 
@@ -642,11 +646,14 @@ class TripController extends GetxController {
       txtDateExpenseTripController,
       txtTipoLancamentoTripController,
       txtDescriptionExpenseTripController,
-      txtAmountExpenseTripController,
     ];
     for (final controller in textControllers) {
       controller.clear();
     }
+
+    txtAmountExpenseTripController.updateValue(0.0); // Define um valor seguro
+    txtAmountExpenseTripController.selection = TextSelection.collapsed(
+        offset: txtAmountExpenseTripController.text.length);
   }
 
   Future<Map<String, dynamic>> insertTrip() async {
@@ -746,6 +753,10 @@ class TripController extends GetxController {
     transaction.pessoaId = ServiceStorage.getUserId();
     transaction.veiculoId = ServiceStorage.idSelectedVehicle();
 
+    if (txtTipoLancamentoTripController.text == "saida") {
+      transaction.categoriaDespesaId = selectedCategory.value;
+    }
+
     mensagem = await repositoryTransaction.insert(transaction);
 
     // mensagem = await repository.insertExpenseTrip(ExpenseTrip(
@@ -797,6 +808,10 @@ class TripController extends GetxController {
     transaction.trechoId = trechoPercorridoId;
     transaction.pessoaId = ServiceStorage.getUserId();
     transaction.veiculoId = ServiceStorage.idSelectedVehicle();
+
+    if (txtTipoLancamentoTripController.text == "saida") {
+      transaction.categoriaDespesaId = selectedCategory.value;
+    }
 
     mensagem = await repositoryTransaction.update(transaction, []);
 

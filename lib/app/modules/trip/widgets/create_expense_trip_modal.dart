@@ -2,12 +2,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
 import 'package:rodocalc/app/data/controllers/trip_controller.dart';
+import 'package:rodocalc/app/data/models/expense_category_model.dart';
 import 'package:rodocalc/app/data/models/expense_trip_model.dart';
 import 'package:rodocalc/app/data/models/transactions_model.dart';
 import 'package:rodocalc/app/data/models/trip_model.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
+import 'package:rodocalc/app/utils/services.dart';
 
 class CreateExpenseTripModal extends GetView<TripController> {
   CreateExpenseTripModal({
@@ -21,6 +25,8 @@ class CreateExpenseTripModal extends GetView<TripController> {
   final Trip? trip;
   final Transacoes? transaction;
   final GlobalKey<FormState> formKey;
+
+  final transactionController = Get.put(TransactionController());
 
   @override
   Widget build(BuildContext context) {
@@ -69,6 +75,7 @@ class CreateExpenseTripModal extends GetView<TripController> {
                   ],
                   onChanged: (value) {
                     controller.txtTipoLancamentoTripController.text = value!;
+                    controller.tipoLancamento.value = value;
                   },
                   decoration: const InputDecoration(
                     prefixIcon: Icon(Icons.sync_alt),
@@ -76,6 +83,67 @@ class CreateExpenseTripModal extends GetView<TripController> {
                   ),
                 ),
                 const SizedBox(height: 15),
+                Obx(
+                  () => controller.tipoLancamento.value == 'saida'
+                      ? DropdownButtonFormField<int>(
+                          decoration: const InputDecoration(
+                            prefixIcon: Icon(Icons.search_rounded),
+                            labelText: 'CATEGORIA',
+                          ),
+                          items: [
+                            DropdownMenuItem<int>(
+                              value: null,
+                              child: SizedBox(
+                                width:
+                                    Get.width * 0.7, // Limita a largura do item
+                                child: const Text(
+                                  'SELECIONE UMA CATEGORIA',
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(color: Color(0xFFFF6B00)),
+                                ),
+                              ),
+                            ),
+                            ...transactionController.expenseCategories
+                                .map((ExpenseCategory category) {
+                              return DropdownMenuItem<int>(
+                                value: category.id!,
+                                child: SizedBox(
+                                  width: Get.width *
+                                      0.7, // Limita a largura do item
+                                  child: Text(
+                                    Services.capitalizeWords(
+                                        category.descricao!),
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontFamily: 'Inter-Bold',
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }),
+                          ],
+                          onChanged: (newValue) {
+                            controller.selectedCategory.value = newValue!;
+                          },
+                          value: transactionController.expenseCategories.any(
+                                  (category) =>
+                                      category.id ==
+                                      controller.selectedCategory.value)
+                              ? controller.selectedCategory.value
+                              : null,
+                          validator: (value) {
+                            if (value == null) {
+                              return 'Por favor, selecione a categoria';
+                            }
+                            return null;
+                          },
+                        )
+                      : const SizedBox.shrink(),
+                ),
+                Obx(() => controller.tipoLancamento.value == "saida"
+                    ? const SizedBox(height: 15)
+                    : const SizedBox.shrink()),
                 TextFormField(
                   controller: controller.txtDateExpenseTripController,
                   readOnly: true,

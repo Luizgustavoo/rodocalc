@@ -244,8 +244,8 @@ class CreateExpenseModal extends GetView<TransactionController> {
                     controller.selectedCategory.value = newValue!;
                     controller.getMySpecifics(newValue);
                   },
-                  value: controller.expenseCategories.any((specific) =>
-                          specific.id == controller.selectedCategory.value)
+                  value: controller.expenseCategories.any((category) =>
+                          category.id == controller.selectedCategory.value)
                       ? controller.selectedCategory.value
                       : null,
                   validator: (value) {

@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rodocalc/app/data/base_url.dart';
+import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
 import 'package:rodocalc/app/data/controllers/trip_controller.dart';
 import 'package:rodocalc/app/data/models/transaction_photos_model.dart';
 import 'package:rodocalc/app/data/models/transactions_model.dart';
@@ -50,6 +51,10 @@ class ViewListExpenseTripModal extends GetView<TripController> {
                           onPressed: () {
                             Get.back();
                             controller.clearAllFieldsExpense();
+                            final transactionController =
+                                Get.put(TransactionController());
+
+                            transactionController.getMyCategories();
                             showModalBottomSheet(
                               isScrollControlled: true,
                               context: context,
@@ -155,12 +160,10 @@ class ViewListExpenseTripModal extends GetView<TripController> {
                                 )
                               : null,
                           title: Text(
-                              "${transacao.tipoTransacao!.toUpperCase()}: ${transacao.descricao}"),
+                              "DESCRIÇÃO: ${transacao.descricao.toString()}"),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                  "DESCRIÇÃO: ${transacao.descricao.toString()}"),
                               Text(
                                   "DATA: ${FormattedInputers.formatApiDateHour(transacao.data!)}"),
                               Text(
