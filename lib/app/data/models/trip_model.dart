@@ -160,10 +160,18 @@ class Trip {
     return id == null && origem == null && destino == null;
   }
 
-  // Método para somar as despesas
   double get totalDespesas {
-    if (expenseTrip == null) return 0.0;
-    return expenseTrip!
-        .fold(0.0, (sum, item) => sum + (item.valorDespesa ?? 0.0));
+    if (transactions == null) return 0.0;
+    return transactions!
+        .where((item) => item.tipoTransacao == "saida")
+        .fold(0.0, (sum, item) => sum + (item.valor ?? 0.0));
+  }
+
+  // Método para somar os recebimentos
+  double get totalRecebimentos {
+    if (transactions == null) return 0.0;
+    return transactions!
+        .where((item) => item.tipoTransacao == "entrada")
+        .fold(0.0, (sum, item) => sum + (item.valor ?? 0.0));
   }
 }

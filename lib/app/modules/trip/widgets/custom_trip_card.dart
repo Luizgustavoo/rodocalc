@@ -42,9 +42,13 @@ class CustomTripCard extends StatelessWidget {
     String destino =
         "${trip.destino?.toUpperCase() ?? 'N/D'}-${trip.ufDestino?.toUpperCase() ?? 'N/D'}";
 
-    double despesas = (trip.totalDespesas ?? 0) / 100;
+    double despesas = (trip.totalDespesas ?? 0);
     String despesasFormatadas =
         FormattedInputers.formatValuePTBR(despesas.toString());
+
+    double recebimentos = (trip.totalRecebimentos ?? 0);
+    String recebimentosFormatados =
+        FormattedInputers.formatValuePTBR(recebimentos.toString());
 
     String dataSaida = trip.dataHora?.trim().isNotEmpty == true
         ? FormattedInputers.formatApiDateHour(trip.dataHora.toString())
@@ -141,6 +145,8 @@ class CustomTripCard extends StatelessWidget {
                 if (tempoGasto.isNotEmpty)
                   _buildInfoRow("Tempo Gasto", tempoGasto),
                 const Divider(),
+                if (recebimentosFormatados.isNotEmpty)
+                  _buildInfoRow("Entradas", "R\$ $recebimentosFormatados"),
                 if (despesasFormatadas.isNotEmpty)
                   _buildInfoRow("Despesas", "R\$ $despesasFormatadas"),
                 const Divider(),
