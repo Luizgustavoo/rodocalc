@@ -545,6 +545,11 @@ class TripController extends GetxController {
 
     txtTipoLancamentoTripController.text = transacao.tipoTransacao!;
 
+    if (transacao.tipoTransacao == 'saida') {
+      tipoLancamento.value = 'saida';
+      selectedCategory.value = transacao.categoriaDespesaId;
+    }
+
     txtDescriptionExpenseTripController.text = transacao.descricao.toString();
     txtKmController.text = transacao.km.toString();
 
@@ -606,6 +611,7 @@ class TripController extends GetxController {
       priceTiresController,
       priceTollsController,
       othersExpensesController,
+      txtKmController,
       txtDateController,
       txtDateFinishedController,
       originController,
@@ -638,10 +644,13 @@ class TripController extends GetxController {
     searchFilter.value = '';
     isLoadingPDF.value = false;
 
+    tipoLancamento.value = 'entrada';
+
     txtAmountExpenseTripController.updateValue(0.0);
   }
 
   void clearAllFieldsExpense() {
+    tipoLancamento.value = 'entrada';
     final textControllers = [
       txtDateExpenseTripController,
       txtTipoLancamentoTripController,

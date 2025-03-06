@@ -133,7 +133,8 @@ class CreateExpenseTripModal extends GetView<TripController> {
                               ? controller.selectedCategory.value
                               : null,
                           validator: (value) {
-                            if (value == null) {
+                            if (controller.tipoLancamento.value == 'saida' &&
+                                value == null) {
                               return 'Por favor, selecione a categoria';
                             }
                             return null;

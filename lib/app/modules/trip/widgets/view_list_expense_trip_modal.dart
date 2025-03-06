@@ -166,6 +166,10 @@ class ViewListExpenseTripModal extends GetView<TripController> {
                             children: [
                               Text(
                                   "DATA: ${FormattedInputers.formatApiDateHour(transacao.data!)}"),
+                              transacao.expenseCategory != null
+                                  ? Text(
+                                      "CATEGORIA: ${transacao.expenseCategory?.descricao}")
+                                  : const SizedBox.shrink(),
                               Text(
                                   "VALOR: R\$${FormattedInputers.formatValuePTBR((transacao.valor!).toString())}"),
                               Text("KM: ${transacao.km} Km"),

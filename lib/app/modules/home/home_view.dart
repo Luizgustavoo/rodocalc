@@ -752,8 +752,13 @@ class HomeView extends GetView<HomeController> {
                                           } else {
                                             stringValor =
                                                 "+R\$ ${FormattedInputers.formatValuePTBR(transaction.valor)}";
-                                            subtitulo =
-                                                "${transaction.origem}/${transaction.destino}";
+                                            if (transaction.origemTransacao ==
+                                                'FINANCEIRO') {
+                                              subtitulo =
+                                                  "${transaction.origem}/${transaction.destino}";
+                                            } else {
+                                              subtitulo = "RECEBIMENTO TRECHO";
+                                            }
                                           }
 
                                           return Card(
