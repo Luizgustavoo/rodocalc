@@ -300,6 +300,9 @@ class TripView extends GetView<TripController> {
                                     },
                                     functionPhoto: () async {
                                       controller.selectedImagesPaths.value = [];
+                                      controller.txtFileDescriptionController
+                                          .clear();
+
                                       //_showPicker(context, controller, trip);
                                       FilePickerResult? result =
                                           await FilePicker.platform.pickFiles(

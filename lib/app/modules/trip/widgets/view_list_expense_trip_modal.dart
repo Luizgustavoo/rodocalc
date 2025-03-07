@@ -149,33 +149,86 @@ class ViewListExpenseTripModal extends GetView<TripController> {
                           ),
                         ),
                         ListTile(
-                          leading: (transacao.photos != null &&
-                                  transacao.photos!.isNotEmpty)
-                              ? IconButton(
-                                  icon: const Icon(Icons.image,
-                                      color: Colors.blue),
-                                  onPressed: () {
-                                    _showImageModal(context, transacao.photos!);
-                                  },
-                                )
-                              : null,
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 12.0, horizontal: 16.0),
                           title: Text(
-                              "DESCRIÇÃO: ${transacao.descricao.toString()}"),
+                            "DESCRIÇÃO: ${transacao.descricao.toString()}",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                              color: Colors.black87,
+                            ),
+                          ),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              const SizedBox(height: 4),
                               Text(
-                                  "DATA: ${FormattedInputers.formatApiDateHour(transacao.data!)}"),
-                              transacao.expenseCategory != null
-                                  ? Text(
-                                      "CATEGORIA: ${transacao.expenseCategory?.descricao}")
-                                  : const SizedBox.shrink(),
+                                "DATA: ${FormattedInputers.formatApiDateHour(transacao.data!)}",
+                                style: TextStyle(
+                                    fontSize: 14, color: Colors.grey[600]),
+                              ),
+                              const SizedBox(height: 4),
+                              if (transacao.expenseCategory != null)
+                                Text(
+                                  "CATEGORIA: ${transacao.expenseCategory?.descricao}",
+                                  style: TextStyle(
+                                      fontSize: 14, color: Colors.grey[600]),
+                                ),
+                              const SizedBox(height: 4),
                               Text(
-                                  "VALOR: R\$${FormattedInputers.formatValuePTBR((transacao.valor!).toString())}"),
-                              Text("KM: ${transacao.km} Km"),
+                                "VALOR: R\$${FormattedInputers.formatValuePTBR((transacao.valor!).toString())}",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.green[600],
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                "KM: ${transacao.km} Km",
+                                style: TextStyle(
+                                    fontSize: 14, color: Colors.grey[600]),
+                              ),
+                              const SizedBox(height: 8),
+                              // Exibição das fotos com imagens compactas e scroll horizontal
+                              if (transacao.photos != null &&
+                                  transacao.photos!.isNotEmpty)
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: InkWell(
+                                    onTap: () {
+                                      _showImageModal(
+                                          context, transacao.photos!);
+                                    },
+                                    child: Row(
+                                      children:
+                                          transacao.photos!.map((photoUrl) {
+                                        return Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 8.0),
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            child: Image.network(
+                                              "$urlImagem/storage/fotos/trechopercorrido/transactions/${photoUrl.arquivo}",
+                                              width: 48,
+                                              height: 48,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ),
+                                ),
                             ],
                           ),
-                        ),
+                          tileColor: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        )
                       ],
                     ),
                   );

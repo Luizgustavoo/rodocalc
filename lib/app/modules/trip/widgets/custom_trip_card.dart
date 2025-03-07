@@ -146,7 +146,7 @@ class CustomTripCard extends StatelessWidget {
                   _buildInfoRow("Tempo Gasto", tempoGasto),
                 const Divider(),
                 if (recebimentosFormatados.isNotEmpty)
-                  _buildInfoRow("Entradas", "R\$ $recebimentosFormatados"),
+                  _buildInfoRow("Recebimentos", "R\$ $recebimentosFormatados"),
                 if (despesasFormatadas.isNotEmpty)
                   _buildInfoRow("Despesas", "R\$ $despesasFormatadas"),
                 const Divider(),

@@ -66,11 +66,11 @@ class CreateExpenseTripModal extends GetView<TripController> {
                   items: const [
                     DropdownMenuItem(
                       value: 'entrada',
-                      child: Text('ENTRADA'),
+                      child: Text('RECEBIMENTO'),
                     ),
                     DropdownMenuItem(
                       value: 'saida',
-                      child: Text('SAÍDA'),
+                      child: Text('DESPESA'),
                     ),
                   ],
                   onChanged: (value) {
