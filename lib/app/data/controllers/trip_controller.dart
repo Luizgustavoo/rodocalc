@@ -705,6 +705,31 @@ class TripController extends GetxController {
       final cidadeDestino = destinoPartes[0];
       final ufDestino = destinoPartes[1];
 
+      if (txtDateFinishedController.text.isNotEmpty) {
+        try {
+          final DateFormat format = DateFormat("dd/MM/yyyy HH:mm");
+          final DateTime dataHoraSaida = format.parse(txtDateController.text);
+          final DateTime dataHoraChegada =
+              format.parse(txtDateFinishedController.text);
+
+          if (dataHoraChegada.isBefore(dataHoraSaida)) {
+            isLoadingCRUD(false);
+            return {
+              'success': false,
+              'message': [
+                'A data/hora de chegada deve ser maior que a de saída!'
+              ]
+            };
+          }
+        } catch (e) {
+          isLoadingCRUD(false);
+          return {
+            'success': false,
+            'message': ['Formato de data inválido! Use "dd/MM/yyyy HH:mm".']
+          };
+        }
+      }
+
       mensagem = await repository.insert(Trip(
         userId: ServiceStorage.getUserId(),
         veiculoId: ServiceStorage.idSelectedVehicle(),
@@ -900,6 +925,31 @@ class TripController extends GetxController {
       }
       final cidadeDestino = destinoPartes[0];
       final ufDestino = destinoPartes[1];
+
+      if (txtDateFinishedController.text.isNotEmpty) {
+        try {
+          final DateFormat format = DateFormat("dd/MM/yyyy HH:mm");
+          final DateTime dataHoraSaida = format.parse(txtDateController.text);
+          final DateTime dataHoraChegada =
+              format.parse(txtDateFinishedController.text);
+
+          if (dataHoraChegada.isBefore(dataHoraSaida)) {
+            isLoadingCRUD(false);
+            return {
+              'success': false,
+              'message': [
+                'A data/hora de chegada deve ser maior que a de saída!'
+              ]
+            };
+          }
+        } catch (e) {
+          isLoadingCRUD(false);
+          return {
+            'success': false,
+            'message': ['Formato de data inválido! Use "dd/MM/yyyy HH:mm".']
+          };
+        }
+      }
 
       mensagem = await repository.update(Trip(
         id: id,

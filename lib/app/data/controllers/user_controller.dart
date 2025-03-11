@@ -292,6 +292,25 @@ class UserController extends GetxController {
     return retorno;
   }
 
+  Future<Map<String, dynamic>> deleteVehicleUser(
+      int vehicleId, int userId) async {
+    if (vehicleId > 0 && userId > 0) {
+      mensagem = await repository.deleteVehicleUser(vehicleId, userId);
+      retorno = {
+        'success': mensagem['success'],
+        'message': mensagem['message']
+      };
+      getMyEmployees();
+    } else {
+      retorno = {
+        'success': false,
+        'message': ['Falha ao realizar a operação!']
+      };
+    }
+
+    return retorno;
+  }
+
   void fillInFields(User user) {
     txtNomeController.text = user.people!.nome ?? '';
     FormattedInputers.onContactChanged(

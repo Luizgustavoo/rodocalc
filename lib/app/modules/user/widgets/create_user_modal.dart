@@ -424,7 +424,32 @@ class CreateUserModal extends GetView<UserController> {
                             controller.tituloVeiculosDoMotorista.value,
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           )),
-                      const SizedBox(height: 16),
+                      if (user!.vehicles!.isNotEmpty) ...[
+                        const SizedBox(height: 16),
+                        ...user!.vehicles!.map((vehicle) => ListTile(
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 4),
+                              leading: const Icon(Icons.directions_car,
+                                  color: Colors.blue),
+                              title: Text(
+                                '${vehicle.marca} ${vehicle.modelo}',
+                                style: const TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Text(
+                                'Placa: ${vehicle.placa}',
+                                style: TextStyle(color: Colors.grey[700]),
+                              ),
+                              trailing: IconButton(
+                                icon:
+                                    const Icon(Icons.delete, color: Colors.red),
+                                onPressed: () => {
+                                  _confirmarRemocao(
+                                      context, vehicle.id!, user!.id!)
+                                },
+                              ),
+                            )),
+                      ],
                       const SizedBox(height: 16),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -511,6 +536,46 @@ class CreateUserModal extends GetView<UserController> {
               ),
             ],
           ),
+        );
+      },
+    );
+  }
+
+  void _confirmarRemocao(BuildContext context, int veiculoId, int userId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirmar Exclusão"),
+          content: const Text("Tem certeza que deseja excluir?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(), // Fechar o diálogo
+              child: const Text("Cancelar"),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop();
+                Map<String, dynamic> retorno =
+                    await controller.deleteVehicleUser(veiculoId, userId);
+                if (retorno['success'] == true) {
+                  Get.back();
+                  Get.snackbar('Sucesso!', retorno['message'].join('\n'),
+                      backgroundColor: Colors.green,
+                      colorText: Colors.white,
+                      duration: const Duration(seconds: 2),
+                      snackPosition: SnackPosition.BOTTOM);
+                } else {
+                  Get.snackbar('Falha!', retorno['message'].join('\n'),
+                      backgroundColor: Colors.red,
+                      colorText: Colors.white,
+                      duration: const Duration(seconds: 2),
+                      snackPosition: SnackPosition.BOTTOM);
+                }
+              },
+              child: const Text("Excluir", style: TextStyle(color: Colors.red)),
+            ),
+          ],
         );
       },
     );

@@ -246,6 +246,27 @@ class UserApiClient {
     return null;
   }
 
+  deleteVehicleUser(int vehicleId, int userId) async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+
+      var userUrl =
+          Uri.parse('$baseUrl/v1/usuario/remove-vehicle/$vehicleId/$userId');
+
+      var response = await httpClient.post(
+        userUrl,
+        headers: {
+          "Accept": "application/json",
+          "Authorization": token,
+        },
+      );
+      return json.decode(response.body);
+    } catch (err) {
+      Exception(err);
+    }
+    return null;
+  }
+
   updateFirebaseTokenUser(User user, String tokenFirebase) async {
     try {
       var userUrl =

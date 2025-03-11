@@ -50,6 +50,15 @@ class UserRepository {
     }
   }
 
+  deleteVehicleUser(int vehicleId, int userId) async {
+    try {
+      var response = await apiClient.deleteVehicleUser(vehicleId, userId);
+      return response;
+    } catch (e) {
+      Exception(e);
+    }
+  }
+
   updateFirebaseTokenUser(User user, String firebaseToken) async {
     try {
       var response =
