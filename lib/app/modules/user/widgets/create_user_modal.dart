@@ -424,7 +424,7 @@ class CreateUserModal extends GetView<UserController> {
                             controller.tituloVeiculosDoMotorista.value,
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           )),
-                      if (user!.vehicles!.isNotEmpty) ...[
+                      if (user != null && user!.vehicles != null) ...[
                         const SizedBox(height: 16),
                         ...user!.vehicles!.map((vehicle) => ListTile(
                               contentPadding: const EdgeInsets.symmetric(
