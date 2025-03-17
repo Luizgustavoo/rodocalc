@@ -232,17 +232,17 @@ class TransactionController extends GetxController {
                             color: PdfColors.green,
                             fontWeight: pw.FontWeight.bold)),
                     pw.Text(
-                        'ORIGEM: ${transaction.origem!.toUpperCase() ?? 'N/A'}',
+                        'ORIGEM: ${transaction.origem != null ? transaction.origem!.toUpperCase() : 'N/A'}',
                         style: const pw.TextStyle(
                           color: PdfColors.green,
                         )),
                     pw.Text(
-                        'DESTINO: ${transaction.destino!.toUpperCase() ?? 'N/A'}',
+                        'DESTINO: ${transaction.destino != null ? transaction.destino!.toUpperCase() : 'N/A'}',
                         style: const pw.TextStyle(
                           color: PdfColors.green,
                         )),
                     pw.Text(
-                        'TIPO CARGA: ${transaction.chargeType!.descricao ?? 'N/A'}',
+                        'TIPO CARGA: ${transaction.chargeType != null ? transaction.chargeType!.descricao : 'N/A'}',
                         style: const pw.TextStyle(
                           color: PdfColors.green,
                         )),
@@ -271,12 +271,12 @@ class TransactionController extends GetxController {
                             color: PdfColors.red,
                             fontWeight: pw.FontWeight.bold)),
                     pw.Text(
-                        'CATEGORIA DESPESA: ${transaction.expenseCategory!.descricao ?? 'N/A'}',
+                        'CATEGORIA DESPESA: ${transaction.expenseCategory != null ? transaction.expenseCategory!.descricao : 'N/A'}',
                         style: const pw.TextStyle(
                           color: PdfColors.red,
                         )),
                     pw.Text(
-                        'TIPO ESPECÍFICO: ${transaction.specificTypeExpense!.descricao ?? 'N/A'}',
+                        'TIPO ESPECÍFICO: ${transaction.specificTypeExpense != null ? transaction.specificTypeExpense!.descricao : 'N/A'}',
                         style: const pw.TextStyle(
                           color: PdfColors.red,
                         )),
