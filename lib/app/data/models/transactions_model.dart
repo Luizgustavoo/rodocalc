@@ -22,6 +22,7 @@ class Transacoes {
   String? origem;
   String? destino;
   dynamic quantidadeTonelada;
+  dynamic litros;
   int? tipoCargaId;
   String? tipoTransacao; // 'entrada' ou 'saida'
   String? createdAt;
@@ -54,6 +55,7 @@ class Transacoes {
     this.origem,
     this.destino,
     this.quantidadeTonelada,
+    this.litros,
     this.tipoCargaId,
     this.tipoTransacao,
     this.createdAt,
@@ -86,6 +88,7 @@ class Transacoes {
     origem = json['origem'];
     destino = json['destino'];
     quantidadeTonelada = json['quantidade_tonelada'];
+    litros = json['litros'];
     tipoCargaId = json['tipocarga_id'];
     tipoTransacao = json['tipo_transacao'];
     km = json['km'];
@@ -131,6 +134,7 @@ class Transacoes {
     data['origem'] = origem;
     data['destino'] = destino;
     data['quantidade_tonelada'] = quantidadeTonelada;
+    data['litros'] = litros;
     data['tipocarga_id'] = tipoCargaId;
     data['km'] = km;
     data['origem_transacao'] = origemTransacao;

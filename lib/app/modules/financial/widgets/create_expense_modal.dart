@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -23,6 +24,14 @@ class CreateExpenseModal extends GetView<TransactionController> {
   final int? idTransaction;
 
   final cityController = Get.put(CityStateController());
+
+  bool isAbastecimento() {
+    return controller.expenseCategories.any((category) =>
+        category.id == controller.selectedCategory.value &&
+        RegExp(r'\b(combustível|abastecimento|abastecer|combustivel|abastece|abasteci)\b',
+                caseSensitive: false)
+            .hasMatch(category.descricao!));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -257,6 +266,59 @@ class CreateExpenseModal extends GetView<TransactionController> {
                 ),
               ),
 
+              const SizedBox(height: 15),
+
+              Obx(
+                () => Visibility(
+                  visible: controller.selectedCategory.value != null &&
+                      isAbastecimento(),
+                  child: TextFormField(
+                    controller: controller.txtLitrosController,
+                    keyboardType:
+                        const TextInputType.numberWithOptions(decimal: true),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(
+                          RegExp(r'^\d+([.,]\d*)?$')),
+                    ],
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(Icons.local_gas_station),
+                      labelText: 'LITROS ABASTECIDO',
+                    ),
+                    onChanged: (value) {
+                      // Se já existir um ponto, impede adicionar outro
+                      if (value.contains('.') && value.endsWith('.')) return;
+
+                      // Substitui vírgula por ponto
+                      String newValue = value.replaceAll(',', '.');
+
+                      // Atualiza o controlador sem apagar o campo
+                      controller.txtLitrosController.value = TextEditingValue(
+                        text: newValue,
+                        selection:
+                            TextSelection.collapsed(offset: newValue.length),
+                      );
+                    },
+                    validator: (value) {
+                      if (isAbastecimento()) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor, informe o litro abastecido';
+                        }
+
+                        // Converte para número e valida
+                        final numValue =
+                            double.tryParse(value.replaceAll(',', '.'));
+                        if (numValue == null) {
+                          return 'Digite um número válido';
+                        }
+                        if (numValue <= 0) {
+                          return 'O valor deve ser maior que zero';
+                        }
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+              ),
               const SizedBox(height: 15),
 
               Obx(

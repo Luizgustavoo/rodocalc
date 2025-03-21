@@ -260,6 +260,11 @@ class TransactionApiClient {
         requestBody["quantidade_tonelada"] =
             transacoes.quantidadeTonelada.toString();
       }
+
+      if (transacoes.litros != null) {
+        requestBody["litros"] = transacoes.litros.toString();
+      }
+
       if (transacoes.tipoCargaId != null &&
           transacoes.tipoTransacao == 'entrada') {
         requestBody["tipocarga_id"] = transacoes.tipoCargaId.toString();
@@ -542,6 +547,11 @@ class TransactionApiClient {
         requestBody["quantidade_tonelada"] =
             transacoes.quantidadeTonelada.toString();
       }
+
+      if (transacoes.litros != null) {
+        requestBody["litros"] = transacoes.litros.toString();
+      }
+
       if (transacoes.tipoCargaId != null &&
           transacoes.tipoTransacao == 'entrada') {
         requestBody["tipocarga_id"] = transacoes.tipoCargaId.toString();

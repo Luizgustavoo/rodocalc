@@ -40,6 +40,7 @@ class TransactionController extends GetxController {
   final txtDescriptionExpenseCategoryController = TextEditingController();
   final txtCityController = TextEditingController();
   final txtCompanyController = TextEditingController();
+  final txtLitrosController = TextEditingController();
   final txtDDDController = TextEditingController();
   final txtPhoneController = TextEditingController();
 
@@ -860,9 +861,11 @@ class TransactionController extends GetxController {
         transaction.telefone = txtPhoneController.text;
         transaction.empresa = txtCompanyController.text;
         transaction.km = txtKmController.text;
+        transaction.litros = txtLitrosController.text;
       } else if (typeTransaction == "entrada") {
         transaction.quantidadeTonelada =
             FormattedInputers.convertToDouble(txtTonController.text);
+
         transaction.origem = txtOriginController.text;
         transaction.destino = txtDestinyController.text;
         transaction.tipoCargaId = selectedCargoType.value;
@@ -931,6 +934,7 @@ class TransactionController extends GetxController {
             destino: txtDestinyController.text,
             quantidadeTonelada:
                 FormattedInputers.convertToDouble(txtTonController.text),
+            litros: txtLitrosController.text,
             tipoCargaId: selectedCargoType.value,
             tipoTransacao: typeTransaction,
             km: txtKmController.text,
@@ -1065,6 +1069,9 @@ class TransactionController extends GetxController {
         ? selected.quantidadeTonelada.toString()
         : "";
 
+    txtLitrosController.text =
+        selected.litros != null ? selected.litros.toString() : "";
+
     if (selected.tipoTransacao == 'saida') {
       selectedCategory.value = selected.categoriaDespesaId!;
       selectedSpecificType.value = selected.tipoEspecificoDespesaId;
@@ -1093,6 +1100,7 @@ class TransactionController extends GetxController {
       txtOriginController,
       txtDestinyController,
       txtTonController,
+      txtLitrosController,
       startDateController,
       endDateController,
       txtDescriptionFilterController,
