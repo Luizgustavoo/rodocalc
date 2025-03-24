@@ -29,6 +29,8 @@ class TripController extends GetxController {
   RxBool isLoadingData = true.obs;
   RxBool isLoadingInsertPhotos = false.obs;
 
+  final txtLitrosController = TextEditingController();
+
   var selectedCategory = Rxn<int>();
 
   final tripFormKey = GlobalKey<FormState>();
@@ -548,6 +550,7 @@ class TripController extends GetxController {
     if (transacao.tipoTransacao == 'saida') {
       tipoLancamento.value = 'saida';
       selectedCategory.value = transacao.categoriaDespesaId;
+      txtLitrosController.text = transacao.litros;
     }
 
     txtDescriptionExpenseTripController.text = transacao.descricao.toString();
@@ -607,6 +610,7 @@ class TripController extends GetxController {
       distanceController,
       averageController,
       priceDieselController,
+      txtLitrosController,
       totalTiresController,
       priceTiresController,
       priceTollsController,
@@ -655,6 +659,7 @@ class TripController extends GetxController {
       txtDateExpenseTripController,
       txtTipoLancamentoTripController,
       txtDescriptionExpenseTripController,
+      txtLitrosController,
     ];
     for (final controller in textControllers) {
       controller.clear();
@@ -781,6 +786,8 @@ class TripController extends GetxController {
         ? "entrada"
         : txtTipoLancamentoTripController.text;
 
+    transaction.litros = txtLitrosController.text;
+
     transaction.km = txtKmController.text;
     transaction.origemTransacao = "TRECHO";
     transaction.trechoId = trechoPercorridoId;
@@ -836,6 +843,8 @@ class TripController extends GetxController {
     transaction.tipoTransacao = txtTipoLancamentoTripController.text.isEmpty
         ? "entrada"
         : txtTipoLancamentoTripController.text;
+
+    transaction.litros = txtLitrosController.text;
 
     transaction.km = txtKmController.text;
     transaction.origemTransacao = "TRECHO";

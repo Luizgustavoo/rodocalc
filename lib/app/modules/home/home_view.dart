@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/controllers/city_state_controller.dart';
 import 'package:rodocalc/app/data/controllers/classified_controller.dart';
@@ -54,6 +55,11 @@ class HomeView extends GetView<HomeController> {
         builder: (BuildContext context, BoxConstraints constraints) {
           double screenHeight = constraints.maxHeight;
           double topPosition = screenHeight * 0.56;
+
+          String formatarData(DateTime data) {
+            final formatador = DateFormat('dd/MM/yyyy');
+            return formatador.format(data);
+          }
 
           return Stack(
             children: [
@@ -285,6 +291,123 @@ class HomeView extends GetView<HomeController> {
                                           : NetworkImage(
                                               "$urlImagem/storage/fotos/veiculos/${ServiceStorage.photoSelectedVehicle()}",
                                             ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    IconButton(
+                                      onPressed: () async {
+                                        await controller.getAbastecimentos();
+                                        showModalBottomSheet(
+                                          context: context,
+                                          isScrollControlled: true,
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.vertical(
+                                                top: Radius.circular(20)),
+                                          ),
+                                          builder: (context) {
+                                            return Obx(() {
+                                              final abastecimentos = controller
+                                                  .listAbastecimentos.value;
+
+                                              final mediaConsumoTotal = controller
+                                                  .mediaConsumo
+                                                  .value; // Supondo que você tenha esse valor no controller
+                                              final somaKmPercorridos =
+                                                  controller
+                                                      .totalKmPercorrido.value;
+
+                                              return Container(
+                                                padding:
+                                                    const EdgeInsets.all(16),
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.6,
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    const Text(
+                                                      "Histórico de Abastecimentos",
+                                                      style: TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      "Média Consumo: ${mediaConsumoTotal.toStringAsFixed(1)} km/l",
+                                                      style: const TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      "Total Percorrido: $somaKmPercorridos km",
+                                                      style: const TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(height: 10),
+                                                    Expanded(
+                                                      child: abastecimentos
+                                                              .isEmpty
+                                                          ? const Center(
+                                                              child: Text(
+                                                                  "Nenhum abastecimento encontrado."))
+                                                          : SingleChildScrollView(
+                                                              child: Column(
+                                                                children:
+                                                                    abastecimentos
+                                                                        .map(
+                                                                            (abastecimento) {
+                                                                  return Card(
+                                                                    margin: const EdgeInsets
+                                                                        .symmetric(
+                                                                        vertical:
+                                                                            8),
+                                                                    child:
+                                                                        ListTile(
+                                                                      title:
+                                                                          Text(
+                                                                        "Data: ${formatarData(abastecimento.dataAbastecimento).toString()}",
+                                                                        style: const TextStyle(
+                                                                            fontWeight:
+                                                                                FontWeight.bold),
+                                                                      ),
+                                                                      subtitle:
+                                                                          Column(
+                                                                        crossAxisAlignment:
+                                                                            CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          Text(
+                                                                              "KM Anterior: ${abastecimento.kmAnterior}"),
+                                                                          Text(
+                                                                              "KM Atual: ${abastecimento.kmAtual}"),
+                                                                          Text(
+                                                                              "KM Percorrido: ${abastecimento.kmPercorrido}"),
+                                                                          Text(
+                                                                              "Litros: ${abastecimento.litros}"),
+                                                                          Text(
+                                                                              "Consumo: ${abastecimento.consumo.toStringAsFixed(2)} km/l"),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  );
+                                                                }).toList(),
+                                                              ),
+                                                            ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            });
+                                          },
+                                        );
+                                      },
+                                      icon: const Icon(Icons.local_gas_station),
                                     ),
                                     const SizedBox(width: 10),
                                     Expanded(

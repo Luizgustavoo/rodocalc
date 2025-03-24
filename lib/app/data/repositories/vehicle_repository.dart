@@ -1,3 +1,4 @@
+import 'package:rodocalc/app/data/models/abastecimentos_model.dart';
 import 'package:rodocalc/app/data/models/vehicle_model.dart';
 import 'package:rodocalc/app/data/providers/vehicle_provider.dart';
 
@@ -34,6 +35,37 @@ class VehicleRepository {
       return null;
     }
     return list;
+  }
+
+  getAbastecimentos() async {
+    List<Abastecimento> list = <Abastecimento>[];
+
+    try {
+      var response = await apiClient.getAbastecimentos();
+
+      if (response != null) {
+        // Adicionando os valores de média e soma na resposta
+        // Garantindo que os valores sejam do tipo double
+        double mediaConsumoTotal =
+            (response['data']['media_consumo_total'] ?? 0.0).toDouble();
+        double somaKmPercorridos =
+            (response['data']['soma_km_percorridos'] ?? 0.0).toDouble();
+
+        response['data']['abastecimentos'].forEach((e) {
+          list.add(Abastecimento.fromMap({
+            ...e,
+            'media_consumo_total': mediaConsumoTotal,
+            'soma_km_percorridos': somaKmPercorridos,
+          }));
+        });
+        return list;
+      }
+    } catch (e) {
+      print(e);
+      return null;
+    }
+
+    return null;
   }
 
   getQuantityLicences() async {

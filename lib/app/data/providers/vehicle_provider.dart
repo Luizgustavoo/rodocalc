@@ -36,6 +36,32 @@ class VehicleApiClient {
     return null;
   }
 
+  getAbastecimentos() async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+
+      Uri vehicleUrl;
+      String url =
+          '$baseUrl/v1/veiculo/abastecimentos/${ServiceStorage.idSelectedVehicle().toString()}';
+      vehicleUrl = Uri.parse(url);
+      var response = await httpClient.get(
+        vehicleUrl,
+        headers: {
+          "Accept": "application/json",
+          "Authorization": token,
+        },
+      );
+      if (response.statusCode == 201) {
+        return json.decode(response.body);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      Exception(e);
+    }
+    return null;
+  }
+
   getQuantityLicences() async {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
