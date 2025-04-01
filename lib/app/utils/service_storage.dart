@@ -208,7 +208,7 @@ class ServiceStorage {
     String motorista = "Sem motorista";
     Vehicle v = getVehicleStorage();
     if (!v.isEmpty()) {
-      motorista = v.motorista!;
+      motorista = v.motorista ?? "Sem motorista";
     }
     return motorista;
   }
