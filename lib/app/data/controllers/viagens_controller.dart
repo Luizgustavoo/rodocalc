@@ -7,20 +7,19 @@ class ViagensController extends GetxController {
   RxList<Viagens> listViagens = RxList<Viagens>([]);
   RxList<Viagens> filteredViagens = RxList<Viagens>([]);
 
-  RxBool isLoading = true.obs;
-  RxBool isLoadingPDF = false.obs;
-  RxBool isLoadingCRUD = false.obs;
-  RxBool isLoadingData = true.obs;
-  RxBool isLoadingInsertPhotos = false.obs;
+  RxBool isLoadingViagens = true.obs;
+  RxBool isLoadingCRUDViagens = false.obs;
+  RxBool isLoadingDataViagens = true.obs;
+  RxBool isLoadingInsertPhotosViagens = false.obs;
 
   final viagensFormKey = GlobalKey<FormState>();
 
-  final tituloController = TextEditingController();
-  final situacaoController = TextEditingController();
+  final tituloViagensController = TextEditingController();
+  final situacaoViagensController = TextEditingController();
   final numeroViagemController = TextEditingController();
   final searchViagensController = TextEditingController();
 
-  var situacao = 'OPENED'.obs;
+  var situacaoViagens = 'OPENED'.obs;
 
   Map<String, dynamic> retorno = {
     "success": false,
@@ -30,34 +29,34 @@ class ViagensController extends GetxController {
 
   dynamic mensagem;
 
-  final repository = Get.put(ViagensRepository());
+  final repositoryViagens = Get.put(ViagensRepository());
 
   Future<void> getAllViagens() async {
-    isLoading.value = true;
+    isLoadingViagens.value = true;
     try {
       searchViagensController.clear();
-      listViagens.value = await repository.getAll();
+      listViagens.value = await repositoryViagens.getAll();
       filteredViagens.assignAll(listViagens);
     } catch (e) {
       listViagens.clear();
       filteredViagens.clear();
       Exception(e);
     }
-    isLoading.value = false;
+    isLoadingViagens.value = false;
   }
 
   var searchFilter = ''.obs;
 
   void fillInFieldsViagens(Viagens viagem) {
-    tituloController.text = viagem.titulo ?? '';
-    situacaoController.text = viagem.situacao ?? '';
+    tituloViagensController.text = viagem.titulo ?? '';
+    situacaoViagensController.text = viagem.situacao ?? '';
     numeroViagemController.text = viagem.numeroViagem ?? '';
   }
 
   void clearAllFieldsViagens() {
     final textControllers = [
-      tituloController,
-      situacaoController,
+      tituloViagensController,
+      situacaoViagensController,
       numeroViagemController
     ];
 
@@ -67,12 +66,12 @@ class ViagensController extends GetxController {
   }
 
   Future<Map<String, dynamic>> updateViagens(int id) async {
-    isLoadingCRUD(false);
+    isLoadingCRUDViagens(false);
     if (viagensFormKey.currentState!.validate()) {
-      mensagem = await repository.update(Viagens(
+      mensagem = await repositoryViagens.update(Viagens(
           id: id,
-          situacao: situacao.value,
-          titulo: tituloController.text,
+          situacao: situacaoViagens.value,
+          titulo: tituloViagensController.text,
           numeroViagem: numeroViagemController.text));
 
       if (mensagem != null) {
@@ -88,14 +87,14 @@ class ViagensController extends GetxController {
         };
       }
     }
-    isLoadingCRUD(false);
+    isLoadingCRUDViagens(false);
     return retorno;
   }
 
   Future<Map<String, dynamic>> deleteViagens(int id) async {
-    isLoadingCRUD(false);
+    isLoadingCRUDViagens(false);
     if (id > 0) {
-      mensagem = await repository.delete(Viagens(id: id));
+      mensagem = await repositoryViagens.delete(Viagens(id: id));
       retorno = {
         'success': mensagem['success'],
         'message': mensagem['message']
@@ -107,14 +106,14 @@ class ViagensController extends GetxController {
         'message': ['Falha ao realizar a operação!']
       };
     }
-    isLoadingCRUD(false);
+    isLoadingCRUDViagens(false);
     return retorno;
   }
 
   Future<Map<String, dynamic>> closeViagens(int id) async {
-    isLoadingCRUD(false);
+    isLoadingCRUDViagens(false);
     if (id > 0) {
-      mensagem = await repository.close(Viagens(id: id));
+      mensagem = await repositoryViagens.close(Viagens(id: id));
       retorno = {
         'success': mensagem['success'],
         'message': mensagem['message']
@@ -126,15 +125,15 @@ class ViagensController extends GetxController {
         'message': ['Falha ao realizar a operação!']
       };
     }
-    isLoadingCRUD(false);
+    isLoadingCRUDViagens(false);
     return retorno;
   }
 
   Future<Map<String, dynamic>> insertViagens() async {
     if (viagensFormKey.currentState!.validate()) {
-      mensagem = await repository.insert(Viagens(
-          situacao: situacao.value,
-          titulo: tituloController.text,
+      mensagem = await repositoryViagens.insert(Viagens(
+          situacao: situacaoViagens.value,
+          titulo: tituloViagensController.text,
           numeroViagem: numeroViagemController.text));
       if (mensagem != null) {
         retorno = {

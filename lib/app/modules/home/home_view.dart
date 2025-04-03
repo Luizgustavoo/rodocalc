@@ -585,7 +585,7 @@ class HomeView extends GetView<HomeController> {
                                         if (verifyPlan['exists_plan'] &&
                                             ServiceStorage.isRotaPermitida(
                                                 "trip")) {
-                                          tripController.getAll();
+                                          tripController.getAllViagens();
                                           tripController.clearAllFields();
                                           Get.toNamed(Routes.trip);
                                         } else {

@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:rodocalc/app/data/controllers/transaction_controller.dart';
 import 'package:rodocalc/app/data/models/charge_type_model.dart';
 import 'package:rodocalc/app/data/models/expense_category_model.dart';
-import 'package:rodocalc/app/data/models/expense_trip_model.dart';
 import 'package:rodocalc/app/data/models/specific_type_expense_model.dart';
 import 'package:rodocalc/app/data/models/transaction_photos_model.dart';
 import 'package:rodocalc/app/data/models/transactions_model.dart';
 import 'package:rodocalc/app/data/models/trip_model.dart';
 import 'package:rodocalc/app/data/models/trip_photos.dart';
+import 'package:rodocalc/app/data/models/viagens_model.dart';
 import 'package:rodocalc/app/data/repositories/transaction_repository.dart';
 import 'package:rodocalc/app/data/repositories/trip_repository.dart';
+import 'package:rodocalc/app/data/repositories/viagens_repository.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 
@@ -169,6 +169,27 @@ class TripController extends GetxController {
     'SP': 'sao paulo',
     'TO': 'tocantins'
   };
+
+  //viagens
+  RxList<Viagens> listViagens = RxList<Viagens>([]);
+  RxList<Viagens> filteredViagens = RxList<Viagens>([]);
+
+  RxBool isLoadingViagens = true.obs;
+  RxBool isLoadingCRUDViagens = false.obs;
+  RxBool isLoadingDataViagens = true.obs;
+  RxBool isLoadingInsertPhotosViagens = false.obs;
+
+  final viagensFormKey = GlobalKey<FormState>();
+
+  final tituloViagensController = TextEditingController();
+  final situacaoViagensController = TextEditingController();
+  final numeroViagemController = TextEditingController();
+  final searchViagensController = TextEditingController();
+
+  var situacaoViagens = 'OPENED'.obs;
+
+  final repositoryViagens = Get.put(ViagensRepository());
+  //fim viagens
 
   pickImage(ImageSource source) async {
     if (source == ImageSource.gallery) {
@@ -1230,5 +1251,124 @@ class TripController extends GetxController {
       isLoadingPDF.value = false;
       return null;
     }
+  }
+
+  //metodos de viagens
+  Future<void> getAllViagens() async {
+    isLoadingViagens.value = true;
+    try {
+      searchViagensController.clear();
+      listViagens.value = await repositoryViagens.getAll();
+      filteredViagens.assignAll(listViagens);
+    } catch (e) {
+      listViagens.clear();
+      filteredViagens.clear();
+      Exception(e);
+    }
+    isLoadingViagens.value = false;
+  }
+
+  void fillInFieldsViagens(Viagens viagem) {
+    tituloViagensController.text = viagem.titulo ?? '';
+    situacaoViagensController.text = viagem.situacao ?? '';
+    numeroViagemController.text = viagem.numeroViagem ?? '';
+  }
+
+  void clearAllFieldsViagens() {
+    final textControllers = [
+      tituloViagensController,
+      situacaoViagensController,
+      numeroViagemController
+    ];
+
+    for (final controller in textControllers) {
+      controller.clear();
+    }
+  }
+
+  Future<Map<String, dynamic>> updateViagens(int id) async {
+    isLoadingCRUDViagens(false);
+    if (viagensFormKey.currentState!.validate()) {
+      mensagem = await repositoryViagens.update(Viagens(
+          id: id,
+          situacao: situacaoViagens.value,
+          titulo: tituloViagensController.text,
+          numeroViagem: numeroViagemController.text));
+
+      if (mensagem != null) {
+        retorno = {
+          'success': mensagem['success'],
+          'message': mensagem['message']
+        };
+        getAllViagens();
+      } else {
+        retorno = {
+          'success': false,
+          'message': ['Falha ao realizar a operação!']
+        };
+      }
+    }
+    isLoadingCRUDViagens(false);
+    return retorno;
+  }
+
+  Future<Map<String, dynamic>> deleteViagens(int id) async {
+    isLoadingCRUDViagens(false);
+    if (id > 0) {
+      mensagem = await repositoryViagens.delete(Viagens(id: id));
+      retorno = {
+        'success': mensagem['success'],
+        'message': mensagem['message']
+      };
+      getAllViagens();
+    } else {
+      retorno = {
+        'success': false,
+        'message': ['Falha ao realizar a operação!']
+      };
+    }
+    isLoadingCRUDViagens(false);
+    return retorno;
+  }
+
+  Future<Map<String, dynamic>> closeViagens(int id) async {
+    isLoadingCRUDViagens(false);
+    if (id > 0) {
+      mensagem = await repositoryViagens.close(Viagens(id: id));
+      retorno = {
+        'success': mensagem['success'],
+        'message': mensagem['message']
+      };
+      getAllViagens();
+    } else {
+      retorno = {
+        'success': false,
+        'message': ['Falha ao realizar a operação!']
+      };
+    }
+    isLoadingCRUDViagens(false);
+    return retorno;
+  }
+
+  Future<Map<String, dynamic>> insertViagens() async {
+    if (viagensFormKey.currentState!.validate()) {
+      mensagem = await repositoryViagens.insert(Viagens(
+          situacao: situacaoViagens.value,
+          titulo: tituloViagensController.text,
+          numeroViagem: numeroViagemController.text));
+      if (mensagem != null) {
+        retorno = {
+          'success': mensagem['success'],
+          'message': mensagem['message']
+        };
+        getAllViagens();
+      } else {
+        retorno = {
+          'success': false,
+          'message': ['Falha ao realizar a operação!']
+        };
+      }
+    }
+    return retorno;
   }
 }

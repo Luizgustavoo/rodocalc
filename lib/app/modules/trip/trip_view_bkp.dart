@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
@@ -7,18 +8,16 @@ import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/controllers/trip_controller.dart';
 import 'package:rodocalc/app/data/models/trip_model.dart';
-import 'package:rodocalc/app/data/models/viagens_model.dart';
 import 'package:rodocalc/app/modules/trip/widgets/create_travel_modal.dart';
 import 'package:rodocalc/app/modules/trip/widgets/create_trip_modal.dart';
-import 'package:rodocalc/app/modules/trip/widgets/custom_travel_card.dart';
 import 'package:rodocalc/app/modules/trip/widgets/custom_trip_card.dart';
 import 'package:rodocalc/app/modules/trip/widgets/view_list_expense_trip_modal.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 import 'package:share_plus/share_plus.dart';
 
-class TripView extends GetView<TripController> {
-  const TripView({super.key});
+class TripViewBKP extends GetView<TripController> {
+  const TripViewBKP({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -246,8 +245,8 @@ class TripView extends GetView<TripController> {
                                               .text.isNotEmpty) ||
                                       controller.searchTripController.text
                                           .isNotEmpty) {
-                                    // controller.getTripsWithFilter();
-                                    // controller.clearSearchFilter();
+                                    controller.getTripsWithFilter();
+                                    controller.clearSearchFilter();
                                   } else {
                                     controller.getAll();
                                     Get.snackbar(
@@ -278,8 +277,8 @@ class TripView extends GetView<TripController> {
                                 CircularProgressIndicator(),
                               ],
                             );
-                          } else if (!controller.isLoadingViagens.value &&
-                              controller.listViagens.isNotEmpty) {
+                          } else if (!controller.isLoading.value &&
+                              controller.listTrip.isNotEmpty) {
                             return Expanded(
                               child: ListView.builder(
                                 padding: EdgeInsets.only(
@@ -287,31 +286,79 @@ class TripView extends GetView<TripController> {
                                         .30),
                                 shrinkWrap: true,
                                 physics: const AlwaysScrollableScrollPhysics(),
-                                itemCount: controller.filteredViagens.length,
+                                itemCount: controller.filteredTrips.length,
                                 itemBuilder: (context, index) {
-                                  Viagens travel =
-                                      controller.filteredViagens[index];
-                                  return CustomTravelCard(
-                                    travel: travel,
+                                  Trip trip = controller.filteredTrips[index];
+                                  return CustomTripCard(
+                                    trip: trip,
                                     functionRemove: () {
-                                      // controller.isDialogOpen.value = false;
-                                      // showDialog(context, travel, controller);
+                                      controller.isDialogOpen.value = false;
+                                      showDialog(context, trip, controller);
                                     },
-                                    functionClose: () {
-                                      if (travel.situacao == 'OPENED') {
-                                        controller.isDialogOpen.value = false;
-                                        showDialogClose(
-                                            context, travel, controller);
+                                    functionPhoto: () async {
+                                      controller.selectedImagesPaths.value = [];
+                                      controller.txtFileDescriptionController
+                                          .clear();
+
+                                      //_showPicker(context, controller, trip);
+                                      FilePickerResult? result =
+                                          await FilePicker.platform.pickFiles(
+                                        type: FileType.custom,
+                                        allowedExtensions: [
+                                          'pdf',
+                                          'jpg',
+                                          'png',
+                                          'jpeg'
+                                        ],
+                                      );
+                                      if (result != null) {
+                                        controller.selectedImagesPaths
+                                            .add(result.files.single.path!);
                                       }
+
+                                      _showImagePreviewModal(
+                                          controller, trip.id!);
                                     },
-                                    functionEdit: () {
-                                      controller.fillInFieldsViagens(travel);
+                                    functionExpense: () {
                                       showModalBottomSheet(
                                         isScrollControlled: true,
                                         context: context,
-                                        builder: (context) => CreateTravelModal(
+                                        builder: (context) =>
+                                            ViewListExpenseTripModal(
+                                          trip: trip,
+                                        ),
+                                      );
+                                    },
+                                    functionClose: () {
+                                      if (trip.dataHoraChegada == null ||
+                                          trip.kmFinal == null ||
+                                          trip.dataHoraChegada
+                                              .toString()
+                                              .isEmpty ||
+                                          trip.kmFinal!.isEmpty) {
+                                        Get.snackbar(
+                                          'Falha!',
+                                          'Preencha uma data/hora de chegada e o km final do veículo.',
+                                          backgroundColor: Colors.orangeAccent,
+                                          colorText: Colors.black,
+                                          duration: const Duration(seconds: 3),
+                                          snackPosition: SnackPosition.BOTTOM,
+                                        );
+                                      } else {
+                                        controller.isDialogOpen.value = false;
+                                        showDialogClose(
+                                            context, trip, controller);
+                                      }
+                                    },
+                                    functionEdit: () {
+                                      controller.getMyChargeTypes();
+                                      controller.fillInFields(trip);
+                                      showModalBottomSheet(
+                                        isScrollControlled: true,
+                                        context: context,
+                                        builder: (context) => CreateTripModal(
                                           isUpdate: true,
-                                          travel: travel,
+                                          trip: trip,
                                         ),
                                       );
                                     },
@@ -405,6 +452,7 @@ class TripView extends GetView<TripController> {
                   //   context: context,
                   //   builder: (context) => CreateTripModal(isUpdate: false),
 
+                  controller.clearAllFieldsViagens();
                   showModalBottomSheet(
                     isScrollControlled: false,
                     context: context,
@@ -479,17 +527,17 @@ void showDialog(context, Trip trip, TripController controller) {
   );
 }
 
-void showDialogClose(context, Viagens travel, TripController controller) {
+void showDialogClose(context, Trip trip, TripController controller) {
   if (controller.isDialogOpen.value) return;
 
   controller.isDialogOpen.value = true;
   Get.defaultDialog(
     titlePadding: const EdgeInsets.all(16),
     contentPadding: const EdgeInsets.all(16),
-    title: "FINALIZAR VIAGEM",
+    title: "FINALIZAR TRECHO",
     content: const Text(
       textAlign: TextAlign.center,
-      "Tem certeza que deseja fechar a viagem selecionada? ESSA AÇÃO NÃO PODERÁ SER DESFEITA.",
+      "Tem certeza que deseja fechar o trecho selecionado? ESSA AÇÃO NÃO PODERÁ SER DESFEITA.",
       style: TextStyle(
         fontFamily: 'Poppins',
         fontSize: 18,
@@ -500,8 +548,7 @@ void showDialogClose(context, Viagens travel, TripController controller) {
         onPressed: () async {
           Get.back(); // Fecha o diálogo atual primeiro
           await Future.delayed(const Duration(milliseconds: 500));
-          Map<String, dynamic> retorno =
-              await controller.closeViagens(travel.id!);
+          Map<String, dynamic> retorno = await controller.closeTrip(trip.id!);
 
           if (retorno['success'] == true) {
             Get.snackbar('Sucesso!', retorno['message'].join('\n'),

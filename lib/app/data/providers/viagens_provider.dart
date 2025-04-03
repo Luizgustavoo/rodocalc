@@ -31,6 +31,8 @@ class ViagensApiClient {
         },
       );
 
+      print(response.body);
+
       if (response.statusCode == 200 || response.statusCode == 201) {
         return json.decode(response.body);
       } else {
