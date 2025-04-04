@@ -6,18 +6,22 @@ import 'package:rodocalc/app/data/controllers/city_state_controller.dart';
 import 'package:rodocalc/app/data/controllers/trip_controller.dart';
 import 'package:rodocalc/app/data/models/charge_type_model.dart';
 import 'package:rodocalc/app/data/models/trip_model.dart';
+import 'package:rodocalc/app/data/models/viagens_model.dart';
 import 'package:rodocalc/app/utils/custom_elevated_button.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/services.dart';
 import 'package:searchfield/searchfield.dart';
 
 class CreateTripModal extends GetView<TripController> {
-  CreateTripModal({super.key, required this.isUpdate, this.trip});
+  CreateTripModal(
+      {super.key, required this.isUpdate, this.trip, required this.travel});
 
   final cityController = Get.put(CityStateController());
 
   final bool isUpdate;
   final Trip? trip;
+
+  final Viagens travel;
 
   @override
   Widget build(BuildContext context) {
@@ -361,9 +365,10 @@ class CreateTripModal extends GetView<TripController> {
                                     if (controller.tripFormKey.currentState!
                                         .validate()) {
                                       Map<String, dynamic> retorno = isUpdate
-                                          ? await controller
-                                              .updateTrip(trip!.id!)
-                                          : await controller.insertTrip();
+                                          ? await controller.updateTrip(
+                                              trip!.id!, travel.id!)
+                                          : await controller
+                                              .insertTrip(travel.id!);
 
                                       if (retorno['success'] == true) {
                                         Get.back();

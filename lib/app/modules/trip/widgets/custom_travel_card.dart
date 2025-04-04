@@ -17,6 +17,7 @@ class CustomTravelCard extends StatelessWidget {
   final VoidCallback functionEdit;
   final VoidCallback functionRemove;
   final VoidCallback functionClose;
+  final VoidCallback functionAddTrip;
 
   const CustomTravelCard({
     super.key,
@@ -24,6 +25,7 @@ class CustomTravelCard extends StatelessWidget {
     required this.functionEdit,
     required this.functionRemove,
     required this.functionClose,
+    required this.functionAddTrip,
   });
 
   @override
@@ -56,6 +58,12 @@ class CustomTravelCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    closedTravel
+                        ? const SizedBox.shrink()
+                        : IconButton(
+                            onPressed: functionAddTrip,
+                            icon: const Icon(Icons.add, color: Colors.green),
+                          ),
                     closedTravel
                         ? const SizedBox.shrink()
                         : IconButton(

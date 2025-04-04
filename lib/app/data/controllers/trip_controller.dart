@@ -691,7 +691,7 @@ class TripController extends GetxController {
         offset: txtAmountExpenseTripController.text.length);
   }
 
-  Future<Map<String, dynamic>> insertTrip() async {
+  Future<Map<String, dynamic>> insertTrip(int travelId) async {
     isLoadingCRUD(true);
     if (tripFormKey.currentState!.validate()) {
       // Define a expressão regular para validar o formato "Cidade-UF"
@@ -773,6 +773,7 @@ class TripController extends GetxController {
         numeroViagem: tripNumberController.text,
         quantidadeTonelada: txtToneladasTrechoController.text,
         tipoCargaId: selectedCargoType.value,
+        viagemId: travelId,
       ));
 
       if (mensagem != null) {
@@ -916,7 +917,7 @@ class TripController extends GetxController {
     return retorno;
   }
 
-  Future<Map<String, dynamic>> updateTrip(int id) async {
+  Future<Map<String, dynamic>> updateTrip(int id, int travelId) async {
     isLoadingCRUD(false);
     if (tripFormKey.currentState!.validate()) {
       // Define a expressão regular para validar o formato "Cidade-UF"
@@ -999,6 +1000,7 @@ class TripController extends GetxController {
         numeroViagem: tripNumberController.text,
         quantidadeTonelada: txtToneladasTrechoController.text,
         tipoCargaId: selectedCargoType.value,
+        viagemId: travelId,
       ));
 
       if (mensagem != null) {

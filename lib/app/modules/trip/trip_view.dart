@@ -5,6 +5,7 @@ import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/base_url.dart';
+import 'package:rodocalc/app/data/controllers/city_state_controller.dart';
 import 'package:rodocalc/app/data/controllers/trip_controller.dart';
 import 'package:rodocalc/app/data/models/trip_model.dart';
 import 'package:rodocalc/app/data/models/viagens_model.dart';
@@ -270,7 +271,7 @@ class TripView extends GetView<TripController> {
                             : const SizedBox.shrink()),
                         const SizedBox(height: 16),
                         Obx(() {
-                          if (controller.isLoading.value) {
+                          if (controller.isLoadingViagens.value) {
                             return const Column(
                               children: [
                                 Text('Carregando...'),
@@ -293,6 +294,22 @@ class TripView extends GetView<TripController> {
                                       controller.filteredViagens[index];
                                   return CustomTravelCard(
                                     travel: travel,
+                                    functionAddTrip: () {
+                                      final cityController =
+                                          Get.put(CityStateController());
+                                      cityController.getCities();
+
+                                      controller.clearAllFields();
+                                      controller.getMyChargeTypes();
+                                      showModalBottomSheet(
+                                        isScrollControlled: true,
+                                        context: context,
+                                        builder: (context) => CreateTripModal(
+                                          isUpdate: false,
+                                          travel: travel,
+                                        ),
+                                      );
+                                    },
                                     functionRemove: () {
                                       // controller.isDialogOpen.value = false;
                                       // showDialog(context, travel, controller);
@@ -395,16 +412,6 @@ class TripView extends GetView<TripController> {
                       duration: const Duration(seconds: 2),
                       snackPosition: SnackPosition.BOTTOM);
                 } else {
-                  // final cityController = Get.put(CityStateController());
-                  // cityController.getCities();
-
-                  // controller.clearAllFields();
-                  // controller.getMyChargeTypes();
-                  // showModalBottomSheet(
-                  //   isScrollControlled: true,
-                  //   context: context,
-                  //   builder: (context) => CreateTripModal(isUpdate: false),
-
                   showModalBottomSheet(
                     isScrollControlled: false,
                     context: context,
