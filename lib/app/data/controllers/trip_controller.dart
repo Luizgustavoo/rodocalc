@@ -519,22 +519,22 @@ class TripController extends GetxController {
       searchFilter.value = "Sem filtros aplicados";
     }
 
-    isLoading.value = true;
+    isLoadingViagens.value = true;
     try {
       // Obtém a lista de viagens filtrada com base nos parâmetros
-      listTrip.value = await repository.getTripsWithFilter(
+      listViagens.value = await repository.getTripsWithFilter(
         dataInicial: dataInicial,
         dataFinal: dataFinal,
         search: search,
       );
 
-      filteredTrips.assignAll(listTrip);
+      filteredViagens.assignAll(listViagens);
     } catch (e) {
-      listTrip.clear();
-      filteredTrips.clear();
+      listViagens.clear();
+      filteredViagens.clear();
       Exception(e);
     }
-    isLoading.value = false;
+    isLoadingViagens.value = false;
   }
 
   void filterTrips(String query) {
@@ -618,7 +618,7 @@ class TripController extends GetxController {
 
     txtKmInicialTrechoController.text = trip.km ?? '';
     txtKmFinalTrechoController.text = trip.kmFinal ?? '';
-    tripNumberController.text = trip.numeroViagem ?? '';
+    tripNumberController.text = trip.numeroNota ?? '';
     txtToneladasTrechoController.text = trip.quantidadeTonelada.toString();
   }
 
@@ -770,7 +770,7 @@ class TripController extends GetxController {
         status: 1,
         km: txtKmInicialTrechoController.text,
         kmFinal: txtKmFinalTrechoController.text,
-        numeroViagem: tripNumberController.text,
+        numeroNota: tripNumberController.text,
         quantidadeTonelada: txtToneladasTrechoController.text,
         tipoCargaId: selectedCargoType.value,
         viagemId: travelId,
@@ -781,7 +781,7 @@ class TripController extends GetxController {
           'success': mensagem['success'],
           'message': mensagem['message']
         };
-        getAll();
+        getAllViagens();
         clearAllFields();
       } else {
         retorno = {
@@ -837,7 +837,7 @@ class TripController extends GetxController {
         'success': mensagem['success'],
         'message': mensagem['message']
       };
-      getAll();
+      getAllViagens();
       Get.find<TransactionController>().getSaldo();
       //clearAllFields();
     } else {
@@ -885,7 +885,7 @@ class TripController extends GetxController {
         'success': mensagem['success'],
         'message': mensagem['message']
       };
-      getAll();
+      getAllViagens();
       clearAllFields();
     } else {
       retorno = {
@@ -997,7 +997,7 @@ class TripController extends GetxController {
         status: 1,
         km: txtKmInicialTrechoController.text,
         kmFinal: txtKmFinalTrechoController.text,
-        numeroViagem: tripNumberController.text,
+        numeroNota: tripNumberController.text,
         quantidadeTonelada: txtToneladasTrechoController.text,
         tipoCargaId: selectedCargoType.value,
         viagemId: travelId,
@@ -1008,7 +1008,7 @@ class TripController extends GetxController {
           'success': mensagem['success'],
           'message': mensagem['message']
         };
-        getAll();
+        getAllViagens();
       } else {
         retorno = {
           'success': false,
@@ -1028,7 +1028,7 @@ class TripController extends GetxController {
         'success': mensagem['success'],
         'message': mensagem['message']
       };
-      getAll();
+      getAllViagens();
       isDialogOpen.value = false;
     } else {
       retorno = {
@@ -1048,7 +1048,7 @@ class TripController extends GetxController {
         'success': mensagem['success'],
         'message': mensagem['message']
       };
-      getAll();
+      getAllViagens();
       isDialogOpen.value = false;
     } else {
       retorno = {
@@ -1068,7 +1068,7 @@ class TripController extends GetxController {
         'success': mensagem['success'],
         'message': mensagem['message']
       };
-      getAll();
+      getAllViagens();
       isDialogOpen.value = false;
     } else {
       retorno = {
@@ -1154,7 +1154,7 @@ class TripController extends GetxController {
       };
 
       if (mensagem['success'] == true) {
-        getAll();
+        getAllViagens();
         clearAllFields();
       }
     } else {
@@ -1192,7 +1192,7 @@ class TripController extends GetxController {
       };
 
       if (mensagem['success'] == true) {
-        getAll();
+        getAllViagens();
         clearAllFields();
       }
     } else {
@@ -1214,7 +1214,7 @@ class TripController extends GetxController {
         'success': mensagem['success'],
         'message': mensagem['message']
       };
-      getAll();
+      getAllViagens();
       isDialogOpen.value = false;
     } else {
       retorno = {
@@ -1258,6 +1258,7 @@ class TripController extends GetxController {
   //metodos de viagens
   Future<void> getAllViagens() async {
     isLoadingViagens.value = true;
+    searchFilter.value = "";
     try {
       searchViagensController.clear();
       listViagens.value = await repositoryViagens.getAll();

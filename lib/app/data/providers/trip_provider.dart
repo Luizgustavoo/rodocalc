@@ -47,8 +47,10 @@ class TripApiClient {
 
       String veiculoId = ServiceStorage.idSelectedVehicle().toString();
 
+      String userId = ServiceStorage.getUserId().toString();
+
       Uri tripUrl;
-      String url = '$baseUrl/v1/trechopercorrido/withfilter/$veiculoId';
+      String url = '$baseUrl/v1/viagens/withfilter/$userId/$veiculoId';
       tripUrl = Uri.parse(url);
       var response = await httpClient.post(tripUrl, headers: {
         "Accept": "application/json",
@@ -76,8 +78,9 @@ class TripApiClient {
     try {
       final token = "Bearer ${ServiceStorage.getToken()}";
       String veiculoId = ServiceStorage.idSelectedVehicle().toString();
+      String userId = ServiceStorage.getUserId().toString();
 
-      String url = '$baseUrl/v1/trechopercorrido/generatepdf/$veiculoId';
+      String url = '$baseUrl/v1/viagens/generatepdf/$userId/$veiculoId';
       Uri tripUrl = Uri.parse(url);
 
       var response = await httpClient.post(
@@ -130,9 +133,10 @@ class TripApiClient {
         'status': trip.status.toString(),
         'km': trip.km.toString(),
         'km_final': trip.kmFinal.toString(),
-        'numero_viagem': trip.numeroViagem.toString(),
+        'numero_nota': trip.numeroNota.toString(),
         'quantidade_tonelada': trip.quantidadeTonelada.toString(),
         'tipocarga_id': trip.tipoCargaId.toString(),
+        'viagem_id': trip.viagemId.toString(),
       };
 
       final response = await http.post(
@@ -248,9 +252,10 @@ class TripApiClient {
         'status': trip.status.toString(),
         'km': trip.km.toString(),
         'km_final': trip.kmFinal.toString(),
-        'numero_viagem': trip.numeroViagem.toString(),
+        'numero_nota': trip.numeroNota.toString(),
         'quantidade_tonelada': trip.quantidadeTonelada.toString(),
         'tipocarga_id': trip.tipoCargaId.toString(),
+        'viagem_id': trip.viagemId.toString(),
       };
 
       final response = await http.put(

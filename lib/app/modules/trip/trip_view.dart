@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:file_picker/file_picker.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
@@ -12,8 +12,6 @@ import 'package:rodocalc/app/data/models/viagens_model.dart';
 import 'package:rodocalc/app/modules/trip/widgets/create_travel_modal.dart';
 import 'package:rodocalc/app/modules/trip/widgets/create_trip_modal.dart';
 import 'package:rodocalc/app/modules/trip/widgets/custom_travel_card.dart';
-import 'package:rodocalc/app/modules/trip/widgets/custom_trip_card.dart';
-import 'package:rodocalc/app/modules/trip/widgets/view_list_expense_trip_modal.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 import 'package:rodocalc/app/utils/service_storage.dart';
 import 'package:share_plus/share_plus.dart';
@@ -27,7 +25,7 @@ class TripView extends GetView<TripController> {
       appBar: AppBar(
         title: Column(
           children: [
-            const Text('TRECHOS',
+            const Text('VIAGENS',
                 style: TextStyle(
                   fontFamily: 'Inter-Black',
                 )),
@@ -108,8 +106,8 @@ class TripView extends GetView<TripController> {
               RefreshIndicator(
                 onRefresh: () async {
                   controller.searchTripController.clear();
-                  controller.listTrip.clear();
-                  controller.getAll();
+                  controller.listViagens.clear();
+                  controller.getAllViagens();
                 },
                 child: SizedBox(
                   height: MediaQuery.sizeOf(context).height,
@@ -134,112 +132,133 @@ class TripView extends GetView<TripController> {
 
 //inicio filtro entre datas
 
-                        Row(
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(
-                              child: TextFormField(
-                                controller: controller.txtInitialDateController,
-                                decoration: const InputDecoration(
-                                  hintText: 'DATA INICIAL',
-                                  prefixIcon: Icon(Icons.date_range),
-                                  contentPadding: EdgeInsets.symmetric(
-                                      vertical: 6.0, horizontal: 12.0),
-                                  fillColor: Colors.transparent,
-                                ),
-                                readOnly: true,
-                                onTap: () async {
-                                  DateTime? pickedDate = await showDatePicker(
-                                    context: Get.context!,
-                                    initialDate: DateTime.now(),
-                                    firstDate: DateTime(2000),
-                                    lastDate: DateTime.now(),
-                                    locale: const Locale('pt', 'BR'),
-                                  );
-                                  if (pickedDate != null) {
-                                    controller.txtInitialDateController.text =
-                                        FormattedInputers.formatDate2(
-                                            pickedDate);
-                                    if (controller.txtFinishDateController.text
-                                        .isNotEmpty) {
-                                      DateTime endDate =
-                                          FormattedInputers.parseDate(controller
-                                              .txtFinishDateController.text);
-                                      if (pickedDate.isAfter(endDate)) {
-                                        Get.snackbar('Erro',
-                                            'A data inicial não pode ser maior que a data final',
-                                            backgroundColor: Colors.red,
-                                            colorText: Colors.white);
-                                        controller.txtInitialDateController
-                                            .clear();
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: TextFormField(
+                                    controller:
+                                        controller.txtInitialDateController,
+                                    decoration: const InputDecoration(
+                                      hintText: 'Data inicial',
+                                      prefixIcon: Icon(Icons.calendar_today,
+                                          size: 18, color: Colors.grey),
+                                      hintStyle: TextStyle(color: Colors.grey),
+                                      enabledBorder: UnderlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: Colors.grey),
+                                      ),
+                                      focusedBorder: UnderlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: Colors.blueGrey),
+                                      ),
+                                      isDense: true,
+                                      contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 10),
+                                    ),
+                                    style: const TextStyle(fontSize: 14),
+                                    readOnly: true,
+                                    onTap: () async {
+                                      DateTime? pickedDate =
+                                          await showDatePicker(
+                                        context: Get.context!,
+                                        initialDate: DateTime.now(),
+                                        firstDate: DateTime(2000),
+                                        lastDate: DateTime.now(),
+                                        locale: const Locale('pt', 'BR'),
+                                      );
+                                      if (pickedDate != null) {
+                                        controller
+                                                .txtInitialDateController.text =
+                                            FormattedInputers.formatDate2(
+                                                pickedDate);
+                                        if (controller.txtFinishDateController
+                                            .text.isNotEmpty) {
+                                          DateTime endDate =
+                                              FormattedInputers.parseDate(
+                                                  controller
+                                                      .txtFinishDateController
+                                                      .text);
+                                          if (pickedDate.isAfter(endDate)) {
+                                            Get.snackbar('Erro',
+                                                'A data inicial não pode ser maior que a data final',
+                                                backgroundColor: Colors.red,
+                                                colorText: Colors.white);
+                                            controller.txtInitialDateController
+                                                .clear();
+                                          }
+                                        }
                                       }
-                                    }
-                                  }
-                                },
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: TextFormField(
-                                controller: controller.txtFinishDateController,
-                                decoration: const InputDecoration(
-                                  hintText: 'DATA FINAL',
-                                  prefixIcon: Icon(Icons.date_range),
-                                  contentPadding: EdgeInsets.symmetric(
-                                      vertical: 6.0, horizontal: 12.0),
-                                  fillColor: Colors.transparent,
+                                    },
+                                  ),
                                 ),
-                                readOnly: true,
-                                onTap: () async {
-                                  DateTime? pickedDate = await showDatePicker(
-                                    context: Get.context!,
-                                    initialDate: DateTime.now(),
-                                    firstDate: DateTime(2000),
-                                    lastDate: DateTime.now(),
-                                  );
-                                  if (pickedDate != null) {
-                                    if (controller.txtFinishDateController.text
-                                        .isNotEmpty) {
-                                      DateTime startDate =
-                                          FormattedInputers.parseDate(controller
-                                              .txtFinishDateController.text);
-                                      if (pickedDate.isBefore(startDate)) {
-                                        Get.snackbar('Erro',
-                                            'A data final não pode ser menor que a data inicial',
-                                            backgroundColor: Colors.red,
-                                            colorText: Colors.white);
-                                        controller.txtFinishDateController
-                                            .clear();
-                                      } else {
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: TextFormField(
+                                    controller:
+                                        controller.txtFinishDateController,
+                                    decoration: const InputDecoration(
+                                      hintText: 'Data final',
+                                      prefixIcon: Icon(Icons.calendar_today,
+                                          size: 18, color: Colors.grey),
+                                      hintStyle: TextStyle(color: Colors.grey),
+                                      enabledBorder: UnderlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: Colors.grey),
+                                      ),
+                                      focusedBorder: UnderlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: Colors.blueGrey),
+                                      ),
+                                      isDense: true,
+                                      contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 10),
+                                    ),
+                                    style: const TextStyle(fontSize: 14),
+                                    readOnly: true,
+                                    onTap: () async {
+                                      DateTime? pickedDate =
+                                          await showDatePicker(
+                                        context: Get.context!,
+                                        initialDate: DateTime.now(),
+                                        firstDate: DateTime(2000),
+                                        lastDate: DateTime.now(),
+                                        locale: const Locale('pt', 'BR'),
+                                      );
+                                      if (pickedDate != null) {
+                                        if (controller.txtInitialDateController
+                                            .text.isNotEmpty) {
+                                          DateTime startDate =
+                                              FormattedInputers.parseDate(
+                                                  controller
+                                                      .txtInitialDateController
+                                                      .text);
+                                          if (pickedDate.isBefore(startDate)) {
+                                            Get.snackbar('Erro',
+                                                'A data final não pode ser menor que a data inicial',
+                                                backgroundColor: Colors.red,
+                                                colorText: Colors.white);
+                                            controller.txtFinishDateController
+                                                .clear();
+                                            return;
+                                          }
+                                        }
                                         controller
                                                 .txtFinishDateController.text =
                                             FormattedInputers.formatDate2(
                                                 pickedDate);
                                       }
-                                    } else {
-                                      controller.txtFinishDateController.text =
-                                          FormattedInputers.formatDate2(
-                                              pickedDate);
-                                    }
-                                  }
-                                },
-                              ),
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-
-//final filtro datas
-
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        SizedBox(
-                          height: 45,
-                          child: TextFormField(
-                            controller: controller.searchTripController,
-                            decoration: InputDecoration(
-                              fillColor: Colors.grey.shade200,
-                              labelText: 'Motorista',
-                              suffixIcon: IconButton(
+                            const SizedBox(height: 10),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: TextButton.icon(
                                 onPressed: () {
                                   if ((controller.txtInitialDateController.text
                                               .isNotEmpty &&
@@ -247,8 +266,8 @@ class TripView extends GetView<TripController> {
                                               .text.isNotEmpty) ||
                                       controller.searchTripController.text
                                           .isNotEmpty) {
-                                    // controller.getTripsWithFilter();
-                                    // controller.clearSearchFilter();
+                                    controller.getTripsWithFilter();
+                                    controller.clearSearchFilter();
                                   } else {
                                     controller.getAll();
                                     Get.snackbar(
@@ -259,13 +278,25 @@ class TripView extends GetView<TripController> {
                                         snackPosition: SnackPosition.BOTTOM);
                                   }
                                 },
-                                icon: const Icon(Icons.search),
+                                icon: const Icon(Icons.search,
+                                    size: 18,
+                                    color: Color.fromARGB(255, 0, 0, 0)),
+                                label: const Text(
+                                  'Procurar',
+                                  style: TextStyle(
+                                      color: Color.fromARGB(255, 19, 19, 19)),
+                                ),
+                                style: TextButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 4),
+                                  foregroundColor:
+                                      const Color.fromARGB(255, 74, 74, 74),
+                                ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
 
-                        const SizedBox(height: 16),
                         Obx(() => controller.searchFilter.value.isNotEmpty
                             ? Text(controller.searchFilter.value)
                             : const SizedBox.shrink()),
@@ -293,6 +324,7 @@ class TripView extends GetView<TripController> {
                                   Viagens travel =
                                       controller.filteredViagens[index];
                                   return CustomTravelCard(
+                                    controller: controller,
                                     travel: travel,
                                     functionAddTrip: () {
                                       final cityController =
@@ -301,6 +333,8 @@ class TripView extends GetView<TripController> {
 
                                       controller.clearAllFields();
                                       controller.getMyChargeTypes();
+                                      controller.tripNumberController.text =
+                                          travel.numeroViagem.toString();
                                       showModalBottomSheet(
                                         isScrollControlled: true,
                                         context: context,
@@ -311,8 +345,9 @@ class TripView extends GetView<TripController> {
                                       );
                                     },
                                     functionRemove: () {
-                                      // controller.isDialogOpen.value = false;
-                                      // showDialog(context, travel, controller);
+                                      controller.isDialogOpen.value = false;
+                                      showDialogRemoveTravel(
+                                          context, travel, controller);
                                     },
                                     functionClose: () {
                                       if (travel.situacao == 'OPENED') {
@@ -412,6 +447,9 @@ class TripView extends GetView<TripController> {
                       duration: const Duration(seconds: 2),
                       snackPosition: SnackPosition.BOTTOM);
                 } else {
+                  controller.clearAllFields();
+                  controller.clearAllFieldsExpense();
+                  controller.clearAllFieldsViagens();
                   showModalBottomSheet(
                     isScrollControlled: false,
                     context: context,
@@ -429,6 +467,63 @@ class TripView extends GetView<TripController> {
       ),
     );
   }
+}
+
+void showDialogRemoveTravel(
+    context, Viagens travel, TripController controller) {
+  if (controller.isDialogOpen.value) return;
+
+  controller.isDialogOpen.value = true;
+  Get.defaultDialog(
+    titlePadding: const EdgeInsets.all(16),
+    contentPadding: const EdgeInsets.all(16),
+    title: "REMOVER VIAGEM",
+    content: const Text(
+      textAlign: TextAlign.center,
+      "Tem certeza que deseja excluir a viagem selecionada?",
+      style: TextStyle(
+        fontFamily: 'Poppins',
+        fontSize: 18,
+      ),
+    ),
+    actions: [
+      ElevatedButton(
+        onPressed: () async {
+          Get.back(); // Fecha o diálogo atual primeiro
+          await Future.delayed(const Duration(milliseconds: 500));
+          Map<String, dynamic> retorno =
+              await controller.deleteViagens(travel.id!);
+
+          if (retorno['success'] == true) {
+            Get.snackbar('Sucesso!', retorno['message'].join('\n'),
+                backgroundColor: Colors.green,
+                colorText: Colors.white,
+                duration: const Duration(seconds: 1),
+                snackPosition: SnackPosition.BOTTOM);
+          } else {
+            Get.snackbar('Falha!', retorno['message'].join('\n'),
+                backgroundColor: Colors.red,
+                colorText: Colors.white,
+                duration: const Duration(seconds: 1),
+                snackPosition: SnackPosition.BOTTOM);
+          }
+        },
+        child: const Text(
+          "CONFIRMAR",
+          style: TextStyle(fontFamily: 'Poppinss', color: Colors.white),
+        ),
+      ),
+      TextButton(
+        onPressed: () {
+          Get.back();
+        },
+        child: const Text(
+          "CANCELAR",
+          style: TextStyle(fontFamily: 'Poppinss'),
+        ),
+      ),
+    ],
+  );
 }
 
 void showDialog(context, Trip trip, TripController controller) {

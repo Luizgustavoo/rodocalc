@@ -23,7 +23,7 @@ class Trip {
   String? updatedAt;
   String? km;
   String? kmFinal;
-  String? numeroViagem;
+  String? numeroNota;
   String? situacao;
   String? quantidadeTonelada;
   int? tipoCargaId;
@@ -55,7 +55,7 @@ class Trip {
     this.transactions,
     this.km,
     this.kmFinal,
-    this.numeroViagem,
+    this.numeroNota,
     this.situacao,
     this.user,
     this.quantidadeTonelada,
@@ -81,7 +81,7 @@ class Trip {
     updatedAt = json['updated_at'];
     km = json['km'];
     kmFinal = json['km_final'];
-    numeroViagem = json['numero_viagem'];
+    numeroNota = json['numero_nota'];
     quantidadeTonelada = json['quantidade_tonelada'];
     tipoCargaId = json['tipocarga_id'];
     viagemId = json['viagem_id'];
@@ -126,7 +126,7 @@ class Trip {
     data['updated_at'] = updatedAt;
     data['km'] = km;
     data['km_final'] = kmFinal;
-    data['numero_viagem'] = numeroViagem;
+    data['numero_nota'] = numeroNota;
     data['situacao'] = situacao;
     data['quantidade_tonelada'] = quantidadeTonelada;
     data['tipo_carga_id'] = tipoCargaId;

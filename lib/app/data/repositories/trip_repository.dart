@@ -1,6 +1,7 @@
 import 'package:rodocalc/app/data/models/expense_trip_model.dart';
 import 'package:rodocalc/app/data/models/transactions_model.dart';
 import 'package:rodocalc/app/data/models/trip_model.dart';
+import 'package:rodocalc/app/data/models/viagens_model.dart';
 import 'package:rodocalc/app/data/providers/trip_provider.dart';
 
 class TripRepository {
@@ -28,7 +29,7 @@ class TripRepository {
 
   getTripsWithFilter(
       {String? dataInicial, String? dataFinal, String? search}) async {
-    List<Trip> list = <Trip>[];
+    List<Viagens> list = <Viagens>[];
 
     try {
       var response = await apiClient.getTripsWithFilter(
@@ -39,7 +40,7 @@ class TripRepository {
 
       if (response != null) {
         response['data'].forEach((e) {
-          list.add(Trip.fromJson(e));
+          list.add(Viagens.fromJson(e));
         });
       } else {
         return null;

@@ -67,17 +67,7 @@ class CreateTripModal extends GetView<TripController> {
                       color: Colors.grey),
                 ),
               ),
-              TextFormField(
-                controller: controller.tripNumberController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(
-                    Icons.numbers_rounded,
-                  ),
-                  labelText: 'NÚMERO DA VIAGEM',
-                ),
-              ),
-              const SizedBox(height: 15),
+
               TextFormField(
                 controller: controller.txtDateController,
                 readOnly: true,
@@ -335,6 +325,16 @@ class CreateTripModal extends GetView<TripController> {
                   FormattedInputers.formatAndUpdateText(
                       controller.txtKmFinalTrechoController);
                 },
+              ),
+              const SizedBox(height: 15),
+              TextFormField(
+                controller: controller.tripNumberController,
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(
+                    Icons.numbers_rounded,
+                  ),
+                  labelText: 'NÚMERO DA NOTA',
+                ),
               ),
               const SizedBox(height: 15),
 

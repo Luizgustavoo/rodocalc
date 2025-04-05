@@ -8,12 +8,14 @@ import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/controllers/trip_controller.dart';
 import 'package:rodocalc/app/data/models/trip_model.dart';
 import 'package:rodocalc/app/data/models/trip_photos.dart';
+import 'package:rodocalc/app/data/models/viagens_model.dart';
 import 'package:rodocalc/app/utils/formatter.dart';
 
 import 'package:share_plus/share_plus.dart';
 import 'package:http/http.dart' as http;
 
 class CustomTripCard extends StatelessWidget {
+  final Viagens travel;
   final Trip trip;
   final VoidCallback functionEdit;
   final VoidCallback functionRemove;
@@ -23,6 +25,7 @@ class CustomTripCard extends StatelessWidget {
 
   const CustomTripCard({
     super.key,
+    required this.travel,
     required this.trip,
     required this.functionEdit,
     required this.functionRemove,
@@ -61,100 +64,101 @@ class CustomTripCard extends StatelessWidget {
     String tempoGasto = calcularTempoGasto(trip.dataHora, trip.dataHoraChegada);
 
     bool closedTrip = (trip.situacao?.toUpperCase() ?? "") == "CLOSE";
-
-    String motorista = "S/M";
-    if (trip.user != null && trip.user!.people != null) {
-      motorista = trip.user!.people!.nome!;
-    }
+    bool travelClosed = (travel.situacao?.toUpperCase() ?? "") == "CLOSED";
 
     return Card(
-      color: closedTrip ? Colors.orange.shade50 : Colors.green.shade50,
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-      child: ExpansionTile(
-        tilePadding: const EdgeInsets.symmetric(horizontal: 16),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    IconButton(
-                      onPressed: functionEdit,
-                      icon: const Icon(Icons.edit, color: Colors.blueAccent),
-                    ),
-                    closedTrip
-                        ? const SizedBox.shrink()
-                        : IconButton(
-                            onPressed: functionPhoto,
-                            icon: const Icon(Icons.attach_file,
-                                color: Color.fromARGB(255, 252, 181, 58)),
-                          ),
-                    IconButton(
-                      onPressed: functionExpense,
-                      icon: const Icon(Icons.payments_outlined,
-                          size: 28, color: Color.fromARGB(255, 20, 174, 3)),
-                    ),
-                    closedTrip
-                        ? const SizedBox.shrink()
-                        : IconButton(
-                            onPressed: functionClose,
-                            icon: const Icon(Icons.lock_sharp,
-                                color: Color.fromARGB(255, 135, 135, 135)),
-                          ),
-                    IconButton(
-                      onPressed: functionRemove,
-                      icon: const Icon(Icons.delete, color: Colors.redAccent),
-                    ),
-                  ],
-                ),
-                _buildInfoRow("Viagem", trip.numeroViagem ?? 'S/N'),
-                _buildInfoRow("Motorista", motorista),
-                _buildInfoRow("Trecho", trecho),
-                _buildInfoRow("Saída", dataSaida),
-              ],
+      margin: const EdgeInsets.symmetric(vertical: 5),
+      color: closedTrip
+          ? const Color.fromARGB(255, 251, 159, 159)
+          : const Color.fromARGB(255, 226, 226, 226),
+      child: ListTile(
+        title: Text("${trip.origem} - ${trip.destino}"),
+        subtitle: Text("Saída: $dataSaida"),
+        onTap: () => {
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
             ),
-          ],
-        ),
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (trip.photos!.isNotEmpty) ...[
-                  const Divider(),
-                  _listImages(context),
-                ],
-                const Divider(),
-                _buildInfoRow("Origem", "${origem ?? 0}"),
-                _buildInfoRow("Destino", "${destino ?? 0} "),
-                _buildInfoRow("Distância", "${trip.distancia ?? 0} km"),
-                const Divider(),
-                _buildInfoRow("Chegada", dataChegada),
-                _buildInfoRow("KM Final Veículo", trip.kmFinal ?? "N/D"),
-                _buildInfoRow(
-                    "KM Rodado", calcularKmRodado(trip.km, trip.kmFinal)),
-                if (tempoGasto.isNotEmpty)
-                  _buildInfoRow("Tempo Gasto", tempoGasto),
-                const Divider(),
-                if (recebimentosFormatados.isNotEmpty)
-                  _buildInfoRow("Recebimentos", "R\$ $recebimentosFormatados"),
-                if (despesasFormatadas.isNotEmpty)
-                  _buildInfoRow("Despesas", "R\$ $despesasFormatadas"),
-                const Divider(),
-                _buildInfoRow("Situação", closedTrip ? "FECHADO" : "ABERTO"),
-              ],
-            ),
-          ),
-        ],
+            builder: (_) {
+              return DraggableScrollableSheet(
+                expand: false,
+                builder: (context, scrollController) {
+                  return SingleChildScrollView(
+                    controller: scrollController,
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Trecho: $trecho",
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 10),
+                        if (trip.photos!.isNotEmpty) ...[
+                          const Divider(),
+                          _listImages(context),
+                        ],
+                        const Divider(),
+                        _buildInfoRow("Origem", "${origem ?? 0}"),
+                        _buildInfoRow("Destino", "${destino ?? 0} "),
+                        _buildInfoRow("Distância", "${trip.distancia ?? 0} km"),
+                        const Divider(),
+                        _buildInfoRow("Nota", trip.numeroNota ?? 'S/N'),
+                        _buildInfoRow("Chegada", dataChegada),
+                        _buildInfoRow(
+                            "KM Final Veículo", trip.kmFinal ?? "N/D"),
+                        _buildInfoRow("KM Rodado",
+                            calcularKmRodado(trip.km, trip.kmFinal)),
+                        if (tempoGasto.isNotEmpty)
+                          _buildInfoRow("Tempo Gasto", tempoGasto),
+                        const Divider(),
+                        if (recebimentosFormatados.isNotEmpty)
+                          _buildInfoRow(
+                              "Recebimentos", "R\$ $recebimentosFormatados"),
+                        if (despesasFormatadas.isNotEmpty)
+                          _buildInfoRow("Despesas", "R\$ $despesasFormatadas"),
+                        const Divider(),
+                        _buildInfoRow(
+                            "Situação", closedTrip ? "FECHADO" : "ABERTO"),
+                        const Divider(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            if (!closedTrip && !travelClosed)
+                              IconButton(
+                                  onPressed: functionEdit,
+                                  icon: const Icon(Icons.edit,
+                                      color: Colors.blue)),
+                            IconButton(
+                                onPressed: functionExpense,
+                                icon: const Icon(Icons.payments_outlined,
+                                    color: Colors.green)),
+                            if (!closedTrip && !travelClosed)
+                              IconButton(
+                                  onPressed: functionPhoto,
+                                  icon: const Icon(Icons.attach_file,
+                                      color: Colors.orange)),
+                            if (!closedTrip && !travelClosed)
+                              IconButton(
+                                  onPressed: functionClose,
+                                  icon: const Icon(Icons.lock,
+                                      color: Colors.grey)),
+                            if (!closedTrip && !travelClosed)
+                              IconButton(
+                                  onPressed: functionRemove,
+                                  icon: const Icon(Icons.delete,
+                                      color: Colors.red)),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+          )
+        },
       ),
     );
   }

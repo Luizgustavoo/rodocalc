@@ -385,9 +385,9 @@ class TransactionController extends GetxController {
           : '');
       if (transaction.tipoTransacao == "saida" &&
           transaction.expenseCategory != null) {
-        row.add((transaction.expenseCategory!.descricao?.toUpperCase() ?? ''));
+        row.add((transaction.expenseCategory?.descricao?.toUpperCase() ?? ''));
         row.add(
-            (transaction.specificTypeExpense!.descricao?.toUpperCase() ?? ''));
+            (transaction.specificTypeExpense?.descricao?.toUpperCase() ?? ''));
       } else {
         row.add((''));
         row.add((''));
