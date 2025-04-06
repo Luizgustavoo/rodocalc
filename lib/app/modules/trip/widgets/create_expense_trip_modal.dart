@@ -311,6 +311,7 @@ class CreateExpenseTripModal extends GetView<TripController> {
                               : await controller.insertExpenseTrip(trip!.id!);
                           if (retorno['success'] == true) {
                             Get.back();
+                            Get.back();
                             Get.snackbar(
                                 'Sucesso!', retorno['message'].join('\n'),
                                 backgroundColor: Colors.green,
