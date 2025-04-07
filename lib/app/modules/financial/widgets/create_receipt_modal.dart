@@ -223,18 +223,6 @@ class CreateReceiptModal extends GetView<TransactionController> {
                 ),
 
                 const SizedBox(height: 10),
-                TextFormField(
-                  controller: controller.txtTonController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.balance_rounded,
-                    ),
-                    labelText: 'TONELADAS',
-                  ),
-                ),
-
-                const SizedBox(height: 15),
 
                 Obx(() {
                   if (controller.isLoadingChargeTypes.value) {
@@ -337,6 +325,39 @@ class CreateReceiptModal extends GetView<TransactionController> {
                           null, // Desabilitar mudanças se nenhum tipo estiver disponível
                     );
                   }
+                }),
+
+                const SizedBox(height: 10),
+                Obx(() {
+                  final selectedId = controller.selectedCargoType.value;
+                  final selectedCharge = controller.listChargeTypes
+                      .firstWhereOrNull((c) => c.id == selectedId);
+
+                  final isMotoristaApp = selectedCharge?.descricao
+                          ?.toLowerCase()
+                          .contains('motorista de app') ??
+                      false;
+
+                  // Se for "motorista de app", não mostra o input de toneladas
+                  if (isMotoristaApp) {
+                    return const SizedBox.shrink();
+                  }
+
+                  // Aqui vem o input de toneladas
+                  return TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: 'TONELADAS',
+                      hintText: 'Informe o peso em toneladas',
+                    ),
+                    keyboardType: TextInputType.number,
+                    controller: controller.txtTonController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Informe as toneladas';
+                      }
+                      return null;
+                    },
+                  );
                 }),
 
                 const SizedBox(height: 10),

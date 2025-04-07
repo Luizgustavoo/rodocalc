@@ -654,9 +654,9 @@ class FinancialView extends GetView<TransactionController> {
                   controller.update(['transaction_${transaction.id}']);
                 },
                 child: Icon(
-                  Icons.circle,
+                  isConcluido ? Icons.circle : Icons.circle_outlined,
                   size: 20,
-                  color: isConcluido ? Colors.green : Colors.grey,
+                  color: isConcluido ? cor : Colors.grey,
                 ),
               );
             },
