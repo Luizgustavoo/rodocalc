@@ -564,6 +564,7 @@ void showViewDialog(context, Transacoes transacao, TripController controller) {
           Get.back();
           if (retorno['success'] == true) {
             Get.back();
+            Get.back();
             Get.snackbar('Sucesso!', retorno['message'].join('\n'),
                 backgroundColor: Colors.green,
                 colorText: Colors.white,

@@ -906,7 +906,7 @@ class TripController extends GetxController {
         'success': mensagem['success'],
         'message': mensagem['message']
       };
-      getAll();
+      getAllViagens();
     } else {
       retorno = {
         'success': false,
