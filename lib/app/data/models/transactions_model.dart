@@ -16,6 +16,7 @@ class Transacoes {
   String? uf;
   String? ddd;
   String? telefone;
+  String? situacao;
   int? status;
   int? pessoaId;
   int? veiculoId;
@@ -49,6 +50,7 @@ class Transacoes {
     this.uf,
     this.ddd,
     this.telefone,
+    this.situacao,
     this.status,
     this.pessoaId,
     this.veiculoId,
@@ -82,6 +84,7 @@ class Transacoes {
     uf = json['uf'];
     ddd = json['ddd'];
     telefone = json['telefone'];
+    situacao = json['situacao'];
     status = json['status'];
     pessoaId = json['pessoa_id'];
     veiculoId = json['veiculo_id'];
@@ -128,6 +131,7 @@ class Transacoes {
     data['uf'] = uf;
     data['ddd'] = ddd;
     data['telefone'] = telefone;
+    data['situacao'] = situacao;
     data['status'] = status;
     data['pessoa_id'] = pessoaId;
     data['veiculo_id'] = veiculoId;

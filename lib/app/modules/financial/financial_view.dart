@@ -640,15 +640,28 @@ class FinancialView extends GetView<TransactionController> {
     return TimelineTile(
       alignment: TimelineAlign.start,
       isFirst: false,
-      indicatorStyle: const IndicatorStyle(
+      indicatorStyle: IndicatorStyle(
           width: 20,
           indicatorXY: 0.4,
-          indicator: Icon(
-            Icons.circle_outlined,
-            size: 20,
-            color: Colors.grey,
+          indicator: GetBuilder<TransactionController>(
+            id: 'transaction_${transaction.id}',
+            builder: (controller) {
+              final isConcluido = transaction.situacao == 'CONCLUIDO';
+
+              return InkWell(
+                onTap: () async {
+                  await controller.updateSituationTransaction(transaction.id!);
+                  controller.update(['transaction_${transaction.id}']);
+                },
+                child: Icon(
+                  Icons.circle,
+                  size: 20,
+                  color: isConcluido ? Colors.green : Colors.grey,
+                ),
+              );
+            },
           ),
-          padding: EdgeInsets.only(top: 3, bottom: 3)),
+          padding: const EdgeInsets.only(top: 3, bottom: 3)),
       endChild: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
         child: Row(

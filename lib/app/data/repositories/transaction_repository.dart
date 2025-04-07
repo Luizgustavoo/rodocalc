@@ -211,4 +211,13 @@ class TransactionRepository {
       Exception(e);
     }
   }
+
+  updateSituationTransaction(Transacoes transaction) async {
+    try {
+      var response = await apiClient.updateSituationTransaction(transaction);
+      return response;
+    } catch (e) {
+      Exception(e);
+    }
+  }
 }

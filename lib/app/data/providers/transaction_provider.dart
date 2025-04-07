@@ -614,4 +614,30 @@ class TransactionApiClient {
     }
     return null;
   }
+
+  updateSituationTransaction(Transacoes transacoes) async {
+    try {
+      final token = "Bearer ${ServiceStorage.getToken()}";
+
+      var expenseUrl =
+          Uri.parse('$baseUrl/v1/transacao/update-situation/${transacoes.id}');
+
+      var request = http.MultipartRequest('POST', expenseUrl);
+
+      request.headers.addAll({
+        'Accept': 'application/json',
+        'Authorization': token,
+      });
+
+      var response = await request.send();
+
+      var responseStream = await response.stream.bytesToString();
+      var httpResponse = http.Response(responseStream, response.statusCode);
+
+      return json.decode(httpResponse.body);
+    } catch (err) {
+      Exception(err);
+    }
+    return null;
+  }
 }
