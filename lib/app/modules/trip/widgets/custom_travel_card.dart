@@ -87,7 +87,7 @@ class CustomTravelCard extends StatelessWidget {
                             icon: const Icon(Icons.lock_open_sharp,
                                 color: Color.fromARGB(255, 2, 97, 51)),
                           ),
-                    closedTravel
+                    closedTravel && ServiceStorage.getUserTypeId() == 4
                         ? const SizedBox.shrink()
                         : IconButton(
                             onPressed: functionRemove,
