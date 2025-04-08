@@ -1036,14 +1036,13 @@ class TransactionController extends GetxController {
 
   Future<Map<String, dynamic>> updateSituationTransaction(int id) async {
     if (id > 0) {
-      // Encontra a transação atual
       final index = listTransactions.indexWhere((t) => t.id == id);
       if (index != -1) {
         final transacao = listTransactions[index];
         final novaSituacao =
-            transacao.situacao == 'CONCLUIDO' ? 'PENDENTE' : 'CONCLUIDO';
+            transacao.situacao.value == 'CONCLUIDO' ? 'PENDENTE' : 'CONCLUIDO';
 
-        // Atualiza no backend com a nova situação
+        // Atualiza no backend
         mensagem = await repository.updateSituationTransaction(
           Transacoes(id: id, situacao: novaSituacao),
         );
@@ -1053,10 +1052,10 @@ class TransactionController extends GetxController {
           'message': mensagem['message'],
         };
 
-        // Atualiza localmente se deu certo
         if (retorno['success']) {
-          listTransactions[index].situacao = novaSituacao;
-          update(['transaction_$id']);
+          // Atualiza localmente de forma reativa
+          transacao.situacao.value = novaSituacao;
+          //update(['transaction_$id']);
         }
       }
     }

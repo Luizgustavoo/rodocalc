@@ -83,6 +83,12 @@ class TripApiClient {
       String url = '$baseUrl/v1/viagens/generatepdf/$userId/$veiculoId';
       Uri tripUrl = Uri.parse(url);
 
+      // Montar o body apenas se houver parâmetros
+      Map<String, String> body = {};
+      if (dataInicial != null) body['dataInicial'] = dataInicial.toString();
+      if (dataFinal != null) body['dataFinal'] = dataFinal.toString();
+      if (search != null) body['search'] = search.toString();
+
       var response = await httpClient.post(
         tripUrl,
         headers: {
@@ -90,12 +96,10 @@ class TripApiClient {
               "application/pdf", // Importante garantir que a API retorne um PDF
           "Authorization": token,
         },
-        body: {
-          "dataInicial": dataInicial.toString(),
-          "dataFinal": dataFinal.toString(),
-          "search": search.toString(),
-        },
+        body: body.isNotEmpty ? body : null,
       );
+
+      print(response);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         // Salvar temporariamente o PDF

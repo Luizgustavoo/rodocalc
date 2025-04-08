@@ -132,6 +132,7 @@ class CustomTravelCard extends StatelessWidget {
                                 showDialogTrip(context, trip, controller);
                               },
                               functionPhoto: () async {
+                                Get.back();
                                 controller.selectedImagesPaths.value = [];
                                 controller.txtFileDescriptionController.clear();
 
@@ -155,6 +156,7 @@ class CustomTravelCard extends StatelessWidget {
                                     controller, trip.id!);
                               },
                               functionExpense: () {
+                                Get.back();
                                 showModalBottomSheet(
                                   isScrollControlled: true,
                                   context: context,
@@ -184,6 +186,7 @@ class CustomTravelCard extends StatelessWidget {
                                 }
                               },
                               functionEdit: () {
+                                Get.back();
                                 controller.getMyChargeTypes();
                                 controller.fillInFields(trip);
                                 showModalBottomSheet(

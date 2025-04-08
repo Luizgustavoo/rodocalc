@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:rodocalc/app/data/models/charge_type_model.dart';
 import 'package:rodocalc/app/data/models/expense_category_model.dart';
 import 'package:rodocalc/app/data/models/specific_type_expense_model.dart';
@@ -16,7 +17,7 @@ class Transacoes {
   String? uf;
   String? ddd;
   String? telefone;
-  String? situacao;
+  RxString situacao = 'PENDENTE'.obs;
   int? status;
   int? pessoaId;
   int? veiculoId;
@@ -50,7 +51,7 @@ class Transacoes {
     this.uf,
     this.ddd,
     this.telefone,
-    this.situacao,
+    String? situacao,
     this.status,
     this.pessoaId,
     this.veiculoId,
@@ -84,7 +85,7 @@ class Transacoes {
     uf = json['uf'];
     ddd = json['ddd'];
     telefone = json['telefone'];
-    situacao = json['situacao'];
+    situacao.value = json['situacao'] ?? 'PENDENTE';
     status = json['status'];
     pessoaId = json['pessoa_id'];
     veiculoId = json['veiculo_id'];
@@ -131,7 +132,7 @@ class Transacoes {
     data['uf'] = uf;
     data['ddd'] = ddd;
     data['telefone'] = telefone;
-    data['situacao'] = situacao;
+    data['situacao'] = situacao.value;
     data['status'] = status;
     data['pessoa_id'] = pessoaId;
     data['veiculo_id'] = veiculoId;

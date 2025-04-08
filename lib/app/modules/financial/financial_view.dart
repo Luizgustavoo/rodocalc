@@ -643,24 +643,40 @@ class FinancialView extends GetView<TransactionController> {
       indicatorStyle: IndicatorStyle(
           width: 20,
           indicatorXY: 0.4,
-          indicator: GetBuilder<TransactionController>(
-            id: 'transaction_${transaction.id}',
-            builder: (controller) {
-              final isConcluido = transaction.situacao == 'CONCLUIDO';
+          indicator: Obx(() {
+            final isConcluido = transaction.situacao.value == 'CONCLUIDO';
 
-              return InkWell(
-                onTap: () async {
-                  await controller.updateSituationTransaction(transaction.id!);
-                  controller.update(['transaction_${transaction.id}']);
-                },
-                child: Icon(
-                  isConcluido ? Icons.circle : Icons.circle_outlined,
-                  size: 20,
-                  color: isConcluido ? cor : Colors.grey,
-                ),
-              );
-            },
-          ),
+            return InkWell(
+              onTap: () async {
+                await controller.updateSituationTransaction(transaction.id!);
+                transaction.situacao.value =
+                    isConcluido ? 'PENDENTE' : 'CONCLUIDO';
+              },
+              child: Icon(
+                isConcluido ? Icons.circle : Icons.circle_outlined,
+                size: 20,
+                color: isConcluido ? cor : Colors.grey,
+              ),
+            );
+          }),
+          // indicator: GetBuilder<TransactionController>(
+          //   id: 'transaction_${transaction.id}',
+          //   builder: (controller) {
+          //     final isConcluido = transaction.situacao == 'CONCLUIDO';
+
+          //     return InkWell(
+          //       onTap: () async {
+          //         await controller.updateSituationTransaction(transaction.id!);
+          //         controller.update(['transaction_${transaction.id}']);
+          //       },
+          //       child: Icon(
+          //         isConcluido ? Icons.circle : Icons.circle_outlined,
+          //         size: 20,
+          //         color: isConcluido ? cor : Colors.grey,
+          //       ),
+          //     );
+          //   },
+          // ),
           padding: const EdgeInsets.only(top: 3, bottom: 3)),
       endChild: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
