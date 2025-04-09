@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -14,7 +15,6 @@ class ClassifiedController extends GetxController {
   var selectedImagesPathsApiRemove = <String>[].obs;
 
   final formKeyClassified = GlobalKey<FormState>();
-  final valueController = TextEditingController();
   final descriptionController = TextEditingController();
   final modelController = TextEditingController();
   final searchClassifiedController = TextEditingController();
@@ -32,10 +32,20 @@ class ClassifiedController extends GetxController {
   };
   dynamic mensagem;
 
+  late MoneyMaskedTextController txtValueController;
+
   @override
   void onInit() {
     super.onInit();
     filteredClassifieds.assignAll(listClassifieds);
+
+    txtValueController = MoneyMaskedTextController(
+      precision: 2,
+      initialValue: 0.0,
+      decimalSeparator: ',',
+      thousandSeparator: '.',
+      leftSymbol: 'R\$ ',
+    );
   }
 
   void pickImage(ImageSource source) async {
@@ -183,7 +193,7 @@ class ClassifiedController extends GetxController {
       mensagem = await repository.insert(
         Classifieds(
           descricao: descriptionController.text,
-          valor: FormattedInputers.convertToDouble(valueController.text),
+          valor: FormattedInputers.convertToDouble(txtValueController.text),
           status: 2,
           fotosclassificados: photos,
           userId: ServiceStorage.getUserId(),
@@ -218,7 +228,7 @@ class ClassifiedController extends GetxController {
           Classifieds(
             id: id,
             descricao: descriptionController.text,
-            valor: FormattedInputers.convertToDouble(valueController.text),
+            valor: FormattedInputers.convertToDouble(txtValueController.text),
             status: 2,
             fotosclassificados: photos,
             userId: ServiceStorage.getUserId(),
@@ -243,7 +253,6 @@ class ClassifiedController extends GetxController {
 
   void clearAllFields() {
     final textControllers = [
-      valueController,
       descriptionController,
       modelController,
     ];
@@ -251,13 +260,15 @@ class ClassifiedController extends GetxController {
     for (final controller in textControllers) {
       controller.clear();
     }
+
+    txtValueController.updateValue(0.0);
     selectedImagesPaths.clear();
     selectedImagesPathsApi.clear();
     selectedImagesPathsApiRemove.clear();
   }
 
   void fillInFields(Classifieds selected) {
-    valueController.text =
+    txtValueController.text =
         FormattedInputers.formatValuePTBR(selected.valor!.toString());
     descriptionController.text = selected.descricao!;
 

@@ -130,7 +130,7 @@ class CreateClassifiedModal extends GetView<ClassifiedController> {
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
-                  controller: controller.valueController,
+                  controller: controller.txtValueController,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(
                       Icons.monetization_on,
@@ -139,7 +139,7 @@ class CreateClassifiedModal extends GetView<ClassifiedController> {
                   ),
                   onChanged: (value) {
                     FormattedInputers.onformatValueChanged(
-                        value, controller.valueController);
+                        value, controller.txtValueController);
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
