@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/controllers/city_state_controller.dart';
@@ -998,36 +999,169 @@ class HomeView extends GetView<HomeController> {
                   ),
                 ),
               ),
-              Obx(() {
-                if (controller.isLoading.value) {
-                  return const Positioned(
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                } else if (controller.diasRestantes.value <= 2 &&
-                    controller.diasRestantes.value >= 0) {
-                  return Positioned(
-                    bottom: 0,
-                    left: 0,
-                    child: WidgetPlan(
-                      planController: planController,
-                      titulo: "Renove seu plano.",
-                      data: controller.dataVencimento.value,
-                    ),
-                  );
-                } else {
-                  return Container(); // Retorna um widget vazio
-                }
-              }),
+              Obx(
+                () {
+                  if (controller.showNotification.value &&
+                      controller.anuncios.isNotEmpty) {
+                    return Stack(
+                      children: [
+                        // Fundo escurecido
+                        Positioned.fill(
+                          child: Container(
+                            color: Colors.black.withOpacity(0.7),
+                          ),
+                        ),
+                        // Card com anúncios centralizado
+                        Center(
+                          child: FractionallySizedBox(
+                            widthFactor: 0.8,
+                            heightFactor: 0.4,
+                            child: Stack(
+                              children: [
+                                // Card com conteúdo scrollável
+                                Container(
+                                  margin: const EdgeInsets.only(
+                                      top: 10), // espaço pro ícone de fechar
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  padding: const EdgeInsets.all(16),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          const Text(
+                                            "Notificações",
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          IconButton(
+                                              onPressed: () => controller
+                                                  .showNotification
+                                                  .value = false,
+                                              icon: const Icon(Icons.close))
+                                        ],
+                                      ),
+                                      Flexible(child: ListViewNotifications()),
+                                    ],
+                                  ),
+                                ),
+                                // Botão de fechar no topo do Card
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  } else if (controller.isLoading.value) {
+                    return const Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  } else if (controller.diasRestantes.value <= 2 &&
+                      controller.diasRestantes.value >= 0) {
+                    return Positioned(
+                      bottom: 0,
+                      left: 0,
+                      child: WidgetPlan(
+                        planController: planController,
+                        titulo: "Renove seu plano.",
+                        data: controller.dataVencimento.value,
+                      ),
+                    );
+                  } else {
+                    return Container();
+                  }
+                },
+              ),
             ],
           );
         },
       ),
     );
+  }
+
+  Widget ListViewNotifications() {
+    return controller.isLoadingNotifications.value
+        ? const Column(
+            children: [
+              Text('Carregando...'),
+              SizedBox(height: 20.0),
+              CircularProgressIndicator(),
+            ],
+          )
+        : ListView.builder(
+            itemCount: controller.anuncios.length,
+            itemBuilder: (context, index) {
+              final anuncio = controller.anuncios[index];
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Stack(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 6,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            anuncio.titulo ?? "",
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            anuncio.descricao.toString(),
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: IconButton(
+                        onPressed: () async {
+                          await controller.marcarComoLido(anuncio.id!);
+                        },
+                        icon: const Icon(
+                          Icons.thumb_up,
+                          color: Colors.green,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
   }
 
   void snackExistsPlan() {

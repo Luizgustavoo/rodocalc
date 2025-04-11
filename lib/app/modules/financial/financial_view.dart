@@ -84,6 +84,7 @@ class FinancialView extends GetView<TransactionController> {
                 icon: const Icon(Icons.arrow_back),
                 onPressed: () {
                   Get.find<HomeController>().getLast();
+                  Get.find<HomeController>().verificarExibicaoImagem();
                   Get.back();
                 },
               ),

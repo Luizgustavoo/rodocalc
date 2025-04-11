@@ -2,7 +2,9 @@ import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:rodocalc/app/data/models/abastecimentos_model.dart';
 import 'package:rodocalc/app/data/models/last_expense_trip_model.dart';
+import 'package:rodocalc/app/data/models/notification_model.dart';
 import 'package:rodocalc/app/data/models/transactions_model.dart';
+import 'package:rodocalc/app/data/repositories/notifications_repository.dart';
 import 'package:rodocalc/app/data/repositories/plan_repository.dart';
 import 'package:rodocalc/app/data/repositories/transaction_repository.dart';
 import 'package:rodocalc/app/data/repositories/vehicle_repository.dart';
@@ -16,6 +18,7 @@ class HomeController extends GetxController {
   var truckBalance = 10307.00.obs;
 
   var isLoading = true.obs;
+  var showNotification = false.obs;
 
   void updateUserPhoto() {
     userPhoto.value = ServiceStorage.getUserPhoto();
@@ -29,10 +32,12 @@ class HomeController extends GetxController {
   final repositoryTransaction = Get.put(TransactionRepository());
   final repositoryVehicle = Get.put(VehicleRepository());
   final repositoryPlan = Get.put(PlanRepository());
+  final repositoryNotifications = Get.put(NotificationsRepository());
 
   RxBool isLoadingAbastecimentos = false.obs;
   RxBool isLoadingLast = true.obs;
   RxBool isLoadingDias = true.obs;
+  RxBool isLoadingNotifications = false.obs;
 
   RxDouble mediaConsumo = 0.0.obs;
   RxDouble totalKmPercorrido = 0.0.obs;
@@ -45,6 +50,36 @@ class HomeController extends GetxController {
     await getLast();
     await getExistsPlanActive();
     super.onInit();
+  }
+
+  RxList<Notifications> anuncios = RxList<Notifications>([]);
+
+  marcarComoLido(int id) async {
+    try {
+      await repositoryNotifications.markRead(id);
+      await verificarExibicaoImagem();
+    } catch (e) {
+      Exception(e);
+    }
+  }
+
+  verificarExibicaoImagem() async {
+    isLoadingNotifications(true);
+    try {
+      anuncios.clear();
+      anuncios.value = await repositoryNotifications.getAll();
+      showNotification.value = anuncios.isNotEmpty;
+    } catch (e) {
+      anuncios.clear();
+      Exception(e);
+    }
+    isLoadingNotifications(false);
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
+    verificarExibicaoImagem();
   }
 
   getExistsPlanActive() async {
@@ -98,4 +133,11 @@ class HomeController extends GetxController {
     }
     isLoadingLast.value = false;
   }
+}
+
+class Anuncio {
+  final String titulo;
+  final String descricao;
+
+  Anuncio({required this.titulo, required this.descricao});
 }

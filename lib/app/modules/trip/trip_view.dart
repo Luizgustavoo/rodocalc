@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rodocalc/app/data/base_url.dart';
 import 'package:rodocalc/app/data/controllers/city_state_controller.dart';
+import 'package:rodocalc/app/data/controllers/home_controller.dart';
 import 'package:rodocalc/app/data/controllers/trip_controller.dart';
 import 'package:rodocalc/app/data/models/trip_model.dart';
 import 'package:rodocalc/app/data/models/viagens_model.dart';
@@ -79,7 +80,10 @@ class TripView extends GetView<TripController> {
           child: Builder(
             builder: (context) => IconButton(
               icon: const Icon(Icons.arrow_back),
-              onPressed: () => Get.back(),
+              onPressed: () {
+                Get.find<HomeController>().verificarExibicaoImagem();
+                Get.back();
+              },
             ),
           ),
         ),

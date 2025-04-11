@@ -23,6 +23,7 @@ import 'package:rodocalc/app/modules/home/home_view.dart';
 import 'package:rodocalc/app/modules/indicator/indicator_view.dart';
 import 'package:rodocalc/app/modules/initial/initial_view.dart';
 import 'package:rodocalc/app/modules/login/login_view.dart';
+import 'package:rodocalc/app/modules/middleware/banner.dart';
 import 'package:rodocalc/app/modules/perfil/perfil_view.dart';
 import 'package:rodocalc/app/modules/plan/manage_plan_view.dart';
 import 'package:rodocalc/app/modules/plan/new_plan_view.dart';
@@ -56,6 +57,7 @@ class AppPages {
       name: Routes.home,
       page: () => HomeView(),
       binding: HomeBinding(),
+      //middlewares: [BannerMiddleware()],
     ),
     GetPage(
       name: Routes.vehicle,
